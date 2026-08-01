@@ -1,0 +1,35 @@
+[Q] hi [A] Hello! I am your VoltForge AI assistant. I can help you validate your circuit wiring, write Arduino firmware, and search technical specifications.
+[Q] hello [A] Hi there! I'm here to review your microcontroller schematic and Arduino code. What would you like to build?
+[Q] who are you [A] I am VoltForge AI, a custom-trained local electronics assistant tailored to help with circuit schematics and firmware.
+[Q] what are you doing [A] I am scanning your active editor layout to verify safety scores, check pin connections, and check code syntax.
+[Q] what can you do [A] I can check for short circuits, suggest series resistors for LEDs, recommend motor driver chips, and write Arduino code.
+[Q] what is this [A] This is your VoltForge local electronics design workspace. You can place components on the canvas and write code.
+[Q] help [A] Ask me questions like 'is my circuit safe?', 'how do I connect an LED?', or 'generate code for a motor'.
+[Q] how does this work [A] Place components, connect wires, and click 'Start Validation' to run checks. You can also chat with me.
+[Q] is this circuit valid [A] Let me analyze. Check that power 5V is not shorted to GND, and make sure LEDs have series resistors.
+[Q] is this circuit safe [A] Please verify that your active canvas components are wired correctly. LEDs require 220 Ohm series resistors.
+[Q] check for errors [A] Checking. If you connect high current loads like DC motors directly to MCU pins, it will damage the chip.
+[Q] how do I wire a DC motor [A] To wire a DC motor, connect it to an L298N driver. Do not connect it directly to Arduino digital output pins.
+[Q] how to connect a servo [A] To wire a servo motor, connect VCC to 5V, GND to GND, and PWM signal wire to digital pin 9.
+[Q] how do I use dht11 [A] Connect DHT11 sensor VCC to 5V, GND to GND, and DATA pin to digital pin 2 with a 10k Ohm pull-up resistor.
+[Q] how to wire an LED [A] Connect the LED cathode to GND. Connect the LED anode in series with a 220 Ohm resistor to a digital output pin.
+[Q] why use a resistor with LED [A] A resistor limits the current flowing through the LED. Without it, the LED or the MCU pin will burn out.
+[Q] what is the pinout of esp32 [A] ESP32 has GPIOs for digital IO, ADCs for analog input, DACs, and interfaces like I2C (SDA=21, SCL=22) and SPI.
+[Q] explain pinout of arduino uno [A] Arduino Uno has 14 digital pins (0-13), 6 analog inputs (A0-A5), power pins (5V, 3.3V, GND, Vin), and I2C pins.
+[Q] how do I use LiquidCrystal_I2C [A] Wire LCD VCC to 5V, GND to GND, SDA to A4, and SCL to A5. Include LiquidCrystal_I2C.h in your code.
+[Q] suggest connections [A] Suggestion: Verify that your sensor signal pins are connected to Analog or Digital input ports.
+[Q] how to auto wire [A] Use the wiring engine to automatically connect power lines to 5V and ground pins to GND.
+[Q] write code [A] Sure! Let me know what you want to write (e.g. 'blink', 'sensor read') and I will generate the template.
+[Q] generate code [A] Generate: Select a component and ask me to write a driver sketch. I will generate a fully compilable sketch.
+[Q] generate led blink code [A] Here is the code:\n```cpp\nvoid setup() {\n  pinMode(13, OUTPUT);\n}\nvoid loop() {\n  digitalWrite(13, HIGH);\n  delay(1000);\n  digitalWrite(13, LOW);\n  delay(1000);\n}\n```
+[Q] generate motor control code [A] Here is the code:\n```cpp\nvoid setup() {\n  pinMode(9, OUTPUT);\n}\nvoid loop() {\n  digitalWrite(9, HIGH);\n}\n```
+[Q] generate code for dht11 [A] Here is the code:\n```cpp\n#include <DHT.h>\n#define DHTPIN 2\n#define DHTTYPE DHT11\nDHT dht(DHTPIN, DHTTYPE);\nvoid setup() {\n  Serial.begin(9600);\n  dht.begin();\n}\nvoid loop() {\n  float t = dht.readTemperature();\n  Serial.println(t);\n  delay(2000);\n}\n```
+[Q] is my code correct [A] I will review your active C++ sketch. Ensure all pins match your canvas wires and pinMode is declared.
+[Q] explain code [A] Reviewing code: `setup()` runs once at start to initialize pins, while `loop()` runs continuously for logic.
+[Q] validate code [A] Verifying code. Ensure you have defined pin constants and loaded necessary libraries like Wire.h.
+[Q] review code [A] Reviewing sketch: Please check that your pin numbers match the physical wires on your canvas layout.
+[Q] what is the pinout of dht11 [A] DHT11 has 4 pins: Pin 1 is VCC (3V-5V), Pin 2 is Data out (I/O), Pin 3 is Not Connected, Pin 4 is GND.
+[Q] connect motor [A] Wire motor terminals to H-Bridge driver OUT1/OUT2, connect IN1/IN2 to MCU PWM pins, and connect GNDs together.
+[Q] connect display [A] Connect SDA to A4, SCL to A5, VCC to 5V, and GND to GND on your Arduino Board.
+[Q] compile check [A] Code compiles successfully if setup() and loop() are declared and libraries are loaded.
+[Q] how do I connect LDR [A] Connect LDR in series with a 10k Ohm resistor to create a voltage divider, and wire the center tap to Analog Pin A0.
