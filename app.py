@@ -128,15 +128,25 @@ DOMAIN_TERMS = {
     "arduino",
     "esp32",
     "esp8266",
+    "raspberry",
+    "pi",
     "rp2040",
     "pico",
+    "rp2350",
     "stm32",
     "teensy",
+    "xiao",
+    "feather",
+    "atmega",
+    "attiny",
     "microcontroller",
     "mcu",
+    "processor",
+    "cpu",
     "gpio",
     "pin",
     "pins",
+    "pinout",
     "circuit",
     "schematic",
     "wire",
@@ -144,27 +154,77 @@ DOMAIN_TERMS = {
     "ground",
     "gnd",
     "vcc",
+    "vdd",
+    "vin",
+    "vsys",
+    "vbus",
     "5v",
     "3.3v",
+    "3v3",
+    "voltage",
+    "current",
+    "amp",
+    "milliamp",
+    "resistance",
+    "ohm",
+    "power",
+    "watt",
     "sensor",
     "led",
+    "rgb",
+    "neopixel",
+    "ws2812",
     "resistor",
+    "capacitor",
+    "diode",
+    "transistor",
+    "mosfet",
+    "potentiometer",
+    "button",
+    "switch",
+    "breadboard",
+    "buzzer",
     "motor",
+    "stepper",
+    "dc motor",
     "relay",
     "servo",
     "lcd",
+    "oled",
+    "display",
+    "seven segment",
+    "7-segment",
+    "ultrasonic",
+    "hc-sr04",
+    "pir",
+    "ldr",
+    "photoresistor",
+    "imu",
+    "mpu6050",
     "i2c",
     "spi",
+    "uart",
+    "serial",
+    "pwm",
+    "adc",
+    "analog",
+    "digital",
     "dht",
+    "dht11",
+    "dht22",
     "firmware",
     "sketch",
     "cpp",
     "c++",
     "compile",
-    "serial",
     "analogread",
     "digitalwrite",
     "pinmode",
+    "ammeter",
+    "oscilloscope",
+    "scope",
+    "regulator",
+    "7805",
     "voltforge",
 }
 
@@ -189,13 +249,18 @@ MCU_PREFIXES = (
     "ARDUINO",
     "ESP32",
     "ESP8266",
-    "RASPBERRY_PI_PICO",
+    "RASPBERRY_PI",
     "STM32",
     "TEENSY",
+    "BBC_MICROBIT",
     "SEEED_XIAO",
     "ADAFRUIT_FEATHER",
     "SPARKFUN_THING_PLUS",
     "ATMEL_AVR",
+    "BEAGLEBONE",
+    "ORANGE_PI",
+    "ODROID",
+    "JETSON",
 )
 
 VOLTForge_SYSTEM_PROMPT = """
@@ -266,6 +331,17 @@ BOARD_RULES: Dict[str, Dict[str, Any]] = {
         "adcPins": {"a0", "a1", "a2", "d26", "d27", "d28"},
         "i2c": ("d4", "d5"),
     },
+    "RASPBERRY_PI_SBC": {
+        "logicVoltage": 3.3,
+        "recommendedPinMa": 8.0,
+        "absolutePinMa": 16.0,
+        "totalPackageMa": 50.0,
+        "pwmPins": {"d12", "d13", "d18", "d19"},
+        "adcPins": set(),
+        "i2c": ("d2", "d3"),
+        "spi": ("d10", "d9", "d11"),
+        "uart": ("d14", "d15"),
+    },
     "STM32_BLUE_PILL": {
         "logicVoltage": 3.3,
         "recommendedPinMa": 20.0,
@@ -277,6 +353,432 @@ BOARD_RULES: Dict[str, Dict[str, Any]] = {
         "i2c": ("d11", "d10"),
     },
 }
+
+ELECTRONICS_STOPWORDS = {
+    "a",
+    "about",
+    "an",
+    "and",
+    "are",
+    "board",
+    "component",
+    "components",
+    "connect",
+    "does",
+    "for",
+    "give",
+    "how",
+    "i",
+    "in",
+    "is",
+    "it",
+    "me",
+    "model",
+    "my",
+    "of",
+    "on",
+    "pin",
+    "pins",
+    "please",
+    "tell",
+    "the",
+    "this",
+    "to",
+    "use",
+    "what",
+    "will",
+    "with",
+    "work",
+    "working",
+}
+
+COMPONENT_KNOWLEDGE: List[Dict[str, Any]] = [
+    {
+        "title": "LED",
+        "keywords": ("led", "led_standard", "red led", "green led", "blue led"),
+        "summary": "An LED is a polarized diode that emits light when forward biased.",
+        "wiring": "Wire GPIO -> series resistor -> LED anode, and LED cathode -> GND. Size the resistor with R = (supply - forward voltage) / target current; 220 Ohm to 330 Ohm is a safe 5V starter range.",
+        "code": "Use pinMode(pin, OUTPUT) and digitalWrite/analogWrite on a GPIO that is safe for the selected board.",
+        "checks": "Never connect an LED directly across a supply or GPIO without a current-limiting resistor.",
+    },
+    {
+        "title": "RGB LED",
+        "keywords": ("rgb led", "led_rgb", "common cathode", "common anode"),
+        "summary": "An RGB LED contains red, green, and blue LED dies in one package.",
+        "wiring": "Each color channel needs its own series resistor. Common cathode goes to GND; common anode goes to the positive rail and the GPIOs sink current.",
+        "code": "Use three PWM-capable pins for smooth color mixing.",
+        "checks": "Check common-anode/common-cathode orientation before deciding whether HIGH or LOW turns a channel on.",
+    },
+    {
+        "title": "NeoPixel / WS2812B",
+        "keywords": ("neopixel", "ws2812", "ws2812b", "led_neopixel", "addressable led"),
+        "summary": "A NeoPixel is an addressable RGB LED with a one-wire timing protocol.",
+        "wiring": "Connect VCC, GND, and DIN to one GPIO. For 5V strips from a 3.3V board, add a logic-level shifter and a large bulk capacitor across the LED supply.",
+        "code": "Use an Adafruit_NeoPixel or FastLED style library and keep the data pin constant aligned with the canvas wire.",
+        "checks": "Large LED strips need an external 5V supply; do not power them from a GPIO or weak board regulator.",
+    },
+    {
+        "title": "Resistor",
+        "keywords": ("resistor", "resistance", "ohm", "pullup", "pull-up", "pulldown", "pull-down"),
+        "summary": "A resistor limits current, forms voltage dividers, and creates pull-up or pull-down bias paths.",
+        "wiring": "Use series placement for LEDs and current limiting; use a divider pair when a sensor output must be reduced for a lower-voltage GPIO.",
+        "code": "No library is required, but code assumptions should match the electrical use, such as INPUT_PULLUP for a button to GND.",
+        "checks": "Check both resistance and power: P = I^2 * R or P = V * I.",
+    },
+    {
+        "title": "Capacitor",
+        "keywords": ("capacitor", "capacitance", "decoupling", "ceramic capacitor", "electrolytic capacitor"),
+        "summary": "A capacitor stores charge and filters supply noise or timing signals.",
+        "wiring": "Place 100 nF ceramic capacitors close to IC power pins; add larger electrolytic capacitors near motors, relays, servos, and LED strips.",
+        "code": "No firmware driver is needed.",
+        "checks": "Electrolytic capacitors are polarized; match voltage rating and polarity before simulation or hardware build.",
+    },
+    {
+        "title": "Diode / Flyback Diode",
+        "keywords": ("diode", "flyback", "1n4007", "rectifier"),
+        "summary": "A diode conducts mainly one way and is often used for polarity protection or inductive kickback suppression.",
+        "wiring": "For relay coils and DC motors, place the flyback diode across the inductive load, reverse-biased during normal operation.",
+        "code": "No firmware driver is needed.",
+        "checks": "Without flyback protection, relay and motor coils can damage transistors or MCU pins.",
+    },
+    {
+        "title": "Transistor / MOSFET Driver",
+        "keywords": ("transistor", "mosfet", "driver", "npn", "pnp", "logic level mosfet"),
+        "summary": "A transistor or MOSFET lets a GPIO control a higher-current load without sourcing the load current itself.",
+        "wiring": "Use a base/gate resistor, common ground, and a flyback diode for inductive loads. Put the load current through the transistor path, not the GPIO.",
+        "code": "Drive the base/gate pin with digitalWrite or PWM depending on the load.",
+        "checks": "Choose a logic-level MOSFET for 3.3V boards and check current, heat, and gate threshold.",
+    },
+    {
+        "title": "Potentiometer",
+        "keywords": ("potentiometer", "pot", "variable resistor"),
+        "summary": "A potentiometer is an adjustable voltage divider.",
+        "wiring": "Connect the two outer pins to power and GND, then connect the wiper to an analog input.",
+        "code": "Use analogRead on the wiper pin and map the ADC value to the needed range.",
+        "checks": "Raspberry Pi SBC GPIO has no built-in analog input; use an external ADC for potentiometers on Pi 3/4/5.",
+    },
+    {
+        "title": "Push Button / Switch",
+        "keywords": ("button", "push button", "switch", "momentary", "tactile"),
+        "summary": "A button or switch changes a GPIO input between two logic states.",
+        "wiring": "The simplest MCU wiring is one side to GPIO and the other to GND, with firmware using INPUT_PULLUP.",
+        "code": "Use pinMode(pin, INPUT_PULLUP); pressed usually reads LOW in that wiring.",
+        "checks": "Avoid floating inputs; add a pull-up/pull-down or use the MCU internal pull-up.",
+    },
+    {
+        "title": "Buzzer",
+        "keywords": ("buzzer", "piezo", "speaker"),
+        "summary": "A buzzer converts an electrical signal into sound. Active buzzers only need on/off; passive buzzers need a tone frequency.",
+        "wiring": "Connect positive to a GPIO or driver and negative to GND. Use a transistor driver if the current is more than the GPIO budget.",
+        "code": "Use digitalWrite for active buzzers or tone(pin, frequency) for passive buzzers on supported boards.",
+        "checks": "Check current draw and board support for tone/PWM on the selected pin.",
+    },
+    {
+        "title": "DHT11 / DHT22",
+        "keywords": ("dht", "dht11", "dht22", "temperature humidity", "sensor_dht11", "sensor_dht22"),
+        "summary": "DHT sensors provide digital temperature and humidity over a single data line.",
+        "wiring": "Connect VCC, GND, and DATA to a digital GPIO. Add a 4.7 kOhm to 10 kOhm pull-up from DATA to VCC unless the module already has one.",
+        "code": "Use a DHT library and match DHT11 versus DHT22 in the type constant.",
+        "checks": "Do not poll too quickly; DHT sensors need slow sampling intervals.",
+    },
+    {
+        "title": "HC-SR04 Ultrasonic Sensor",
+        "keywords": ("ultrasonic", "hc-sr04", "distance sensor", "sensor_ultrasonic"),
+        "summary": "The HC-SR04 measures distance by timing an ultrasonic echo pulse.",
+        "wiring": "Connect VCC, GND, TRIG to an output GPIO, and ECHO to an input GPIO. On 3.3V boards, level-shift or divide the 5V ECHO signal.",
+        "code": "Pulse TRIG, measure ECHO pulse width, then convert time to distance.",
+        "checks": "ECHO is the dangerous pin for Pi/ESP32/Pico if the module is powered at 5V.",
+    },
+    {
+        "title": "PIR Motion Sensor",
+        "keywords": ("pir", "motion sensor", "sensor_pir"),
+        "summary": "A PIR sensor outputs a digital signal when it detects infrared motion changes.",
+        "wiring": "Connect VCC, GND, and OUT to a digital input. Most modules work from 5V, but check whether OUT is 3.3V-safe for the selected board.",
+        "code": "Use digitalRead on OUT, usually with simple debounce or delay logic.",
+        "checks": "PIR modules need a warm-up time before readings are stable.",
+    },
+    {
+        "title": "LDR / Photoresistor",
+        "keywords": ("ldr", "photoresistor", "light sensor", "sensor_ldr"),
+        "summary": "An LDR changes resistance with light level.",
+        "wiring": "Use it with a fixed resistor as a voltage divider; connect the divider midpoint to an analog input.",
+        "code": "Use analogRead and calibrate thresholds for your lighting.",
+        "checks": "Pi SBC boards need an external ADC because their GPIO pins are digital only.",
+    },
+    {
+        "title": "MPU6050 / IMU",
+        "keywords": ("imu", "mpu6050", "accelerometer", "gyro", "gyroscope", "sensor_imu"),
+        "summary": "An IMU measures acceleration and rotation, commonly over I2C.",
+        "wiring": "Connect VCC, GND, SDA to {sda}, and SCL to {scl} for the active board.",
+        "code": "Use Wire.h plus an MPU6050/Adafruit sensor library, and confirm the I2C address.",
+        "checks": "Keep I2C pull-ups to the board logic voltage, not a higher sensor supply.",
+    },
+    {
+        "title": "I2C LCD / OLED Display",
+        "keywords": ("lcd", "oled", "display_lcd_i2c", "display_oled", "ssd1306", "i2c display"),
+        "summary": "I2C displays use two shared signal lines, SDA and SCL, plus power and ground.",
+        "wiring": "Connect VCC, GND, SDA to {sda}, and SCL to {scl} for the active board.",
+        "code": "Use LiquidCrystal_I2C for character LCDs or an SSD1306 display library for OLED modules.",
+        "checks": "Check I2C address conflicts and make sure pull-ups go to the board logic voltage.",
+    },
+    {
+        "title": "7-Segment Display",
+        "keywords": ("7-segment", "seven segment", "display_7seg"),
+        "summary": "A 7-segment display is a set of LEDs arranged as numeric segments.",
+        "wiring": "Each segment needs current limiting. Use common cathode/common anode wiring correctly, or use a driver IC for cleaner projects.",
+        "code": "Drive segment pins directly for one digit, or use a library/driver for multiplexed displays.",
+        "checks": "A display can exceed GPIO current limits if many segments are lit without resistors.",
+    },
+    {
+        "title": "Relay Module",
+        "keywords": ("relay", "relay_single", "relay_2ch", "relay_4ch"),
+        "summary": "A relay lets a low-voltage control signal switch an isolated higher-power circuit.",
+        "wiring": "Connect VCC, GND, and IN to a GPIO. Wire the load through COM and NO/NC according to whether it should be normally off or normally on.",
+        "code": "Use digitalWrite on the IN pin; many modules are active-low.",
+        "checks": "Keep mains/high-voltage wiring physically separate and do not simulate it as if it were a safe GPIO load.",
+    },
+    {
+        "title": "DC Motor",
+        "keywords": ("dc motor", "motor_dc", "motor"),
+        "summary": "A DC motor is an inductive high-current load.",
+        "wiring": "Use a motor driver, MOSFET, or H-bridge with an external supply, shared ground, and flyback protection.",
+        "code": "Use PWM through the driver input for speed control and direction pins for H-bridge modules.",
+        "checks": "Never connect a motor directly to an MCU GPIO.",
+    },
+    {
+        "title": "Servo Motor",
+        "keywords": ("servo", "servo motor", "sg90", "motor_servo"),
+        "summary": "A hobby servo uses a power pair and a timing signal to move to an angle.",
+        "wiring": "Connect signal to a PWM/timer-capable GPIO, VCC to a suitable 5V/6V supply, and GND to common ground.",
+        "code": "Use a Servo library and write angles or pulse widths.",
+        "checks": "Servos can brown out boards; use an external supply sized for stall current.",
+    },
+    {
+        "title": "Stepper Motor",
+        "keywords": ("stepper", "28byj", "motor_stepper", "stepper motor"),
+        "summary": "A stepper moves in controlled increments by energizing coils in sequence.",
+        "wiring": "Use a driver board such as ULN2003, A4988, or DRV8825. The MCU should drive logic inputs, not motor coils directly.",
+        "code": "Use Stepper or AccelStepper style control with the driver input pins.",
+        "checks": "Match coil wiring, driver current, and external supply voltage.",
+    },
+    {
+        "title": "Breadboard",
+        "keywords": ("breadboard", "solderless breadboard"),
+        "summary": "A breadboard is a temporary wiring matrix with connected rows and power rails.",
+        "wiring": "Rows are internally connected in groups; power rails often need jumpers across breaks.",
+        "code": "No firmware driver is needed.",
+        "checks": "Many wiring mistakes come from assuming all rail segments are continuous.",
+    },
+    {
+        "title": "Ammeter",
+        "keywords": ("ammeter", "current meter"),
+        "summary": "An ammeter measures branch current and must be placed in series with the load.",
+        "wiring": "Break the branch and insert IN/OUT in the current path.",
+        "code": "No firmware driver is needed for the simulated instrument.",
+        "checks": "Never place an ammeter directly across power and ground.",
+    },
+    {
+        "title": "Oscilloscope",
+        "keywords": ("oscilloscope", "scope", "waveform"),
+        "summary": "An oscilloscope shows voltage versus time at one or more nodes.",
+        "wiring": "Connect CH1/CH2 to signal nodes and scope GND to circuit ground.",
+        "code": "No firmware driver is needed for the instrument, but firmware timing affects the waveform.",
+        "checks": "A floating scope ground gives misleading readings.",
+    },
+    {
+        "title": "7805 Voltage Regulator",
+        "keywords": ("7805", "voltage regulator", "regulator"),
+        "summary": "A 7805-style linear regulator makes a 5V rail from a higher input voltage.",
+        "wiring": "Connect VIN, GND, and VOUT with input/output capacitors close to the regulator.",
+        "code": "No firmware driver is needed.",
+        "checks": "Linear regulators dissipate heat: P = (VIN - VOUT) * current.",
+    },
+]
+
+BOARD_KNOWLEDGE: Dict[str, Dict[str, str]] = {
+    "ARDUINO_UNO": {
+        "name": "Arduino Uno R3",
+        "processor": "ATmega328P AVR at 16 MHz",
+        "logic": "5V GPIO logic",
+        "pins": "14 digital pins, 6 analog inputs, PWM on D3/D5/D6/D9/D10/D11, I2C on A4/A5",
+        "note": "Good for beginner 5V circuits, but each GPIO still needs current limiting.",
+    },
+    "ARDUINO_UNO_R4": {
+        "name": "Arduino Uno R4",
+        "processor": "Renesas RA4M1 Arm Cortex-M4 at 48 MHz",
+        "logic": "5V board I/O with modern peripherals",
+        "pins": "Uno-style headers, analog inputs, PWM pins, I2C/SPI/UART",
+        "note": "Keep shield wiring compatible with the Uno footprint while checking library support.",
+    },
+    "ARDUINO_NANO": {
+        "name": "Arduino Nano",
+        "processor": "ATmega328P AVR at 16 MHz",
+        "logic": "5V GPIO logic",
+        "pins": "D0-D13, A0-A7, PWM on D3/D5/D6/D9/D10/D11, I2C on A4/A5",
+        "note": "Breadboard-friendly Uno-class board.",
+    },
+    "ARDUINO_MEGA": {
+        "name": "Arduino Mega 2560",
+        "processor": "ATmega2560 AVR at 16 MHz",
+        "logic": "5V GPIO logic",
+        "pins": "54 digital pins, 16 analog inputs, hardware serial ports, I2C on D20/D21",
+        "note": "Use it when the project needs many pins.",
+    },
+    "ESP32": {
+        "name": "ESP32 DevKit",
+        "processor": "dual-core Tensilica Xtensa LX6 class MCU, commonly up to 240 MHz",
+        "logic": "3.3V GPIO only",
+        "pins": "GPIO with ADC, PWM, I2C, SPI, UART; default I2C is usually SDA D21 and SCL D22",
+        "note": "Avoid boot strapping pins and remember ADC2 conflicts with Wi-Fi on classic ESP32.",
+    },
+    "ESP8266": {
+        "name": "ESP8266 NodeMCU",
+        "processor": "Tensilica L106 32-bit MCU at 80 MHz",
+        "logic": "3.3V GPIO only",
+        "pins": "Limited GPIO, one ADC input, I2C commonly SDA D2 and SCL D1",
+        "note": "Boot pins D3/D4/D8 need safe reset levels.",
+    },
+    "RASPBERRY_PI_PICO": {
+        "name": "Raspberry Pi Pico",
+        "processor": "RP2040 dual-core Arm Cortex-M0+ at 133 MHz",
+        "logic": "3.3V GPIO only",
+        "pins": "26 usable GPIO, PWM on most pins, ADC on GP26-GP28, I2C/SPI/UART on flexible pins",
+        "note": "It is a microcontroller board, not a Linux Raspberry Pi SBC.",
+    },
+    "RASPBERRY_PI_PICO_2": {
+        "name": "Raspberry Pi Pico 2",
+        "processor": "RP2350 microcontroller, typically 150 MHz class",
+        "logic": "3.3V GPIO only",
+        "pins": "Pico-style GPIO with ADC and flexible serial buses",
+        "note": "Treat GPIO as 3.3V-only and verify library/core support for RP2350.",
+    },
+    "RASPBERRY_PI_ZERO_2_W": {
+        "name": "Raspberry Pi Zero 2 W",
+        "processor": "Broadcom BCM2710A1 quad-core Arm Cortex-A53 at 1 GHz",
+        "logic": "3.3V GPIO only",
+        "pins": "40-pin header with GPIO2/GPIO3 I2C, GPIO10/9/11 SPI, GPIO14/15 UART",
+        "note": "It runs Linux; use GPIO libraries and add an external ADC for analog sensors.",
+    },
+    "RASPBERRY_PI_3": {
+        "name": "Raspberry Pi 3",
+        "processor": "Broadcom BCM2837 quad-core Arm Cortex-A53 class SoC",
+        "logic": "3.3V GPIO only",
+        "pins": "40-pin header with I2C, SPI, UART, PWM-capable GPIO",
+        "note": "No analog inputs; use an ADC for LDRs, potentiometers, and analog sensors.",
+    },
+    "RASPBERRY_PI_4": {
+        "name": "Raspberry Pi 4",
+        "processor": "Broadcom BCM2711 quad-core Arm Cortex-A72 class SoC",
+        "logic": "3.3V GPIO only",
+        "pins": "40-pin header with GPIO2/GPIO3 I2C, GPIO10/9/11 SPI, GPIO14/15 UART, PWM GPIO12/13/18/19",
+        "note": "Never feed 5V into GPIO. Use level shifting for 5V sensors such as HC-SR04 echo.",
+    },
+    "RASPBERRY_PI_5": {
+        "name": "Raspberry Pi 5",
+        "processor": "Broadcom BCM2712 quad-core Arm Cortex-A76 at 2.4 GHz",
+        "logic": "3.3V GPIO only",
+        "pins": "40-pin header with I2C, SPI, UART, and PWM-capable GPIO",
+        "note": "It is a Linux SBC; use external ADC hardware for analog readings.",
+    },
+    "RASPBERRY_PI_COMPUTE_MODULE": {
+        "name": "Raspberry Pi Compute Module",
+        "processor": "varies by generation; CM4 uses BCM2711 and CM5 uses BCM2712 class silicon",
+        "logic": "3.3V GPIO only",
+        "pins": "I/O depends on the carrier board, not only the module.",
+        "note": "Always check the carrier board pinout before wiring.",
+    },
+    "STM32_BLUE_PILL": {
+        "name": "STM32 Blue Pill",
+        "processor": "STM32F103C8 Arm Cortex-M3 at 72 MHz",
+        "logic": "3.3V GPIO, many pins are 5V tolerant only in specific modes",
+        "pins": "GPIO, ADC, timers/PWM, I2C/SPI/UART",
+        "note": "Check boot pins and voltage tolerance before connecting 5V modules.",
+    },
+    "STM32_BLACK_PILL": {
+        "name": "STM32 Black Pill",
+        "processor": "STM32F401/F411 Arm Cortex-M4 class MCU",
+        "logic": "3.3V GPIO",
+        "pins": "Compact GPIO, ADC, timers/PWM, I2C/SPI/UART",
+        "note": "Board variants differ, so verify the exact pinout.",
+    },
+    "TEENSY_4_0": {
+        "name": "Teensy 4.0",
+        "processor": "NXP i.MX RT1062 Arm Cortex-M7 at 600 MHz",
+        "logic": "3.3V GPIO only",
+        "pins": "High-speed GPIO, PWM, ADC, I2C/SPI/UART, USB",
+        "note": "Very fast MCU, but GPIO is not 5V tolerant.",
+    },
+    "TEENSY_4_1": {
+        "name": "Teensy 4.1",
+        "processor": "NXP i.MX RT1062 Arm Cortex-M7 at 600 MHz",
+        "logic": "3.3V GPIO only",
+        "pins": "Expanded Teensy 4.x I/O with Ethernet-capable pins",
+        "note": "Use external drivers for heavy loads despite the fast processor.",
+    },
+    "TEENSY_LC": {
+        "name": "Teensy LC",
+        "processor": "NXP MKL26Z64 Arm Cortex-M0+ at 48 MHz",
+        "logic": "3.3V GPIO",
+        "pins": "Compact GPIO, ADC, PWM, I2C/SPI/UART",
+        "note": "Good low-cost board, but with tighter memory/peripheral limits.",
+    },
+}
+
+BOARD_FAMILY_KNOWLEDGE: List[Tuple[Tuple[str, ...], Dict[str, str]]] = [
+    (("ARDUINO_GIGA", "ARDUINO_PORTENTA"), {
+        "name": "High-end Arduino STM32 board",
+        "processor": "STM32H747 dual-core Arm Cortex-M7/M4 class MCU",
+        "logic": "3.3V logic",
+        "pins": "advanced GPIO, ADC/DAC, I2C/SPI/UART, USB and wireless features by model",
+        "note": "Use board-specific pin maps because these are not simple Uno-class AVRs.",
+    }),
+    (("ARDUINO_DUE",), {
+        "name": "Arduino Due",
+        "processor": "ATSAM3X8E Arm Cortex-M3 at 84 MHz",
+        "logic": "3.3V GPIO only",
+        "pins": "54 digital I/O, analog inputs, DAC outputs, I2C/SPI/UART",
+        "note": "Do not connect 5V signals directly to Due GPIO.",
+    }),
+    (("ESP32_C3", "ESP32_C6", "ESP32_H2"), {
+        "name": "ESP32 RISC-V family board",
+        "processor": "Espressif RISC-V MCU, speed depends on exact variant",
+        "logic": "3.3V GPIO only",
+        "pins": "GPIO with I2C/SPI/UART/PWM and variant-specific ADC/radio features",
+        "note": "Check strapping pins and exact module pinout.",
+    }),
+    (("ESP32_",), BOARD_KNOWLEDGE["ESP32"]),
+    (("ESP8266_",), BOARD_KNOWLEDGE["ESP8266"]),
+    (("RASPBERRY_PI_PICO_W",), BOARD_KNOWLEDGE["RASPBERRY_PI_PICO"]),
+    (("RASPBERRY_PI_",), BOARD_KNOWLEDGE["RASPBERRY_PI_4"]),
+    (("SEEED_XIAO",), {
+        "name": "Seeed XIAO board",
+        "processor": "depends on variant: SAMD21, RP2040, ESP32, or nRF52840",
+        "logic": "mostly 3.3V GPIO",
+        "pins": "small GPIO set with I2C/SPI/UART and variant-specific analog/PWM",
+        "note": "Use the exact XIAO variant before assigning pins.",
+    }),
+    (("ADAFRUIT_FEATHER",), {
+        "name": "Adafruit Feather board",
+        "processor": "depends on Feather variant",
+        "logic": "usually 3.3V GPIO",
+        "pins": "Feather-style GPIO with I2C/SPI/UART and battery support on many boards",
+        "note": "Check the exact Feather processor and pinout.",
+    }),
+    (("SPARKFUN_THING_PLUS",), {
+        "name": "SparkFun Thing Plus board",
+        "processor": "depends on variant, commonly ESP32, RP2040, or Artemis",
+        "logic": "usually 3.3V GPIO",
+        "pins": "Thing Plus/Feather-style GPIO with Qwiic/I2C support on many boards",
+        "note": "Check exact variant before choosing analog/PWM pins.",
+    }),
+    (("ATMEL_AVR", "ARDUINO_LEONARDO", "ARDUINO_MICRO"), {
+        "name": "AVR Arduino-class board",
+        "processor": "8-bit AVR MCU, commonly ATmega328P or ATmega32U4",
+        "logic": "usually 5V GPIO",
+        "pins": "digital GPIO, PWM timers, ADC inputs, I2C/SPI/UART",
+        "note": "GPIO current is limited even on 5V boards.",
+    }),
+]
 
 
 def safe_lower(value: Any) -> str:
@@ -384,6 +886,57 @@ def is_i2c_display(component: Dict[str, Any]) -> bool:
     kind = component_type(component)
     label = component_label(component)
     return "I2C" in kind or "OLED" in kind or "LCD_I2C" in kind or "lcd i2c" in label
+
+
+def is_ultrasonic(component: Dict[str, Any]) -> bool:
+    label = component_label(component)
+    return "ULTRASONIC" in component_type(component) or "hc-sr04" in label
+
+
+def is_pir(component: Dict[str, Any]) -> bool:
+    return "PIR" in component_type(component) or "pir" in component_label(component)
+
+
+def is_ldr(component: Dict[str, Any]) -> bool:
+    label = component_label(component)
+    return "LDR" in component_type(component) or "photoresistor" in label or "light dependent" in label
+
+
+def is_imu(component: Dict[str, Any]) -> bool:
+    label = component_label(component)
+    kind = component_type(component)
+    return "IMU" in kind or "MPU6050" in kind or "accelerometer" in label or "gyro" in label
+
+
+def is_neopixel(component: Dict[str, Any]) -> bool:
+    label = component_label(component)
+    kind = component_type(component)
+    return "NEOPIXEL" in kind or "WS2812" in kind or "ws2812" in label
+
+
+def is_buzzer(component: Dict[str, Any]) -> bool:
+    return "BUZZER" in component_type(component) or "buzzer" in component_label(component)
+
+
+def is_stepper(component: Dict[str, Any]) -> bool:
+    return "STEPPER" in component_type(component) or "stepper" in component_label(component)
+
+
+def is_seven_segment(component: Dict[str, Any]) -> bool:
+    kind = component_type(component)
+    label = component_label(component)
+    return "7SEG" in kind or "7-segment" in label or "seven segment" in label
+
+
+def is_instrument(component: Dict[str, Any]) -> bool:
+    kind = component_type(component)
+    return "AMMETER" in kind or "OSCILLOSCOPE" in kind or "MULTIMETER" in kind
+
+
+def is_voltage_regulator(component: Dict[str, Any]) -> bool:
+    kind = component_type(component)
+    label = component_label(component)
+    return "REGULATOR" in kind or "7805" in kind or "voltage regulator" in label
 
 
 def pins_for(component: Dict[str, Any]) -> List[Dict[str, Any]]:
@@ -503,6 +1056,8 @@ def expected_i2c_pins(board_type: str) -> Tuple[str, str]:
         return "d21", "d22"
     if board.startswith("ESP8266"):
         return "d2", "d1"
+    if board.startswith("RASPBERRY_PI") and "PICO" not in board:
+        return "d2", "d3"
     if "PICO" in board or "XIAO" in board:
         return "d4", "d5"
     return "a4", "a5"
@@ -515,6 +1070,10 @@ def default_signal_pin(board_type: str, used: Set[str], preferred: Optional[str]
     board = (board_type or "").upper()
     if board.startswith("ESP32"):
         candidates.extend(["d21", "d22", "d23", "d19", "d18", "d5", "d4", "d2", "d15"])
+    elif board.startswith("RASPBERRY_PI") and "PICO" not in board:
+        candidates.extend(["d17", "d27", "d22", "d23", "d24", "d25", "d5", "d6", "d12", "d13", "d18", "d19", "d20", "d21"])
+    elif "PICO" in board or "RP2040" in board or "RP2350" in board:
+        candidates.extend([f"d{index}" for index in range(0, 23)])
     else:
         candidates.extend(["d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "d10", "d11", "d12", "d13"])
     for candidate in candidates:
@@ -524,14 +1083,30 @@ def default_signal_pin(board_type: str, used: Set[str], preferred: Optional[str]
     return candidates[-1]
 
 
+def default_analog_pin(board_type: str, used: Set[str], preferred: Optional[str] = "a0") -> Optional[str]:
+    profile = board_rule_profile(board_type)
+    candidates: List[str] = []
+    if preferred:
+        candidates.append(preferred)
+    candidates.extend(sorted(str(pin) for pin in profile.get("adcPins", set())))
+    for candidate in candidates:
+        normalized = normalize_pin(candidate, "analog")
+        if normalized and normalized not in used:
+            used.add(normalized)
+            return candidate
+    return candidates[-1] if candidates else None
+
+
 def board_rule_profile(board_type: str) -> Dict[str, Any]:
     board = (board_type or "ARDUINO_UNO").upper()
     if board in BOARD_RULES:
         return BOARD_RULES[board]
     if board.startswith("ESP32"):
         return BOARD_RULES["ESP32"]
-    if "PICO" in board or "RP2040" in board:
+    if "PICO" in board or "RP2040" in board or "RP2350" in board:
         return BOARD_RULES["RASPBERRY_PI_PICO"]
+    if board.startswith("RASPBERRY_PI"):
+        return BOARD_RULES["RASPBERRY_PI_SBC"]
     if board.startswith("STM32"):
         return BOARD_RULES["STM32_BLUE_PILL"]
     if "MEGA" in board:
@@ -1889,12 +2464,12 @@ def analyze_active_circuit(
 
 def mcu_power_pin(mcu: Optional[Dict[str, Any]], board_type: str) -> str:
     if mcu:
-        if (board_type or "").upper().startswith(("ESP", "RASPBERRY_PI_PICO", "STM32", "TEENSY")):
+        if (board_type or "").upper().startswith(("ESP", "RASPBERRY_PI", "STM32", "TEENSY", "SEEED_XIAO", "ADAFRUIT_FEATHER", "SPARKFUN_THING_PLUS")):
             found = find_role_pin(mcu, ["3v3", "3.3v"], None)
             if found:
                 return found
         return find_role_pin(mcu, ["5v", "vbus", "vin", "3v3", "3.3v"], "5v") or "5v"
-    return "3v3" if (board_type or "").upper().startswith(("ESP", "RASPBERRY_PI_PICO")) else "5v"
+    return "3v3" if (board_type or "").upper().startswith(("ESP", "RASPBERRY_PI", "STM32", "TEENSY")) else "5v"
 
 
 def mcu_ground_pin(mcu: Optional[Dict[str, Any]]) -> str:
@@ -2079,7 +2654,10 @@ def generate_wiring_suggestions(payload: ValidateRequest) -> List[Dict[str, str]
         if gnd:
             add_if_missing(component, gnd, mcu_gnd, "#555555", f"Connect {component.get('name', kind)} ground to MCU GND")
 
-        if is_led(component):
+        if is_neopixel(component):
+            data_pin = find_role_pin(component, ["din", "data", "sig", "in"], "din")
+            add_if_missing(component, data_pin, default_signal_pin(board_type, used, "d6"), "#22c55e", "NeoPixel data input")
+        elif is_led(component):
             anode = find_role_pin(component, ["anode", "a", "+", "red", "green", "blue"], "anode")
             cathode = find_role_pin(component, ["cathode", "k", "gnd", "-", "neg"], "cathode")
             add_if_missing(component, anode, default_signal_pin(board_type, used, "d9"), "#3b82f6", "Drive LED through a 220 Ohm series resistor")
@@ -2087,7 +2665,13 @@ def generate_wiring_suggestions(payload: ValidateRequest) -> List[Dict[str, str]
         elif is_dht(component):
             data_pin = find_role_pin(component, ["data", "dat", "out", "sig"], "data")
             add_if_missing(component, data_pin, default_signal_pin(board_type, used, "d2"), "#22c55e", "DHT data signal")
-        elif is_i2c_display(component):
+        elif is_ultrasonic(component):
+            add_if_missing(component, find_role_pin(component, ["trig"], "trig"), default_signal_pin(board_type, used, "d5"), "#22c55e", "Ultrasonic trigger output")
+            add_if_missing(component, find_role_pin(component, ["echo"], "echo"), default_signal_pin(board_type, used, "d6"), "#3b82f6", "Ultrasonic echo input; level-shift if the module is powered from 5V")
+        elif is_pir(component):
+            out_pin = find_role_pin(component, ["out", "sig", "signal"], "out")
+            add_if_missing(component, out_pin, default_signal_pin(board_type, used, "d2"), "#22c55e", "PIR digital motion output")
+        elif is_i2c_display(component) or is_imu(component):
             add_if_missing(component, find_role_pin(component, ["sda"], "sda"), sda_pin, "#a855f7", "I2C SDA")
             add_if_missing(component, find_role_pin(component, ["scl"], "scl"), scl_pin, "#a855f7", "I2C SCL")
         elif is_servo(component):
@@ -2096,9 +2680,24 @@ def generate_wiring_suggestions(payload: ValidateRequest) -> List[Dict[str, str]
         elif is_relay(component):
             control = find_role_pin(component, ["in1", "in", "coil1", "sig"], "in")
             add_if_missing(component, control, default_signal_pin(board_type, used, "d7"), "#3b82f6", "Relay control signal")
+        elif is_stepper(component):
+            for role, preferred in (("in1", "d8"), ("in2", "d9"), ("in3", "d10"), ("in4", "d11")):
+                add_if_missing(component, find_role_pin(component, [role], role), default_signal_pin(board_type, used, preferred), "#3b82f6", f"Stepper driver {role.upper()} signal")
         elif is_motor(component):
             # Bare motors should not be wired directly to GPIO. The validator explains this.
             continue
+        elif is_buzzer(component):
+            pos = find_role_pin(component, ["pos", "+", "vcc", "signal"], "pos")
+            neg = find_role_pin(component, ["neg", "-", "gnd"], "neg")
+            add_if_missing(component, pos, default_signal_pin(board_type, used, "d8"), "#f59e0b", "Buzzer control signal")
+            add_if_missing(component, neg, mcu_gnd, "#555555", "Buzzer return to GND")
+        elif "POTENTIOMETER" in kind:
+            wiper = find_role_pin(component, ["wiper", "sig", "out"], "wiper")
+            analog_pin = default_analog_pin(board_type, used, "a0")
+            if analog_pin:
+                add_if_missing(component, wiper, analog_pin, "#22c55e", "Potentiometer wiper to analog input")
+            add_if_missing(component, find_role_pin(component, ["p1", "pin1", "left"], "p1"), mcu_gnd, "#555555", "Potentiometer low side")
+            add_if_missing(component, find_role_pin(component, ["p2", "pin2", "right"], "p2"), mcu_power, "#ef4444", "Potentiometer high side")
         elif "BUTTON" in kind or "PUSH" in kind:
             sig = find_role_pin(component, ["p1", "a", "1"], "p1")
             ret = find_role_pin(component, ["p2", "b", "2"], "p2")
@@ -2615,21 +3214,232 @@ def context_from_chat(payload: ChatRequest) -> Dict[str, Any]:
     return context
 
 
+def keyword_matches(lower: str, keywords: Any) -> bool:
+    for keyword in keywords:
+        text = str(keyword).lower().strip()
+        if not text:
+            continue
+        if re.search(r"[^\w]", text):
+            if text in lower:
+                return True
+            continue
+        if re.search(rf"\b{re.escape(text)}s?\b", lower):
+            return True
+    return False
+
+
+def meaningful_tokens(text: str) -> Set[str]:
+    tokens = set(re.findall(r"[a-zA-Z0-9_+.#-]+", text.lower()))
+    return {token for token in tokens if token not in ELECTRONICS_STOPWORDS and len(token) > 1}
+
+
+def is_domain_question(message: str) -> bool:
+    lower = message.lower()
+    if keyword_matches(lower, DOMAIN_TERMS):
+        return True
+    component_terms: Set[str] = set()
+    for item in COMPONENT_KNOWLEDGE:
+        component_terms.update(str(keyword).lower() for keyword in item.get("keywords", ()))
+    if keyword_matches(lower, component_terms):
+        return True
+    board_terms = set(BOARD_KNOWLEDGE.keys())
+    board_terms.update(key.replace("_", " ").lower() for key in BOARD_KNOWLEDGE.keys())
+    return keyword_matches(lower, board_terms)
+
+
+def active_board_type_from_context(context: Dict[str, Any]) -> str:
+    board_type = str(context.get("boardType") or "ARDUINO_UNO")
+    components = context.get("components") or []
+    selected_id = str(context.get("selectedNodeId") or "")
+    if selected_id:
+        for component in components:
+            if str(component.get("id")) == selected_id and is_mcu(component):
+                return component_type(component)
+    mcu = find_mcu(components, board_type)
+    if mcu:
+        return component_type(mcu)
+    return board_type
+
+
+def board_info_for_type(board_type: str) -> Dict[str, str]:
+    board = (board_type or "ARDUINO_UNO").upper()
+    if board in BOARD_KNOWLEDGE:
+        return BOARD_KNOWLEDGE[board]
+    for prefixes, info in BOARD_FAMILY_KNOWLEDGE:
+        if board.startswith(prefixes):
+            return info
+    return {
+        "name": board.replace("_", " ").title(),
+        "processor": "board-specific MCU or SoC",
+        "logic": f"{board_rule_profile(board).get('logicVoltage', 3.3)}V logic profile",
+        "pins": "GPIO, power, ground, and serial bus pins depend on the exact board package.",
+        "note": "Use the exact board pinout before wiring sensors or high-current loads.",
+    }
+
+
+def pi_family_overview() -> str:
+    return "\n".join(
+        [
+            "Raspberry Pi in VoltForge has two useful meanings:",
+            "- Raspberry Pi Pico / Pico W / Pico 2: microcontroller boards for firmware-style projects. They use RP2040/RP2350 class processors and 3.3V GPIO.",
+            "- Raspberry Pi 3/4/5/Zero/Compute Module: Linux single-board computers with a 40-pin header. Their GPIO is 3.3V-only and they do not have built-in analog inputs.",
+            "For sensors: use GPIO2/GPIO3 for I2C, GPIO10/GPIO9/GPIO11 for SPI, GPIO14/GPIO15 for UART, and add level shifting for any 5V signal.",
+        ]
+    )
+
+
+def board_answer(message: str, context: Dict[str, Any]) -> Optional[str]:
+    lower = message.lower()
+    board_type = active_board_type_from_context(context)
+    mentions_pi = bool(re.search(r"\bpi\b", lower) or "raspberry" in lower)
+    asks_board = keyword_matches(
+        lower,
+        (
+            "board",
+            "processor",
+            "cpu",
+            "mcu",
+            "chip",
+            "soc",
+            "pinout",
+            "gpio",
+            "raspberry",
+            "pi",
+            "pico",
+            "esp32",
+            "arduino",
+            "stm32",
+            "teensy",
+        ),
+    )
+    if not asks_board:
+        return None
+
+    if mentions_pi and "pico" not in lower and not board_type.upper().startswith("RASPBERRY_PI"):
+        return pi_family_overview()
+
+    if "pico" in lower and not board_type.upper().startswith("RASPBERRY_PI_PICO"):
+        board_type = "RASPBERRY_PI_PICO"
+    elif mentions_pi and board_type.upper().startswith("RASPBERRY_PI_PICO"):
+        board_type = active_board_type_from_context(context)
+    elif mentions_pi and not board_type.upper().startswith("RASPBERRY_PI"):
+        board_type = "RASPBERRY_PI_4"
+
+    info = board_info_for_type(board_type)
+    sda, scl = expected_i2c_pins(board_type)
+    return "\n".join(
+        [
+            f"{info['name']} uses {info['processor']}.",
+            f"- Logic: {info['logic']}.",
+            f"- Pins: {info['pins']}.",
+            f"- I2C default in VoltForge: SDA {display_pin(sda)}, SCL {display_pin(scl)}.",
+            f"- Validation note: {info['note']}",
+        ]
+    )
+
+
+def format_component_knowledge(item: Dict[str, Any], board_type: str) -> str:
+    sda, scl = expected_i2c_pins(board_type)
+    wiring = str(item["wiring"]).format(
+        board=board_type,
+        sda=display_pin(sda),
+        scl=display_pin(scl),
+    )
+    return "\n".join(
+        [
+            f"{item['title']}: {item['summary']}",
+            f"- Wiring: {wiring}",
+            f"- Code: {item['code']}",
+            f"- Validation: {item['checks']}",
+        ]
+    )
+
+
+def component_knowledge_for_text(text: str) -> Optional[Dict[str, Any]]:
+    lower = text.lower()
+    for item in COMPONENT_KNOWLEDGE:
+        if keyword_matches(lower, item.get("keywords", ())):
+            return item
+    return None
+
+
+def component_knowledge_for_component(component: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    label = component_label(component)
+    kind = component_type(component).lower()
+    return component_knowledge_for_text(f"{label} {kind}")
+
+
+def answer_supported_components() -> str:
+    names = [
+        "boards",
+        "LED/RGB/NeoPixel",
+        "resistor/capacitor/diode/transistor/MOSFET",
+        "button/potentiometer/breadboard/buzzer",
+        "DHT, ultrasonic, PIR, LDR, MPU6050/IMU",
+        "I2C LCD/OLED and 7-segment displays",
+        "relay, DC motor, servo, stepper",
+        "ammeter, multimeter, oscilloscope, 7805 regulator",
+    ]
+    return "I have local circuit knowledge for: " + "; ".join(names) + ". Ask for wiring, pinout, code, or safety checks for any of these."
+
+
+def answer_component_knowledge(message: str, context: Dict[str, Any]) -> Optional[str]:
+    lower = message.lower()
+    board_type = active_board_type_from_context(context)
+
+    if keyword_matches(lower, ("what components", "which components", "supported components", "component library", "all components")):
+        return answer_supported_components()
+
+    direct_item = component_knowledge_for_text(message)
+    asks_processor = keyword_matches(lower, ("processor", "cpu", "mcu", "chip", "soc"))
+    if direct_item and not asks_processor:
+        return format_component_knowledge(direct_item, board_type)
+
+    components = context.get("components") or []
+    selected_id = str(context.get("selectedNodeId") or "")
+    if selected_id and keyword_matches(lower, ("this", "selected", "model", "component", "how does this work", "processor")):
+        selected = next((component for component in components if str(component.get("id")) == selected_id), None)
+        if selected:
+            if is_mcu(selected):
+                return board_answer(f"processor {component_type(selected)}", {**context, "boardType": component_type(selected)})
+            item = component_knowledge_for_component(selected)
+            if item:
+                return format_component_knowledge(item, board_type)
+
+    board_specific = board_answer(message, context)
+    if board_specific:
+        return board_specific
+
+    for component in components:
+        label_text = f"{component.get('id', '')} {component.get('name', '')} {component.get('type', '')}".lower()
+        if keyword_matches(lower, meaningful_tokens(label_text)):
+            if is_mcu(component):
+                return board_answer(f"processor {component_type(component)}", {**context, "boardType": component_type(component)})
+            item = component_knowledge_for_component(component)
+            if item:
+                return format_component_knowledge(item, board_type)
+
+    if direct_item:
+        return format_component_knowledge(direct_item, board_type)
+
+    return None
+
+
 def is_out_of_domain(message: str) -> bool:
     lower = message.lower()
-    if any(term in lower for term in DOMAIN_TERMS):
+    if is_domain_question(message):
         return False
     return any(term in lower for term in OUT_OF_DOMAIN_TERMS)
 
 
 def find_best_match(query: str) -> Optional[Dict[str, str]]:
-    query_tokens = set(re.findall(r"[a-zA-Z0-9_+.#]+", query.lower()))
+    query_tokens = meaningful_tokens(query)
     if not query_tokens:
         return None
     best_score = 0.0
     best_match: Optional[Dict[str, str]] = None
     for item in qa_dataset:
-        target_tokens = set(re.findall(r"[a-zA-Z0-9_+.#]+", item["question"].lower()))
+        target_tokens = meaningful_tokens(item["question"])
         if not target_tokens:
             continue
         score = len(query_tokens & target_tokens) / ((len(query_tokens) * len(target_tokens)) ** 0.5)
@@ -2646,7 +3456,7 @@ def search_web(query: str, limit: int = 2) -> List[Dict[str, str]]:
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
         }
-        encoded = urllib.parse.quote(f"{query} Arduino electronics documentation")
+        encoded = urllib.parse.quote(f"{query} electronics datasheet pinout wiring documentation")
         url = f"https://html.duckduckgo.com/html/?q={encoded}"
         response = requests.get(url, headers=headers, timeout=6)
         if response.status_code != 200:
@@ -2927,7 +3737,7 @@ def answer_with_circuit_context(message: str, analysis: Dict[str, Any]) -> Optio
             return answer
 
     lower = message.lower()
-    if any(term in lower for term in DOMAIN_TERMS) or any(word in lower for word in ("this", "my", "circuit", "component")):
+    if is_domain_question(message) or any(word in lower for word in ("this", "my", "circuit", "component")):
         lines = [
             f"I checked the active {analysis['boardType']} canvas: {len(analysis['components'])} components, "
             f"{len(analysis['graph']['wires'])} wires, {len(analysis['netlist']['nets'])} connected nets.",
@@ -2952,6 +3762,9 @@ def answer_with_circuit_context(message: str, analysis: Dict[str, Any]) -> Optio
 def answer_common_question(message: str, context: Dict[str, Any]) -> Optional[str]:
     lower = message.lower()
     board_type = context.get("boardType", "ARDUINO_UNO")
+    trained = answer_component_knowledge(message, context)
+    if trained:
+        return trained
     if "resistor" in lower and "led" in lower:
         return "Use a current-limiting resistor in series with the LED. For a 5V Arduino and a common red LED, 220 Ohm is a good default; 330 Ohm is also safe and dimmer."
     if "lcd" in lower and "i2c" in lower:
@@ -3098,7 +3911,7 @@ def chat(payload: ChatRequest) -> ChatResponse:
             code_text = code_match.group(1).strip() if code_match else None
         return ChatResponse(reply=answer, hasCode=has_code, generatedCode=code_text, confidence=0.82)
 
-    if any(term in lower for term in DOMAIN_TERMS):
+    if is_domain_question(message):
         results = search_web(message)
         if results:
             reply_lines = [
@@ -3355,7 +4168,7 @@ def _compute_chat_response(
             code_text = code_match.group(1).strip() if code_match else None
         return ChatResponse(reply=answer, hasCode=has_code, generatedCode=code_text, confidence=0.82)
 
-    if any(term in lower for term in DOMAIN_TERMS):
+    if is_domain_question(message):
         results = search_web(message)
         if results:
             reply_lines = [

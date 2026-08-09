@@ -1,35 +1,45 @@
-[Q] hi [A] Hello! I am your VoltForge AI assistant. I can help you validate your circuit wiring, write Arduino firmware, and search technical specifications.
-[Q] hello [A] Hi there! I'm here to review your microcontroller schematic and Arduino code. What would you like to build?
-[Q] who are you [A] I am VoltForge AI, a custom-trained local electronics assistant tailored to help with circuit schematics and firmware.
-[Q] what are you doing [A] I am scanning your active editor layout to verify safety scores, check pin connections, and check code syntax.
-[Q] what can you do [A] I can check for short circuits, suggest series resistors for LEDs, recommend motor driver chips, and write Arduino code.
-[Q] what is this [A] This is your VoltForge local electronics design workspace. You can place components on the canvas and write code.
-[Q] help [A] Ask me questions like 'is my circuit safe?', 'how do I connect an LED?', or 'generate code for a motor'.
-[Q] how does this work [A] Place components, connect wires, and click 'Start Validation' to run checks. You can also chat with me.
-[Q] is this circuit valid [A] Let me analyze. Check that power 5V is not shorted to GND, and make sure LEDs have series resistors.
-[Q] is this circuit safe [A] Please verify that your active canvas components are wired correctly. LEDs require 220 Ohm series resistors.
-[Q] check for errors [A] Checking. If you connect high current loads like DC motors directly to MCU pins, it will damage the chip.
-[Q] how do I wire a DC motor [A] To wire a DC motor, connect it to an L298N driver. Do not connect it directly to Arduino digital output pins.
-[Q] how to connect a servo [A] To wire a servo motor, connect VCC to 5V, GND to GND, and PWM signal wire to digital pin 9.
-[Q] how do I use dht11 [A] Connect DHT11 sensor VCC to 5V, GND to GND, and DATA pin to digital pin 2 with a 10k Ohm pull-up resistor.
-[Q] how to wire an LED [A] Connect the LED cathode to GND. Connect the LED anode in series with a 220 Ohm resistor to a digital output pin.
-[Q] why use a resistor with LED [A] A resistor limits the current flowing through the LED. Without it, the LED or the MCU pin will burn out.
-[Q] what is the pinout of esp32 [A] ESP32 has GPIOs for digital IO, ADCs for analog input, DACs, and interfaces like I2C (SDA=21, SCL=22) and SPI.
-[Q] explain pinout of arduino uno [A] Arduino Uno has 14 digital pins (0-13), 6 analog inputs (A0-A5), power pins (5V, 3.3V, GND, Vin), and I2C pins.
-[Q] how do I use LiquidCrystal_I2C [A] Wire LCD VCC to 5V, GND to GND, SDA to A4, and SCL to A5. Include LiquidCrystal_I2C.h in your code.
-[Q] suggest connections [A] Suggestion: Verify that your sensor signal pins are connected to Analog or Digital input ports.
-[Q] how to auto wire [A] Use the wiring engine to automatically connect power lines to 5V and ground pins to GND.
-[Q] write code [A] Sure! Let me know what you want to write (e.g. 'blink', 'sensor read') and I will generate the template.
-[Q] generate code [A] Generate: Select a component and ask me to write a driver sketch. I will generate a fully compilable sketch.
-[Q] generate led blink code [A] Here is the code:\n```cpp\nvoid setup() {\n  pinMode(13, OUTPUT);\n}\nvoid loop() {\n  digitalWrite(13, HIGH);\n  delay(1000);\n  digitalWrite(13, LOW);\n  delay(1000);\n}\n```
-[Q] generate motor control code [A] Here is the code:\n```cpp\nvoid setup() {\n  pinMode(9, OUTPUT);\n}\nvoid loop() {\n  digitalWrite(9, HIGH);\n}\n```
-[Q] generate code for dht11 [A] Here is the code:\n```cpp\n#include <DHT.h>\n#define DHTPIN 2\n#define DHTTYPE DHT11\nDHT dht(DHTPIN, DHTTYPE);\nvoid setup() {\n  Serial.begin(9600);\n  dht.begin();\n}\nvoid loop() {\n  float t = dht.readTemperature();\n  Serial.println(t);\n  delay(2000);\n}\n```
-[Q] is my code correct [A] I will review your active C++ sketch. Ensure all pins match your canvas wires and pinMode is declared.
-[Q] explain code [A] Reviewing code: `setup()` runs once at start to initialize pins, while `loop()` runs continuously for logic.
-[Q] validate code [A] Verifying code. Ensure you have defined pin constants and loaded necessary libraries like Wire.h.
-[Q] review code [A] Reviewing sketch: Please check that your pin numbers match the physical wires on your canvas layout.
-[Q] what is the pinout of dht11 [A] DHT11 has 4 pins: Pin 1 is VCC (3V-5V), Pin 2 is Data out (I/O), Pin 3 is Not Connected, Pin 4 is GND.
-[Q] connect motor [A] Wire motor terminals to H-Bridge driver OUT1/OUT2, connect IN1/IN2 to MCU PWM pins, and connect GNDs together.
-[Q] connect display [A] Connect SDA to A4, SCL to A5, VCC to 5V, and GND to GND on your Arduino Board.
-[Q] compile check [A] Code compiles successfully if setup() and loop() are declared and libraries are loaded.
-[Q] how do I connect LDR [A] Connect LDR in series with a 10k Ohm resistor to create a voltage divider, and wire the center tap to Analog Pin A0.
+[Q] hi [A] Hello! I am VoltForge AI. I can help with board pinouts, component wiring, electrical safety checks, firmware pin matching, and simulation debugging.
+[Q] hello [A] Hi. Tell me the board, component, pin, wire, or code error you want to check and I will answer from the active circuit context first.
+[Q] who are you [A] I am VoltForge AI, a local electronics and embedded-systems assistant for this workspace. I focus on circuits, microcontroller boards, wiring, firmware, and simulation.
+[Q] what can you do [A] I can validate power and ground wiring, detect shorts, check GPIO current and voltage limits, suggest wires, explain common components, review code against canvas pins, and generate starter firmware.
+[Q] how does this work [A] VoltForge lets you place boards and components, connect pins with wires, write firmware, simulate behavior, and run validation. The AI reads the active canvas, wires, board type, code, and simulation state before answering.
+[Q] how do I ask good questions [A] Mention the part and the pin or symptom, for example: "HC-SR04 echo on ESP32", "LDR to Raspberry Pi", "why LED not glowing", "processor for this board", or "review code pins".
+[Q] is this circuit safe [A] Run validation and check the highest severity findings first. Common issues are power-to-ground shorts, LEDs without resistors, motors on GPIO pins, 5V signals into 3.3V boards, missing grounds, and floating inputs.
+[Q] check for errors [A] I will check wiring, rails, GPIO limits, inductive loads, I2C pull-ups, floating inputs, and firmware pin mismatches against the active canvas.
+[Q] how to wire an LED [A] Wire GPIO -> 220 Ohm to 330 Ohm resistor -> LED anode, and LED cathode -> GND. Never connect an LED directly to a GPIO or supply rail without a resistor.
+[Q] why use a resistor with LED [A] The resistor limits current. Use R = (supply voltage - LED forward voltage) / target current, then check resistor power with P = I^2 * R.
+[Q] how to wire rgb led [A] Use one resistor per color channel. For common cathode, connect the common pin to GND and drive R/G/B pins from GPIO. For common anode, connect common to VCC and drive channels active-low.
+[Q] how to wire neopixel [A] Connect VCC, GND, and DIN to one GPIO. For 5V NeoPixels from a 3.3V board, add a logic-level shifter and a bulk capacitor across the LED supply.
+[Q] how to wire dht11 [A] Connect VCC, GND, and DATA to a digital GPIO. Add a 4.7 kOhm to 10 kOhm pull-up from DATA to VCC unless the DHT module already includes it.
+[Q] how to wire dht22 [A] Connect VCC, GND, and DATA to a digital GPIO. Use the DHT22 type in firmware and keep sampling intervals slow enough for the sensor.
+[Q] how to wire ultrasonic sensor [A] Connect VCC, GND, TRIG to an output GPIO, and ECHO to an input GPIO. On 3.3V boards, level-shift or divide the HC-SR04 ECHO signal if the module is powered from 5V.
+[Q] how to wire pir sensor [A] Connect VCC, GND, and OUT to a digital input. Give the PIR module warm-up time and verify whether OUT is 3.3V-safe for the selected board.
+[Q] how to connect ldr [A] Use the LDR with a fixed resistor as a voltage divider and connect the midpoint to an analog input. Raspberry Pi SBC boards need an external ADC for this.
+[Q] how to wire potentiometer [A] Connect the two outer pins to VCC and GND, then connect the wiper to an analog input. Read it with analogRead on MCU boards that have ADC pins.
+[Q] how to connect mpu6050 [A] MPU6050 uses I2C. Connect VCC, GND, SDA, and SCL to the board's I2C pins, and keep pull-ups at the board logic voltage.
+[Q] how to connect lcd i2c [A] Connect LCD VCC and GND, then SDA/SCL to the board's I2C pins. Arduino Uno uses A4/A5, ESP32 commonly uses D21/D22, and Raspberry Pi 40-pin boards use GPIO2/GPIO3.
+[Q] how to connect oled [A] Most SSD1306 OLED modules use I2C. Connect VCC, GND, SDA, and SCL, then use an SSD1306 display library and confirm the I2C address.
+[Q] how to wire 7 segment display [A] Each LED segment needs current limiting. Match common cathode or common anode wiring and consider a driver IC for more than one digit.
+[Q] how to connect relay [A] Connect relay-module VCC, GND, and IN to a GPIO. Wire the external load through COM and NO or NC. Many relay modules are active-low.
+[Q] how to wire dc motor [A] Do not drive a DC motor directly from a GPIO. Use a MOSFET, transistor, relay module, or H-bridge driver, add flyback protection, and share ground.
+[Q] how to connect servo [A] Connect signal to a PWM/timer-capable GPIO, VCC to a suitable 5V or 6V supply, and GND to the MCU ground. Use an external supply for larger servos.
+[Q] how to wire stepper motor [A] Drive stepper coils through a driver board such as ULN2003, A4988, or DRV8825. The MCU should connect only to driver inputs, not directly to coils.
+[Q] how to use buzzer [A] Active buzzers can be switched with digitalWrite. Passive buzzers need tone or PWM. Use a transistor driver if the current exceeds the GPIO budget.
+[Q] how to use breadboard [A] Breadboard terminal rows are connected in small groups and power rails may be split. Add jumper wires across rail breaks when needed.
+[Q] how to use ammeter [A] Place an ammeter in series with the branch you want to measure. Do not connect it directly across power and ground.
+[Q] how to use oscilloscope [A] Connect scope CH1 or CH2 to the signal node and scope GND to circuit ground. A floating ground can produce misleading readings.
+[Q] what is raspberry pi [A] Raspberry Pi can mean a Linux single-board computer such as Pi 4 or Pi 5, or a microcontroller board such as Pico. Linux Pi GPIO is 3.3V-only and has no analog input.
+[Q] pi [A] If you mean Raspberry Pi, choose between Pico for microcontroller firmware projects and Pi 3/4/5/Zero for Linux GPIO projects. Both use 3.3V GPIO; Pi SBCs need an external ADC for analog sensors.
+[Q] raspberry pi processor [A] Raspberry Pi processors depend on model: Pico uses RP2040/RP2350 class microcontrollers, Pi 4 uses Broadcom BCM2711, and Pi 5 uses Broadcom BCM2712.
+[Q] raspberry pi gpio voltage [A] Raspberry Pi 40-pin GPIO is 3.3V-only. Do not connect 5V sensor outputs directly to GPIO; use a divider or level shifter.
+[Q] raspberry pi i2c pins [A] On Raspberry Pi 40-pin boards, I2C1 is commonly GPIO2 for SDA and GPIO3 for SCL. In VoltForge these appear as D2 and D3.
+[Q] raspberry pi analog input [A] Raspberry Pi 3/4/5/Zero boards do not have built-in analog inputs. Use an external ADC such as MCP3008 or ADS1115 for LDRs, potentiometers, and analog sensors.
+[Q] raspberry pi pico processor [A] Raspberry Pi Pico uses the RP2040 dual-core Arm Cortex-M0+ microcontroller. Pico 2 uses the newer RP2350 class microcontroller.
+[Q] arduino uno processor [A] Arduino Uno R3 uses the ATmega328P AVR microcontroller at 16 MHz with 5V GPIO logic.
+[Q] esp32 pinout [A] ESP32 uses 3.3V GPIO, commonly I2C SDA on D21 and SCL on D22. Avoid strapping pins for circuits that affect boot, and avoid ADC2 pins when Wi-Fi analog reading matters.
+[Q] stm32 blue pill processor [A] STM32 Blue Pill commonly uses an STM32F103C8 Arm Cortex-M3 microcontroller at 72 MHz with 3.3V GPIO.
+[Q] teensy 4 processor [A] Teensy 4.0 and 4.1 use the NXP i.MX RT1062 Arm Cortex-M7 at 600 MHz with 3.3V GPIO.
+[Q] compile check [A] Code must have setup() and loop() for Arduino-style firmware, include the needed libraries, and use pin constants that match the canvas wiring.
+[Q] review code [A] I will compare firmware pinMode, digitalWrite, analogRead, analogWrite, tone, and library use against the active canvas wires and board pin capabilities.
+[Q] generate led blink code [A] Ask for code after placing or naming the LED pin. I will generate a sketch that uses the canvas-wired pin instead of assuming D13.
+[Q] generate sensor code [A] Tell me the sensor type and board, or place the sensor on the canvas. I will generate starter code matched to the component pins and board.
