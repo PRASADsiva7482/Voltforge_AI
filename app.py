@@ -1,14 +1,16 @@
+import asyncio
 import json
 import logging
 import os
 import re
 import urllib.parse
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, AsyncIterator, Dict, List, Optional, Set, Tuple
 
 import requests
 from bs4 import BeautifulSoup
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 
@@ -3114,6 +3116,277 @@ def chat(payload: ChatRequest) -> ChatResponse:
             "I need a little more circuit-specific detail. Mention the component, board pin, wire, or code error you want me to analyze."
         ),
         confidence=0.55,
+    )
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SSE Streaming Chat Endpoint — Token-by-token with Thinking phase
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _sse_event(data: Dict[str, Any]) -> str:
+    """Format a single SSE data line."""
+    return f"data: {json.dumps(data, default=str)}\n\n"
+
+
+def build_thinking_steps(
+    message: str,
+    context: Dict[str, Any],
+    analysis: Optional[Dict[str, Any]],
+) -> List[str]:
+    """Produce concise reasoning steps based on actual circuit analysis."""
+    steps: List[str] = []
+    board_type = context.get("boardType", "ARDUINO_UNO")
+    components = context.get("components") or []
+    wires = context.get("wires") or []
+    code = context.get("code") or context.get("activeCode") or ""
+
+    # Step 1: Canvas awareness
+    if components:
+        comp_types = [str(c.get("type") or c.get("name", "?")) for c in components[:8]]
+        steps.append(f"Inspecting canvas: {len(components)} component(s) [{', '.join(comp_types)}], {len(wires)} wire(s), board={board_type}.")
+    else:
+        steps.append(f"No canvas components detected. Answering from electronics knowledge base for {board_type}.")
+
+    # Step 2: Safety analysis summary
+    if analysis:
+        score = analysis.get("safetyScore", 100)
+        criticals = analysis.get("criticalCount", 0)
+        warnings = analysis.get("warningCount", 0)
+        steps.append(f"Safety score: {score}/100 ({criticals} critical, {warnings} warning).")
+
+        # Highlight top issues
+        for issue in (analysis.get("issues") or [])[:2]:
+            steps.append(f"{issue.get('severity', 'INFO')}: {issue.get('message', '?')}")
+
+        # Electrical calculations
+        for calc in (analysis.get("calculations") or [])[:2]:
+            if calc.get("current_mA"):
+                steps.append(f"Calculated {calc.get('component', '?')}: I={calc['current_mA']:.1f}mA, P={calc.get('power_mW', 0):.1f}mW.")
+
+    # Step 3: Code awareness
+    if code:
+        pin_usages = extract_pin_usages(code)
+        if pin_usages:
+            pins_used = list({u["pin"] for u in pin_usages})[:5]
+            steps.append(f"Firmware uses pins: {', '.join(display_pin(p) for p in pins_used)}.")
+
+    # Step 4: Message intent
+    lower = message.lower()
+    if any(t in lower for t in ("validate", "safe", "check", "error")):
+        steps.append("Intent: circuit validation and safety check.")
+    elif any(t in lower for t in ("generate", "write code", "firmware")):
+        steps.append("Intent: code generation from canvas layout.")
+    elif any(t in lower for t in ("wire", "connect", "how to")):
+        steps.append("Intent: wiring guidance and connection help.")
+    elif any(t in lower for t in ("why", "not working", "debug", "problem")):
+        steps.append("Intent: troubleshooting and debugging.")
+    else:
+        steps.append("Intent: general electronics question.")
+
+    return steps
+
+
+async def stream_chat_sse(
+    payload: ChatRequest,
+) -> AsyncIterator[str]:
+    """Generator that yields SSE events: thought steps, then word-by-word tokens, then done."""
+    context = context_from_chat(payload)
+    message = payload.message.strip()
+
+    # Build circuit analysis if components exist
+    components = context.get("components") or []
+    wires = context.get("wires") or []
+    code = context.get("code") or context.get("activeCode") or ""
+    board_type = context.get("boardType", "ARDUINO_UNO")
+    simulation_state = context.get("simulationState") or {}
+    analysis = analyze_active_circuit(board_type, components, wires, code, context, simulation_state) if components else None
+
+    # ── Phase 1: Emit thinking steps ──
+    thinking_steps = build_thinking_steps(message, context, analysis)
+    for step in thinking_steps:
+        yield _sse_event({"type": "thought", "content": step})
+        await asyncio.sleep(0.06)
+
+    # ── Phase 2: Compute the full response using existing chat logic ──
+    chat_response = _compute_chat_response(message, context, analysis)
+
+    # ── Phase 3: Stream the reply word by word ──
+    reply_text = chat_response.reply
+    # Split on word boundaries, keeping whitespace attached
+    words = re.split(r'(\s+)', reply_text)
+    for word in words:
+        if word:  # Skip empty strings from split
+            yield _sse_event({"type": "token", "content": word})
+            # Faster for whitespace, slight pause for actual words
+            if word.strip():
+                await asyncio.sleep(0.03)
+
+    # ── Phase 4: Emit final metadata ──
+    done_payload: Dict[str, Any] = {
+        "type": "done",
+        "confidence": chat_response.confidence,
+        "hasCode": chat_response.hasCode,
+        "generatedCode": chat_response.generatedCode,
+        "citations": chat_response.citations,
+        "wireSuggestions": chat_response.wireSuggestions,
+        "additions": chat_response.additions,
+        "removals": chat_response.removals,
+        "valueChanges": chat_response.valueChanges,
+        "codeFixes": chat_response.codeFixes,
+    }
+    yield _sse_event(done_payload)
+
+
+def _compute_chat_response(
+    message: str,
+    context: Dict[str, Any],
+    analysis: Optional[Dict[str, Any]],
+) -> ChatResponse:
+    """Core chat logic extracted from the synchronous chat() handler for reuse."""
+    lower = message.lower()
+
+    if is_out_of_domain(message):
+        return ChatResponse(
+            reply=(
+                "I am VoltForge AI, so I stay focused on electronics, circuit design, "
+                "microcontrollers, firmware, wiring, and simulation. I cannot help with that outside-domain request."
+            ),
+            confidence=0.96,
+        )
+
+    components = context.get("components") or []
+    wires = context.get("wires") or []
+    code = context.get("code") or context.get("activeCode") or ""
+    board_type = context.get("boardType", "ARDUINO_UNO")
+
+    if any(term in lower for term in ("who are you", "what can you do", "help", "what are you doing")):
+        project = context.get("projectName", "this project")
+        active_summary = (
+            f" I am currently seeing {len(components)} canvas component(s), {len(wires)} wire(s), "
+            f"and a {analysis['safetyScore']}/100 safety score." if analysis else ""
+        )
+        return ChatResponse(
+            reply=(
+                f"I am VoltForge AI, a project-aware electronics assistant for {project}. "
+                f"I can validate wiring, find code/canvas pin mismatches, suggest wires, review Arduino code, "
+                f"and generate firmware for the active {board_type} layout.{active_summary}"
+            ),
+            confidence=0.95,
+        )
+
+    if any(term in lower for term in ("validate", "safe", "short", "error", "fix my circuit", "check circuit")):
+        result = validate_project(
+            ValidateRequest(boardType=board_type, components=components, wires=wires, code=code)
+        )
+        return ChatResponse(
+            reply=validation_markdown(result),
+            confidence=result["confidence"],
+            wireSuggestions=result.get("wireSuggestions", []),
+            additions=result.get("additions", []),
+            removals=result.get("removals", []),
+            valueChanges=result.get("valueChanges", []),
+            codeFixes=result.get("codeFixes", []),
+        )
+
+    if any(term in lower for term in ("suggest wire", "suggest wiring", "how to wire", "connections", "connect this")):
+        suggestions = generate_wiring_suggestions(
+            ValidateRequest(boardType=board_type, components=components, wires=wires, code=code)
+        )
+        return ChatResponse(
+            reply=suggestions_markdown(suggestions),
+            confidence=0.9 if suggestions else 0.7,
+            wireSuggestions=suggestions,
+            additions=analysis.get("additions", []) if analysis else [],
+            valueChanges=analysis.get("valueChanges", []) if analysis else [],
+            codeFixes=analysis.get("codeFixes", []) if analysis else [],
+        )
+
+    if any(term in lower for term in ("generate code", "write code", "schematic to code", "make firmware")):
+        generated = generate_code_from_context(components, wires, board_type, message)
+        return ChatResponse(
+            reply=f"Here is firmware matched to your current {board_type} canvas:\n\n```cpp\n{generated}```",
+            hasCode=True,
+            generatedCode=generated,
+            codeFixes=analysis.get("codeFixes", []) if analysis else [],
+            confidence=0.88 if components else 0.72,
+        )
+
+    if any(term in lower for term in ("review code", "is my code", "code correct", "compile error")):
+        review = review_code_payload(
+            CodeReviewRequest(boardType=board_type, code=code, components=components, wires=wires)
+        )
+        lines = [review["summary"], f"Score: {review['score']}/100"]
+        for issue in review["issues"][:5]:
+            lines.append(f"- {issue['severity']}: {issue['message']} Fix: {issue['fix']}")
+        if not review["issues"]:
+            lines.append("- No structural Arduino issues found.")
+        return ChatResponse(
+            reply="\n".join(lines),
+            confidence=review["confidence"],
+            codeFixes=analysis.get("codeFixes", []) if analysis else [],
+        )
+
+    if analysis:
+        contextual = answer_with_circuit_context(message, analysis)
+        if contextual:
+            return ChatResponse(
+                reply=contextual,
+                confidence=0.9,
+                wireSuggestions=generate_wiring_suggestions(
+                    ValidateRequest(boardType=board_type, components=components, wires=wires, code=code)
+                ),
+                additions=analysis.get("additions", []),
+                removals=analysis.get("removals", []),
+                valueChanges=analysis.get("valueChanges", []),
+                codeFixes=analysis.get("codeFixes", []),
+            )
+
+    common = answer_common_question(message, context)
+    if common:
+        return ChatResponse(reply=common, confidence=0.9)
+
+    match = find_best_match(message)
+    if match:
+        answer = match["answer"]
+        has_code = "```" in answer
+        code_text = None
+        if has_code:
+            code_match = re.search(r"```(?:cpp|c\+\+|arduino)?\s*([\s\S]*?)```", answer)
+            code_text = code_match.group(1).strip() if code_match else None
+        return ChatResponse(reply=answer, hasCode=has_code, generatedCode=code_text, confidence=0.82)
+
+    if any(term in lower for term in DOMAIN_TERMS):
+        results = search_web(message)
+        if results:
+            reply_lines = [
+                f"I did not have enough local certainty, so I checked technical references for: {message}",
+                "",
+            ]
+            for result in results:
+                reply_lines.append(f"- {result['title']}: {result['snippet']}")
+            reply_lines.append("")
+            reply_lines.append("Apply this against your canvas pins and verify with the firmware compiler before simulation.")
+            return ChatResponse(reply="\n".join(reply_lines), confidence=0.68, citations=results)
+
+    return ChatResponse(
+        reply=(
+            "I need a little more circuit-specific detail. Mention the component, board pin, wire, or code error you want me to analyze."
+        ),
+        confidence=0.55,
+    )
+
+
+@router.post("/chat/stream")
+async def chat_stream(payload: ChatRequest):
+    """SSE streaming chat — emits thought steps, then word-by-word tokens, then final metadata."""
+    logger.info("Processing streaming chat request: %s", payload.message)
+    return StreamingResponse(
+        stream_chat_sse(payload),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",
+        },
     )
 
 
