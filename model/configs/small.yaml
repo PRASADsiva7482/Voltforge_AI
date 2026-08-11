@@ -1,0 +1,24 @@
+model:
+  vocab_size: 8192
+  context_length: 512
+  d_model: 256
+  n_heads: 8
+  n_layers: 6
+  d_ff: 768
+  dropout: 0.0
+
+training:
+  stage1:
+    batch_size: 8
+    learning_rate: 0.001
+    min_lr: 0.00001
+    warmup_steps: 200
+    max_epochs: 10
+    gradient_clip: 1.0
+    weight_decay: 0.1
+    beta1: 0.9
+    beta2: 0.95
+  stage2_sft:
+    learning_rate: 0.00005
+    max_epochs: 3
+  checkpoint_dir: "artifacts"

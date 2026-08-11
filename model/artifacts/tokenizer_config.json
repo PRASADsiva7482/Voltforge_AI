@@ -1,0 +1,22 @@
+{
+  "vocab_size": 6023,
+  "special_tokens": [
+    "[PAD]",
+    "[UNK]",
+    "[BOS]",
+    "[EOS]",
+    "[SYS]",
+    "[USER]",
+    "[ASSISTANT]",
+    "[CODE]",
+    "[CANVAS]",
+    "[WIRING]",
+    "[JSON]",
+    "[UNKNOWN_SEARCH]",
+    "[THINK]",
+    "[/THINK]",
+    "[FORMULA]",
+    "[CIRCUIT]",
+    "[SAFETY]"
+  ]
+}

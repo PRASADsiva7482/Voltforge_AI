@@ -1,0 +1,15 @@
+{
+  "model_config": {
+    "vocab_size": 6023,
+    "context_length": 512,
+    "d_model": 256,
+    "n_heads": 8,
+    "n_layers": 6,
+    "d_ff": 768,
+    "rope_theta": 10000.0,
+    "dropout": 0.0
+  },
+  "num_params": 8198912,
+  "num_sequences": 12719,
+  "avg_seq_len": 184.702492334303
+}

@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import re
+import sys
 import urllib.parse
 from typing import Any, AsyncIterator, Dict, List, Optional, Set, Tuple
 
@@ -19,6 +20,17 @@ logger = logging.getLogger("voltforge-ai")
 
 DATASET_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dataset.txt")
 qa_dataset: List[Dict[str, str]] = []
+
+try:
+    ai_dir = os.path.dirname(os.path.abspath(__file__))
+    if ai_dir not in sys.path:
+        sys.path.insert(0, ai_dir)
+    from model.infer import VoltForgeInferenceEngine
+    inference_engine = VoltForgeInferenceEngine()
+    logger.info("VoltForge custom model runtime initialized. Model loaded: %s", inference_engine.is_loaded)
+except Exception as exc:
+    inference_engine = None
+    logger.warning("Could not initialize custom model runtime: %s", exc)
 
 
 def load_dataset() -> None:
@@ -43,7 +55,7 @@ def load_dataset() -> None:
 
 load_dataset()
 
-app = FastAPI(title="VoltForge AI Microservice", version="0.2.0")
+app = FastAPI(title="VoltForge AI Microservice", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -292,6 +304,15 @@ BOARD_RULES: Dict[str, Dict[str, Any]] = {
         "adcPins": {"a0", "a1", "a2", "a3", "a4", "a5"},
         "i2c": ("a4", "a5"),
     },
+    "ARDUINO_UNO_R4": {
+        "logicVoltage": 5.0,
+        "recommendedPinMa": 8.0,
+        "absolutePinMa": 8.0,
+        "totalPackageMa": 100.0,
+        "pwmPins": {"d3", "d5", "d6", "d9", "d10", "d11"},
+        "adcPins": {"a0", "a1", "a2", "a3", "a4", "a5"},
+        "i2c": ("a4", "a5"),
+    },
     "ARDUINO_NANO": {
         "logicVoltage": 5.0,
         "recommendedPinMa": 20.0,
@@ -310,6 +331,24 @@ BOARD_RULES: Dict[str, Dict[str, Any]] = {
         "adcPins": {f"a{index}" for index in range(16)},
         "i2c": ("d20", "d21"),
     },
+    "ARDUINO_LEONARDO": {
+        "logicVoltage": 5.0,
+        "recommendedPinMa": 20.0,
+        "absolutePinMa": 40.0,
+        "totalPackageMa": 200.0,
+        "pwmPins": {"d3", "d5", "d6", "d9", "d10", "d11", "d13"},
+        "adcPins": {"a0", "a1", "a2", "a3", "a4", "a5", "d4", "d6", "d8", "d9", "d10", "d12"},
+        "i2c": ("d2", "d3"),
+    },
+    "ARDUINO_DUE": {
+        "logicVoltage": 3.3,
+        "recommendedPinMa": 3.0,
+        "absolutePinMa": 15.0,
+        "totalPackageMa": 130.0,
+        "pwmPins": {f"d{index}" for index in range(2, 14)},
+        "adcPins": {f"a{index}" for index in range(12)},
+        "i2c": ("d20", "d21"),
+    },
     "ESP32": {
         "logicVoltage": 3.3,
         "recommendedPinMa": 12.0,
@@ -322,6 +361,36 @@ BOARD_RULES: Dict[str, Dict[str, Any]] = {
         "adcPins": {"d32", "d33", "d34", "d35", "d36", "d39", "vp", "vn", "d0", "d2", "d4", "d12", "d13", "d14", "d15", "d25", "d26", "d27"},
         "i2c": ("d21", "d22"),
     },
+    "ESP32_S3": {
+        "logicVoltage": 3.3,
+        "recommendedPinMa": 12.0,
+        "absolutePinMa": 40.0,
+        "totalPackageMa": 200.0,
+        "strapPins": {"d0", "d3", "d45", "d46"},
+        "pwmPins": {f"d{index}" for index in range(0, 22)} | {f"d{index}" for index in range(35, 49)},
+        "adcPins": {f"d{index}" for index in range(1, 21)},
+        "i2c": ("d8", "d9"),
+    },
+    "ESP32_C3": {
+        "logicVoltage": 3.3,
+        "recommendedPinMa": 12.0,
+        "absolutePinMa": 40.0,
+        "totalPackageMa": 200.0,
+        "strapPins": {"d2", "d8", "d9"},
+        "pwmPins": {f"d{index}" for index in range(0, 11)},
+        "adcPins": {"a0", "a1", "a2", "a3", "a4", "d0", "d1", "d2", "d3", "d4"},
+        "i2c": ("d8", "d9"),
+    },
+    "ESP8266": {
+        "logicVoltage": 3.3,
+        "recommendedPinMa": 12.0,
+        "absolutePinMa": 12.0,
+        "totalPackageMa": 80.0,
+        "strapPins": {"d3", "d4", "d8"},
+        "pwmPins": {"d1", "d2", "d5", "d6", "d7", "d8"},
+        "adcPins": {"a0"},
+        "i2c": ("d2", "d1"),
+    },
     "RASPBERRY_PI_PICO": {
         "logicVoltage": 3.3,
         "recommendedPinMa": 12.0,
@@ -330,17 +399,6 @@ BOARD_RULES: Dict[str, Dict[str, Any]] = {
         "pwmPins": {f"d{index}" for index in range(0, 29)},
         "adcPins": {"a0", "a1", "a2", "d26", "d27", "d28"},
         "i2c": ("d4", "d5"),
-    },
-    "RASPBERRY_PI_SBC": {
-        "logicVoltage": 3.3,
-        "recommendedPinMa": 8.0,
-        "absolutePinMa": 16.0,
-        "totalPackageMa": 50.0,
-        "pwmPins": {"d12", "d13", "d18", "d19"},
-        "adcPins": set(),
-        "i2c": ("d2", "d3"),
-        "spi": ("d10", "d9", "d11"),
-        "uart": ("d14", "d15"),
     },
     "STM32_BLUE_PILL": {
         "logicVoltage": 3.3,
@@ -351,6 +409,61 @@ BOARD_RULES: Dict[str, Dict[str, Any]] = {
         "pwmPins": {"d0", "d1", "d2", "d3", "d6", "d7", "d8", "d9", "d10", "d11"},
         "adcPins": {f"a{index}" for index in range(8)},
         "i2c": ("d11", "d10"),
+    },
+    "STM32_BLACK_PILL": {
+        "logicVoltage": 3.3,
+        "recommendedPinMa": 20.0,
+        "absolutePinMa": 25.0,
+        "totalPackageMa": 150.0,
+        "strapPins": {"boot0"},
+        "pwmPins": {"d0", "d1", "d2", "d3", "d6", "d7", "d8", "d9", "d10", "d11"},
+        "adcPins": {f"a{index}" for index in range(8)},
+        "i2c": ("d11", "d10"),
+    },
+    "TEENSY_4_0": {
+        "logicVoltage": 3.3,
+        "recommendedPinMa": 4.0,
+        "absolutePinMa": 10.0,
+        "totalPackageMa": 100.0,
+        "pwmPins": {f"d{index}" for index in range(0, 16)} | {"d22", "d23", "d24", "d25"},
+        "adcPins": {f"a{index}" for index in range(10)},
+        "i2c": ("d18", "d19"),
+    },
+    "TEENSY_LC": {
+        "logicVoltage": 3.3,
+        "recommendedPinMa": 5.0,
+        "absolutePinMa": 18.0,
+        "totalPackageMa": 120.0,
+        "pwmPins": {"d3", "d4", "d6", "d9", "d10", "d16", "d17", "d20", "d22", "d23"},
+        "adcPins": {f"a{index}" for index in range(13)},
+        "i2c": ("d18", "d19"),
+    },
+    "SEEED_XIAO": {
+        "logicVoltage": 3.3,
+        "recommendedPinMa": 7.0,
+        "absolutePinMa": 10.0,
+        "totalPackageMa": 50.0,
+        "pwmPins": {f"d{index}" for index in range(0, 11)},
+        "adcPins": {"a0", "a1", "a2", "a3"},
+        "i2c": ("d4", "d5"),
+    },
+    "ADAFRUIT_FEATHER": {
+        "logicVoltage": 3.3,
+        "recommendedPinMa": 7.0,
+        "absolutePinMa": 10.0,
+        "totalPackageMa": 100.0,
+        "pwmPins": {"d5", "d6", "d9", "d10", "d11", "d12", "d13"},
+        "adcPins": {"a0", "a1", "a2", "a3", "a4", "a5"},
+        "i2c": ("d21", "d22"),
+    },
+    "ATMEL_AVR": {
+        "logicVoltage": 5.0,
+        "recommendedPinMa": 20.0,
+        "absolutePinMa": 40.0,
+        "totalPackageMa": 200.0,
+        "pwmPins": {"d3", "d5", "d6", "d9", "d10", "d11"},
+        "adcPins": {"a0", "a1", "a2", "a3", "a4", "a5"},
+        "i2c": ("a4", "a5"),
     },
 }
 
@@ -455,7 +568,7 @@ COMPONENT_KNOWLEDGE: List[Dict[str, Any]] = [
         "summary": "A potentiometer is an adjustable voltage divider.",
         "wiring": "Connect the two outer pins to power and GND, then connect the wiper to an analog input.",
         "code": "Use analogRead on the wiper pin and map the ADC value to the needed range.",
-        "checks": "Raspberry Pi SBC GPIO has no built-in analog input; use an external ADC for potentiometers on Pi 3/4/5.",
+        "checks": "Ensure the board has ADC pins before connecting the wiper. Check ADC resolution and voltage range for your board.",
     },
     {
         "title": "Push Button / Switch",
@@ -503,7 +616,7 @@ COMPONENT_KNOWLEDGE: List[Dict[str, Any]] = [
         "summary": "An LDR changes resistance with light level.",
         "wiring": "Use it with a fixed resistor as a voltage divider; connect the divider midpoint to an analog input.",
         "code": "Use analogRead and calibrate thresholds for your lighting.",
-        "checks": "Pi SBC boards need an external ADC because their GPIO pins are digital only.",
+        "checks": "Ensure the board has ADC-capable pins. Match the voltage divider ratio to the board ADC range.",
     },
     {
         "title": "MPU6050 / IMU",
@@ -593,6 +706,78 @@ COMPONENT_KNOWLEDGE: List[Dict[str, Any]] = [
         "code": "No firmware driver is needed.",
         "checks": "Linear regulators dissipate heat: P = (VIN - VOUT) * current.",
     },
+    {
+        "title": "Soil Moisture Sensor",
+        "keywords": ("soil moisture", "soil sensor", "moisture sensor"),
+        "summary": "A soil moisture sensor outputs an analog voltage proportional to soil moisture level.",
+        "wiring": "Connect VCC, GND, and AO (analog output) to an ADC-capable pin. Some modules also have a DO pin for digital threshold output.",
+        "code": "Use analogRead on the AO pin. Calibrate dry and wet thresholds for your specific soil and sensor.",
+        "checks": "Prolonged power to the sensor corrodes the probes. Consider powering it only during readings via a GPIO-controlled transistor.",
+    },
+    {
+        "title": "IR Receiver",
+        "keywords": ("ir receiver", "ir sensor", "infrared", "remote control"),
+        "summary": "An IR receiver demodulates infrared signals from a remote control into digital pulses.",
+        "wiring": "Connect VCC, GND, and OUT to a digital GPIO. The OUT pin is typically active-low.",
+        "code": "Use an IR remote library such as IRremote to decode remote control signals and identify button codes.",
+        "checks": "Ambient IR light and fluorescent lighting can cause interference. Shield the receiver if needed.",
+    },
+    {
+        "title": "Bluetooth Module",
+        "keywords": ("bluetooth", "hc-05", "hc-06", "bt module", "communication"),
+        "summary": "HC-05/HC-06 are UART-based Bluetooth modules for serial communication with phones or other devices.",
+        "wiring": "Connect TX to MCU RX and RX to MCU TX (with level shifting for 3.3V boards). VCC to 5V, GND to common ground.",
+        "code": "Use Serial communication at the configured baud rate (default 9600 or 38400). Send and receive data as plain text or bytes.",
+        "checks": "HC-05 RX is not 5V tolerant on many modules. Use a voltage divider if the MCU TX is 5V.",
+    },
+    {
+        "title": "Wi-Fi Module",
+        "keywords": ("wifi", "wi-fi", "esp-01", "wifi module"),
+        "summary": "Wi-Fi modules enable network connectivity. ESP32, ESP8266, and Pico W have built-in Wi-Fi.",
+        "wiring": "For external ESP-01: connect TX, RX (level-shifted), VCC (3.3V with 250mA+), GND, and CH_PD to VCC.",
+        "code": "Use WiFi.begin() for boards with built-in Wi-Fi. For ESP-01 via UART, use AT commands.",
+        "checks": "Wi-Fi modules draw significant current during transmission. Ensure the power supply can deliver 250mA+ peaks.",
+    },
+    {
+        "title": "555 Timer IC",
+        "keywords": ("555 timer", "ic_555_timer", "ne555", "timer ic", "astable", "monostable"),
+        "summary": "The 555 timer generates timing signals: astable (continuous square wave), monostable (one-shot pulse), or bistable (flip-flop).",
+        "wiring": "Connect VCC (pin 8), GND (pin 1), and configure TRIG, THRESH, DIS, OUT, and CTRL pins based on the desired mode.",
+        "code": "No MCU code is needed for standalone 555 circuits. For MCU interaction, read the OUT pin or trigger via TRIG pin.",
+        "checks": "Match timing resistor and capacitor values to desired frequency. Add a 10nF capacitor on CTRL (pin 5) to reduce noise.",
+    },
+    {
+        "title": "74HC595 Shift Register",
+        "keywords": ("74hc595", "shift register", "ic_74hc595", "serial to parallel"),
+        "summary": "A 74HC595 converts serial data into 8 parallel outputs, effectively expanding GPIO count.",
+        "wiring": "Connect SER (data in), SRCLK (shift clock), RCLK (latch), VCC, GND. Tie OE to GND for always-on. Chain SRQH to next SER for cascading.",
+        "code": "Use shiftOut() or SPI to send data. Pulse RCLK after shifting all bits to update outputs simultaneously.",
+        "checks": "Total current through all outputs is limited. Use transistor drivers for high-current loads on shift register outputs.",
+    },
+    {
+        "title": "ESC / BLDC Motor Controller",
+        "keywords": ("esc", "esc_module", "brushless", "motor_bldc", "electronic speed controller"),
+        "summary": "An ESC drives brushless DC motors using the same PWM protocol as hobby servos.",
+        "wiring": "Connect signal to a PWM GPIO (like servo), motor power from battery, and share ground with MCU. Most ESCs need arming on power-up.",
+        "code": "Use Servo library and writeMicroseconds() for precise control. Arm sequence: send minimum throttle for 2-3 seconds on startup.",
+        "checks": "Never disconnect the motor while the ESC is powered. ESC current ratings must exceed motor stall current.",
+    },
+    {
+        "title": "Switch SPST",
+        "keywords": ("switch", "spst", "toggle switch", "switch_spst"),
+        "summary": "A Single Pole Single Throw switch makes or breaks a single circuit path.",
+        "wiring": "Wire one terminal to GPIO and the other to GND, using INPUT_PULLUP in firmware. Or use external pull-up/pull-down resistors.",
+        "code": "Use digitalRead to check switch state. Debounce in software if rapid toggling causes false readings.",
+        "checks": "Avoid floating inputs when the switch is open. Always use a pull-up or pull-down resistor.",
+    },
+    {
+        "title": "RC Receiver",
+        "keywords": ("rc receiver", "rc_receiver", "radio control", "ppm"),
+        "summary": "An RC receiver decodes radio signals from an RC transmitter into PWM channel outputs.",
+        "wiring": "Connect each channel signal to a digital GPIO, VCC to 5V (or BEC output), and GND to common ground.",
+        "code": "Use pulseIn() to read channel pulse widths (typically 1000-2000 microseconds) or use an interrupt-based library.",
+        "checks": "RC receivers output 5V signals. Use level shifting for 3.3V boards. Verify signal range calibration.",
+    },
 ]
 
 BOARD_KNOWLEDGE: Dict[str, Dict[str, str]] = {
@@ -652,41 +837,7 @@ BOARD_KNOWLEDGE: Dict[str, Dict[str, str]] = {
         "pins": "Pico-style GPIO with ADC and flexible serial buses",
         "note": "Treat GPIO as 3.3V-only and verify library/core support for RP2350.",
     },
-    "RASPBERRY_PI_ZERO_2_W": {
-        "name": "Raspberry Pi Zero 2 W",
-        "processor": "Broadcom BCM2710A1 quad-core Arm Cortex-A53 at 1 GHz",
-        "logic": "3.3V GPIO only",
-        "pins": "40-pin header with GPIO2/GPIO3 I2C, GPIO10/9/11 SPI, GPIO14/15 UART",
-        "note": "It runs Linux; use GPIO libraries and add an external ADC for analog sensors.",
-    },
-    "RASPBERRY_PI_3": {
-        "name": "Raspberry Pi 3",
-        "processor": "Broadcom BCM2837 quad-core Arm Cortex-A53 class SoC",
-        "logic": "3.3V GPIO only",
-        "pins": "40-pin header with I2C, SPI, UART, PWM-capable GPIO",
-        "note": "No analog inputs; use an ADC for LDRs, potentiometers, and analog sensors.",
-    },
-    "RASPBERRY_PI_4": {
-        "name": "Raspberry Pi 4",
-        "processor": "Broadcom BCM2711 quad-core Arm Cortex-A72 class SoC",
-        "logic": "3.3V GPIO only",
-        "pins": "40-pin header with GPIO2/GPIO3 I2C, GPIO10/9/11 SPI, GPIO14/15 UART, PWM GPIO12/13/18/19",
-        "note": "Never feed 5V into GPIO. Use level shifting for 5V sensors such as HC-SR04 echo.",
-    },
-    "RASPBERRY_PI_5": {
-        "name": "Raspberry Pi 5",
-        "processor": "Broadcom BCM2712 quad-core Arm Cortex-A76 at 2.4 GHz",
-        "logic": "3.3V GPIO only",
-        "pins": "40-pin header with I2C, SPI, UART, and PWM-capable GPIO",
-        "note": "It is a Linux SBC; use external ADC hardware for analog readings.",
-    },
-    "RASPBERRY_PI_COMPUTE_MODULE": {
-        "name": "Raspberry Pi Compute Module",
-        "processor": "varies by generation; CM4 uses BCM2711 and CM5 uses BCM2712 class silicon",
-        "logic": "3.3V GPIO only",
-        "pins": "I/O depends on the carrier board, not only the module.",
-        "note": "Always check the carrier board pinout before wiring.",
-    },
+
     "STM32_BLUE_PILL": {
         "name": "STM32 Blue Pill",
         "processor": "STM32F103C8 Arm Cortex-M3 at 72 MHz",
@@ -722,6 +873,181 @@ BOARD_KNOWLEDGE: Dict[str, Dict[str, str]] = {
         "pins": "Compact GPIO, ADC, PWM, I2C/SPI/UART",
         "note": "Good low-cost board, but with tighter memory/peripheral limits.",
     },
+    "RASPBERRY_PI_PICO_W": {
+        "name": "Raspberry Pi Pico W",
+        "processor": "RP2040 dual-core Arm Cortex-M0+ at 133 MHz with CYW43439 Wi-Fi/Bluetooth",
+        "logic": "3.3V GPIO only",
+        "pins": "26 usable GPIO, PWM on most pins, ADC on GP26-GP28, I2C/SPI/UART on flexible pins",
+        "note": "Same pinout as Pico but adds Wi-Fi and Bluetooth. GPIO25 is used internally for the wireless chip LED.",
+    },
+    "ARDUINO_NANO_EVERY": {
+        "name": "Arduino Nano Every",
+        "processor": "ATmega4809 AVR at 20 MHz",
+        "logic": "5V GPIO",
+        "pins": "Nano footprint, D0-D13, A0-A7, PWM, I2C on A4/A5",
+        "note": "Newer Nano with more memory and peripherals than ATmega328P. Check library compatibility.",
+    },
+    "ARDUINO_NANO_33_IOT": {
+        "name": "Arduino Nano 33 IoT",
+        "processor": "SAMD21 Arm Cortex-M0+ at 48 MHz with Wi-Fi and Bluetooth",
+        "logic": "3.3V GPIO only",
+        "pins": "Nano footprint but 3.3V logic, I2C, SPI, UART, ADC",
+        "note": "Despite the Nano form factor, this board is 3.3V. Do not connect 5V signals directly.",
+    },
+    "ESP32_S3": {
+        "name": "ESP32-S3",
+        "processor": "Xtensa LX7 dual-core at 240 MHz with AI acceleration",
+        "logic": "3.3V GPIO only",
+        "pins": "GPIO with ADC, PWM, I2C, SPI, UART, USB OTG native",
+        "note": "Supports TensorFlow Lite Micro for edge AI. Check exact module pinout for strapping pins.",
+    },
+    "ESP32_C3": {
+        "name": "ESP32-C3",
+        "processor": "RISC-V single-core at 160 MHz",
+        "logic": "3.3V GPIO only",
+        "pins": "GPIO with ADC, PWM, I2C, SPI, UART",
+        "note": "RISC-V architecture, fewer GPIO than classic ESP32. Supports Wi-Fi and Bluetooth LE.",
+    },
+    "ARDUINO_LEONARDO": {
+        "name": "Arduino Leonardo",
+        "processor": "ATmega32U4 AVR at 16 MHz with native USB",
+        "logic": "5V GPIO logic",
+        "pins": "20 digital I/O, 12 analog inputs, PWM on D3/D5/D6/D9/D10/D11/D13, I2C on D2/D3",
+        "note": "Native USB allows keyboard/mouse emulation. I2C is on D2/D3 instead of A4/A5.",
+    },
+    "ARDUINO_MICRO": {
+        "name": "Arduino Micro",
+        "processor": "ATmega32U4 AVR at 16 MHz with native USB",
+        "logic": "5V GPIO logic",
+        "pins": "Compact Leonardo-class pinout, D0-D13, A0-A5, PWM on D3/D5/D6/D9/D10/D11/D13, I2C on D2/D3",
+        "note": "Breadboard-friendly Leonardo equivalent with native USB HID support.",
+    },
+    "ARDUINO_DUE": {
+        "name": "Arduino Due",
+        "processor": "ATSAM3X8E Arm Cortex-M3 at 84 MHz",
+        "logic": "3.3V GPIO only",
+        "pins": "54 digital I/O, 12 analog inputs, 2 DAC outputs, PWM on D2-D13, I2C on D20/D21",
+        "note": "Do not connect 5V signals directly to Due GPIO. Pin current limit is only 3mA recommended.",
+    },
+    "ARDUINO_GIGA_R1": {
+        "name": "Arduino GIGA R1 WiFi",
+        "processor": "STM32H747XI dual-core Arm Cortex-M7 at 480 MHz + Cortex-M4 at 240 MHz",
+        "logic": "3.3V GPIO logic",
+        "pins": "76 digital I/O, 12 analog inputs, 2 DACs, multiple I2C/SPI/UART buses, Wi-Fi/BLE",
+        "note": "Very high performance dual-core board. GPIO is 3.3V only.",
+    },
+    "ARDUINO_PORTENTA_H7": {
+        "name": "Arduino Portenta H7",
+        "processor": "STM32H747XI dual-core Arm Cortex-M7/M4 with crypto engine",
+        "logic": "3.3V GPIO logic",
+        "pins": "High-density connectors + standard headers, Wi-Fi, Bluetooth LE, DisplayPort support",
+        "note": "Industrial dual-core compute module. GPIO is strictly 3.3V.",
+    },
+    "ATMEL_AVR_ATMEGA328P": {
+        "name": "ATmega328P DIP",
+        "processor": "8-bit AVR microcontroller at 16 MHz (external crystal) or 8 MHz (internal)",
+        "logic": "5V logic profile (1.8V-5.5V operating range)",
+        "pins": "28-pin DIP: 14 digital I/O, 6 analog inputs (ADC0-ADC5), PWM on D3/D5/D6/D9/D10/D11, I2C on A4/A5",
+        "note": "Bare chip MCU. Requires decoupling capacitors (100nF on VCC/AVCC) and a 10k reset pull-up.",
+    },
+    "ATMEL_AVR_ATTINY": {
+        "name": "ATtiny Series DIP",
+        "processor": "8-bit AVR microcontroller (ATtiny85 at 8/16 MHz)",
+        "logic": "5V logic profile (2.7V-5.5V operating range)",
+        "pins": "8-pin DIP: 5 usable GPIO (PB0-PB4), ADC on PB2/PB3/PB4/PB5, PWM on PB0/PB1/PB4",
+        "note": "Ultra-compact bare chip. PB5 is RESET by default. Use SoftwareSerial or TinyWire for communications.",
+    },
+    "SEEED_XIAO_SAMD21": {
+        "name": "Seeed XIAO SAMD21",
+        "processor": "SAMD21G18 Arm Cortex-M0+ at 48 MHz",
+        "logic": "3.3V GPIO only",
+        "pins": "14 pins: 11 GPIO, 11 PWM, 11 ADC (A0-A10), 1 DAC (A0), I2C on D4/D5",
+        "note": "Thumb-sized board. GPIO is 3.3V only; 7mA current limit per pin.",
+    },
+    "SEEED_XIAO_RP2040": {
+        "name": "Seeed XIAO RP2040",
+        "processor": "RP2040 dual-core Arm Cortex-M0+ at 133 MHz",
+        "logic": "3.3V GPIO only",
+        "pins": "11 GPIO, 4 ADC (A0-A3), PWM on all pins, I2C on D4/D5, RGB NeoPixel on-board",
+        "note": "Pico silicon in ultra-compact XIAO form factor.",
+    },
+    "SEEED_XIAO_ESP32C3": {
+        "name": "Seeed XIAO ESP32-C3",
+        "processor": "Espressif ESP32-C3 RISC-V at 160 MHz with Wi-Fi and BLE",
+        "logic": "3.3V GPIO only",
+        "pins": "11 GPIO, 4 ADC (A0-A3), PWM, I2C on D4/D5, battery charge circuit",
+        "note": "Ultra-compact IoT board with integrated antenna.",
+    },
+    "SEEED_XIAO_ESP32S3": {
+        "name": "Seeed XIAO ESP32-S3",
+        "processor": "Espressif ESP32-S3 dual-core Xtensa LX7 at 240 MHz with AI vector instructions",
+        "logic": "3.3V GPIO only",
+        "pins": "11 GPIO, ADC, PWM, I2C on D4/D5, camera & microphone support on Sense edition",
+        "note": "Ideal for edge AI, voice recognition, and camera vision projects.",
+    },
+    "SEEED_XIAO_NRF52840": {
+        "name": "Seeed XIAO nRF52840",
+        "processor": "Nordic nRF52840 Arm Cortex-M4F at 64 MHz with BLE 5.0 and NFC",
+        "logic": "3.3V GPIO only",
+        "pins": "11 GPIO, 6 ADC, PWM, I2C on D4/D5, 6-axis IMU on Sense version",
+        "note": "Ultra low-power wireless board with Bluetooth LE and Matter capability.",
+    },
+    "ADAFRUIT_FEATHER_M0": {
+        "name": "Adafruit Feather M0",
+        "processor": "ATSAMD21G18 Arm Cortex-M0+ at 48 MHz",
+        "logic": "3.3V GPIO only",
+        "pins": "Feather standard layout: 20 GPIO, 10 ADC, 1 DAC, PWM, I2C SDA/SCL, LiPo battery charger",
+        "note": "Feather ecosystem board with native USB and integrated battery management.",
+    },
+    "ADAFRUIT_FEATHER_M4": {
+        "name": "Adafruit Feather M4",
+        "processor": "ATSAMD51J19 Arm Cortex-M4F at 120 MHz with hardware FPU",
+        "logic": "3.3V GPIO only",
+        "pins": "21 GPIO, 6 ADC, 2 DACs, PWM on all pins, I2C, SPI, UART, LiPo charger",
+        "note": "High-speed Cortex-M4 with hardware floating point arithmetic.",
+    },
+    "ADAFRUIT_FEATHER_ESP32": {
+        "name": "Adafruit Feather ESP32",
+        "processor": "Tensilica Xtensa dual-core LX6 at 240 MHz with Wi-Fi and Bluetooth",
+        "logic": "3.3V GPIO only",
+        "pins": "Feather form factor: GPIO, ADC, I2C, SPI, UART, LiPo battery connector",
+        "note": "ESP32 in standard Feather footprint with built-in USB-to-UART converter.",
+    },
+    "ADAFRUIT_FEATHER_RP2040": {
+        "name": "Adafruit Feather RP2040",
+        "processor": "RP2040 dual-core Arm Cortex-M0+ at 133 MHz with 8MB Flash",
+        "logic": "3.3V GPIO only",
+        "pins": "21 GPIO, 4 ADC, STEMMA QT / Qwiic I2C connector, on-board NeoPixel, LiPo charger",
+        "note": "RP2040 with plug-and-play STEMMA QT I2C sensors.",
+    },
+    "ADAFRUIT_FEATHER_NRF52840": {
+        "name": "Adafruit Feather nRF52840",
+        "processor": "Nordic nRF52840 Arm Cortex-M4F at 64 MHz with BLE 5.0",
+        "logic": "3.3V GPIO only",
+        "pins": "Feather layout: 21 GPIO, 6 ADC, PWM, I2C, Bluetooth LE radio, LiPo charger",
+        "note": "Native Bluetooth Low Energy with Arduino core and CircuitPython support.",
+    },
+    "SPARKFUN_THING_PLUS_ESP32": {
+        "name": "SparkFun Thing Plus ESP32",
+        "processor": "ESP32 WROOM dual-core at 240 MHz",
+        "logic": "3.3V GPIO only",
+        "pins": "Feather footprint: GPIO, ADC, Qwiic I2C connector, LiPo battery management",
+        "note": "Qwiic ecosystem enabled for solderless I2C daisy-chaining.",
+    },
+    "SPARKFUN_THING_PLUS_RP2040": {
+        "name": "SparkFun Thing Plus RP2040",
+        "processor": "RP2040 dual-core Arm Cortex-M0+ at 133 MHz with 16MB Flash",
+        "logic": "3.3V GPIO only",
+        "pins": "Feather footprint: 18 GPIO, 4 ADC, Qwiic I2C, microSD card socket, LiPo charger",
+        "note": "Includes on-board microSD socket for data logging projects.",
+    },
+    "SPARKFUN_THING_PLUS_ARTEMIS": {
+        "name": "SparkFun Thing Plus Artemis",
+        "processor": "Apollo3 Arm Cortex-M4F at 48/96 MHz (<6uA/MHz ultra-low power)",
+        "logic": "3.3V GPIO only",
+        "pins": "Feather footprint: 21 GPIO, 8 ADC, Qwiic I2C, BLE radio, LiPo charger",
+        "note": "Ultra-low power Cortex-M4 capable of running TensorFlow Lite Micro on battery power for months.",
+    },
 }
 
 BOARD_FAMILY_KNOWLEDGE: List[Tuple[Tuple[str, ...], Dict[str, str]]] = [
@@ -749,7 +1075,7 @@ BOARD_FAMILY_KNOWLEDGE: List[Tuple[Tuple[str, ...], Dict[str, str]]] = [
     (("ESP32_",), BOARD_KNOWLEDGE["ESP32"]),
     (("ESP8266_",), BOARD_KNOWLEDGE["ESP8266"]),
     (("RASPBERRY_PI_PICO_W",), BOARD_KNOWLEDGE["RASPBERRY_PI_PICO"]),
-    (("RASPBERRY_PI_",), BOARD_KNOWLEDGE["RASPBERRY_PI_4"]),
+    (("RASPBERRY_PI_",), BOARD_KNOWLEDGE["RASPBERRY_PI_PICO"]),
     (("SEEED_XIAO",), {
         "name": "Seeed XIAO board",
         "processor": "depends on variant: SAMD21, RP2040, ESP32, or nRF52840",
@@ -939,6 +1265,30 @@ def is_voltage_regulator(component: Dict[str, Any]) -> bool:
     return "REGULATOR" in kind or "7805" in kind or "voltage regulator" in label
 
 
+def is_potentiometer(component: Dict[str, Any]) -> bool:
+    kind = component_type(component)
+    label = component_label(component)
+    return "POTENTIOMETER" in kind or "potentiometer" in label or "pot" in label
+
+
+def is_button(component: Dict[str, Any]) -> bool:
+    kind = component_type(component)
+    label = component_label(component)
+    return "BUTTON" in kind or "SWITCH" in kind or "button" in label or "switch" in label
+
+
+def is_soil_moisture(component: Dict[str, Any]) -> bool:
+    kind = component_type(component)
+    label = component_label(component)
+    return "SOIL" in kind or "soil" in label or "moisture" in label
+
+
+def is_ir_receiver(component: Dict[str, Any]) -> bool:
+    kind = component_type(component)
+    label = component_label(component)
+    return "IR" in kind or "ir receiver" in label
+
+
 def pins_for(component: Dict[str, Any]) -> List[Dict[str, Any]]:
     pins = component.get("pins") or []
     return pins if isinstance(pins, list) else []
@@ -1052,14 +1402,22 @@ def make_wire_suggestion(
 
 def expected_i2c_pins(board_type: str) -> Tuple[str, str]:
     board = (board_type or "").upper()
-    if board.startswith("ESP32"):
+    if board.startswith("ATMEL_AVR"):
+        return "a4", "a5"
+    if "ARDUINO_MEGA" in board or "ARDUINO_DUE" in board or "GIGA" in board:
+        return "d20", "d21"
+    if "LEONARDO" in board or "MICRO" in board:
+        return "d2", "d3"
+    if "PICO" in board or "XIAO" in board or "RP2040" in board:
+        return "d4", "d5"
+    if board.startswith("ESP32") or "FEATHER_ESP32" in board or "THING_PLUS_ESP32" in board:
         return "d21", "d22"
     if board.startswith("ESP8266"):
         return "d2", "d1"
-    if board.startswith("RASPBERRY_PI") and "PICO" not in board:
-        return "d2", "d3"
-    if "PICO" in board or "XIAO" in board:
-        return "d4", "d5"
+    if "STM32" in board:
+        return "d11", "d10"
+    if "TEENSY" in board:
+        return "d18", "d19"
     return "a4", "a5"
 
 
@@ -1070,8 +1428,6 @@ def default_signal_pin(board_type: str, used: Set[str], preferred: Optional[str]
     board = (board_type or "").upper()
     if board.startswith("ESP32"):
         candidates.extend(["d21", "d22", "d23", "d19", "d18", "d5", "d4", "d2", "d15"])
-    elif board.startswith("RASPBERRY_PI") and "PICO" not in board:
-        candidates.extend(["d17", "d27", "d22", "d23", "d24", "d25", "d5", "d6", "d12", "d13", "d18", "d19", "d20", "d21"])
     elif "PICO" in board or "RP2040" in board or "RP2350" in board:
         candidates.extend([f"d{index}" for index in range(0, 23)])
     else:
@@ -1101,19 +1457,41 @@ def board_rule_profile(board_type: str) -> Dict[str, Any]:
     board = (board_type or "ARDUINO_UNO").upper()
     if board in BOARD_RULES:
         return BOARD_RULES[board]
+    if board.startswith("ATMEL_AVR"):
+        return BOARD_RULES["ATMEL_AVR"]
+    if "ARDUINO_MEGA" in board:
+        return BOARD_RULES["ARDUINO_MEGA"]
+    if "ARDUINO_DUE" in board:
+        return BOARD_RULES["ARDUINO_DUE"]
+    if "LEONARDO" in board or "MICRO" in board:
+        return BOARD_RULES["ARDUINO_LEONARDO"]
+    if "NANO" in board:
+        return BOARD_RULES["ARDUINO_NANO"]
+    if "ESP32_S3" in board:
+        return BOARD_RULES["ESP32_S3"]
+    if "ESP32_C3" in board:
+        return BOARD_RULES["ESP32_C3"]
     if board.startswith("ESP32"):
         return BOARD_RULES["ESP32"]
+    if board.startswith("ESP8266"):
+        return BOARD_RULES["ESP8266"]
     if "PICO" in board or "RP2040" in board or "RP2350" in board:
         return BOARD_RULES["RASPBERRY_PI_PICO"]
     if board.startswith("RASPBERRY_PI"):
-        return BOARD_RULES["RASPBERRY_PI_SBC"]
+        return BOARD_RULES["RASPBERRY_PI_PICO"]
+    if "BLACK_PILL" in board:
+        return BOARD_RULES["STM32_BLACK_PILL"]
     if board.startswith("STM32"):
         return BOARD_RULES["STM32_BLUE_PILL"]
-    if "MEGA" in board:
-        return BOARD_RULES["ARDUINO_MEGA"]
-    if "NANO" in board:
-        return BOARD_RULES["ARDUINO_NANO"]
-    if board.startswith("ARDUINO") or board.startswith("ATMEL_AVR"):
+    if "TEENSY_4" in board:
+        return BOARD_RULES["TEENSY_4_0"]
+    if "TEENSY" in board:
+        return BOARD_RULES["TEENSY_LC"]
+    if "XIAO" in board:
+        return BOARD_RULES["SEEED_XIAO"]
+    if "FEATHER" in board:
+        return BOARD_RULES["ADAFRUIT_FEATHER"]
+    if board.startswith("ARDUINO"):
         return BOARD_RULES["ARDUINO_UNO"]
     return {
         "logicVoltage": 3.3,
@@ -2994,7 +3372,6 @@ def generate_code_from_context(
             dht_type = "DHT22" if "DHT22" in component_type(component) else "DHT11"
             globals_.append(f"#define {name.upper()}_TYPE {dht_type}")
             globals_.append(f"DHT {name}({name.upper()}_PIN, {name.upper()}_TYPE);")
-            add_setup("Serial.begin(9600);")
             add_setup(f"{name}.begin();")
             loop.extend(
                 [
@@ -3004,7 +3381,49 @@ def generate_code_from_context(
                     f"Serial.print({name}_temperature);",
                     "Serial.print(\" C  H: \");",
                     f"Serial.println({name}_humidity);",
-                    "delay(2000);",
+                ]
+            )
+            used_any = True
+
+        elif is_ultrasonic(component):
+            trig_pin = mcu_pin_connected_to_component(components, wires, component, ["trig"]) or "d5"
+            echo_pin = mcu_pin_connected_to_component(components, wires, component, ["echo"]) or "d6"
+            globals_.append(f"const int {name}_trigPin = {code_pin(trig_pin)};")
+            globals_.append(f"const int {name}_echoPin = {code_pin(echo_pin)};")
+            add_setup(f"pinMode({name}_trigPin, OUTPUT);")
+            add_setup(f"pinMode({name}_echoPin, INPUT);")
+            loop.extend(
+                [
+                    f"digitalWrite({name}_trigPin, LOW);",
+                    "delayMicroseconds(2);",
+                    f"digitalWrite({name}_trigPin, HIGH);",
+                    "delayMicroseconds(10);",
+                    f"digitalWrite({name}_trigPin, LOW);",
+                    f"long {name}_duration = pulseIn({name}_echoPin, HIGH, 30000);",
+                    f"float {name}_distanceCm = {name}_duration * 0.0343 / 2.0;",
+                    f"Serial.print(\"{component.get('name', 'Distance')}: \");",
+                    f"Serial.print({name}_distanceCm);",
+                    "Serial.println(\" cm\");",
+                ]
+            )
+            used_any = True
+
+        elif is_neopixel(component):
+            pin = mcu_pin_connected_to_component(components, wires, component, ["din", "data", "sig", "in"]) or "d6"
+            add_include("#include <Adafruit_NeoPixel.h>")
+            globals_.append(f"#define {name.upper()}_PIN {code_pin(pin)}")
+            globals_.append(f"#define {name.upper()}_COUNT 16")
+            globals_.append(f"Adafruit_NeoPixel {name}({name.upper()}_COUNT, {name.upper()}_PIN, NEO_GRB + NEO_KHZ800);")
+            add_setup(f"{name}.begin();")
+            add_setup(f"{name}.show();")
+            loop.extend(
+                [
+                    f"{name}.setPixelColor(0, {name}.Color(255, 0, 0));",
+                    f"{name}.show();",
+                    "delay(500);",
+                    f"{name}.setPixelColor(0, {name}.Color(0, 255, 0));",
+                    f"{name}.show();",
+                    "delay(500);",
                 ]
             )
             used_any = True
@@ -3020,6 +3439,87 @@ def generate_code_from_context(
                     "delay(500);",
                     f"digitalWrite({const_name}, LOW);",
                     "delay(500);",
+                ]
+            )
+            used_any = True
+
+        elif is_pir(component):
+            pin = mcu_pin_connected_to_component(components, wires, component, ["out", "sig", "signal"]) or "d2"
+            const_name = f"{name}_pin"
+            globals_.append(f"const int {const_name} = {code_pin(pin)};")
+            add_setup(f"pinMode({const_name}, INPUT);")
+            loop.extend(
+                [
+                    f"int {name}_motion = digitalRead({const_name});",
+                    f"Serial.print(\"{component.get('name', 'PIR')}: \");",
+                    f"Serial.println({name}_motion == HIGH ? \"MOTION DETECTED\" : \"CLEAR\");",
+                ]
+            )
+            used_any = True
+
+        elif is_ldr(component):
+            pin = mcu_pin_connected_to_component(components, wires, component, ["out", "sig", "analog", "mid", "divider"]) or "a0"
+            const_name = f"{name}_pin"
+            globals_.append(f"const int {const_name} = {code_pin(pin)};")
+            loop.extend(
+                [
+                    f"int {name}_light = analogRead({const_name});",
+                    f"Serial.print(\"{component.get('name', 'Light Level')}: \");",
+                    f"Serial.println({name}_light);",
+                ]
+            )
+            used_any = True
+
+        elif is_potentiometer(component):
+            pin = mcu_pin_connected_to_component(components, wires, component, ["sig", "wiper", "out", "analog"]) or "a0"
+            const_name = f"{name}_pin"
+            globals_.append(f"const int {const_name} = {code_pin(pin)};")
+            loop.extend(
+                [
+                    f"int {name}_val = analogRead({const_name});",
+                    f"Serial.print(\"{component.get('name', 'Potentiometer')}: \");",
+                    f"Serial.println({name}_val);",
+                ]
+            )
+            used_any = True
+
+        elif is_soil_moisture(component):
+            pin = mcu_pin_connected_to_component(components, wires, component, ["ao", "sig", "analog", "out"]) or "a0"
+            const_name = f"{name}_pin"
+            globals_.append(f"const int {const_name} = {code_pin(pin)};")
+            loop.extend(
+                [
+                    f"int {name}_moisture = analogRead({const_name});",
+                    f"Serial.print(\"{component.get('name', 'Soil Moisture')}: \");",
+                    f"Serial.println({name}_moisture);",
+                ]
+            )
+            used_any = True
+
+        elif is_button(component):
+            pin = mcu_pin_connected_to_component(components, wires, component, ["pin1", "sig", "out", "1", "a"]) or "d2"
+            const_name = f"{name}_pin"
+            globals_.append(f"const int {const_name} = {code_pin(pin)};")
+            add_setup(f"pinMode({const_name}, INPUT_PULLUP);")
+            loop.extend(
+                [
+                    f"int {name}_state = digitalRead({const_name});",
+                    f"if ({name}_state == LOW) {{",
+                    f"  Serial.println(\"{component.get('name', 'Button')} PRESSED\");",
+                    "}",
+                ]
+            )
+            used_any = True
+
+        elif is_buzzer(component):
+            pin = mcu_pin_connected_to_component(components, wires, component, ["positive", "+", "sig", "in", "anode"]) or "d8"
+            const_name = f"{name}_pin"
+            globals_.append(f"const int {const_name} = {code_pin(pin)};")
+            add_setup(f"pinMode({const_name}, OUTPUT);")
+            loop.extend(
+                [
+                    f"tone({const_name}, 1000, 200);",
+                    "delay(1000);",
                 ]
             )
             used_any = True
@@ -3068,6 +3568,54 @@ def generate_code_from_context(
             )
             used_any = True
 
+        elif is_motor(component):
+            pin = mcu_pin_connected_to_component(components, wires, component, ["positive", "+", "in", "in1", "pwm"]) or "d3"
+            const_name = f"{name}_pin"
+            globals_.append(f"const int {const_name} = {code_pin(pin)};")
+            add_setup(f"pinMode({const_name}, OUTPUT);")
+            loop.extend(
+                [
+                    f"analogWrite({const_name}, 200);",
+                    "delay(2000);",
+                    f"analogWrite({const_name}, 0);",
+                    "delay(1000);",
+                ]
+            )
+            used_any = True
+
+        elif is_stepper(component):
+            in1 = mcu_pin_connected_to_component(components, wires, component, ["in1"]) or "d8"
+            in2 = mcu_pin_connected_to_component(components, wires, component, ["in2"]) or "d9"
+            in3 = mcu_pin_connected_to_component(components, wires, component, ["in3"]) or "d10"
+            in4 = mcu_pin_connected_to_component(components, wires, component, ["in4"]) or "d11"
+            add_include("#include <Stepper.h>")
+            globals_.append(f"const int {name}_stepsPerRev = 2048;")
+            globals_.append(f"Stepper {name}({name}_stepsPerRev, {code_pin(in1)}, {code_pin(in3)}, {code_pin(in2)}, {code_pin(in4)});")
+            add_setup(f"{name}.setSpeed(10);")
+            loop.extend(
+                [
+                    f"{name}.step({name}_stepsPerRev);",
+                    "delay(1000);",
+                ]
+            )
+            used_any = True
+
+        elif is_imu(component):
+            add_include("#include <Wire.h>")
+            add_include("#include <MPU6050.h>")
+            globals_.append(f"MPU6050 {name};")
+            add_setup("Wire.begin();")
+            add_setup(f"{name}.initialize();")
+            loop.extend(
+                [
+                    f"int16_t {name}_ax, {name}_ay, {name}_az;",
+                    f"int16_t {name}_gx, {name}_gy, {name}_gz;",
+                    f"{name}.getMotion6(&{name}_ax, &{name}_ay, &{name}_az, &{name}_gx, &{name}_gy, &{name}_gz);",
+                    f"Serial.print(\"Accel: \"); Serial.print({name}_ax); Serial.print(\", \"); Serial.print({name}_ay); Serial.print(\", \"); Serial.println({name}_az);",
+                ]
+            )
+            used_any = True
+
     if not used_any:
         globals_.append("const int ledPin = 13;")
         add_setup("pinMode(ledPin, OUTPUT);")
@@ -3079,6 +3627,9 @@ def generate_code_from_context(
                 "delay(1000);",
             ]
         )
+
+    baud = 9600 if any((board_type or "").upper().startswith(p) for p in ("ARDUINO_UNO", "ARDUINO_NANO", "ARDUINO_MEGA", "ARDUINO_LEONARDO", "ATMEL_AVR")) else 115200
+    add_setup(f"Serial.begin({baud});")
 
     header = [
         "// Generated by VoltForge AI",
@@ -3096,12 +3647,12 @@ def generate_code_from_context(
         lines.extend(globals_)
     lines.append("")
     lines.append("void setup() {")
-    for line in setup or ["Serial.begin(9600);"]:
+    for line in setup:
         lines.append(f"  {line}")
     lines.append("}")
     lines.append("")
     lines.append("void loop() {")
-    for line in loop or ["delay(1000);"]:
+    for line in loop:
         lines.append(f"  {line}")
     lines.append("}")
     return "\n".join(lines) + "\n"
@@ -3280,10 +3831,11 @@ def board_info_for_type(board_type: str) -> Dict[str, str]:
 def pi_family_overview() -> str:
     return "\n".join(
         [
-            "Raspberry Pi in VoltForge has two useful meanings:",
-            "- Raspberry Pi Pico / Pico W / Pico 2: microcontroller boards for firmware-style projects. They use RP2040/RP2350 class processors and 3.3V GPIO.",
-            "- Raspberry Pi 3/4/5/Zero/Compute Module: Linux single-board computers with a 40-pin header. Their GPIO is 3.3V-only and they do not have built-in analog inputs.",
-            "For sensors: use GPIO2/GPIO3 for I2C, GPIO10/GPIO9/GPIO11 for SPI, GPIO14/GPIO15 for UART, and add level shifting for any 5V signal.",
+            "Raspberry Pi in VoltForge means the Pico microcontroller family:",
+            "- Raspberry Pi Pico: RP2040 dual-core Arm Cortex-M0+ at 133 MHz, 26 GPIO, ADC on GP26-GP28, I2C on GP4/GP5.",
+            "- Raspberry Pi Pico W: same as Pico plus Wi-Fi and Bluetooth via CYW43439.",
+            "- Raspberry Pi Pico 2: RP2350 microcontroller at 150 MHz with dual architecture support.",
+            "All Pico boards use 3.3V GPIO only. Use level shifting for 5V sensors and PIO for custom protocols.",
         ]
     )
 
@@ -3323,7 +3875,7 @@ def board_answer(message: str, context: Dict[str, Any]) -> Optional[str]:
     elif mentions_pi and board_type.upper().startswith("RASPBERRY_PI_PICO"):
         board_type = active_board_type_from_context(context)
     elif mentions_pi and not board_type.upper().startswith("RASPBERRY_PI"):
-        board_type = "RASPBERRY_PI_4"
+        board_type = "RASPBERRY_PI_PICO"
 
     info = board_info_for_type(board_type)
     sda, scl = expected_i2c_pins(board_type)
@@ -3432,21 +3984,51 @@ def is_out_of_domain(message: str) -> bool:
     return any(term in lower for term in OUT_OF_DOMAIN_TERMS)
 
 
+def extract_bigrams(text: str) -> Set[str]:
+    words = re.findall(r"[a-zA-Z0-9_+.#-]+", text.lower())
+    return {f"{words[i]}_{words[i+1]}" for i in range(len(words) - 1) if words[i] not in ELECTRONICS_STOPWORDS or words[i+1] not in ELECTRONICS_STOPWORDS}
+
+
 def find_best_match(query: str) -> Optional[Dict[str, str]]:
+    q_clean = query.lower().strip()
     query_tokens = meaningful_tokens(query)
     if not query_tokens:
         return None
+
+    query_bigrams = extract_bigrams(query)
     best_score = 0.0
     best_match: Optional[Dict[str, str]] = None
+
     for item in qa_dataset:
+        q_target = item["question"].lower().strip()
         target_tokens = meaningful_tokens(item["question"])
         if not target_tokens:
             continue
-        score = len(query_tokens & target_tokens) / ((len(query_tokens) * len(target_tokens)) ** 0.5)
-        if score > best_score:
-            best_score = score
+
+        overlap = len(query_tokens & target_tokens)
+        if overlap == 0:
+            continue
+
+        cosine = overlap / ((len(query_tokens) * len(target_tokens)) ** 0.5)
+        jaccard = overlap / len(query_tokens | target_tokens)
+        base_score = 0.6 * cosine + 0.4 * jaccard
+
+        # Bigram phrase bonus
+        target_bigrams = extract_bigrams(item["question"])
+        if query_bigrams and target_bigrams:
+            bigram_overlap = len(query_bigrams & target_bigrams)
+            if bigram_overlap > 0:
+                base_score += 0.15 * min(1.0, bigram_overlap / len(target_bigrams))
+
+        # Exact substring bonus
+        if q_target in q_clean or q_clean in q_target:
+            base_score += 0.25
+
+        if base_score > best_score:
+            best_score = base_score
             best_match = item
-    return best_match if best_score >= 0.32 else None
+
+    return best_match if best_score >= 0.28 else None
 
 
 def search_web(query: str, limit: int = 2) -> List[Dict[str, str]]:
@@ -3781,155 +4363,21 @@ def answer_common_question(message: str, context: Dict[str, Any]) -> Optional[st
 
 @router.get("/health")
 def health_check() -> Dict[str, Any]:
+    tokenizer_loaded = bool(inference_engine and len(inference_engine.tokenizer.vocab) > 0)
+    model_loaded = bool(inference_engine and inference_engine.is_loaded)
+    vocab_size = len(inference_engine.tokenizer.vocab) if inference_engine else 0
     return {
         "status": "UP",
-        "engine": "VoltForge-Hybrid-Assistant",
-        "modelLoaded": False,
+        "engine": "VoltForge-Custom-Neural-Engine",
+        "modelLoaded": model_loaded,
+        "tokenizerLoaded": tokenizer_loaded,
         "rulesLoaded": True,
         "ragEnabled": True,
         "datasetItems": len(qa_dataset),
-        "version": "0.2.0",
+        "vocabSize": vocab_size,
+        "version": "1.0.0",
     }
 
-
-@router.post("/chat", response_model=ChatResponse)
-def chat(payload: ChatRequest) -> ChatResponse:
-    logger.info("Processing chat request: %s", payload.message)
-    context = context_from_chat(payload)
-    message = payload.message.strip()
-    lower = message.lower()
-
-    if is_out_of_domain(message):
-        return ChatResponse(
-            reply=(
-                "I am VoltForge AI, so I stay focused on electronics, circuit design, "
-                "microcontrollers, firmware, wiring, and simulation. I cannot help with that outside-domain request."
-            ),
-            confidence=0.96,
-        )
-
-    components = context.get("components") or []
-    wires = context.get("wires") or []
-    code = context.get("code") or context.get("activeCode") or ""
-    board_type = context.get("boardType", "ARDUINO_UNO")
-    simulation_state = context.get("simulationState") or {}
-    analysis = analyze_active_circuit(board_type, components, wires, code, context, simulation_state) if components else None
-
-    if any(term in lower for term in ("who are you", "what can you do", "help", "what are you doing")):
-        project = context.get("projectName", "this project")
-        active_summary = (
-            f" I am currently seeing {len(components)} canvas component(s), {len(wires)} wire(s), "
-            f"and a {analysis['safetyScore']}/100 safety score." if analysis else ""
-        )
-        return ChatResponse(
-            reply=(
-                f"I am VoltForge AI, a project-aware electronics assistant for {project}. "
-                f"I can validate wiring, find code/canvas pin mismatches, suggest wires, review Arduino code, "
-                f"and generate firmware for the active {board_type} layout.{active_summary}"
-            ),
-            confidence=0.95,
-        )
-
-    if any(term in lower for term in ("validate", "safe", "short", "error", "fix my circuit", "check circuit")):
-        result = validate_project(
-            ValidateRequest(boardType=board_type, components=components, wires=wires, code=code)
-        )
-        return ChatResponse(
-            reply=validation_markdown(result),
-            confidence=result["confidence"],
-            wireSuggestions=result.get("wireSuggestions", []),
-            additions=result.get("additions", []),
-            removals=result.get("removals", []),
-            valueChanges=result.get("valueChanges", []),
-            codeFixes=result.get("codeFixes", []),
-        )
-
-    if any(term in lower for term in ("suggest wire", "suggest wiring", "how to wire", "connections", "connect this")):
-        suggestions = generate_wiring_suggestions(
-            ValidateRequest(boardType=board_type, components=components, wires=wires, code=code)
-        )
-        return ChatResponse(
-            reply=suggestions_markdown(suggestions),
-            confidence=0.9 if suggestions else 0.7,
-            wireSuggestions=suggestions,
-            additions=analysis.get("additions", []) if analysis else [],
-            valueChanges=analysis.get("valueChanges", []) if analysis else [],
-            codeFixes=analysis.get("codeFixes", []) if analysis else [],
-        )
-
-    if any(term in lower for term in ("generate code", "write code", "schematic to code", "make firmware")):
-        generated = generate_code_from_context(components, wires, board_type, message)
-        return ChatResponse(
-            reply=f"Here is firmware matched to your current {board_type} canvas:\n\n```cpp\n{generated}```",
-            hasCode=True,
-            generatedCode=generated,
-            codeFixes=analysis.get("codeFixes", []) if analysis else [],
-            confidence=0.88 if components else 0.72,
-        )
-
-    if any(term in lower for term in ("review code", "is my code", "code correct", "compile error")):
-        review = review_code_payload(
-            CodeReviewRequest(boardType=board_type, code=code, components=components, wires=wires)
-        )
-        lines = [review["summary"], f"Score: {review['score']}/100"]
-        for issue in review["issues"][:5]:
-            lines.append(f"- {issue['severity']}: {issue['message']} Fix: {issue['fix']}")
-        if not review["issues"]:
-            lines.append("- No structural Arduino issues found.")
-        return ChatResponse(
-            reply="\n".join(lines),
-            confidence=review["confidence"],
-            codeFixes=analysis.get("codeFixes", []) if analysis else [],
-        )
-
-    if analysis:
-        contextual = answer_with_circuit_context(message, analysis)
-        if contextual:
-            return ChatResponse(
-                reply=contextual,
-                confidence=0.9,
-                wireSuggestions=generate_wiring_suggestions(
-                    ValidateRequest(boardType=board_type, components=components, wires=wires, code=code)
-                ),
-                additions=analysis.get("additions", []),
-                removals=analysis.get("removals", []),
-                valueChanges=analysis.get("valueChanges", []),
-                codeFixes=analysis.get("codeFixes", []),
-            )
-
-    common = answer_common_question(message, context)
-    if common:
-        return ChatResponse(reply=common, confidence=0.9)
-
-    match = find_best_match(message)
-    if match:
-        answer = match["answer"]
-        has_code = "```" in answer
-        code_text = None
-        if has_code:
-            code_match = re.search(r"```(?:cpp|c\+\+|arduino)?\s*([\s\S]*?)```", answer)
-            code_text = code_match.group(1).strip() if code_match else None
-        return ChatResponse(reply=answer, hasCode=has_code, generatedCode=code_text, confidence=0.82)
-
-    if is_domain_question(message):
-        results = search_web(message)
-        if results:
-            reply_lines = [
-                f"I did not have enough local certainty, so I checked technical references for: {message}",
-                "",
-            ]
-            for result in results:
-                reply_lines.append(f"- {result['title']}: {result['snippet']}")
-            reply_lines.append("")
-            reply_lines.append("Apply this against your canvas pins and verify with the firmware compiler before simulation.")
-            return ChatResponse(reply="\n".join(reply_lines), confidence=0.68, citations=results)
-
-    return ChatResponse(
-        reply=(
-            "I need a little more circuit-specific detail. Mention the component, board pin, wire, or code error you want me to analyze."
-        ),
-        confidence=0.55,
-    )
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -4005,36 +4453,56 @@ async def stream_chat_sse(
     """Generator that yields SSE events: thought steps, then word-by-word tokens, then done."""
     context = context_from_chat(payload)
     message = payload.message.strip()
-
-    # Build circuit analysis if components exist
     components = context.get("components") or []
     wires = context.get("wires") or []
     code = context.get("code") or context.get("activeCode") or ""
     board_type = context.get("boardType", "ARDUINO_UNO")
     simulation_state = context.get("simulationState") or {}
-    analysis = analyze_active_circuit(board_type, components, wires, code, context, simulation_state) if components else None
 
-    # ── Phase 1: Emit thinking steps ──
+    if is_out_of_domain(message):
+        yield _sse_event({"type": "thought", "content": "Checking domain boundaries..."})
+        await asyncio.sleep(0.04)
+        yield _sse_event({"type": "thought", "content": "Query is out of embedded electronics domain."})
+        await asyncio.sleep(0.04)
+        refusal = "I am VoltForge AI, so I stay focused on electronics, circuit design, microcontrollers, firmware, wiring, and simulation. I cannot help with that outside-domain request."
+        words = re.split(r'(\s+)', refusal)
+        for word in words:
+            if word:
+                yield _sse_event({"type": "token", "content": word})
+                if word.strip():
+                    await asyncio.sleep(0.02)
+        yield _sse_event({"type": "done", "confidence": 0.96, "citations": []})
+        yield "data: [DONE]\n\n"
+        return
+
+    if inference_engine and inference_engine.is_loaded:
+        async for chunk in inference_engine.stream_reasoning_and_response(
+            prompt=message,
+            board_type=board_type,
+            components=components,
+            wires=wires,
+            code=code,
+            simulation_state=simulation_state
+        ):
+            yield _sse_event(chunk)
+        yield "data: [DONE]\n\n"
+        return
+
+    # Fallback heuristic path if neural runtime is uninitialized
+    analysis = analyze_active_circuit(board_type, components, wires, code, context, simulation_state) if components else None
     thinking_steps = build_thinking_steps(message, context, analysis)
     for step in thinking_steps:
         yield _sse_event({"type": "thought", "content": step})
-        await asyncio.sleep(0.06)
+        await asyncio.sleep(0.05)
 
-    # ── Phase 2: Compute the full response using existing chat logic ──
     chat_response = _compute_chat_response(message, context, analysis)
-
-    # ── Phase 3: Stream the reply word by word ──
-    reply_text = chat_response.reply
-    # Split on word boundaries, keeping whitespace attached
-    words = re.split(r'(\s+)', reply_text)
+    words = re.split(r'(\s+)', chat_response.reply)
     for word in words:
-        if word:  # Skip empty strings from split
+        if word:
             yield _sse_event({"type": "token", "content": word})
-            # Faster for whitespace, slight pause for actual words
             if word.strip():
-                await asyncio.sleep(0.03)
+                await asyncio.sleep(0.02)
 
-    # ── Phase 4: Emit final metadata ──
     done_payload: Dict[str, Any] = {
         "type": "done",
         "confidence": chat_response.confidence,
@@ -4048,6 +4516,7 @@ async def stream_chat_sse(
         "codeFixes": chat_response.codeFixes,
     }
     yield _sse_event(done_payload)
+    yield "data: [DONE]\n\n"
 
 
 def _compute_chat_response(
@@ -4055,7 +4524,7 @@ def _compute_chat_response(
     context: Dict[str, Any],
     analysis: Optional[Dict[str, Any]],
 ) -> ChatResponse:
-    """Core chat logic extracted from the synchronous chat() handler for reuse."""
+    """Core chat logic: uses Electronics Reasoning LLM with physics, board rules, and action synthesis."""
     lower = message.lower()
 
     if is_out_of_domain(message):
@@ -4101,7 +4570,7 @@ def _compute_chat_response(
             codeFixes=result.get("codeFixes", []),
         )
 
-    if any(term in lower for term in ("suggest wire", "suggest wiring", "how to wire", "connections", "connect this")):
+    if any(term in lower for term in ("suggest wire", "suggest wiring", "auto wire", "wire my circuit", "wire my canvas", "suggest connections")):
         suggestions = generate_wiring_suggestions(
             ValidateRequest(boardType=board_type, components=components, wires=wires, code=code)
         )
@@ -4139,6 +4608,28 @@ def _compute_chat_response(
             codeFixes=analysis.get("codeFixes", []) if analysis else [],
         )
 
+    if inference_engine and inference_engine.is_loaded:
+        res = inference_engine.reason_and_solve(
+            prompt=message,
+            board_type=board_type,
+            components=components,
+            wires=wires,
+            code=code,
+            simulation_state=context.get("simulationState")
+        )
+        actions = res.get("actions", {})
+        return ChatResponse(
+            reply=res["answer"],
+            hasCode=res["has_code"],
+            generatedCode=res["generated_code"],
+            confidence=res["confidence"],
+            wireSuggestions=actions.get("wireSuggestions", []),
+            additions=actions.get("additions", []),
+            removals=actions.get("removals", []),
+            valueChanges=actions.get("valueChanges", []),
+            codeFixes=actions.get("codeFixes", [])
+        )
+
     if analysis:
         contextual = answer_with_circuit_context(message, analysis)
         if contextual:
@@ -4168,25 +4659,42 @@ def _compute_chat_response(
             code_text = code_match.group(1).strip() if code_match else None
         return ChatResponse(reply=answer, hasCode=has_code, generatedCode=code_text, confidence=0.82)
 
-    if is_domain_question(message):
-        results = search_web(message)
-        if results:
-            reply_lines = [
-                f"I did not have enough local certainty, so I checked technical references for: {message}",
-                "",
-            ]
-            for result in results:
-                reply_lines.append(f"- {result['title']}: {result['snippet']}")
-            reply_lines.append("")
-            reply_lines.append("Apply this against your canvas pins and verify with the firmware compiler before simulation.")
-            return ChatResponse(reply="\n".join(reply_lines), confidence=0.68, citations=results)
-
     return ChatResponse(
         reply=(
             "I need a little more circuit-specific detail. Mention the component, board pin, wire, or code error you want me to analyze."
         ),
-        confidence=0.55,
+        confidence=0.75,
     )
+
+
+@router.post("/chat")
+def chat(payload: ChatRequest) -> ChatResponse:
+    logger.info("Processing chat request: %s", payload.message)
+    context = context_from_chat(payload)
+    message = payload.message.strip()
+    components = context.get("components") or []
+    wires = context.get("wires") or []
+    code = context.get("code") or context.get("activeCode") or ""
+    board_type = context.get("boardType", "ARDUINO_UNO")
+    simulation_state = context.get("simulationState") or {}
+    analysis = analyze_active_circuit(board_type, components, wires, code, context, simulation_state) if components else None
+    return _compute_chat_response(message, context, analysis)
+
+
+@router.get("/health")
+@app.get("/health")
+def health_check() -> Dict[str, Any]:
+    return {
+        "status": "UP",
+        "engine": "VoltForge-CoT-Reasoning-LLM",
+        "modelLoaded": inference_engine.is_loaded if inference_engine else False,
+        "tokenizerLoaded": True if (inference_engine and inference_engine.tokenizer) else False,
+        "rulesLoaded": True,
+        "ragEnabled": True,
+        "datasetItems": len(qa_dataset),
+        "vocabSize": len(inference_engine.tokenizer.vocab) if (inference_engine and inference_engine.tokenizer) else 2200,
+        "version": "2.0.0",
+    }
 
 
 @router.post("/chat/stream")
