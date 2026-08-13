@@ -1,0 +1,22 @@
+{
+  "model_name": "VoltForge-1B",
+  "parameters": 1036077056,
+  "config": {
+    "model_name": "VoltForge-1B",
+    "vocab_size": 32768,
+    "context_length": 4096,
+    "d_model": 2048,
+    "n_layers": 20,
+    "n_heads": 16,
+    "n_kv_heads": 4,
+    "head_dim": 128,
+    "d_ff": 5632,
+    "rope_theta": 10000.0,
+    "norm_eps": 1e-06,
+    "dropout": 0.0,
+    "tie_embeddings": false
+  },
+  "best_loss": 10.826824188232422,
+  "perplexity": 22026.465794806718,
+  "timestamp": 1786587527.7871823
+}

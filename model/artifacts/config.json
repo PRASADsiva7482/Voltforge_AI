@@ -1,9 +1,10 @@
 {
-  "vocab_size": 2352,
+  "vocab_size": 4096,
   "context_length": 128,
   "d_model": 64,
   "n_heads": 4,
   "n_layers": 2,
   "d_ff": 128,
+  "rope_theta": 10000.0,
   "dropout": 0.1
 }

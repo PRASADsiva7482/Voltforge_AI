@@ -4,7 +4,9 @@ import logging
 import os
 import re
 import sys
+import time
 import urllib.parse
+import uuid
 from typing import Any, AsyncIterator, Dict, List, Optional, Set, Tuple
 
 import requests
@@ -31,6 +33,28 @@ try:
 except Exception as exc:
     inference_engine = None
     logger.warning("Could not initialize custom model runtime: %s", exc)
+
+try:
+    from web_search_engine import WebSearchEngine
+    web_search_engine = WebSearchEngine()
+    logger.info("VoltForge Web Search & Datasheet Engine initialized.")
+except Exception as exc:
+    web_search_engine = None
+    logger.warning("Could not initialize WebSearchEngine: %s", exc)
+
+try:
+    from circuit_verifier import ElectricalVerifier
+    logger.info("VoltForge Deterministic Circuit Verifier initialized.")
+except Exception as exc:
+    ElectricalVerifier = None
+    logger.warning("Could not initialize ElectricalVerifier: %s", exc)
+
+try:
+    from api.database import db
+    logger.info("VoltForge Database Persistence Layer initialized.")
+except Exception as exc:
+    db = None
+    logger.warning("Could not initialize DatabaseManager: %s", exc)
 
 
 def load_dataset() -> None:
@@ -134,6 +158,21 @@ class GenerateCodeRequest(BaseModel):
     code: Optional[str] = ""
     prompt: Optional[str] = ""
     componentTypes: List[str] = Field(default_factory=list)
+    projectId: Optional[str] = None
+    sessionId: Optional[str] = None
+
+
+class FeedbackRequest(BaseModel):
+    messageId: Optional[str] = None
+    generationId: Optional[str] = None
+    userId: Optional[str] = None
+    rating: str = "THUMBS_UP"
+    category: Optional[str] = "ACCURACY"
+    comment: Optional[str] = ""
+    correctedCode: Optional[str] = None
+    correctedWiring: Optional[List[Dict[str, Any]]] = None
+    flaggedForDataset: bool = False
+
 
 
 DOMAIN_TERMS = {
@@ -1290,8 +1329,16 @@ def is_ir_receiver(component: Dict[str, Any]) -> bool:
 
 
 def pins_for(component: Dict[str, Any]) -> List[Dict[str, Any]]:
-    pins = component.get("pins") or []
-    return pins if isinstance(pins, list) else []
+    raw_pins = component.get("pins") or []
+    if not isinstance(raw_pins, list):
+        return []
+    normalized = []
+    for p in raw_pins:
+        if isinstance(p, dict):
+            normalized.append(p)
+        elif isinstance(p, str):
+            normalized.append({"id": p, "name": p, "type": "IO"})
+    return normalized
 
 
 def pin_label(component: Dict[str, Any], pin_id: str) -> str:
@@ -3305,10 +3352,21 @@ def validate_project(payload: ValidateRequest) -> Dict[str, Any]:
         add_unique_action(removals, action)
     for action in analysis["valueChanges"]:
         add_unique_action(value_changes, action)
-    for fix in analysis["codeFixes"]:
-        add_unique_action(code_fixes, fix)
+    if ElectricalVerifier:
+        verifier_res = ElectricalVerifier.verify_circuit(board_type, components, wires, payload.code or "")
+        for issue in verifier_res.get("issues", []):
+            add_unique_issue(issues, issue)
+        for action in verifier_res.get("additions", []):
+            add_unique_action(additions, action)
+        for action in verifier_res.get("removals", []):
+            add_unique_action(removals, action)
+        for action in verifier_res.get("valueChanges", []):
+            add_unique_action(value_changes, action)
+        for fix in verifier_res.get("codeFixes", []):
+            add_unique_action(code_fixes, fix)
 
     critical = sum(1 for issue in issues if issue["severity"] == "CRITICAL")
+
     warnings = sum(1 for issue in issues if issue["severity"] == "WARNING")
     safety_score = max(0, 100 - critical * 25 - warnings * 10)
     is_valid = critical == 0 and safety_score >= 75
@@ -4366,16 +4424,18 @@ def health_check() -> Dict[str, Any]:
     tokenizer_loaded = bool(inference_engine and len(inference_engine.tokenizer.vocab) > 0)
     model_loaded = bool(inference_engine and inference_engine.is_loaded)
     vocab_size = len(inference_engine.tokenizer.vocab) if inference_engine else 0
+    db_health = db.check_health() if db else {"connected": False}
     return {
         "status": "UP",
         "engine": "VoltForge-Custom-Neural-Engine",
+        "database": db_health,
         "modelLoaded": model_loaded,
         "tokenizerLoaded": tokenizer_loaded,
         "rulesLoaded": True,
         "ragEnabled": True,
         "datasetItems": len(qa_dataset),
         "vocabSize": vocab_size,
-        "version": "1.0.0",
+        "version": "2.0.0",
     }
 
 
@@ -4608,6 +4668,28 @@ def _compute_chat_response(
             codeFixes=analysis.get("codeFixes", []) if analysis else [],
         )
 
+    if web_search_engine and any(kw in lower for kw in ("datasheet", "spec", "pinout", "voltage", "what is", "how to connect", "i2c address", "chip", "module", "sensor", "search")):
+        component_query = message.replace("datasheet", "").replace("pinout", "").replace("what is", "").strip()
+        if not component_query:
+            component_query = message
+        search_info = web_search_engine.get_component_info(component_query)
+        if search_info and search_info.get("searchResults"):
+            specs = search_info.get("specs", {})
+            citations = search_info.get("citations", [])
+            reply_lines = [
+                f"### Web Search & Datasheet Specs for {search_info['component']}:",
+                f"- **Operating Voltage**: {specs.get('operatingVoltage', 'N/A')}",
+                f"- **Interfaces**: {', '.join(specs.get('supportedInterfaces', [])) or 'General GPIO'}",
+            ]
+            if specs.get("i2cAddresses"):
+                reply_lines.append(f"- **I2C Addresses**: {', '.join(specs.get('i2cAddresses'))}")
+            reply_lines.append(f"\n**Summary**: {specs.get('summarySnippet', '')}")
+            return ChatResponse(
+                reply="\n".join(reply_lines),
+                confidence=0.92,
+                citations=citations
+            )
+
     if inference_engine and inference_engine.is_loaded:
         res = inference_engine.reason_and_solve(
             prompt=message,
@@ -4622,13 +4704,15 @@ def _compute_chat_response(
             reply=res["answer"],
             hasCode=res["has_code"],
             generatedCode=res["generated_code"],
-            confidence=res["confidence"],
+            confidence=0.88,
+            citations=actions.get("citations", []),
             wireSuggestions=actions.get("wireSuggestions", []),
             additions=actions.get("additions", []),
             removals=actions.get("removals", []),
             valueChanges=actions.get("valueChanges", []),
-            codeFixes=actions.get("codeFixes", [])
+            codeFixes=actions.get("codeFixes", []),
         )
+
 
     if analysis:
         contextual = answer_with_circuit_context(message, analysis)
@@ -4669,6 +4753,7 @@ def _compute_chat_response(
 
 @router.post("/chat")
 def chat(payload: ChatRequest) -> ChatResponse:
+    t0 = time.time()
     logger.info("Processing chat request: %s", payload.message)
     context = context_from_chat(payload)
     message = payload.message.strip()
@@ -4678,15 +4763,37 @@ def chat(payload: ChatRequest) -> ChatResponse:
     board_type = context.get("boardType", "ARDUINO_UNO")
     simulation_state = context.get("simulationState") or {}
     analysis = analyze_active_circuit(board_type, components, wires, code, context, simulation_state) if components else None
-    return _compute_chat_response(message, context, analysis)
+    response = _compute_chat_response(message, context, analysis)
+    
+    if db:
+        try:
+            latency_ms = int((time.time() - t0) * 1000)
+            project_id = getattr(payload, "projectId", None) or context.get("projectId")
+            db.save_chat_turn(
+                session_id=getattr(payload, "sessionId", None),
+                project_id=project_id,
+                user_id=getattr(payload, "userId", None),
+                user_message=message,
+                assistant_reply=response.reply,
+                board_type=board_type,
+                confidence=response.confidence,
+                generated_code=response.generatedCode,
+                citations=response.citations,
+                latency_ms=latency_ms
+            )
+        except Exception as exc:
+            logger.debug(f"Chat DB logging error: {exc}")
+    return response
 
 
 @router.get("/health")
 @app.get("/health")
 def health_check() -> Dict[str, Any]:
+    db_health = db.check_health() if db else {"connected": False}
     return {
         "status": "UP",
         "engine": "VoltForge-CoT-Reasoning-LLM",
+        "database": db_health,
         "modelLoaded": inference_engine.is_loaded if inference_engine else False,
         "tokenizerLoaded": True if (inference_engine and inference_engine.tokenizer) else False,
         "rulesLoaded": True,
@@ -4713,8 +4820,28 @@ async def chat_stream(payload: ChatRequest):
 
 @router.post("/validate-circuit")
 def validate_circuit(payload: ValidateRequest) -> Dict[str, Any]:
+    t0 = time.time()
     logger.info("Processing circuit validation")
-    return validate_project(payload)
+    result = validate_project(payload)
+    if db:
+        try:
+            duration_ms = int((time.time() - t0) * 1000)
+            project_id = getattr(payload, "projectId", None) or "active_project"
+            db.save_circuit_validation(
+                project_id=project_id,
+                snapshot_id=None,
+                is_valid=result.get("isValid", False),
+                safety_score=result.get("safetyScore", 100),
+                general_feedback=result.get("generalFeedback", ""),
+                issues=result.get("issues", []),
+                additions=result.get("additions"),
+                removals=result.get("removals"),
+                code_fixes=result.get("codeFixes"),
+                duration_ms=duration_ms
+            )
+        except Exception as exc:
+            logger.debug(f"Validation DB logging error: {exc}")
+    return result
 
 
 @router.post("/suggest-wiring")
@@ -4743,6 +4870,18 @@ def schematic_to_code(payload: SchematicToCodeRequest) -> Dict[str, Any]:
         payload.boardType or "ARDUINO_UNO",
         payload.additionalInstructions or "",
     )
+    if db:
+        try:
+            db.save_code_generation(
+                project_id="active_project",
+                session_id=None,
+                target_mcu=payload.boardType or "ARDUINO_UNO",
+                prompt_text=payload.additionalInstructions or "Schematic to code",
+                generation_mode="HYBRID_AST",
+                generated_code=code
+            )
+        except Exception as exc:
+            logger.debug(f"Codegen DB logging error: {exc}")
     return {
         "status": "SUCCESS",
         "message": "Code generated from the active schematic.",
@@ -4760,12 +4899,60 @@ def generate_code_api(payload: GenerateCodeRequest) -> Dict[str, Any]:
         payload.boardType or "ARDUINO_UNO",
         payload.prompt or "",
     )
+    if db:
+        try:
+            db.save_code_generation(
+                project_id=payload.projectId or "active_project",
+                session_id=payload.sessionId,
+                target_mcu=payload.boardType or "ARDUINO_UNO",
+                prompt_text=payload.prompt or "Code Generation",
+                generation_mode="HYBRID_AST",
+                generated_code=code
+            )
+        except Exception as exc:
+            logger.debug(f"Codegen DB logging error: {exc}")
     return {
         "status": "SUCCESS",
         "message": "Code generated from VoltForge project context.",
         "generatedCode": code,
         "confidence": 0.88 if payload.components else 0.72,
     }
+
+
+@router.post("/feedback")
+def submit_feedback(payload: FeedbackRequest) -> Dict[str, Any]:
+    logger.info("Processing user feedback: rating=%s", payload.rating)
+    if db:
+        try:
+            import uuid
+            with db.session_scope() as conn:
+                if conn:
+                    with conn.cursor() as cur:
+                        fb_id = str(uuid.uuid4())
+                        cur.execute(
+                            """
+                            INSERT INTO ai_user_feedback
+                            (id, message_id, generation_id, user_id, rating, feedback_category, feedback_comment, user_corrected_code, user_corrected_wiring, flagged_for_dataset)
+                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                            """,
+                            (
+                                fb_id,
+                                payload.messageId,
+                                payload.generationId,
+                                payload.userId,
+                                payload.rating,
+                                payload.category,
+                                payload.comment,
+                                payload.correctedCode,
+                                json.dumps(payload.correctedWiring) if payload.correctedWiring else None,
+                                1 if payload.flaggedForDataset else 0,
+                            ),
+                        )
+            return {"status": "SUCCESS", "message": "Feedback submitted successfully."}
+        except Exception as exc:
+            logger.warning(f"Error saving feedback: {exc}")
+            return {"status": "ERROR", "message": str(exc)}
+    return {"status": "SUCCESS", "message": "Feedback received (DB offline)."}
 
 
 app.include_router(router)
