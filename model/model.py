@@ -91,20 +91,30 @@ class TransformerConfig:
 # ═══════════════════════════════════════════════════════════════════════
 
 def softmax(x: np.ndarray, axis: int = -1) -> np.ndarray:
-    """Numerically stable softmax."""
-    e = np.exp(x - np.max(x, axis=axis, keepdims=True))
-    return e / (np.sum(e, axis=axis, keepdims=True) + 1e-9)
+    """Ultra-stable softmax with NaN protection, logit clipping, and non-zero division guard."""
+    x_safe = np.nan_to_num(x, nan=-1e9, posinf=65.0, neginf=-1e9)
+    x_max = np.max(x_safe, axis=axis, keepdims=True)
+    e = np.exp(np.clip(x_safe - x_max, -65.0, 0.0))
+    s = np.sum(e, axis=axis, keepdims=True)
+    return np.where(s > 1e-12, e / s, 1.0 / max(1, x.shape[axis]))
 
 
 def silu(x: np.ndarray) -> np.ndarray:
-    """SiLU / Swish activation: x · σ(x)."""
-    return x * (1.0 / (1.0 + np.exp(-np.clip(x, -88, 88))))
+    """SiLU / Swish activation: x · σ(x) with exponential numerical clipping."""
+    s = 1.0 / (1.0 + np.exp(-np.clip(x, -50.0, 50.0)))
+    return x * s
 
 
 def silu_grad(x: np.ndarray) -> np.ndarray:
     """Derivative of SiLU: σ(x) + x · σ(x) · (1 − σ(x))."""
-    s = 1.0 / (1.0 + np.exp(-np.clip(x, -88, 88)))
-    return s * (1.0 + x * (1.0 - s))
+    s = 1.0 / (1.0 + np.exp(-np.clip(x, -50.0, 50.0)))
+    return s + x * s * (1.0 - s)
+
+
+def qk_norm(x: np.ndarray, eps: float = 1e-6) -> np.ndarray:
+    """QK Normalization across head dimension for attention logit stabilization."""
+    rms = np.sqrt(np.mean(x ** 2, axis=-1, keepdims=True) + eps)
+    return x / rms
 
 
 # Legacy compatibility (used by reasoning_llm.py)

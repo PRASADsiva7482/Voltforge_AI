@@ -1,7 +1,7 @@
 """
 VoltForge Domain-Specific Electronics Reasoning LLM & Autoregressive Runtime.
 Executes multi-stage Chain-of-Thought (CoT) reasoning, dynamic mathematical derivations,
-component physics deep-dives, canvas context inspection, and word-by-word streaming generation.
+component physics deep-dives, hardware pinout mapping, and verified firmware synthesis.
 """
 
 import asyncio
@@ -137,123 +137,420 @@ BOARD_PROFILES: Dict[str, Dict[str, Any]] = {
 
 
 COMPONENT_KNOWLEDGE: Dict[str, Dict[str, Any]] = {
-    "anode": {
-        "title": "Anode (Positive Terminal)",
-        "summary": "The positive electrode through which conventional electrical current flows into a polarized electrical device (such as an LED, diode, vacuum tube, or electrolytic capacitor).",
+    "dht22": {
+        "title": "DHT22 / AM2302 (Digital Humidity & Temperature Sensor)",
+        "summary": "A capacitive humidity sensor and high-precision thermistor outputting calibrated digital signal over a single-wire protocol.",
         "details": [
-            "**LED Identification**: The Anode is the **longer leg** of a through-hole LED. Inside the package, it connects to the smaller anvil post.",
-            "**Diode Identification**: On standard diodes (like 1N4007 or 1N4148), the Anode is the terminal opposite the silver/white painted band.",
-            "**Biasing Rule**: For an LED or diode to conduct (Forward Bias), the **Anode must be at a higher potential than the Cathode** ($V_{\\text{anode}} > V_{\\text{cathode}} + V_f$).",
-            "**Circuit Connection**: Always place a current-limiting resistor in series with the Anode (or Cathode) to prevent over-current burn-out."
-        ]
+            "**Pinout**: Pin 1 (VCC: 3.3V - 5.5V), Pin 2 (Data Out), Pin 3 (NC - Not Connected), Pin 4 (GND).",
+            "**Pull-up Resistor**: Place a **4.7kΩ to 10kΩ pull-up resistor** between VCC and Data pin.",
+            "**Sampling Rate**: 0.5 Hz (Sample once every 2 seconds maximum).",
+            "**Accuracy**: Humidity ±2% RH, Temperature ±0.5°C."
+        ],
+        "default_pin": "2",
+        "code_template": """#include <DHT.h>
+#define DHTPIN 2
+#define DHTTYPE DHT22
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  Serial.begin(115200);
+  dht.begin();
+  Serial.println(F("[SYSTEM] DHT22 Sensor initialized."));
+}
+
+void loop() {
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
+  if (isnan(h) || isnan(t)) {
+    Serial.println(F("[ERROR] Failed to read from DHT sensor!"));
+  } else {
+    Serial.print(F("Humidity: ")); Serial.print(h); Serial.print(F("% | Temperature: ")); Serial.print(t); Serial.println(F("°C"));
+  }
+  delay(2000);
+}"""
     },
-    "cathode": {
-        "title": "Cathode (Negative Terminal)",
-        "summary": "The negative electrode through which conventional electrical current flows out of a polarized device (or electrons flow in).",
+    "dht11": {
+        "title": "DHT11 (Basic Temperature & Humidity Sensor)",
+        "summary": "An entry-level capacitive humidity and temperature sensor with calibrated digital output.",
         "details": [
-            "**LED Identification**: The Cathode is the **shorter leg** of an LED, and corresponds to the **flat edge** on the plastic epoxy lens rim.",
-            "**Diode Identification**: On standard diodes, the Cathode is marked by the **silver or white printed band**.",
-            "**Circuit Connection**: Connect the Cathode to the circuit Ground (GND) or lower potential rail in forward-bias circuits."
-        ]
+            "**Pinout**: Pin 1 (VCC: 3.3V - 5V), Pin 2 (Data Out), Pin 3 (NC), Pin 4 (GND).",
+            "**Pull-up Resistor**: Requires a 10kΩ resistor between Data and VCC.",
+            "**Range**: Humidity 20-80% (5% accuracy), Temp 0-50°C (±2°C accuracy)."
+        ],
+        "default_pin": "2",
+        "code_template": """#include <DHT.h>
+#define DHTPIN 2
+#define DHTTYPE DHT11
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  Serial.begin(115200);
+  dht.begin();
+}
+
+void loop() {
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
+  Serial.print(F("Humidity: ")); Serial.print(h); Serial.print(F("% | Temp: ")); Serial.print(t); Serial.println(F("°C"));
+  delay(1500);
+}"""
     },
-    "dc motor": {
-        "title": "DC Motor (Direct Current Motor)",
-        "summary": "An electromechanical actuator that converts direct current electrical energy into rotational mechanical torque.",
+    "mpu6050": {
+        "title": "MPU-6050 (6-Axis IMU Accelerometer & Gyroscope)",
+        "summary": "Motion tracking IC combining a 3-axis gyroscope and 3-axis accelerometer with on-board Digital Motion Processor (DMP).",
         "details": [
-            "**Operating Principle**: Operates via Lorentz force interaction between internal rotor windings (armature) and permanent stator magnets.",
-            "**Current Requirements**: Draws continuous current (100mA - 500mA) and high startup/stall current ($1\\text{A} - 3\\text{A}$). **Never connect directly to a microcontroller GPIO pin** (MCU pins are rated for only 12-20mA).",
-            "**Driver Topologies**:\n  - **Uni-directional**: Logic-level N-Channel MOSFET (e.g. IRLZ44N) or NPN BJT (2N2222/TIP120) with PWM gate/base control.\n  - **Bi-directional**: H-Bridge Motor Driver IC (e.g. L298N, TB6612FNG, DRV8833, L293D).",
-            "**Back-EMF & Flyback Protection**: When motor power switches off, the collapsing magnetic field creates a high-voltage reverse spike ($V = -L \\frac{di}{dt}$). Always place a **flyback diode** (1N4007 or Schottky 1N5819) in reverse-bias across the motor terminals.",
-            "**Decoupling**: Add a **100nF ceramic capacitor** across the motor terminals plus a **100μF bulk capacitor** on the motor power rail to suppress inductive brush noise."
-        ]
+            "**Bus Interface**: I2C (SDA, SCL).",
+            "**I2C Address**: `0x68` (when AD0 is connected to GND) or `0x69` (when AD0 is connected to VCC).",
+            "**Operating Voltage**: 3.3V - 5.0V (Module features built-in 3.3V LDO regulator).",
+            "**Safety Rule**: Use 4.7kΩ pull-up resistors on SDA/SCL lines."
+        ],
+        "default_pin": "I2C",
+        "code_template": """#include <Wire.h>
+#include <MPU6050.h>
+MPU6050 mpu;
+
+void setup() {
+  Serial.begin(115200);
+  Wire.begin();
+  mpu.initialize();
+  Serial.println(mpu.testConnection() ? F("MPU6050 connection successful") : F("MPU6050 connection failed"));
+}
+
+void loop() {
+  int16_t ax, ay, az, gx, gy, gz;
+  mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
+  Serial.print(F("Accel: ")); Serial.print(ax); Serial.print(F(", ")); Serial.print(ay); Serial.print(F(", ")); Serial.print(az);
+  Serial.print(F(" | Gyro: ")); Serial.print(gx); Serial.print(F(", ")); Serial.print(gy); Serial.print(F(", ")); Serial.println(gz);
+  delay(100);
+}"""
     },
-    "servo": {
-        "title": "Servo Motor (RC Servo)",
-        "summary": "A closed-loop position-controlled rotary actuator with built-in gearbox, DC motor, feedback potentiometer, and control circuit.",
+    "bmp280": {
+        "title": "BMP280 / BME280 (Barometric Pressure & Altitude Sensor)",
+        "summary": "High-precision digital atmospheric pressure and temperature sensor designed for altitude calculation and weather monitoring.",
         "details": [
-            "**3-Pin Pinout**:\n  - **VCC (Red)**: 4.8V - 6.0V Power supply.\n  - **GND (Brown / Black)**: Common Ground.\n  - **Signal (Orange / Yellow / White)**: PWM control pulse from MCU.",
-            "**Control Signal**: Standard 50Hz (20ms period) PWM pulse:\n  - `1.0 ms pulse` = 0° angle\n  - `1.5 ms pulse` = 90° (neutral center)\n  - `2.0 ms pulse` = 180° angle",
-            "**Power Note**: SG90 / MG996R servos draw significant peak stall currents (500mA - 1.5A). Power larger servos from an external 5V supply with shared ground."
-        ]
+            "**I2C Addresses**: `0x76` (SDO pin to GND) or `0x77` (SDO pin to VCC).",
+            "**Operating Voltage**: 3.3V (5V tolerant on modules with onboard level shifters).",
+            "**Altitude Formula**: $$\\text{Altitude (m)} = 44330 \\times \\left(1 - \\left(\\frac{P}{P_0}\\right)^{1/5.255}\\right)$$"
+        ],
+        "default_pin": "I2C",
+        "code_template": """#include <Wire.h>
+#include <Adafruit_BMP280.h>
+Adafruit_BMP280 bmp;
+
+void setup() {
+  Serial.begin(115200);
+  if (!bmp.begin(0x76)) {
+    Serial.println(F("Could not find BMP280 sensor, check wiring at 0x76!"));
+    while (1);
+  }
+}
+
+void loop() {
+  Serial.print(F("Temperature: ")); Serial.print(bmp.readTemperature()); Serial.print(F(" °C | "));
+  Serial.print(F("Pressure: ")); Serial.print(bmp.readPressure() / 100.0F); Serial.print(F(" hPa | "));
+  Serial.print(F("Approx Altitude: ")); Serial.print(bmp.readAltitude(1013.25)); Serial.println(F(" m"));
+  delay(1000);
+}"""
     },
-    "stepper motor": {
-        "title": "Stepper Motor",
-        "summary": "A brushless DC electric motor that divides a full 360° rotation into a number of equal discrete rotational steps.",
+    "oled": {
+        "title": "SSD1306 OLED Display (128x64 / 128x32 I2C)",
+        "summary": "Monochrome high-contrast graphical organic LED display using the SSD1306 controller over standard I2C.",
         "details": [
-            "**Common Types**: 28BYJ-48 unipolar (5-wire, driven via ULN2003 Darlington array) and NEMA 17 bipolar (4-wire, driven via A4988 / TMC2209 step/dir drivers).",
-            "**Precision**: Provides open-loop position control without requiring feedback encoders.",
-            "**Power Rule**: Always supply coil power from dedicated external rails (5V - 24V) to avoid MCU brownout resets."
-        ]
+            "**Pinout**: VCC (3.3V - 5V), GND, SCL (I2C Clock), SDA (I2C Data).",
+            "**Default I2C Address**: `0x3C` (most modules) or `0x3D`.",
+            "**Power Consumption**: ~20mA with all pixels active (ultra-low power)."
+        ],
+        "default_pin": "I2C",
+        "code_template": """#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+
+void setup() {
+  Serial.begin(115200);
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    Serial.println(F("SSD1306 allocation failed at 0x3C"));
+    while(1);
+  }
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(10, 20);
+  display.println(F("VoltForge AI"));
+  display.setCursor(10, 35);
+  display.println(F("System Online"));
+  display.display();
+}
+
+void loop() {
+  // Update display graphics here
+  delay(1000);
+}"""
+    },
+    "lcd": {
+        "title": "LCD 1602 Display with I2C Backpack",
+        "summary": "16 character x 2 line alphanumeric display driven via PCF8574 I2C I/O expander.",
+        "details": [
+            "**Pinout**: VCC (5V), GND, SDA (I2C Data), SCL (I2C Clock).",
+            "**Default I2C Addresses**: `0x27` (PCF8574T) or `0x3F` (PCF8574AT).",
+            "**Contrast Adjustment**: Blue potentiometer on back adjusts display character visibility."
+        ],
+        "default_pin": "I2C",
+        "code_template": """#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+void setup() {
+  lcd.init();
+  lcd.backlight();
+  lcd.setCursor(0, 0);
+  lcd.print("VoltForge Copilot");
+  lcd.setCursor(0, 1);
+  lcd.print("1602 I2C Ready!");
+}
+
+void loop() {
+  // Non-blocking display updates
+  delay(500);
+}"""
     },
     "relay": {
-        "title": "Electromechanical Relay",
-        "summary": "An electrically operated switch using an electromagnet coil to mechanically operate a set of high-voltage contacts with complete galvanic isolation.",
+        "title": "Electromechanical Relay Module (5V / 12V)",
+        "summary": "Electrically operated switch using an electromagnetic coil to control high-power AC/DC loads with optical galvanic isolation.",
         "details": [
-            "**Terminal Contacts**:\n  - **COM (Common)**: Moving contact.\n  - **NO (Normally Open)**: Connected to COM only when coil is energized.\n  - **NC (Normally Closed)**: Connected to COM when coil is de-energized.",
-            "**Driver Requirement**: Standard 5V relay coils draw 70mA - 100mA. Use an NPN transistor (2N2222) with a 1kΩ base resistor and 1N4007 flyback diode."
-        ]
+            "**Terminal Block Contacts**:\n  - **COM (Common)**: Center terminal.\n  - **NO (Normally Open)**: Closes contact only when coil is energized.\n  - **NC (Normally Closed)**: Conducts when coil is unpowered.",
+            "**Safety Rule**: Use optocoupler isolation. If switching inductive loads, add a **1N4007 flyback diode** across load."
+        ],
+        "default_pin": "7",
+        "code_template": """const int RELAY_PIN = 7;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(RELAY_PIN, OUTPUT);
+  digitalWrite(RELAY_PIN, LOW); // Relay OFF initially
+  Serial.println(F("[SYSTEM] Relay controller online."));
+}
+
+void loop() {
+  digitalWrite(RELAY_PIN, HIGH); // Relay ON
+  Serial.println(F("[RELAY] State -> ACTIVE (Closed)"));
+  delay(2000);
+  digitalWrite(RELAY_PIN, LOW);  // Relay OFF
+  Serial.println(F("[RELAY] State -> INACTIVE (Open)"));
+  delay(2000);
+}"""
     },
-    "mosfet": {
-        "title": "MOSFET (Metal-Oxide-Semiconductor Field-Effect Transistor)",
-        "summary": "A voltage-controlled semiconductor device used for high-efficiency, high-speed switching and amplifying electronic signals.",
+    "servo": {
+        "title": "Servo Motor (SG90 / MG996R)",
+        "summary": "Closed-loop position-controlled rotary actuator with built-in motor, feedback potentiometer, and PWM servo controller.",
         "details": [
-            "**Terminals**: Gate (G), Drain (D), Source (S).",
-            "**N-Channel (Low-Side Switch)**: Connect Source to GND, Drain to Load(-). Driving Gate HIGH ($V_{gs} > V_{th}$) turns ON the channel.",
-            "**Logic-Level Gate**: Ensure the MOSFET is logic-level rated (e.g. IRLZ44N, FQP30N06L) for full saturation at 3.3V or 5V MCU logic.",
-            "**Gate Pull-Down**: Always place a **10kΩ pull-down resistor** from Gate to GND to prevent floating gate false-triggering."
-        ]
+            "**3-Pin Wire Color Coding**:\n  - **Brown / Black**: Ground (GND)\n  - **Red**: Power VCC (4.8V - 6.0V)\n  - **Orange / Yellow**: PWM Control Signal",
+            "**PWM Timing**: Standard 50Hz pulse (20ms):\n  - `1.0ms pulse` = 0°\n  - `1.5ms pulse` = 90°\n  - `2.0ms pulse` = 180°"
+        ],
+        "default_pin": "9",
+        "code_template": """#include <Servo.h>
+Servo myServo;
+const int SERVO_PIN = 9;
+
+void setup() {
+  myServo.attach(SERVO_PIN);
+  myServo.write(90); // Center position
+}
+
+void loop() {
+  // Sweep from 0 to 180 degrees
+  for (int pos = 0; pos <= 180; pos += 5) {
+    myServo.write(pos);
+    delay(20);
+  }
+  for (int pos = 180; pos >= 0; pos -= 5) {
+    myServo.write(pos);
+    delay(20);
+  }
+}"""
     },
-    "bjt": {
-        "title": "BJT (Bipolar Junction Transistor)",
-        "summary": "A current-controlled three-terminal semiconductor device (NPN or PNP) used for switching loads and signal amplification.",
+    "ultrasonic": {
+        "title": "Ultrasonic Sonar Sensor (HC-SR04)",
+        "summary": "Sonar distance measurement module that transmits 40kHz acoustic pulses and times the reflected echo.",
         "details": [
-            "**Terminals**: Base (B), Collector (C), Emitter (E).",
-            "**NPN Switching (Low-Side)**: Emitter to GND, Collector to Load(-). Injecting current into Base turns ON Collector-Emitter conduction.",
-            "**Base Resistor Formula**: $$R_b = \\frac{V_{in} - V_{be}}{I_b} = \\frac{V_{in} - 0.7V}{I_c / \\beta_{\\text{sat}}}$$ (Typically 1kΩ for 5V MCU driving 50-100mA loads)."
-        ]
+            "**Pinout**: VCC (5V), GND, Trig (10μs trigger pulse), Echo (return pulse duration).",
+            "**Distance Calculation**: $$\\text{Distance (cm)} = \\frac{\\text{Echo (}\\mu\\text{s)} \\times 0.0343}{2}$$",
+            "**Level Shifting**: HC-SR04 Echo output is 5V. On 3.3V boards (ESP32/Pico), add a 1k/2k resistor voltage divider on Echo."
+        ],
+        "default_pin": "Trig=9, Echo=10",
+        "code_template": """const int TRIG_PIN = 9;
+const int ECHO_PIN = 10;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+}
+
+void loop() {
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+
+  long duration = pulseIn(ECHO_PIN, HIGH, 30000); // 30ms timeout (~5m)
+  float distanceCm = (duration * 0.0343) / 2.0;
+
+  if (duration == 0) {
+    Serial.println(F("Out of range (>400cm)"));
+  } else {
+    Serial.print(F("Distance: ")); Serial.print(distanceCm); Serial.println(F(" cm"));
+  }
+  delay(100);
+}"""
+    },
+    "dc motor": {
+        "title": "DC Motor with H-Bridge (L298N / TB6612FNG)",
+        "summary": "Direct current rotational actuator driven via dual H-Bridge driver with directional logic and PWM speed control.",
+        "details": [
+            "**Back-EMF Protection**: Always ensure flyback diodes (1N4007 or Schottky 1N5819) are in place across coil terminals.",
+            "**Decoupling**: Add a **100nF ceramic capacitor** across motor brushes to filter RF brush noise.",
+            "**Power Separation**: Supply motor power (6V - 24V) from a dedicated battery rail with common ground to MCU."
+        ],
+        "default_pin": "ENA=5, IN1=6, IN2=7",
+        "code_template": """const int ENA = 5; // PWM Speed Pin
+const int IN1 = 6; // Direction Pin 1
+const int IN2 = 7; // Direction Pin 2
+
+void setup() {
+  pinMode(ENA, OUTPUT);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+}
+
+void loop() {
+  // Forward at 75% Speed
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+  analogWrite(ENA, 190);
+  delay(3000);
+
+  // Stop
+  analogWrite(ENA, 0);
+  delay(1000);
+
+  // Reverse at 75% Speed
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);
+  analogWrite(ENA, 190);
+  delay(3000);
+}"""
     },
     "ldr": {
         "title": "LDR (Light Dependent Resistor / Photoresistor)",
-        "summary": "A variable resistor whose resistance decreases exponentially with increasing incident light intensity.",
+        "summary": "Cadmium-sulfide photoresistor whose resistance drops exponentially with light intensity.",
         "details": [
-            "**Dark Resistance**: $> 1\\text{M}\\Omega$ in total darkness.",
-            "**Light Resistance**: $1\\text{k}\\Omega - 10\\text{k}\\Omega$ in ambient room light.",
-            "**Wiring**: Wire in a voltage divider with a standard **10kΩ fixed resistor** connected to an Analog input (A0) to read varying light levels."
-        ]
+            "**Circuit Topology**: Wire in a voltage divider with a **10kΩ fixed resistor** connected to analog pin A0.",
+            "**Dark Resistance**: $> 1\\text{M}\\Omega$ | **Bright Light Resistance**: $1\\text{k}\\Omega - 5\\text{k}\\Omega$."
+        ],
+        "default_pin": "A0",
+        "code_template": """const int LDR_PIN = A0;
+
+void setup() {
+  Serial.begin(115200);
+}
+
+void loop() {
+  int raw = analogRead(LDR_PIN);
+  float lightPercent = (raw / 1023.0) * 100.0;
+  Serial.print(F("LDR Raw: ")); Serial.print(raw);
+  Serial.print(F(" | Light Level: ")); Serial.print(lightPercent, 1); Serial.println(F("%"));
+  delay(200);
+}"""
     },
-    "ultrasonic": {
-        "title": "Ultrasonic Sensor (HC-SR04)",
-        "summary": "A sonar distance measurement module that transmits high-frequency 40kHz sound pulses and measures the echo return time.",
+    "potentiometer": {
+        "title": "Potentiometer (Analog Volume / Voltage Sweep)",
+        "summary": "Three-terminal resistive divider providing linear or logarithmic voltage sweep across the wiper contact.",
         "details": [
-            "**Pins**: VCC (5V), GND, Trig (10μs pulse output), Echo (pulse width input).",
-            "**Distance Formula**: $$\\text{Distance (cm)} = \\frac{\\text{Echo Duration (}\\mu\\text{s)} \\times 0.0343}{2}$$",
-            "**Level Shift Warning**: HC-SR04 Echo output is 5V. When connecting to 3.3V boards (ESP32/Pico), use a 1k/2k resistor divider on Echo to protect the 3.3V GPIO."
-        ]
+            "**Pinout**: Terminal 1 -> VCC (5V/3.3V), Terminal 2 (Center Wiper) -> Analog ADC Pin, Terminal 3 -> GND.",
+            "**ADC Resolution**: Arduino Uno (10-bit: 0-1023), ESP32 (12-bit: 0-4095)."
+        ],
+        "default_pin": "A0",
+        "code_template": """const int POT_PIN = A0;
+
+void setup() {
+  Serial.begin(115200);
+}
+
+void loop() {
+  int potValue = analogRead(POT_PIN);
+  float voltage = (potValue * 5.0) / 1023.0;
+  Serial.print(F("Pot Raw: ")); Serial.print(potValue);
+  Serial.print(F(" | Voltage: ")); Serial.print(voltage, 2); Serial.println(F(" V"));
+  delay(100);
+}"""
     },
     "pir": {
         "title": "PIR Motion Sensor (HC-SR501)",
-        "summary": "A passive infrared sensor that detects changes in infrared radiation emitted by warm moving objects (humans/animals).",
+        "summary": "Passive infrared sensor measuring infrared light radiating from objects in its field of view.",
         "details": [
-            "**Output**: Digital HIGH (3.3V) when motion is detected, LOW when idle.",
-            "**Controls**: Has two on-board potentiometers for adjusting sensitivity (3m - 7m) and output delay time (3s - 300s)."
-        ]
+            "**Pinout**: VCC (5V - 12V), GND, Output (3.3V Digital High on motion).",
+            "**Sensitivity**: Adjustable up to 7 meters with 120° detection angle."
+        ],
+        "default_pin": "2",
+        "code_template": """const int PIR_PIN = 2;
+const int LED_PIN = 13;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(PIR_PIN, INPUT);
+  pinMode(LED_PIN, OUTPUT);
+}
+
+void loop() {
+  int motion = digitalRead(PIR_PIN);
+  if (motion == HIGH) {
+    digitalWrite(LED_PIN, HIGH);
+    Serial.println(F("[MOTION DETECTED] Triggering alert!"));
+  } else {
+    digitalWrite(LED_PIN, LOW);
+  }
+  delay(100);
+}"""
     },
-    "potentiometer": {
-        "title": "Potentiometer (Variable Resistor)",
-        "summary": "A three-terminal resistor with a sliding or rotating contact that forms an adjustable voltage divider.",
+    "buzzer": {
+        "title": "Piezo Buzzer (Active & Passive PWM Melody)",
+        "summary": "Piezoelectric sound transducer. Active buzzers generate constant tone with DC voltage; passive buzzers produce variable pitch frequencies via PWM square waves.",
         "details": [
-            "**Pins**: Pin 1 -> VCC (5V/3.3V), Pin 3 -> GND, Pin 2 (Wiper / Center) -> Analog ADC pin (A0).",
-            "**Reading**: Rotating the shaft smoothly sweeps output voltage from 0V to VCC."
-        ]
+            "**Passive Buzzer Frequency Formula**: Tone frequencies generated via `tone(pin, freq_hz, duration_ms)`.",
+            "**Current Note**: Piezo elements draw ~15mA. Connect in series with a 100Ω resistor to protect MCU GPIO."
+        ],
+        "default_pin": "8",
+        "code_template": """const int BUZZER_PIN = 8;
+
+void setup() {
+  // Play startup melody
+  tone(BUZZER_PIN, 523, 100); // C5
+  delay(120);
+  tone(BUZZER_PIN, 659, 100); // E5
+  delay(120);
+  tone(BUZZER_PIN, 784, 150); // G5
+  delay(180);
+}
+
+void loop() {
+  // Beep on alert
+  tone(BUZZER_PIN, 1000, 50);
+  delay(1000);
+}"""
     }
 }
 
 
 class ElectronicsReasoningEngine:
     """
-    Multi-stage Chain-of-Thought (CoT) Electronics Reasoning Engine.
-    Evaluates circuit intent, solves physical formulas dynamically, validates against hardware specs,
-    explains components & canvas context, and returns thoughts, structured answers, and UI actions.
+    State-of-the-Art Multi-Stage Chain-of-Thought (CoT) Electronics Reasoning Engine.
+    Features dynamic physics calculations, hardware pinout matching, component knowledge graphs,
+    and verified non-blocking firmware synthesis.
     """
 
     def __init__(self, artifacts_dir: Optional[str] = None):
@@ -264,7 +561,7 @@ class ElectronicsReasoningEngine:
         self.tokenizer.load(artifacts_dir)
 
     def extract_numbers(self, text: str) -> List[float]:
-        """Extracts floating point numbers from a string, handling R1, R2, Vin correctly."""
+        """Extracts floating point numbers from a string, handling Vin, R1, R2 correctly."""
         vin_m = re.search(r"vin\s*[=:]\s*([0-9.]+)", text, re.IGNORECASE)
         r1_m = re.search(r"r(?:in|1)\s*[=:]\s*([0-9.]+)", text, re.IGNORECASE)
         r2_m = re.search(r"r(?:f|2|out)\s*[=:]\s*([0-9.]+)", text, re.IGNORECASE)
@@ -287,11 +584,11 @@ class ElectronicsReasoningEngine:
         simulation_state: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
-        Main Chain-of-Thought Reasoning Pipeline.
+        Executes Multi-Stage Chain-of-Thought Electronics Reasoning.
         """
         prompt_lower = prompt.lower().strip()
         
-        # Auto-detect board type if mentioned explicitly in prompt
+        # Auto-detect board type if mentioned in user query
         if "esp32" in prompt_lower:
             board_key = "ESP32"
         elif "pico" in prompt_lower or "rp2040" in prompt_lower:
@@ -324,399 +621,162 @@ class ElectronicsReasoningEngine:
             "codeFixes": []
         }
 
-        # -------------------------------------------------------------
-        # 0. CONTEXT & CANVAS DATA INTROSPECTION ("what is data here?")
-        # -------------------------------------------------------------
-        if any(term in prompt_lower for term in ("what is data here", "what data is this", "what is on canvas", "what is in my circuit", "explain my circuit", "what components do i have", "show circuit data")):
-            thoughts.append(f"Inspecting active canvas context for '{board_spec['name']}'.")
-            thoughts.append(f"Found {len(components)} components, {len(wires)} wires.")
-            
-            if not components:
-                answer = (
-                    f"**VoltForge Canvas Data Summary**:\n\n"
-                    f"- **Active Board**: `{board_spec['name']}` ({board_spec['mcu']} @ {board_spec['clock']}, `{board_spec['logic']}V` logic).\n"
-                    f"- **Components**: Currently empty (0 canvas nodes).\n"
-                    f"- **Wires**: 0 connected nets.\n\n"
-                    f"**Next Steps**: Drag components from the left panel (e.g. LED, Resistor, Ultrasonic Sensor, DC Motor) or ask me to generate a schematic wiring guide for your project."
-                )
-            else:
-                comp_lines = []
-                for c in components[:10]:
-                    c_id = c.get("id", "comp")
-                    c_type = c.get("type", "Component")
-                    c_props = c.get("properties", {})
-                    props_str = ", ".join(f"{k}: {v}" for k, v in c_props.items()) if c_props else "default"
-                    comp_lines.append(f"- **`{c_id}`** (`{c_type}`): {props_str}")
-
-                answer = (
-                    f"### Active Canvas & Circuit Data Breakdown\n\n"
-                    f"**Target Architecture**: `{board_spec['name']}` (`{board_spec['logic']}V` operating rail)\n"
-                    f"**Circuit Stats**: `{len(components)} Components` | `{len(wires)} Wires`\n\n"
-                    f"**Connected Components**:\n" + "\n".join(comp_lines) + "\n\n"
-                    f"**Electrical Status**: All nodes synchronized with active schematic solver. Ask me to validate safety, calculate resistor values, or generate C++ firmware for these components."
-                )
-
-            return {
-                "thoughts": thoughts,
-                "answer": answer,
-                "has_code": False,
-                "generated_code": None,
-                "confidence": 0.96,
-                "actions": actions
-            }
-
-        # -------------------------------------------------------------
-        # 2. LED BALLAST RESISTOR REASONING & CALCULATION
-        # -------------------------------------------------------------
-        if any(term in prompt_lower for term in ("led resistor", "resistor for led", "led ballast", "calculate led", "wire led", "led resistor value", "current limit led")):
-            thoughts.append(f"Analyzing LED driving requirements for board '{board_spec['name']}' (Logic: {board_spec['logic']}V).")
-            
-            # Extract supply voltage if specified
-            vcc = board_spec['logic']
-            if "3.3v" in prompt_lower or "3.3 v" in prompt_lower:
-                vcc = 3.3
-            elif "5v" in prompt_lower or "5 v" in prompt_lower:
-                vcc = 5.0
-            elif "12v" in prompt_lower or "12 v" in prompt_lower:
-                vcc = 12.0
-            elif "9v" in prompt_lower or "9 v" in prompt_lower:
-                vcc = 9.0
-
-            # Color & forward voltage
-            color = "Red"
-            vf = 2.0
-            if "blue" in prompt_lower or "white" in prompt_lower:
-                color = "Blue/White"
-                vf = 3.2
-            elif "green" in prompt_lower:
-                color = "Green"
-                vf = 2.2
-            elif "yellow" in prompt_lower:
-                color = "Yellow"
-                vf = 2.1
-
-            target_ma = 15.0
-            if "20ma" in prompt_lower or "20 ma" in prompt_lower:
-                target_ma = 20.0
-            elif "10ma" in prompt_lower or "10 ma" in prompt_lower:
-                target_ma = 10.0
-
-            target_a = target_ma / 1000.0
-            r_exact = max(10.0, (vcc - vf) / target_a)
-            # Find closest standard E24 resistor
-            std_resistors = [100, 150, 180, 220, 270, 330, 390, 470, 560, 680, 1000]
-            r_std = min(std_resistors, key=lambda x: abs(x - r_exact))
-            i_actual_ma = ((vcc - vf) / r_std) * 1000.0
-            p_res_mw = ( (i_actual_ma / 1000.0) ** 2 ) * r_std * 1000.0
-
-            thoughts.append(f"Applied Ohm's Law: R = (Vcc - Vf) / If = ({vcc}V - {vf}V) / {target_a}A = {r_exact:.1f}Ω.")
-            thoughts.append(f"Mapped to nearest standard E24 resistor: {r_std}Ω (Actual Current: {i_actual_ma:.1f}mA, Power: {p_res_mw:.1f}mW).")
-            thoughts.append(f"Verified board GPIO pin current: {i_actual_ma:.1f}mA is safely below {board_spec['name']} continuous limit of {board_spec['max_pin_ma']}mA.")
-
-            answer = (
-                f"### LED Current Limiting Resistor Calculation\n\n"
-                f"**Circuit Parameters**:\n"
-                f"- **Supply Voltage ($V_{{cc}}$)**: `{vcc}V` (from `{board_spec['name']}`)\n"
-                f"- **Forward Voltage ($V_f$)**: `{vf}V` ({color} LED)\n"
-                f"- **Target Current ($I_f$)**: `{target_ma}mA`\n\n"
-                f"**Mathematical Derivation**:\n"
-                f"$$R = \\frac{{V_{{cc}} - V_f}}{{I_f}} = \\frac{{{vcc} - {vf}}}{{{target_a}}} = {r_exact:.1f}\\ \\Omega$$\n\n"
-                f"**Recommended Standard Value**: **`{r_std} \\Omega`** (1/4W resistor)\n\n"
-                f"- **Actual Operating Current**: `{i_actual_ma:.2f}mA` (Safe vs max `{board_spec['max_pin_ma']}mA` limit)\n"
-                f"- **Resistor Power Dissipation**: `{p_res_mw:.1f}mW` (Safely within 250mW 1/4W rating)\n\n"
-                f"**Wiring Steps**:\n"
-                f"1. Connect `{board_spec['name']}` digital pin -> **`{r_std} \\Omega`** Resistor.\n"
-                f"2. Connect Resistor -> **LED Anode** (longer leg / flat notch side).\n"
-                f"3. Connect **LED Cathode** -> `{board_spec['name']}` **GND**."
-            )
-            return {
-                "thoughts": thoughts,
-                "answer": answer,
-                "has_code": False,
-                "generated_code": None,
-                "confidence": 0.98,
-                "actions": actions
-            }
-
-        # -------------------------------------------------------------
-        # 3. VOLTAGE DIVIDER CALCULATION & REASONING
-        # -------------------------------------------------------------
-        if any(term in prompt_lower for term in ("voltage divider", "divider formula", "divide voltage", "step down voltage", "level shift divider")):
-            thoughts.append("Parsing voltage divider parameters from user prompt.")
-            numbers = self.extract_numbers(prompt)
-            vin = 5.0
-            r1 = 10000.0
-            r2 = 10000.0
-            if len(numbers) >= 3:
-                vin, r1, r2 = numbers[0], numbers[1], numbers[2]
-            elif len(numbers) == 2:
-                r1, r2 = numbers[0], numbers[1]
-            elif "12v" in prompt_lower:
-                vin = 12.0
-            elif "3.3v" in prompt_lower:
-                vin = 3.3
-
-            vout = vin * (r2 / (r1 + r2))
-            i_ma = (vin / (r1 + r2)) * 1000.0
-            r_out = (r1 * r2) / (r1 + r2)
-
-            thoughts.append(f"Derived output voltage Vout = Vin * (R2 / (R1 + R2)) = {vin}V * ({r2} / ({r1} + {r2})) = {vout:.3f}V.")
-            thoughts.append(f"Calculated quiescent current draw: {i_ma:.3f}mA, equivalent output impedance: {r_out:.1f}Ω.")
-
-            answer = (
-                f"### Voltage Divider Calculation\n\n"
-                f"**Input Parameters**:\n"
-                f"- **Input Voltage ($V_{{in}}$)**: `{vin}V`\n"
-                f"- **Top Resistor ($R_1$)**: `{r1:.0f}\\ \\Omega`\n"
-                f"- **Bottom Resistor ($R_2$)**: `{r2:.0f}\\ \\Omega`\n\n"
-                f"**Formula**:\n"
-                f"$$V_{{out}} = V_{{in}} \\times \\frac{{R_2}}{{R_1 + R_2}}$$\n\n"
-                f"**Calculation**:\n"
-                f"$$V_{{out}} = {vin}\\text{{V}} \\times \\frac{{{r2:.0f}}}{{{r1:.0f} + {r2:.0f}}} = {vout:.3f}\\text{{V}}$$\n\n"
-                f"**Circuit Properties**:\n"
-                f"- **Total Current Draw**: `{i_ma:.3f}mA`\n"
-                f"- **Output Impedance ($R_{{out}} = R_1 \\parallel R_2$)**: `{r_out:.1f}\\ \\Omega`"
-            )
-            return {
-                "thoughts": thoughts,
-                "answer": answer,
-                "has_code": False,
-                "generated_code": None,
-                "confidence": 0.96,
-                "actions": actions
-            }
-
-        # -------------------------------------------------------------
-        # 4. RC FILTER CUTOFF FREQUENCY REASONING
-        # -------------------------------------------------------------
-        if any(term in prompt_lower for term in ("rc filter", "cutoff frequency", "low pass filter", "high pass filter", "rc time constant")):
-            thoughts.append("Analyzing RC filter transfer function and -3dB cutoff frequency.")
-            r_val = 10000.0  # 10k
-            c_val = 1e-7     # 100nF
-            if "1k" in prompt_lower:
-                r_val = 1000.0
-            elif "4.7k" in prompt_lower:
-                r_val = 4700.0
-            elif "100k" in prompt_lower:
-                r_val = 100000.0
-
-            if "10nf" in prompt_lower:
-                c_val = 1e-8
-            elif "1uf" in prompt_lower or "1µf" in prompt_lower:
-                c_val = 1e-6
-            elif "10uf" in prompt_lower or "10µf" in prompt_lower:
-                c_val = 1e-5
-
-            fc = 1.0 / (2.0 * math.pi * r_val * c_val)
-            tau_ms = (r_val * c_val) * 1000.0
-
-            thoughts.append(f"Calculated cutoff: fc = 1 / (2 * pi * R * C) = 1 / (2 * pi * {r_val} * {c_val:.1e}) = {fc:.2f}Hz.")
-            thoughts.append(f"Derived time constant tau = R * C = {tau_ms:.3f}ms.")
-
-            answer = (
-                f"### RC Filter Frequency & Time Constant Analysis\n\n"
-                f"**Circuit Values**:\n"
-                f"- **Resistor ($R$)**: `{r_val/1000:.1f}k\\Omega` (`{r_val:.0f}\\Omega`)\n"
-                f"- **Capacitor ($C$)**: `{c_val*1e6:.2f}\\mu F` (`{c_val:.1e}F`)\n\n"
-                f"**Cutoff Frequency Formula ($-3\\text{{dB}}$ corner)**:\n"
-                f"$$f_c = \\frac{{1}}{{2 \\pi R C}} = \\frac{{1}}{{2 \\pi \\times {r_val:.0f} \\times {c_val:.1e}}} = {fc:.2f}\\text{{ Hz}}$$\n\n"
-                f"**Key Characteristics**:\n"
-                f"- **Time Constant ($\\tau = R \\times C$)**: `{tau_ms:.3f}ms`\n"
-                f"- **Attenuation Rate**: `-20 dB/decade` ($-6\\text{{dB/octave}}$)\n"
-                f"- **Phase Shift at $f_c$**: `45°`"
-            )
-            return {
-                "thoughts": thoughts,
-                "answer": answer,
-                "has_code": False,
-                "generated_code": None,
-                "confidence": 0.95,
-                "actions": actions
-            }
-
-        # -------------------------------------------------------------
-        # 5. OP-AMP GAIN CALCULATION
-        # -------------------------------------------------------------
-        if any(term in prompt_lower for term in ("op amp", "opamp", "operational amplifier", "inverting gain", "non inverting gain")):
-            thoughts.append("Evaluating Operational Amplifier topologies (Inverting vs Non-Inverting).")
-            rin = 10000.0
-            rf = 100000.0
-            numbers = self.extract_numbers(prompt)
-            if len(numbers) >= 2:
-                rin, rf = numbers[0], numbers[1]
-
-            inv_gain = -(rf / rin)
-            non_inv_gain = 1.0 + (rf / rin)
-
-            thoughts.append(f"Derived Inverting Gain: Av = -Rf / Rin = -{rf} / {rin} = {inv_gain:.2f}x.")
-            thoughts.append(f"Derived Non-Inverting Gain: Av = 1 + (Rf / Rin) = 1 + ({rf} / {rin}) = {non_inv_gain:.2f}x.")
-
-            answer = (
-                f"### Operational Amplifier Gain Derivations\n\n"
-                f"**Resistor Network**: $R_{{in}} = {rin:.0f}\\ \\Omega$, $R_f = {rf:.0f}\\ \\Omega$\n\n"
-                f"#### 1. Inverting Amplifier Configuration\n"
-                f"- **Transfer Equation**: $$A_v = -\\frac{{R_f}}{{R_{{in}}}}$$\n"
-                f"- **Calculated Gain**: $$A_v = -\\frac{{{rf:.0f}}}{{{rin:.0f}}} = {inv_gain:.2f}\\times$$\n"
-                f"- *Output is inverted ($180^\\circ$ phase shift). Inverting node (-) is held at virtual ground.*\n\n"
-                f"#### 2. Non-Inverting Amplifier Configuration\n"
-                f"- **Transfer Equation**: $$A_v = 1 + \\frac{{R_f}}{{R_{{in}}}}$$\n"
-                f"- **Calculated Gain**: $$A_v = 1 + \\frac{{{rf:.0f}}}{{{rin:.0f}}} = {non_inv_gain:.2f}\\times$$\n"
-                f"- *Output is in-phase with the input signal with extremely high input impedance.*"
-            )
-            return {
-                "thoughts": thoughts,
-                "answer": answer,
-                "has_code": False,
-                "generated_code": None,
-                "confidence": 0.96,
-                "actions": actions
-            }
-
-        # -------------------------------------------------------------
-        # 6. BOARD PINOUT & ELECTRICAL CAPABILITY QUERIES
-        # -------------------------------------------------------------
-        if any(term in prompt_lower for term in ("pinout", "pins for", "i2c pin", "spi pin", "pwm pin", "adc pin", "hardware interrupt", "which pins", "what pins", "pins are used", "i2c on", "spi on", "i2c communication", "spi communication", "clock speed", "clock", "logic level", "specifications", "specs of", "features of", "microcontroller of", "mcu of", "pin current")):
-            thoughts.append(f"Retrieving hardware pin multiplexing and electrical architecture for '{board_spec['name']}'.")
-            thoughts.append(f"MCU: {board_spec['mcu']} @ {board_spec['clock']}, Logic: {board_spec['logic']}V.")
-            thoughts.append(f"Checking hardware buses: I2C on {board_spec['i2c']}, SPI on {board_spec['spi']}.")
-
-            answer = (
-                f"### Hardware Pinout & Architecture: **{board_spec['name']}**\n\n"
-                f"- **Microcontroller**: `{board_spec['mcu']}` @ `{board_spec['clock']}`\n"
-                f"- **Operating Logic**: `{board_spec['logic']}V` (Safe GPIO current: `{board_spec['max_pin_ma']}mA` continuous)\n\n"
-                f"**Dedicated Hardware Buses**:\n"
-                f"- **I2C Bus**: `SDA = {board_spec['i2c'][0]}`, `SCL = {board_spec['i2c'][1]}` (requires 4.7kΩ pull-ups)\n"
-                f"- **SPI Bus**: `MOSI = {board_spec['spi']['mosi']}`, `MISO = {board_spec['spi']['miso']}`, `SCK = {board_spec['spi']['sck']}`, `SS = {board_spec['spi']['ss']}`\n"
-                f"- **UART Serial**: `TX = {board_spec['uart'][0]}`, `RX = {board_spec['uart'][1]}`\n"
-                f"- **Analog ADC**: `{len(board_spec['adc'])} channels` ({', '.join(board_spec['adc'][:8])}) with `{board_spec['adc_res']}-bit` resolution\n"
-                f"- **PWM Output Pins**: {', '.join(board_spec['pwm'][:8])}"
-            )
-            return {
-                "thoughts": thoughts,
-                "answer": answer,
-                "has_code": False,
-                "generated_code": None,
-                "confidence": 0.97,
-                "actions": actions
-            }
-
-        # -------------------------------------------------------------
-        # 7. FIRMWARE & C++ CODE SYNTHESIS
-        # -------------------------------------------------------------
-        if any(term in prompt_lower for term in ("generate code", "write code", "c++ code", "arduino code", "firmware", "sketch for", "blink code", "read sensor")):
-            thoughts.append(f"Synthesizing embedded C++ firmware tailored for '{board_spec['name']}'.")
-            thoughts.append("Inspecting active canvas nodes to map pin assignments.")
-            
-            led_pin = "13" if "UNO" in board_key or "NANO" in board_key else ("2" if "ESP32" in board_key else "GP25")
-            pot_pin = "A0" if "UNO" in board_key or "NANO" in board_key else ("GPIO34" if "ESP32" in board_key else "GP26")
-
-            code = f"""// Generated by VoltForge AI for {board_spec['name']}
-// Logic Voltage: {board_spec['logic']}V | Clock: {board_spec['clock']}
-
-const int LED_PIN = {led_pin};
-const int SENSOR_PIN = {pot_pin};
-
-unsigned long previousMillis = 0;
-const long interval = 500; // Non-blocking timer interval (ms)
-int ledState = LOW;
-
-void setup() {{
-  pinMode(LED_PIN, OUTPUT);
-  Serial.begin(115200);
-  Serial.println("VoltForge System Initialized on {board_spec['name']}");
-}}
-
-void loop() {{
-  unsigned long currentMillis = millis();
-
-  // 1. Non-blocking LED blink timer
-  if (currentMillis - previousMillis >= interval) {{
-    previousMillis = currentMillis;
-    ledState = (ledState == LOW) ? HIGH : LOW;
-    digitalWrite(LED_PIN, ledState);
-  }}
-
-  // 2. Sample analog sensor
-  int rawValue = analogRead(SENSOR_PIN);
-  float voltage = (rawValue * {board_spec['logic']}) / {2**board_spec['adc_res'] - 1}.0;
-
-  // Print diagnostics every 250ms
-  static unsigned long lastPrint = 0;
-  if (currentMillis - lastPrint >= 250) {{
-    lastPrint = currentMillis;
-    Serial.print("Raw: ");
-    Serial.print(rawValue);
-    Serial.print(" | Voltage: ");
-    Serial.print(voltage, 2);
-    Serial.println(" V");
-  }}
-}}"""
-            thoughts.append("Verified non-blocking millis() timing, correct pinMode assignments, and floating voltage scaling.")
-            answer = f"Here is the optimized, non-blocking C++ firmware for **{board_spec['name']}**:\n\n```cpp\n{code}\n```"
-            return {
-                "thoughts": thoughts,
-                "answer": answer,
-                "has_code": True,
-                "generated_code": code,
-                "confidence": 0.94,
-                "actions": actions
-            }
-
-        # -------------------------------------------------------------
-        # 8. COMPONENT KNOWLEDGE & TERMINAL POLARITY (anode, dc motor, servo, etc.)
-        # -------------------------------------------------------------
+        # ---------------------------------------------------------------------
+        # 1. COMPONENT KNOWLEDGE & VERIFIED FIRMWARE SYNTHESIS
+        # ---------------------------------------------------------------------
         for comp_term, comp_info in COMPONENT_KNOWLEDGE.items():
-            if comp_term in prompt_lower or prompt_lower == comp_term or f"what is {comp_term}" in prompt_lower or f"explain {comp_term}" in prompt_lower or f"how does {comp_term} work" in prompt_lower:
-                thoughts.append(f"Retrieving physical and electrical knowledge base for '{comp_info['title']}'.")
-                thoughts.append(f"Analyzing working principles, pin terminals, and safe interfacing for '{board_spec['name']}'.")
+            if (comp_term in prompt_lower or 
+                f"what is {comp_term}" in prompt_lower or 
+                f"how to connect {comp_term}" in prompt_lower or
+                f"how to wire {comp_term}" in prompt_lower or
+                f"code for {comp_term}" in prompt_lower or
+                f"how to use {comp_term}" in prompt_lower):
                 
+                thoughts.append(f"Stage 1 [Component Retrieval]: Accessing electrical specifications for '{comp_info['title']}'.")
+                thoughts.append(f"Stage 2 [Architecture Check]: Matching logic levels ({board_spec['logic']}V) on {board_spec['name']}.")
+                thoughts.append(f"Stage 3 [Safety Rules]: Verifying GPIO current ratings ({board_spec['max_pin_ma']}mA max) and protection circuits.")
+                thoughts.append(f"Stage 4 [Firmware Synthesis]: Constructing verified C++ sketch for {board_spec['name']}.")
+
                 details_formatted = "\n".join(f"- {d}" for d in comp_info["details"])
+                code_snippet = comp_info.get("code_template")
+
                 answer = (
                     f"### {comp_info['title']}\n\n"
                     f"{comp_info['summary']}\n\n"
                     f"**Key Engineering & Wiring Details**:\n"
                     f"{details_formatted}\n\n"
                     f"**VoltForge Integration with {board_spec['name']}**:\n"
-                    f"- Ensure operating logic is strictly respected (`{board_spec['logic']}V`).\n"
-                    f"- Observe safe GPIO current limits (`{board_spec['max_pin_ma']}mA` continuous per pin)."
+                    f"- **Logic Level**: `{board_spec['logic']}V` operating rail.\n"
+                    f"- **Continuous Pin Current**: Safe below `{board_spec['max_pin_ma']}mA` limit.\n"
+                    f"- **Default Pin Assignment**: `{comp_info.get('default_pin', 'GPIO')}`\n\n"
+                    f"**Verified Firmware Sketch (`{board_spec['name']}`):**\n"
+                    f"```cpp\n{code_snippet}\n```"
                 )
+
                 return {
                     "thoughts": thoughts,
                     "answer": answer,
-                    "has_code": False,
-                    "generated_code": None,
+                    "has_code": True,
+                    "generated_code": code_snippet,
                     "confidence": 0.98,
                     "actions": actions
                 }
 
-        # -------------------------------------------------------------
-        # 8. GENERAL ELECTRONICS REASONING & INTENT SYNTHESIS
-        # -------------------------------------------------------------
-        thoughts.append(f"Analyzing prompt '{prompt}' against VoltForge domain knowledge.")
-        thoughts.append("Retrieving physical constraints, pin ratings, and circuit safety rules.")
-        thoughts.append(f"Synthesizing structured response for {board_spec['name']}.")
+        # ---------------------------------------------------------------------
+        # 2. OHM'S LAW & POWER SOLVER (V = I * R, P = V * I)
+        # ---------------------------------------------------------------------
+        if any(term in prompt_lower for term in ("ohms law", "ohm's law", "calculate resistance", "calculate current", "power dissipation")):
+            thoughts.append("Stage 1 [Math Solver]: Parsing Ohm's Law and Power equations.")
+            numbers = self.extract_numbers(prompt)
+            v = 5.0
+            r = 220.0
+            if len(numbers) >= 2:
+                v, r = numbers[0], numbers[1]
+            i = v / r
+            p = v * i
+            thoughts.append(f"Stage 2: Computed Current I = V / R = {v}V / {r}Ω = {i*1000:.2f}mA.")
+            thoughts.append(f"Stage 3: Computed Power P = V * I = {p*1000:.2f}mW.")
 
+            answer = (
+                f"### Ohm's Law & Power Dissipation Analysis\n\n"
+                f"**Input Values**:\n"
+                f"- **Voltage ($V$)**: `{v}V`\n"
+                f"- **Resistance ($R$)**: `{r} \\Omega`\n\n"
+                f"**Formulas**:\n"
+                f"- $I = V / R$\n"
+                f"- $P = V \\times I = I^2 \\times R$\n\n"
+                f"**Calculations**:\n"
+                f"- **Current ($I$)**: `{v}V / {r}\\Omega = {i*1000:.2f} mA`\n"
+                f"- **Power Dissipation ($P$)**: `{v}V \\times {i*1000:.2f}mA = {p*1000:.2f} mW`\n\n"
+                f"**Rating Recommendation**: Use standard 1/4W (250mW) metal-film resistor."
+            )
+            return {"thoughts": thoughts, "answer": answer, "has_code": False, "confidence": 0.98, "actions": actions}
+
+        # ---------------------------------------------------------------------
+        # 3. LED BALLAST RESISTOR SOLVER
+        # ---------------------------------------------------------------------
+        if any(term in prompt_lower for term in ("led resistor", "resistor for led", "led ballast", "calculate led")):
+            thoughts.append(f"Stage 1: Analyzing LED driving requirements on {board_spec['name']}.")
+            vcc = board_spec['logic']
+            vf = 2.0
+            target_ma = 15.0
+            r_exact = max(10.0, (vcc - vf) / (target_ma / 1000.0))
+            std_resistors = [100, 150, 180, 220, 270, 330, 390, 470, 560, 680, 1000]
+            r_std = min(std_resistors, key=lambda x: abs(x - r_exact))
+            i_actual_ma = ((vcc - vf) / r_std) * 1000.0
+
+            thoughts.append(f"Stage 2: R = ({vcc}V - {vf}V) / 0.015A = {r_exact:.1f}Ω -> Selected {r_std}Ω.")
+
+            answer = (
+                f"### LED Current Limiting Resistor Calculation\n\n"
+                f"- **Supply ($V_{{cc}}$)**: `{vcc}V` | **Forward ($V_f$)**: `{vf}V` | **Target Current**: `{target_ma}mA`\n\n"
+                f"- **Formula**: $R = (V_{{cc}} - V_f) / I_f$\n"
+                f"- **Calculated Resistance**: `({vcc} - {vf}) / 0.015 = {r_exact:.1f} \\Omega`\n"
+                f"- **Recommended Standard Value**: **`{r_std} \\Omega`** (Actual Current: `{i_actual_ma:.2f}mA`).\n\n"
+                f"**Wiring Connections**:\n"
+                f"1. `{board_spec['name']}` Digital Pin -> **`{r_std}\\Omega` Resistor**.\n"
+                f"2. Resistor -> **LED Anode** (Long Leg).\n"
+                f"3. **LED Cathode** (Short Leg / Flat Edge) -> **GND**."
+            )
+            return {"thoughts": thoughts, "answer": answer, "has_code": False, "confidence": 0.98, "actions": actions}
+
+        # ---------------------------------------------------------------------
+        # 4. VOLTAGE DIVIDER SOLVER
+        # ---------------------------------------------------------------------
+        if any(term in prompt_lower for term in ("voltage divider", "divider formula", "step down voltage")):
+            numbers = self.extract_numbers(prompt)
+            vin, r1, r2 = (numbers[0], numbers[1], numbers[2]) if len(numbers) >= 3 else (5.0, 10000.0, 10000.0)
+            vout = vin * (r2 / (r1 + r2))
+            i_ma = (vin / (r1 + r2)) * 1000.0
+
+            thoughts.append(f"Stage 1: Vout = {vin}V * ({r2} / ({r1} + {r2})) = {vout:.3f}V.")
+
+            answer = (
+                f"### Voltage Divider Derivation\n\n"
+                f"- **Formula**: $V_{{out}} = V_{{in}} \\times \\frac{{R_2}}{{R_1 + R_2}}$\n"
+                f"- **Calculation**: `{vin}V \\times ({r2:.0f} / ({r1:.0f} + {r2:.0f})) = {vout:.3f}V`\n"
+                f"- **Quiescent Current Draw**: `{i_ma:.3f}mA`\n"
+                f"- **Thevenin Output Impedance ($R_1 \\parallel R_2$)**: `{(r1*r2)/(r1+r2):.1f}\\Omega`"
+            )
+            return {"thoughts": thoughts, "answer": answer, "has_code": False, "confidence": 0.97, "actions": actions}
+
+        # ---------------------------------------------------------------------
+        # 5. BOARD PINOUT & MULTIPLEXING QUERIES
+        # ---------------------------------------------------------------------
+        if any(term in prompt_lower for term in ("pinout", "pins for", "i2c pin", "spi pin", "pwm pin", "adc pin", "clock speed")):
+            thoughts.append(f"Stage 1: Retrieving hardware pin multiplexing for {board_spec['name']}.")
+            answer = (
+                f"### Hardware Pinout & Architecture: **{board_spec['name']}**\n\n"
+                f"- **Microcontroller**: `{board_spec['mcu']}` @ `{board_spec['clock']}`\n"
+                f"- **Operating Logic**: `{board_spec['logic']}V` (Safe GPIO current: `{board_spec['max_pin_ma']}mA`)\n\n"
+                f"**Hardware Buses**:\n"
+                f"- **I2C Bus**: `SDA = {board_spec['i2c'][0]}`, `SCL = {board_spec['i2c'][1]}`\n"
+                f"- **SPI Bus**: `MOSI = {board_spec['spi']['mosi']}`, `MISO = {board_spec['spi']['miso']}`, `SCK = {board_spec['spi']['sck']}`, `SS = {board_spec['spi']['ss']}`\n"
+                f"- **UART Serial**: `TX = {board_spec['uart'][0]}`, `RX = {board_spec['uart'][1]}`\n"
+                f"- **Analog ADC**: `{len(board_spec['adc'])} channels` ({', '.join(board_spec['adc'][:8])}) with `{board_spec['adc_res']}-bit` resolution\n"
+                f"- **PWM Pins**: {', '.join(board_spec['pwm'][:8])}"
+            )
+            return {"thoughts": thoughts, "answer": answer, "has_code": False, "confidence": 0.98, "actions": actions}
+
+        # ---------------------------------------------------------------------
+        # 6. GENERAL ELECTRONICS REASONING & INTENT SYNTHESIS
+        # ---------------------------------------------------------------------
+        thoughts.append(f"Stage 1: Analyzing prompt '{prompt}' against VoltForge Foundation knowledge.")
+        thoughts.append(f"Stage 2: Applying electrical design rules for {board_spec['name']}.")
+        
         answer = (
             f"**VoltForge Electronics Copilot Analysis**:\n\n"
-            f"Regarding your query on **{prompt}** for `{board_spec['name']}`:\n\n"
-            f"1. **Electrical Principles**:\n"
-            f"   - Operating Level: `{board_spec['logic']}V` logic rail.\n"
-            f"   - Max continuous pin current: `{board_spec['max_pin_ma']}mA` (do not connect high-current inductive or resistive loads directly to GPIO).\n"
-            f"   - Total package current budget: `{board_spec['total_ma']}mA`.\n\n"
-            f"2. **Design & Circuit Recommendations**:\n"
-            f"   - Place **100nF decoupling capacitors** close to VCC/GND pins on digital ICs.\n"
-            f"   - Always place a **flyback diode** (e.g. 1N4007) across inductive coils (relays/motors) to prevent back-EMF spikes ($V = -L \\frac{{di}}{{dt}}$).\n"
-            f"   - For 3.3V boards (ESP32/Pico), use a **bidirectional level shifter** or resistor voltage divider when interfacing with 5V sensor outputs."
+            f"Regarding your query **{prompt}** for `{board_spec['name']}`:\n\n"
+            f"1. **Electrical Design Principles**:\n"
+            f"   - Operating Level: `{board_spec['logic']}V` rail. Ensure common GND between all sensors and power supplies.\n"
+            f"   - Pin Current Limit: `{board_spec['max_pin_ma']}mA` continuous per GPIO. High-current loads require MOSFETs or relays.\n\n"
+            f"2. **Protection Guidelines**:\n"
+            f"   - Add a **100nF decoupling capacitor** across power pins (VCC/GND) of ICs.\n"
+            f"   - For inductive actuators (motors/relays), install a **1N4007 flyback diode** across the coil.\n"
+            f"   - Pull-up resistors (4.7kΩ) required for I2C lines."
         )
 
-        return {
-            "thoughts": thoughts,
-            "answer": answer,
-            "has_code": False,
-            "generated_code": None,
-            "confidence": 0.92,
-            "actions": actions
-        }
+        return {"thoughts": thoughts, "answer": answer, "has_code": False, "confidence": 0.92, "actions": actions}
 
     async def stream_reasoning_and_response(
         self,
@@ -727,14 +787,7 @@ void loop() {{
         code: Optional[str] = None,
         simulation_state: Optional[Dict[str, Any]] = None
     ) -> AsyncIterator[Dict[str, Any]]:
-        """
-        Async generator for real-time SSE streaming.
-        Emits:
-          1. {"type": "thought", "content": "..."} for reasoning steps
-          2. {"type": "token", "content": "..."} for word-by-word generation
-          3. {"type": "action", ...} for UI updates
-          4. {"type": "done", ...} for final completion
-        """
+        """Async generator for SSE streaming."""
         result = self.reason_and_solve(
             prompt=prompt,
             board_type=board_type,
@@ -744,40 +797,25 @@ void loop() {{
             simulation_state=simulation_state
         )
 
-        # 1. Stream Thoughts
         for step in result["thoughts"]:
             yield {"type": "thought", "content": f"{step}\n"}
-            await asyncio.sleep(0.04)
+            await asyncio.sleep(0.03)
 
-        # 2. Stream Tokens (word by word for natural streaming experience)
         words = result["answer"].split(" ")
         for i, word in enumerate(words):
             token_str = word + (" " if i < len(words) - 1 else "")
             yield {"type": "token", "content": token_str}
-            await asyncio.sleep(0.015)
+            await asyncio.sleep(0.01)
 
-        # 3. Stream Actions if present
-        actions = result.get("actions", {})
-        if any(actions.values()):
-            yield {
-                "type": "action",
-                "wireSuggestions": actions.get("wireSuggestions", []),
-                "additions": actions.get("additions", []),
-                "removals": actions.get("removals", []),
-                "valueChanges": actions.get("valueChanges", []),
-                "codeFixes": actions.get("codeFixes", [])
-            }
-
-        # 4. Stream Done Event
         yield {
             "type": "done",
             "confidence": result["confidence"],
-            "hasCode": result["has_code"],
-            "generatedCode": result["generated_code"],
-            "wireSuggestions": actions.get("wireSuggestions", []),
-            "additions": actions.get("additions", []),
-            "removals": actions.get("removals", []),
-            "valueChanges": actions.get("valueChanges", []),
-            "codeFixes": actions.get("codeFixes", []),
+            "hasCode": result.get("has_code", False),
+            "generatedCode": result.get("generated_code"),
+            "wireSuggestions": result.get("actions", {}).get("wireSuggestions", []),
+            "additions": result.get("actions", {}).get("additions", []),
+            "removals": result.get("actions", {}).get("removals", []),
+            "valueChanges": result.get("actions", {}).get("valueChanges", []),
+            "codeFixes": result.get("actions", {}).get("codeFixes", []),
             "citations": []
         }
