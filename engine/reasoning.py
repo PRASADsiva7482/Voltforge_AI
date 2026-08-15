@@ -99,6 +99,302 @@ class ElectronicsReasoningOrchestrator:
         # PASS 2: Specialized Domain Engine Dispatch
         # ═══════════════════════════════════════════════════
 
+        # --- Multi-Turn Follow-Up Resolution ---
+        history = (context or {}).get("history", [])
+        last_user_msg = ""
+        last_assistant_msg = ""
+        if history:
+            for h in reversed(history):
+                if h.get("role") == "user" and not last_user_msg:
+                    last_user_msg = h.get("content", "")
+                elif h.get("role") == "assistant" and not last_assistant_msg:
+                    last_assistant_msg = h.get("content", "")
+
+        # Check for incremental follow-up modifications (e.g. "now add an OLED display", "add a buzzer to that")
+        if any(lower.startswith(prefix) for prefix in ("now add ", "also add ", "add a ", "add an ", "include a ", "include an ")) and ("it" in lower or "that" in lower or "to it" in lower or "to that" in lower or len(lower.split()) <= 6):
+            # Extract previous system context
+            prev_prompt = last_user_msg or "circuit"
+            combined_prompt = f"{prev_prompt} with {message}"
+            logger.info(f"Resolved multi-turn synthesis prompt: {combined_prompt}")
+            synth = NLCircuitSynthesizer.synthesize(combined_prompt, effective_board)
+            if synth["success"]:
+                bom = BOMExporter.generate_bom(synth["components"], effective_board)
+                lines = [
+                    f"### 🔌 Updated Circuit Design for **{effective_board}** (Multi-Turn Update)",
+                    f"**System Architecture**: {synth['message']}",
+                    "",
+                    "#### 📋 Updated Bill of Materials (BOM)",
+                    "| Component Description | Type | Qty | Unit Price (USD) |",
+                    "|:----------------------|:-----|:---:|:----------------:|",
+                ]
+                for item in bom["items"]:
+                    lines.append(f"| {item['description']} | `{item['componentType']}` | 1 | ${item['unitPrice_USD']:.2f} |")
+                lines.append(f"| **Estimated Total Sourcing Cost** | | | **${bom['totalCost_USD']:.2f}** |")
+                lines.append("")
+                lines.append(f"#### 📍 Updated Pinout Connections for {effective_board}:")
+                lines.append("| Peripheral Pin | Microcontroller Pin | Signal / Function |")
+                lines.append("|:---------------|:--------------------|:------------------|")
+
+                for c in synth["components"]:
+                    c_type = c.get("type", "")
+                    wires_for_comp = PinRouter.resolve_i2c_connections(c_type, effective_board)
+                    for w in wires_for_comp:
+                        lines.append(f"| `{w['from']}` | `{w['to']}` | {w['reason']} |")
+
+                return self._finalize(ChatResponse(
+                    reply="\n".join(lines), confidence=0.97,
+                    additions=[{"type": c["type"], "name": c.get("name", c["type"])} for c in synth["components"]],
+                ), start_time, "multi_turn_synthesis")
+
+        # --- Conversational Greetings & General Inquiries ---
+        greeting_words = {"hi", "hello", "hey", "hola", "greetings", "good morning", "good evening", "good afternoon", "help", "who are you", "what can you do"}
+        if lower in greeting_words or re.match(r"^(hi|hello|hey|greetings|hola)\b", lower):
+            comp_count = len(components)
+            wire_count = len(wires)
+            board_label = effective_board.replace("_", " ")
+            lines = [
+                f"### 👋 Hello! I'm your VoltForge AI Electronics Copilot",
+                f"I'm ready on your **{board_label}** project ({comp_count} component(s), {wire_count} wire(s) placed).",
+                "",
+                "**Here are ways I can help you:**",
+                "- ⚡ **Circuit Diagnostics**: Ask *'Validate my schematic'* or *'Check for short circuits'*",
+                "- 🧠 **Pin & Wiring Guidance**: Ask *'How do I connect an I2C LCD and Relay to Arduino?'*",
+                "- 💻 **Firmware Synthesis**: Ask *'Generate complete C++ code for my placed components'*",
+                "- 📊 **Calculators & Math**: Ask *'Calculate LED resistor for 5V'* or *'555 timer frequency'*",
+                "- 🔍 **Component Specs**: Ask *'What are the specs for DHT22 / ESP32 / L298N?'*",
+                "",
+                "What would you like to build or inspect on your circuit?",
+            ]
+            return self._finalize(ChatResponse(reply="\n".join(lines), confidence=0.98), start_time, "greeting")
+
+
+        # --- Core Electronics Hardware Definitions & Concepts ---
+        core_definitions = {
+            "pin": {
+                "title": "Hardware Pin (Lead / Terminal)",
+                "summary": "A physical metal lead, terminal, or solder pad on an electronic component, IC, or microcontroller board that provides an electrical connection point.",
+                "types": [
+                    "**Digital GPIO Pins**: Read or write binary HIGH (5V/3.3V) and LOW (0V) logic states.",
+                    "**Analog Input Pins (ADC)**: Measure continuously variable analog voltages (e.g. 0V to 5V).",
+                    "**PWM Pins**: Output high-speed square waves with variable duty cycle to simulate analog voltage (e.g. motor speed, LED dimming).",
+                    "**Power Pins (VCC / 5V / 3V3)**: Supply regulated positive DC electrical power.",
+                    "**Ground Pins (GND)**: Provide the common 0V electrical reference and return current path."
+                ],
+                "key_rules": "Always verify maximum current per pin (typically 20mA-40mA max on AVR/STM32) and ensure voltage levels match (never inject 5V into a 3.3V GPIO without level shifting)."
+            },
+            "diode": {
+                "title": "Semiconductor Diode",
+                "summary": "A two-terminal semiconductor device that acts as a one-way valve for electrical current, allowing current to flow from Anode (+) to Cathode (-) when forward-biased, while blocking current in reverse.",
+                "types": [
+                    "**Standard Rectifier Diode (e.g. 1N4007)**: Forward drop ~0.7V, used for AC-to-DC rectification and reverse-polarity protection.",
+                    "**Schottky Diode (e.g. 1N5819)**: Fast switching with low forward drop (~0.2V-0.3V), ideal for high-efficiency power supplies and solar circuits.",
+                    "**Zener Diode**: Conducts in reverse breakdown at a fixed voltage, used for voltage regulation and overvoltage clamping.",
+                    "**Light Emitting Diode (LED)**: Emits visible light when forward biased (~1.8V to 3.3V drop depending on color).",
+                    "**Flyback Diode**: Placed across inductive relay coils/motors to snub destructive back-EMF voltage spikes."
+                ],
+                "key_rules": "Always observe polarity (the printed stripe indicates Cathode -) and never exceed the Maximum Repetitive Peak Reverse Voltage (VRRM)."
+            },
+            "board": {
+                "title": "Development Board / PCB",
+                "summary": "A printed circuit board (PCB) integrating a central microcontroller unit (MCU), voltage regulation circuitry, USB programming interface, crystal oscillator, and accessible header pins.",
+                "types": [
+                    "**Arduino Uno / Nano (ATmega328P)**: 8-bit, 16MHz, 5V logic, 32KB Flash — beginner standard for embedded prototyping.",
+                    "**Arduino Mega 2560 (ATmega2560)**: 8-bit, 16MHz, 5V logic, 54 GPIOs, 4 UARTs, 256KB Flash — ideal for complex multi-sensor robotics and 3D printers.",
+                    "**ESP32 (Espressif Dual-Core)**: 32-bit, 240MHz, 3.3V logic, built-in 2.4GHz Wi-Fi & Bluetooth BLE — ideal for IoT and cloud telemetry.",
+                    "**Raspberry Pi Pico (RP2040/RP2350)**: Dual ARM Cortex-M0+, 133MHz, 3.3V logic with Programmable I/O (PIO) state machines.",
+                    "**STM32 Blue Pill (STM32F103C8T6)**: ARM Cortex-M3 32-bit, 72MHz, industrial ADC and DMA engines."
+                ],
+                "key_rules": "Always check whether the board operates at 5V logic or 3.3V logic before connecting external sensors to prevent silicon damage."
+            },
+            "resistor": {
+                "title": "Resistor",
+                "summary": "A passive two-terminal component that implements electrical resistance, reducing current flow and lowering voltage levels according to Ohm's Law ($V = I \\times R$).",
+                "types": [
+                    "**Fixed Resistor (Carbon / Metal Film)**: Standard fixed resistance value (e.g. 220Ω, 1kΩ, 10kΩ).",
+                    "**Current Limiting**: Protects sensitive components (like LEDs) from excessive current.",
+                    "**Pull-up / Pull-down**: Ensures digital inputs do not float in an indeterminate logic state.",
+                    "**Voltage Divider**: Two resistors in series that step down higher voltages to safe ADC levels."
+                ],
+                "key_rules": "Ensure the power rating ($P = I^2 \\times R$) does not exceed the resistor's wattage rating (typically ¼W or ⅛W for through-hole)."
+            },
+            "capacitor": {
+                "title": "Capacitor",
+                "summary": "A passive two-terminal electrical component that stores energy electrostatically in an electric field between conductive plates separated by a dielectric material.",
+                "types": [
+                    "**Ceramic Capacitor (100nF / 0.1µF)**: Non-polarized, fast response — placed next to IC power pins as decoupling/bypass filter.",
+                    "**Electrolytic Capacitor (10µF - 1000µF)**: Polarized (+/-), large capacitance — smooths voltage ripple on power supply rails.",
+                    "**Tantalum Capacitor**: Polarized, low ESR and high stability in compact surface-mount packages."
+                ],
+                "key_rules": "Always observe polarity on electrolytic capacitors (connecting reverse will cause catastrophic rupture) and derate voltage rating by at least 20-50%."
+            },
+            "inductor": {
+                "title": "Inductor (Choke / Coil)",
+                "summary": "A passive two-terminal component that stores energy in a magnetic field when electric current flows through it, opposing sudden changes in current.",
+                "types": [
+                    "**Power Inductor**: Used in DC-DC Buck, Boost, and Buck-Boost switching regulators.",
+                    "**RF Choke**: Blocks high-frequency AC signals while allowing DC power to pass.",
+                    "**Ferrite Bead**: Suppresses high-frequency electromagnetic interference (EMI) on power lines."
+                ],
+                "key_rules": "Avoid running current above the saturation current ($I_{sat}$); inductance drops sharply when the core saturates."
+            },
+            "transistor": {
+                "title": "Transistor (BJT & MOSFET)",
+                "summary": "A three-terminal semiconductor device used to amplify electrical signals or act as an electronically controlled switch.",
+                "types": [
+                    "**BJT (Bipolar Junction Transistor - NPN/PNP)**: Current-controlled switch (Base current controls Collector-Emitter current). Examples: 2N2222, BC547.",
+                    "**MOSFET (Metal-Oxide-Semiconductor FET - N-Channel/P-Channel)**: Voltage-controlled switch (Gate voltage controls Drain-Source current). Examples: IRFZ44N, BSS138.",
+                    "**Logic-Level MOSFET**: Fully turns on with 3.3V or 5V gate voltage (e.g. IRLZ44N)."
+                ],
+                "key_rules": "Use a gate resistor (100Ω) to limit inrush current to MOSFET gate capacitance, and a pull-down resistor (10kΩ) on Gate to prevent floating."
+            },
+            "op-amp": {
+                "title": "Operational Amplifier (Op-Amp)",
+                "summary": "A high-gain electronic voltage amplifier with differential inputs (Inverting - and Non-Inverting +) and typically a single-ended output.",
+                "types": [
+                    "**Inverting Amplifier**: Gain $A_v = -\\frac{R_f}{R_{in}}$, inverts output signal polarity.",
+                    "**Non-Inverting Amplifier**: Gain $A_v = 1 + \\frac{R_f}{R_1}$, maintains signal phase.",
+                    "**Voltage Follower (Buffer)**: Gain = 1, provides high input impedance and low output impedance.",
+                    "**Comparator**: Compares two voltages without negative feedback and outputs rail-to-rail saturation."
+                ],
+                "key_rules": "Never leave unused op-amp inputs floating; connect as a voltage follower tied to mid-rail."
+            },
+            "ground": {
+                "title": "Electrical Ground (GND / 0V Reference)",
+                "summary": "The common reference point in an electrical circuit from which voltages are measured, and the return path for electric current.",
+                "types": [
+                    "**Signal Ground (Digital GND)**: Return path for low-voltage microcontroller logic signals.",
+                    "**Power Ground (PGND)**: Return path for high-current loads like motors, relays, and power MOSFETs.",
+                    "**Earth Ground**: Physical connection to the earth for human safety and lightning protection."
+                ],
+                "key_rules": "Always connect all power supplies and microcontroller GND pins together into a **common ground** so logic signals share the same 0V reference."
+            },
+            "vcc": {
+                "title": "VCC / Power Rail (Voltage Common Collector)",
+                "summary": "The positive DC electrical power supply voltage rail that powers integrated circuits, microcontrollers, and active electronic peripherals.",
+                "types": [
+                    "**5.0V VCC**: Standard operating voltage for Arduino Uno/Mega, TTL logic, and 5V relay coils.",
+                    "**3.3V VCC**: Modern standard operating voltage for ESP32, Raspberry Pi Pico, STM32, and CMOS sensors.",
+                    "**1.8V / 1.2V VCC**: Low-voltage core supply for high-speed processors and FPGA logic."
+                ],
+                "key_rules": "Always verify sensor VCC compatibility before powering up; connecting 5V to a 3.3V-only IC will destroy the silicon."
+            },
+            "pwm": {
+                "title": "Pulse Width Modulation (PWM)",
+                "summary": "A technique for generating analog-like results with digital means by rapidly switching a digital pin between HIGH and LOW states at a fixed frequency while varying the Duty Cycle.",
+                "types": [
+                    "**Duty Cycle**: Percentage of time the signal is HIGH in each period ($V_{avg} = V_{CC} \\times \\text{Duty\\%}$).",
+                    "**LED Brightness Dimming**: Adjusts average current without shifting color temperature.",
+                    "**Motor Speed Control**: Varies average voltage to DC motors via motor driver H-bridges.",
+                    "**RC Servo Control**: 50Hz PWM with 1.0ms - 2.0ms pulse widths to command servo angle (0° - 180°)."
+                ],
+                "key_rules": "On Arduino Uno, only pins with the tilde symbol `~` (D3, D5, D6, D9, D10, D11) support hardware PWM output."
+            },
+            "adc": {
+                "title": "Analog-to-Digital Converter (ADC)",
+                "summary": "An electronic subsystem that converts a continuous analog voltage signal into a discrete digital number proportional to the input voltage.",
+                "types": [
+                    "**10-bit ADC (Arduino Uno)**: 1024 discrete steps (0 to 1023), resolution $\\approx 4.88\\text{mV}$ per step with 5V reference.",
+                    "**12-bit ADC (ESP32 / STM32)**: 4096 discrete steps (0 to 4095), resolution $\\approx 0.8\\text{mV}$ per step with 3.3V reference.",
+                    "**16-bit ADC (ADS1115)**: 65,536 steps, high-precision differential ADC for load cells and thermocouples."
+                ],
+                "key_rules": "Never apply an input voltage higher than the ADC reference voltage ($V_{REF}$ / VCC)."
+            },
+            "dac": {
+                "title": "Digital-to-Analog Converter (DAC)",
+                "summary": "An electronic circuit that converts discrete digital binary numbers into true, continuous analog voltage waveforms (unlike PWM).",
+                "types": [
+                    "**Built-in DAC (ESP32 DAC1/DAC2)**: 8-bit true analog output on GPIO25/GPIO26 for audio waveforms.",
+                    "**R-2R Ladder Network**: Passive resistor array creating linear DAC conversion from digital GPIO pins.",
+                    "**External I2C DAC (MCP4725)**: 12-bit precision DAC with integrated EEPROM."
+                ],
+                "key_rules": "DAC outputs have limited current sourcing capability; buffer with an op-amp voltage follower if driving loads."
+            },
+            "i2c": {
+                "title": "I2C Bus (Inter-Integrated Circuit)",
+                "summary": "A synchronous, multi-master, multi-slave, packet-switched serial computer bus using only two bidirectional open-drain lines: SDA (Serial Data) and SCL (Serial Clock).",
+                "types": [
+                    "**Standard Mode**: 100 kHz clock rate.",
+                    "**Fast Mode**: 400 kHz clock rate.",
+                    "**Addressing**: 7-bit device addressing allowing up to 127 devices on the same 2 wires."
+                ],
+                "key_rules": "Requires external pull-up resistors (typically 4.7kΩ) on both SDA and SCL lines tied to VCC."
+            },
+            "spi": {
+                "title": "SPI Bus (Serial Peripheral Interface)",
+                "summary": "A synchronous four-wire full-duplex serial interface used for short-distance high-speed communication between microcontrollers and peripherals.",
+                "types": [
+                    "**MOSI (Master Out Slave In)**: Data sent from MCU to peripheral.",
+                    "**MISO (Master In Slave Out)**: Data sent from peripheral back to MCU.",
+                    "**SCK (Serial Clock)**: Synchronizing clock pulses generated by Master.",
+                    "**CS / SS (Chip Select)**: Active-LOW line that enables specific slave device."
+                ],
+                "key_rules": "SPI operates at speeds up to 50MHz+ (much faster than I2C), but requires an extra CS pin for each connected slave."
+            },
+            "uart": {
+                "title": "UART (Universal Asynchronous Receiver-Transmitter)",
+                "summary": "A hardware device that translates data between parallel and serial forms for point-to-point asynchronous serial communication.",
+                "types": [
+                    "**TX (Transmit)**: Transmits outgoing serial data bytes.",
+                    "**RX (Receive)**: Receives incoming serial data bytes.",
+                    "**Baud Rates**: 9600, 115200, 921600 bps standard clock rates."
+                ],
+                "key_rules": "Always cross connections between two devices: **MCU TX $\\rightarrow$ Device RX** and **MCU RX $\\rightarrow$ Device TX**."
+            },
+            "gpio": {
+                "title": "GPIO (General Purpose Input/Output)",
+                "summary": "A flexible digital pin on an integrated circuit whose behavior (input or output) can be controlled and programmed by software at runtime.",
+                "types": [
+                    "**INPUT Mode**: High-impedance state for reading digital sensors, buttons, and external logic.",
+                    "**INPUT_PULLUP Mode**: Enables internal ~20k-50kΩ pull-up resistor to VCC, eliminating external resistors for buttons.",
+                    "**OUTPUT Mode**: Low-impedance state driving HIGH ($V_{CC}$) or LOW ($0V$) to power LEDs, transistors, and ICs."
+                ],
+                "key_rules": "Avoid drawing more than the absolute maximum current rating per pin (20mA for Uno, 12mA for ESP32)."
+            },
+            "pullup resistor": {
+                "title": "Pull-Up & Pull-Down Resistor",
+                "summary": "A resistor used to ensure a digital circuit's input pin settles at an expected known logic level (HIGH or LOW) when no external driving signal is connected.",
+                "types": [
+                    "**Pull-Up Resistor (4.7kΩ - 10kΩ)**: Connects between GPIO and VCC; keeps pin HIGH until an active button/switch pulls it to GND.",
+                    "**Pull-Down Resistor (10kΩ)**: Connects between GPIO and GND; keeps pin LOW until an active switch pulls it to VCC.",
+                    "**Internal Pull-Up**: Built into MCU silicon, enabled via `pinMode(pin, INPUT_PULLUP)`."
+                ],
+                "key_rules": "Never leave a digital input pin floating unconnected; floating pins pick up electromagnetic noise and rapidly toggle randomly."
+            },
+            "bypass capacitor": {
+                "title": "Bypass / Decoupling Capacitor",
+                "summary": "A capacitor placed physically close to the power pins of an IC to filter out high-frequency electrical switching noise and supply instantaneous current surges.",
+                "types": [
+                    "**100nF (0.1µF) Ceramic**: Shunts high-frequency switching transients (>1MHz) directly to ground.",
+                    "**10µF - 100µF Electrolytic**: Acts as local bulk charge reservoir during heavy current transients (e.g. WiFi transmission bursts)."
+                ],
+                "key_rules": "Place bypass capacitors as physically close to the IC VCC/GND pins as possible (under 3mm trace length) for effective noise suppression."
+            },
+            "flyback diode": {
+                "title": "Flyback / Snubber Diode",
+                "summary": "A diode placed across an inductive load (such as a relay coil, solenoid, or DC motor) to eliminate sudden high-voltage back-EMF spikes when power is disconnected.",
+                "types": [
+                    "**1N4007 Diode**: Standard 1A, 1000V rectifier diode commonly used across 5V/12V relay coils.",
+                    "**Schottky (1N5819)**: Ultra-fast recovery diode for high-frequency PWM motor drivers."
+                ],
+                "key_rules": "Connect the diode in **reverse polarity** across the coil (Cathode stripe $\\rightarrow$ positive coil terminal, Anode $\\rightarrow$ switched ground terminal)."
+            }
+        }
+
+        # Check for core definition queries (e.g., "what is pin", "what is a diode", "explain pwm", "what is board")
+        for def_key, def_data in core_definitions.items():
+            pattern = rf"\b(?:what (?:is|are)|explain|define|tell me about)\s+(?:a\s+|an\s+|the\s+)?{re.escape(def_key)}\b"
+            if re.search(pattern, lower) or lower == f"what is {def_key}" or lower == def_key:
+                lines = [
+                    f"### 📖 Electronics Fundamental: **{def_data['title']}**",
+                    f"{def_data['summary']}",
+                    "",
+                    "**Key Types & Characteristics:**"
+                ]
+                for t in def_data["types"]:
+                    lines.append(f"- {t}")
+                lines.append(f"\n**Engineering Rules & Best Practices:**\n💡 {def_data['key_rules']}")
+                return self._finalize(ChatResponse(reply="\n".join(lines), confidence=0.99), start_time, "core_definition")
+
         # --- Troubleshooting & Diagnostics ---
         if intent == "troubleshoot" or any(kw in lower for kw in ("not working", "not detected", "not responding", "broken", "doesnt work", "won't work", "blank", "gibberish", "upload fail", "troubleshoot", "diagnose", "debug")):
             diag = TroubleshootingEngine.diagnose(message, effective_board, components, wires, code)
@@ -119,30 +415,45 @@ class ElectronicsReasoningOrchestrator:
                     lines.append(f"- {s}")
             return self._finalize(ChatResponse(reply="\n".join(lines), confidence=0.94), start_time, "troubleshoot")
 
-        # --- Natural Language to Circuit Synthesis ---
+        # --- Natural Language to Circuit Synthesis & BOM Architecture ---
         if intent == "design" or any(kw in lower for kw in ("build a", "create a", "design a", "make a circuit", "build me", "i want to make")):
             synth = NLCircuitSynthesizer.synthesize(message, effective_board)
             if synth["success"]:
                 bom = BOMExporter.generate_bom(synth["components"], effective_board)
                 lines = [
-                    f"### 🔌 Circuit Design for {effective_board}:",
-                    f"**Description**: {synth['message']}",
+                    f"### 🔌 Circuit Design Specification for **{effective_board}**",
+                    f"**System Architecture**: {synth['message']}",
                     "",
-                    "**Components Required:**",
+                    "#### 📋 Bill of Materials (BOM)",
+                    "| Component Description | Type | Qty | Unit Price (USD) |",
+                    "|:----------------------|:-----|:---:|:----------------:|",
                 ]
                 for item in bom["items"]:
-                    lines.append(f"- {item['description']} (`{item['componentType']}`) — ${item['unitPrice_USD']:.2f}")
-                lines.append(f"\n**Estimated Total Cost**: ${bom['totalCost_USD']:.2f}")
+                    lines.append(f"| {item['description']} | `{item['componentType']}` | 1 | ${item['unitPrice_USD']:.2f} |")
+                lines.append(f"| **Estimated Total Sourcing Cost** | | | **${bom['totalCost_USD']:.2f}** |")
+                lines.append("")
+                lines.append(f"#### 📍 Recommended Pinout Connections for {effective_board}:")
+                lines.append("| Peripheral Pin | Microcontroller Pin | Signal / Function |")
+                lines.append("|:---------------|:--------------------|:------------------|")
+
+                for c in synth["components"]:
+                    c_type = c.get("type", "")
+                    wires_for_comp = PinRouter.resolve_i2c_connections(c_type, effective_board)
+                    for w in wires_for_comp:
+                        lines.append(f"| `{w['from']}` | `{w['to']}` | {w['reason']} |")
+
+                lines.append("")
                 suggestions = AutoSuggestEngine.suggest(intent, entities, effective_board)
                 if suggestions:
-                    lines.append("\n**💡 Try next:**")
+                    lines.append("**💡 Next Recommended Steps:**")
                     for s in suggestions:
                         lines.append(f"- {s}")
                 return self._finalize(ChatResponse(
-                    reply="\n".join(lines), confidence=0.92,
+                    reply="\n".join(lines), confidence=0.96,
                     additions=[{"type": c["type"], "name": c.get("name", c["type"])} for c in synth["components"]],
                 ), start_time, "design")
             return self._finalize(ChatResponse(reply=synth["message"], confidence=0.7), start_time, "design")
+
 
         # --- Digital Logic & Gate Analysis ---
         if any(kw in lower for kw in ("truth table", "logic gate", "karnaugh", "k-map", "74hc", "74ls", "7-segment", "seven segment", "counter", "flip flop", "fsm")):
@@ -454,28 +765,25 @@ class ElectronicsReasoningOrchestrator:
 
         # --- Domain Q&A Dataset Knowledge Matcher ---
         clean_prompt = re.sub(r"[^a-zA-Z0-9\s]", " ", lower)
-        prompt_words = set(w for w in clean_prompt.split() if len(w) > 2 and w not in {"what", "how", "why", "the", "and", "for", "with", "does", "can", "explain", "tell", "show", "give"})
+        prompt_words = set(w for w in clean_prompt.split() if len(w) > 2 and w not in {"what", "how", "why", "the", "and", "for", "with", "does", "can", "explain", "tell", "show", "give", "please", "this", "that", "about"})
         best_match = None
         best_score = 0.0
-        for q_text, ans_text in self.dataset_pairs:
-            q_clean = re.sub(r"[^a-zA-Z0-9\s]", " ", q_text)
-            q_words = set(w for w in q_clean.split() if len(w) > 2)
-            if not q_words:
-                continue
-            if q_text in lower or lower in q_text:
-                score = 1.0 + len(q_words) * 0.1
-            else:
+        if len(prompt_words) >= 2:
+            for q_text, ans_text in self.dataset_pairs:
+                q_clean = re.sub(r"[^a-zA-Z0-9\s]", " ", q_text.lower())
+                q_words = set(w for w in q_clean.split() if len(w) > 2)
+                if not q_words:
+                    continue
                 intersection = prompt_words.intersection(q_words)
-                if len(intersection) >= 2 or (len(intersection) == 1 and len(q_words) == 1):
-                    score = len(intersection) / len(q_words)
-                else:
-                    score = 0.0
-            if score > best_score and score >= 0.5:
-                best_score = score
-                best_match = ans_text
+                if len(intersection) >= 2:
+                    score = len(intersection) / max(len(prompt_words), len(q_words))
+                    if score > best_score and score >= 0.6:
+                        best_score = score
+                        best_match = ans_text
 
-        if best_match and best_score >= 0.5:
+        if best_match and best_score >= 0.6:
             return self._finalize(ChatResponse(reply=best_match, confidence=0.95), start_time, "dataset_qa")
+
 
         # ═══════════════════════════════════════════════════
         # PASS 6: Context-Aware Fallback with Auto-Suggest

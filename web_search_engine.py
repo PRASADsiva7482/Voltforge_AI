@@ -87,7 +87,7 @@ class WebSearchEngine:
             }
             encoded = urllib.parse.quote(f"{query} datasheet pinout wiring specs")
             url = f"https://html.duckduckgo.com/html/?q={encoded}"
-            resp = requests.get(url, headers=headers, timeout=6)
+            resp = requests.get(url, headers=headers, timeout=1.5)
             if resp.status_code == 200:
                 soup = BeautifulSoup(resp.text, "html.parser")
                 for element in soup.select(".result__body")[:limit]:
@@ -108,7 +108,7 @@ class WebSearchEngine:
         results: List[Dict[str, str]] = []
         try:
             url = f"https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch={urllib.parse.quote(query)}&format=json"
-            resp = requests.get(url, timeout=5)
+            resp = requests.get(url, timeout=1.5)
             if resp.status_code == 200:
                 data = resp.json()
                 search_items = data.get("query", {}).get("search", [])
@@ -130,10 +130,32 @@ class WebSearchEngine:
             logger.info(f"Returning cached specs for '{component_name}'")
             return self.cache[key]
 
+        # Check local offline knowledge graph first
+        try:
+            from engine.knowledge_graph import ComponentKnowledgeGraph
+            kg_info = ComponentKnowledgeGraph.get_component_info(component_name)
+            if kg_info:
+                return {
+                    "component": component_name,
+                    "searchResults": [{"title": kg_info.get("fullName", component_name), "snippet": f"{kg_info.get('fullName')}: {', '.join(kg_info.get('requiredExternalComponents', []))}", "source": "VoltForge Local Knowledge Graph", "url": "local://datasheet"}],
+
+                    "specs": {
+                        "query": component_name,
+                        "operatingVoltage": f"{kg_info.get('operatingVoltage', {}).get('min', 3.3)}V - {kg_info.get('operatingVoltage', {}).get('max', 5.0)}V",
+                        "supportedInterfaces": kg_info.get("interfaces", []),
+                        "i2cAddresses": kg_info.get("i2cAddress", []),
+                        "summarySnippet": f"{kg_info.get('fullName', '')} ({kg_info.get('category', '')}). Interfaces: {', '.join(kg_info.get('interfaces', []))}. Current: {kg_info.get('currentDraw_mA', 0)}mA.",
+                    },
+                    "citations": [{"title": kg_info.get("fullName", component_name), "url": "local://knowledge-base", "source": "VoltForge Offline Database"}],
+                }
+        except Exception as e:
+            logger.warning(f"Local KG lookup error: {e}")
+
         logger.info(f"Searching web for component '{component_name}'...")
         web_results = self.search_duckduckgo(component_name)
         if not web_results:
             web_results = self.search_wikipedia(component_name)
+
 
         extracted = ComponentSpecExtractor.extract_specs(component_name, web_results)
         result = {

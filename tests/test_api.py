@@ -47,5 +47,145 @@ class TestFastAPIEndpoints(unittest.TestCase):
         self.assertIn("generatedCode", data)
 
 
+    def test_system_health_endpoint(self):
+        response = self.client.get("/voltForge-ai/api/v1/model/system/health")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["status"], "ok")
+        self.assertIn("features", data)
+
+    def test_datasheet_search_endpoint(self):
+        payload = {"query": "ESP32", "limit": 2}
+        response = self.client.post("/voltForge-ai/api/v1/model/datasheet/search", json=payload)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["query"], "ESP32")
+
+    def test_feedback_endpoint(self):
+        payload = {
+            "userMessage": "Great tool",
+            "aiResponse": "Thank you",
+            "rating": 5,
+            "comments": "Very fast"
+        }
+        response = self.client.post("/voltForge-ai/api/v1/model/feedback", json=payload)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["status"], "SUCCESS")
+
+    def test_simulation_stream_endpoint(self):
+        payload = {
+            "boardType": "ARDUINO_UNO",
+            "probes": ["VCC", "D13"],
+            "durationMs": 100,
+            "sampleRateHz": 50
+        }
+        response = self.client.post("/voltForge-ai/api/v1/model/simulation/stream", json=payload)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("text/event-stream", response.headers.get("content-type", ""))
+
+    def test_export_circuit_endpoint(self):
+        payload = {
+            "boardType": "ARDUINO_UNO",
+            "components": [
+                {"type": "RESISTOR", "value": "220"},
+                {"type": "LED", "value": "RED"}
+            ],
+            "wires": []
+        }
+        response = self.client.post("/voltForge-ai/api/v1/model/circuit/export", json=payload)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIn("spiceNetlist", data)
+        self.assertIn("bomCsv", data)
+        self.assertIn("Item,Designator,Component", data["bomCsv"])
+
+    def test_auto_layout_circuit_endpoint(self):
+        payload = {
+            "boardType": "ARDUINO_UNO",
+            "components": [
+                {"id": "c1", "type": "RESISTOR", "x": 0, "y": 0},
+                {"id": "c2", "type": "LED", "x": 500, "y": 500}
+            ],
+            "wires": [
+                {"fromNodeId": "c1", "toNodeId": "c2"}
+            ]
+        }
+        response = self.client.post("/voltForge-ai/api/v1/model/circuit/auto-layout", json=payload)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["status"], "SUCCESS")
+        self.assertEqual(len(data["components"]), 2)
+
+    def test_thermal_analysis_circuit_endpoint(self):
+        payload = {
+            "boardType": "ARDUINO_UNO",
+            "components": [
+                {"id": "r1", "type": "RESISTOR", "value": "220"},
+                {"id": "reg1", "type": "VOLTAGE_REGULATOR_LM7805", "value": "5V"}
+            ],
+            "wires": []
+        }
+        response = self.client.post("/voltForge-ai/api/v1/model/circuit/thermal-analysis", json=payload)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["status"], "SUCCESS")
+        self.assertIn("thermalNodes", data)
+        self.assertGreaterEqual(len(data["thermalNodes"]), 2)
+
+    def test_synthesize_circuit_endpoint(self):
+        payload = {
+            "message": "Create an ESP32 temperature sensor with OLED display and buzzer alarm",
+            "boardType": "ESP32_DEVKIT_V1"
+        }
+        response = self.client.post("/voltForge-ai/api/v1/model/circuit/synthesize", json=payload)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["status"], "SUCCESS")
+        self.assertIn("components", data)
+        self.assertIn("generatedFirmware", data)
+        self.assertIn("DHT", data["generatedFirmware"])
+
+    def test_evaluate_emi_rules_endpoint(self):
+        payload = {
+            "boardType": "ESP32_DEVKIT_V1",
+            "components": [
+                {"id": "mcu", "type": "ESP32_DEVKIT_V1", "x": 100, "y": 100}
+            ],
+            "wires": []
+        }
+        response = self.client.post("/voltForge-ai/api/v1/model/circuit/emi-rules", json=payload)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["status"], "SUCCESS")
+        self.assertGreaterEqual(data["violationCount"], 1)
+        self.assertGreaterEqual(len(data["proposedInsertions"]), 1)
+
+    def test_calculate_bom_sourcing_endpoint(self):
+        payload = {
+            "boardType": "ESP32_DEVKIT_V1",
+            "components": [
+                {"id": "r1", "type": "RESISTOR", "value": "10k"},
+                {"id": "mcu", "type": "ESP32_DEVKIT_V1", "value": "DevKit"}
+            ],
+            "wires": []
+        }
+        response = self.client.post("/voltForge-ai/api/v1/model/circuit/bom-sourcing", json=payload)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["status"], "SUCCESS")
+        self.assertIn("estimatedUnitCost", data)
+        self.assertIn("volumePricing", data)
+        self.assertIn("qty_100", data["volumePricing"])
+
+
 if __name__ == "__main__":
     unittest.main()
+
+
+
+
+
+
+
+
