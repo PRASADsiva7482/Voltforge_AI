@@ -1,6 +1,6 @@
 import logging
 from typing import Any, Dict, List, Optional
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Response
 from fastapi.responses import StreamingResponse
 
 from api.schemas import (
@@ -25,6 +25,8 @@ from engine.thermal_engine import ThermalEngine
 from engine.circuit_synthesizer import CircuitSynthesizer
 from engine.emi_engine import EmiRuleEngine
 from engine.bom_sourcing import BomSourcingEngine
+from engine.drc_engine import PcbDrcEngine
+from engine.gerber_exporter import GerberExporter
 from web_search_engine import WebSearchEngine
 
 logger = logging.getLogger("voltforge-ai.routes")
@@ -69,7 +71,8 @@ def thermal_analysis_circuit(payload: ValidateRequest) -> Dict[str, Any]:
     logger.info("Computing circuit thermal and Joulean dissipation heatmap")
     return ThermalEngine.analyze_thermal_dissipation(
         components=payload.components,
-        wires=payload.wires
+        wires=payload.wires,
+        simulation_state=payload.simulationState,
     )
 
 
@@ -301,3 +304,49 @@ def submit_feedback(payload: FeedbackRequest) -> Dict[str, Any]:
 @router.get("/database/health")
 def db_health() -> Dict[str, Any]:
     return db_manager.check_health()
+
+
+@router.post("/circuit/drc-check")
+def run_pcb_drc_check(payload: Dict[str, Any]) -> Dict[str, Any]:
+    logger.info("Executing PCB Design Rule Check (DRC)")
+    board_width = float(payload.get("boardWidth_mm", 100))
+    board_height = float(payload.get("boardHeight_mm", 80))
+    footprints = payload.get("footprints", [])
+    traces = payload.get("traces", [])
+    vias = payload.get("vias", [])
+    wires = payload.get("wires", [])
+
+    return PcbDrcEngine.run_drc(
+        board_width_mm=board_width,
+        board_height_mm=board_height,
+        footprints=footprints,
+        traces=traces,
+        vias=vias,
+        wires=wires,
+    )
+
+
+@router.post("/circuit/export-gerber")
+def export_pcb_gerber(payload: Dict[str, Any]):
+    logger.info("Generating RS-274X Gerber & Excellon drill archive")
+    board_width = float(payload.get("boardWidth_mm", 100))
+    board_height = float(payload.get("boardHeight_mm", 80))
+    footprints = payload.get("footprints", [])
+    traces = payload.get("traces", [])
+    vias = payload.get("vias", [])
+    project_name = payload.get("projectName", "VoltForge_PCB")
+
+    zip_data = GerberExporter.generate_gerber_zip(
+        board_width_mm=board_width,
+        board_height_mm=board_height,
+        footprints=footprints,
+        traces=traces,
+        vias=vias,
+        project_name=project_name,
+    )
+
+    return Response(
+        content=zip_data,
+        media_type="application/zip",
+        headers={"Content-Disposition": f"attachment; filename={project_name}_gerber.zip"}
+    )

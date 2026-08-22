@@ -15,6 +15,53 @@ class TestSpiceNetlistExporter(unittest.TestCase):
         self.assertIn("D2", netlist)
         self.assertIn(".op", netlist)
 
+    def test_export_uses_wire_nets(self):
+        components = [
+            {"id": "src", "type": "DC_SOURCE_5V", "pins": [{"id": "positive", "type": "power"}, {"id": "negative", "type": "ground"}]},
+            {"id": "r", "type": "RESISTOR", "resistance": "1k", "pins": [{"id": "p1"}, {"id": "p2"}]},
+            {"id": "gnd", "type": "GROUND", "pins": [{"id": "gnd", "type": "ground"}]},
+        ]
+        wires = [
+            {"fromNodeId": "src", "fromPinId": "positive", "toNodeId": "r", "toPinId": "p1"},
+            {"fromNodeId": "r", "fromPinId": "p2", "toNodeId": "gnd", "toPinId": "gnd"},
+            {"fromNodeId": "src", "fromPinId": "negative", "toNodeId": "gnd", "toPinId": "gnd"},
+        ]
+        netlist = SpiceNetlistExporter.export_netlist(components, wires)
+        self.assertIn("V1 N1 0 DC 5", netlist)
+        self.assertIn("R2 N1 0 1k", netlist)
+
+    def test_export_flattens_subcircuit_and_transformer(self):
+        components = [
+            {"id": "src", "type": "DC_SOURCE_5V", "pins": [{"id": "positive", "type": "power"}, {"id": "negative", "type": "ground"}]},
+            {
+                "id": "module",
+                "type": "SUB_CIRCUIT",
+                "pins": [{"id": "subpin_1"}, {"id": "subpin_2", "type": "ground"}],
+                "properties": {
+                    "subCircuitDef": {
+                        "internalNodes": [{"id": "inner_r", "type": "RESISTOR", "resistance": "1k", "pins": [{"id": "p1"}, {"id": "p2"}]}],
+                        "internalWires": [{"fromNodeId": "inner_r", "fromPinId": "p2", "toNodeId": "inner_r", "toPinId": "p2"}],
+                        "exposedConnections": {
+                            "subpin_1": {"nodeId": "inner_r", "pinId": "p1"},
+                            "subpin_2": {"nodeId": "inner_r", "pinId": "p2"},
+                        },
+                    }
+                },
+            },
+            {"id": "gnd", "type": "GROUND", "pins": [{"id": "gnd", "type": "ground"}]},
+            {"id": "xf", "type": "TRANSFORMER", "turnsRatio": 0.5, "pins": [{"id": "primary1"}, {"id": "primary2"}, {"id": "secondary1"}, {"id": "secondary2"}]},
+        ]
+        wires = [
+            {"fromNodeId": "src", "fromPinId": "positive", "toNodeId": "module", "toPinId": "subpin_1"},
+            {"fromNodeId": "module", "fromPinId": "subpin_2", "toNodeId": "gnd", "toPinId": "gnd"},
+            {"fromNodeId": "src", "fromPinId": "negative", "toNodeId": "gnd", "toPinId": "gnd"},
+        ]
+        netlist = SpiceNetlistExporter.export_netlist(components, wires)
+        self.assertRegex(netlist, r"R\d+ N1 0 1k")
+        self.assertRegex(netlist, r"L\d+P")
+        self.assertRegex(netlist, r"L\d+S")
+        self.assertRegex(netlist, r"K\d+")
+
 
 class TestDCOperatingPoint(unittest.TestCase):
     def test_series_resistors(self):

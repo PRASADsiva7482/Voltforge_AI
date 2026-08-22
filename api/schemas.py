@@ -41,6 +41,7 @@ class ValidateRequest(BaseModel):
     code: Optional[str] = ""
     context: Optional[str] = ""
     compilerDiagnostics: List[str] = Field(default_factory=list)
+    simulationState: Optional[Dict[str, Any]] = None
 
 
 class CodeReviewRequest(BaseModel):
@@ -90,5 +91,4 @@ class SimulationStreamRequest(BaseModel):
     probes: List[str] = Field(default_factory=list)
     durationMs: int = 1000
     sampleRateHz: int = 100
-
 

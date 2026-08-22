@@ -27,7 +27,7 @@ class SpiceNetlistExporter:
     }
 
     @classmethod
-    def export_netlist(
+    def _legacy_export_netlist(
         cls,
         components: List[Dict[str, Any]],
         wires: List[Dict[str, Any]],
@@ -71,6 +71,267 @@ class SpiceNetlistExporter:
         lines.append(".op")
         lines.append(".end")
 
+        return "\n".join(lines)
+
+
+    @classmethod
+    def export_netlist(
+        cls,
+        components: List[Dict[str, Any]],
+        wires: List[Dict[str, Any]],
+        board_type: str = "ARDUINO_UNO",
+        v_supply: float = 5.0,
+    ) -> str:
+        """Export the actual canvas topology as a SPICE netlist.
+
+        Canvas wires join ``nodeId:pinId`` endpoints.  The previous exporter
+        assigned fresh nodes to every component, so a backend simulation could
+        never represent the circuit the user drew.  This exporter unions those
+        endpoints first and only then emits device lines.
+        """
+        def flatten_hierarchy(
+            source_components: List[Dict[str, Any]],
+            source_wires: List[Dict[str, Any]],
+        ) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+            flat_components = list(source_components)
+            flat_wires = list(source_wires)
+
+            while True:
+                compound = next(
+                    (
+                        component for component in flat_components
+                        if str(component.get("type", "")).upper() == "SUB_CIRCUIT"
+                    ),
+                    None,
+                )
+                if compound is None:
+                    return flat_components, flat_wires
+
+                definition = compound.get("subCircuitDef") or (compound.get("properties") or {}).get("subCircuitDef") or {}
+                internal_components = list(definition.get("internalNodes") or definition.get("components") or [])
+                internal_wires = list(definition.get("internalWires") or definition.get("wires") or [])
+                connections = definition.get("exposedConnections") or {}
+                compound_id = str(compound.get("id", compound.get("name", "subcircuit")))
+
+                def replace_endpoint(node_id: Any, pin_id: Any) -> Tuple[str, str]:
+                    if str(node_id) != compound_id:
+                        return str(node_id), str(pin_id)
+                    connection = connections.get(str(pin_id)) or {}
+                    return str(connection.get("nodeId", node_id)), str(connection.get("pinId", pin_id))
+
+                external_wires = [
+                    wire for wire in flat_wires
+                    if str(wire.get("fromNodeId", "")) == compound_id
+                    or str(wire.get("toNodeId", "")) == compound_id
+                ]
+                flat_wires = [
+                    wire for wire in flat_wires
+                    if str(wire.get("fromNodeId", "")) != compound_id
+                    and str(wire.get("toNodeId", "")) != compound_id
+                ]
+                flat_wires.extend(internal_wires)
+                for wire in external_wires:
+                    rewritten = dict(wire)
+                    from_node, from_pin = replace_endpoint(
+                        wire.get("fromNodeId", wire.get("fromComponentId", "")),
+                        wire.get("fromPinId", wire.get("fromPin", "0")),
+                    )
+                    to_node, to_pin = replace_endpoint(
+                        wire.get("toNodeId", wire.get("toComponentId", "")),
+                        wire.get("toPinId", wire.get("toPin", "0")),
+                    )
+                    rewritten.update({
+                        "fromNodeId": from_node,
+                        "fromPinId": from_pin,
+                        "toNodeId": to_node,
+                        "toPinId": to_pin,
+                    })
+                    flat_wires.append(rewritten)
+
+                flat_components = [component for component in flat_components if component is not compound]
+                flat_components.extend(internal_components)
+
+        components, wires = flatten_hierarchy(components, wires)
+        parent: Dict[str, str] = {}
+
+        def find(key: str) -> str:
+            parent.setdefault(key, key)
+            if parent[key] != key:
+                parent[key] = find(parent[key])
+            return parent[key]
+
+        def union(left: str, right: str) -> None:
+            a, b = find(left), find(right)
+            if a != b:
+                parent[b] = a
+
+        def component_id(component: Dict[str, Any]) -> str:
+            return str(component.get("id", component.get("name", "component")))
+
+        def pin_ids(component: Dict[str, Any]) -> List[str]:
+            result = []
+            for index, pin in enumerate(component.get("pins") or []):
+                result.append(str(pin.get("id", index)) if isinstance(pin, dict) else str(pin))
+            return result
+
+        def pin_key(component: Dict[str, Any], pin_id: str) -> str:
+            return f"{component_id(component)}:{pin_id}"
+
+        for component in components:
+            for pin_id in pin_ids(component):
+                find(pin_key(component, pin_id))
+
+        for wire in wires:
+            from_node = str(wire.get("fromNodeId", wire.get("fromComponentId", "")))
+            to_node = str(wire.get("toNodeId", wire.get("toComponentId", "")))
+            from_pin = str(wire.get("fromPinId", wire.get("fromPin", "0")))
+            to_pin = str(wire.get("toPinId", wire.get("toPin", "0")))
+            if from_node and to_node:
+                union(f"{from_node}:{from_pin}", f"{to_node}:{to_pin}")
+
+        ground_roots = set()
+        for component in components:
+            ctype = str(component.get("type", "")).upper()
+            for pin in component.get("pins") or []:
+                if not isinstance(pin, dict):
+                    continue
+                label = f"{pin.get('id', '')} {pin.get('name', '')} {pin.get('type', '')}".lower()
+                if ctype == "GROUND" or "ground" in label or "gnd" in label:
+                    ground_roots.add(find(pin_key(component, str(pin.get("id", "")))))
+
+        root_to_node: Dict[str, str] = {}
+        next_node = 1
+
+        def resolve_pin(component: Dict[str, Any], aliases: Tuple[str, ...], fallback_index: int = 0) -> str:
+            for pin in component.get("pins") or []:
+                pin_id = str(pin.get("id", "")) if isinstance(pin, dict) else str(pin)
+                pin_name = str(pin.get("name", "")) if isinstance(pin, dict) else pin_id
+                candidate = f"{pin_id} {pin_name}".lower().replace("_", "")
+                if any(alias.lower().replace("_", "") in candidate for alias in aliases):
+                    return pin_id
+            ids = pin_ids(component)
+            return ids[min(fallback_index, len(ids) - 1)] if ids else str(fallback_index)
+
+        def node_for(component: Dict[str, Any], aliases: Tuple[str, ...], fallback_index: int = 0) -> str:
+            nonlocal next_node
+            root = find(pin_key(component, resolve_pin(component, aliases, fallback_index)))
+            if root in ground_roots or str(component.get("type", "")).upper() == "GROUND":
+                return "0"
+            if root not in root_to_node:
+                root_to_node[root] = f"N{next_node}"
+                next_node += 1
+            return root_to_node[root]
+
+        def prop(component: Dict[str, Any], *names: str, default: Any = None) -> Any:
+            properties = component.get("properties") or {}
+            for name in names:
+                if properties.get(name) is not None:
+                    return properties[name]
+                if component.get(name) is not None:
+                    return component[name]
+            return default
+
+        def value_text(value: Any, default: str) -> str:
+            if value is None or value == "":
+                return default
+            if isinstance(value, (int, float)):
+                return f"{value:g}"
+            return str(value).strip().replace("Ω", "ohm").replace("Ω", "ohm")
+
+        lines = [
+            f"* Voltforge SPICE Netlist - {board_type}",
+            "* Auto-generated from canvas pin/wire topology",
+            "",
+        ]
+        for index, component in enumerate(components):
+            ctype = str(component.get("type", "")).upper()
+            name = str(component.get("name", f"comp{index}"))
+            prefix = "X"
+            if ctype == "RESISTOR":
+                prefix = "R"
+                n1 = node_for(component, ("p1", "pin1", "positive", "1"))
+                n2 = node_for(component, ("p2", "pin2", "negative", "2"), 1)
+                lines.append(f"{prefix}{index + 1} {n1} {n2} {value_text(prop(component, 'resistance', 'value', default='1k'), '1k')}")
+            elif "CAPACITOR" in ctype:
+                prefix = "C"
+                n1 = node_for(component, ("pos", "positive", "p1", "1"))
+                n2 = node_for(component, ("neg", "negative", "p2", "2"), 1)
+                lines.append(f"{prefix}{index + 1} {n1} {n2} {value_text(prop(component, 'capacitance', 'value', default='1uF'), '1uF')}")
+            elif ctype == "INDUCTOR":
+                n1 = node_for(component, ("p1", "positive", "1"))
+                n2 = node_for(component, ("p2", "negative", "2"), 1)
+                lines.append(f"L{index + 1} {n1} {n2} {value_text(prop(component, 'inductance', 'value', default='10mH'), '10mH')}")
+            elif ctype == "TRANSFORMER":
+                primary1 = node_for(component, ("primary1", "p1", "input1", "primary"))
+                primary2 = node_for(component, ("primary2", "p2", "input2", "primary_return"), 1)
+                secondary1 = node_for(component, ("secondary1", "s1", "output1", "secondary"), 2)
+                secondary2 = node_for(component, ("secondary2", "s2", "output2", "secondary_return"), 3)
+                primary_l = value_text(prop(component, "primaryInductance", "inductance", default="1H"), "1H")
+                turns_ratio = float(prop(component, "turnsRatio", "ratio", default=1) or 1)
+                secondary_l = value_text(prop(component, "secondaryInductance", default=f"{max(turns_ratio * turns_ratio, 1e-9):g}H"), "1H")
+                lines.append(f"L{index + 1}P {primary1} {primary2} {primary_l}")
+                lines.append(f"L{index + 1}S {secondary1} {secondary2} {secondary_l}")
+                lines.append(f"K{index + 1} L{index + 1}P L{index + 1}S {value_text(prop(component, 'coupling', default=0.999), '0.999')}")
+            elif "LED" in ctype or ctype in ("DIODE", "ZENER_DIODE", "SCHOTTKY_DIODE"):
+                n1 = node_for(component, ("anode", "a", "positive", "1"))
+                n2 = node_for(component, ("cathode", "k", "negative", "2"), 1)
+                model = "DLED"
+                if ctype == "ZENER_DIODE":
+                    model = "DZENER"
+                elif ctype == "SCHOTTKY_DIODE":
+                    model = "DSCHOTTKY"
+                lines.append(f"D{index + 1} {n1} {n2} {model}")
+            elif ctype in ("NPN_TRANSISTOR", "PNP_TRANSISTOR"):
+                collector = node_for(component, ("collector", "c"))
+                base = node_for(component, ("base", "b"), 1)
+                emitter = node_for(component, ("emitter", "e"), 2)
+                lines.append(f"Q{index + 1} {collector} {base} {emitter} {'QPNP' if ctype == 'PNP_TRANSISTOR' else 'QNPN'}")
+            elif ctype in ("NMOS", "PMOS"):
+                drain = node_for(component, ("drain", "d"))
+                gate = node_for(component, ("gate", "g"), 1)
+                source = node_for(component, ("source", "s"), 2)
+                lines.append(f"M{index + 1} {drain} {gate} {source} 0 {'QPMOS' if ctype == 'PMOS' else 'QNMOS'}")
+            elif ctype in ("BATTERY_9V", "BATTERY_AA", "DC_SOURCE_3V3", "DC_SOURCE_5V", "DC_SOURCE_12V", "POWER_SUPPLY", "AC_FUNCTION_GENERATOR"):
+                positive = node_for(component, ("positive", "pos", "plus", "vout", "vcc"))
+                negative = node_for(component, ("negative", "neg", "minus", "gnd"), 1)
+                defaults = {"BATTERY_9V": 9, "BATTERY_AA": 1.5, "DC_SOURCE_3V3": 3.3, "DC_SOURCE_5V": 5, "DC_SOURCE_12V": 12}
+                voltage = prop(component, "voltage", "outputVoltage", default=defaults.get(ctype, v_supply))
+                if ctype == "AC_FUNCTION_GENERATOR":
+                    amplitude = value_text(prop(component, "amplitude", default=1), "1")
+                    offset = value_text(prop(component, "offset", default=0), "0")
+                    frequency = value_text(prop(component, "frequencyHz", "frequency", default=1000), "1000")
+                    waveform = str(prop(component, "waveform", default="sine")).upper()
+                    lines.append(f"V{index + 1} {positive} {negative} SIN({offset} {amplitude} {frequency})")
+                else:
+                    lines.append(f"V{index + 1} {positive} {negative} DC {value_text(voltage, str(defaults.get(ctype, v_supply)))}")
+            elif ctype == "VOLTAGE_REGULATOR_7805":
+                output = node_for(component, ("vout", "output", "5v"))
+                ground = node_for(component, ("gnd", "ground"))
+                lines.append(f"V{index + 1} {output} {ground} DC {value_text(prop(component, 'outputVoltage', 'voltage', default=5), '5')}")
+            elif ctype == "GROUND":
+                continue
+            elif ctype in ("OPAMP_IDEAL", "OPAMP_LM358"):
+                output = node_for(component, ("out", "output"))
+                ground = node_for(component, ("gnd", "ground"))
+                plus = node_for(component, ("in_plus", "plus", "non_inverting"))
+                minus = node_for(component, ("in_minus", "minus", "inverting"), 1)
+                gain = value_text(prop(component, "openLoopGain", default=100000), "100000")
+                lines.append(f"E{index + 1} {output} {ground} {plus} {minus} {gain}")
+            else:
+                lines.append(f"* Unknown component: {name} ({ctype})")
+
+        lines.extend([
+            "",
+            ".model DLED D(IS=1e-20 N=1.8 RS=5 BV=5)",
+            ".model DZENER D(IS=1e-14 N=1.8 RS=4 BV=5.1 IBV=1m)",
+            ".model DSCHOTTKY D(IS=1e-8 N=1.05 RS=0.2 BV=40)",
+            ".model QNPN NPN(BF=200 IS=1e-14)",
+            ".model QPNP PNP(BF=200 IS=1e-14)",
+            ".model QNMOS NMOS(VTO=2 KP=0.01 RD=0.08 RS=0.08)",
+            ".model QPMOS PMOS(VTO=-2 KP=0.01 RD=0.08 RS=0.08)",
+            ".op",
+            ".end",
+        ])
         return "\n".join(lines)
 
 
