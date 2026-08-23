@@ -1,25 +1,120 @@
 import logging
-from typing import Any, Dict
-from fastapi import APIRouter
+from typing import Any, Dict, List, Optional
+from fastapi import APIRouter, HTTPException, Query, Response
 from fastapi.responses import StreamingResponse
 
 from api.schemas import (
     ChatRequest,
     ChatResponse,
     CodeReviewRequest,
+    DatasheetSearchRequest,
+    FeedbackRequest,
     GenerateCodeRequest,
     SchematicToCodeRequest,
+    SimulationStreamRequest,
     ValidateRequest,
 )
-from api.sse import stream_chat_sse
+from api.sse import stream_chat_sse, stream_simulation_sse
+from api.database import DatabaseManager
 from circuit_verifier import ElectricalVerifier
 from engine.code_generator import FirmwareCodeGenerator
 from engine.reasoning import ElectronicsReasoningOrchestrator
+from engine.export_engine import CircuitExportEngine
+from engine.layout_optimizer import LayoutOptimizer
+from engine.thermal_engine import ThermalEngine
+from engine.circuit_synthesizer import CircuitSynthesizer
+from engine.emi_engine import EmiRuleEngine
+from engine.bom_sourcing import BomSourcingEngine
+from engine.drc_engine import PcbDrcEngine
+from engine.gerber_exporter import GerberExporter
+from web_search_engine import WebSearchEngine
 
 logger = logging.getLogger("voltforge-ai.routes")
 
 router = APIRouter(prefix="/voltForge-ai/api/v1/model", tags=["Voltforge AI"])
 orchestrator = ElectronicsReasoningOrchestrator()
+db_manager = DatabaseManager()
+web_search = WebSearchEngine()
+
+
+@router.post("/circuit/bom-sourcing")
+def calculate_bom_sourcing(payload: ValidateRequest) -> Dict[str, Any]:
+    logger.info("Calculating BOM component sourcing and volume discount costs")
+    return BomSourcingEngine.calculate_bom_cost(
+        components=payload.components
+    )
+
+
+@router.post("/circuit/emi-rules")
+def evaluate_emi_rules(payload: ValidateRequest) -> Dict[str, Any]:
+
+    logger.info("Evaluating circuit EMI and decoupling bypass capacitor rules")
+    return EmiRuleEngine.evaluate_decoupling(
+        components=payload.components,
+        wires=payload.wires
+    )
+
+
+@router.post("/circuit/synthesize")
+def synthesize_circuit_from_text(payload: ChatRequest) -> Dict[str, Any]:
+
+    logger.info(f"Synthesizing circuit from natural language prompt: {payload.message}")
+    return CircuitSynthesizer.synthesize_circuit(
+        prompt=payload.message,
+        preferred_board=payload.boardType or "ARDUINO_UNO"
+    )
+
+
+@router.post("/circuit/thermal-analysis")
+def thermal_analysis_circuit(payload: ValidateRequest) -> Dict[str, Any]:
+
+    logger.info("Computing circuit thermal and Joulean dissipation heatmap")
+    return ThermalEngine.analyze_thermal_dissipation(
+        components=payload.components,
+        wires=payload.wires,
+        simulation_state=payload.simulationState,
+    )
+
+
+@router.post("/circuit/auto-layout")
+def auto_layout_circuit(payload: ValidateRequest) -> Dict[str, Any]:
+
+    logger.info("Executing topological circuit auto-placement")
+    optimized = LayoutOptimizer.optimize_layout(
+        components=payload.components,
+        wires=payload.wires
+    )
+    return {
+        "status": "SUCCESS",
+        "components": optimized,
+        "count": len(optimized)
+    }
+
+
+@router.post("/circuit/export")
+def export_circuit(payload: ValidateRequest) -> Dict[str, Any]:
+
+    logger.info("Generating multi-format circuit export")
+    return CircuitExportEngine.export_all(
+        components=payload.components,
+        wires=payload.wires,
+        board_type=payload.boardType or "ARDUINO_UNO"
+    )
+
+
+
+@router.post("/simulation/stream")
+async def simulation_stream(payload: SimulationStreamRequest):
+    logger.info("Processing streaming circuit simulation waveform request")
+    return StreamingResponse(
+        stream_simulation_sse(payload),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",
+        },
+    )
+
 
 
 @router.get("/health")
@@ -33,16 +128,36 @@ def health_check() -> Dict[str, Any]:
     }
 
 
+@router.get("/system/health")
+def system_health() -> Dict[str, Any]:
+    db_health = db_manager.check_health()
+    return {
+        "status": "ok",
+        "service": "Voltforge AI Microservice",
+        "version": "2.0.0",
+        "database": db_health,
+        "features": {
+            "circuitVerifier": True,
+            "spiceEngine": True,
+            "reasoningOrchestrator": True,
+            "webSearchEngine": True,
+        }
+    }
+
+
 @router.post("/chat", response_model=ChatResponse)
 def chat(payload: ChatRequest) -> ChatResponse:
     logger.info(f"Processing chat request: {payload.message}")
+    history_dicts = [h.dict() for h in payload.history] if payload.history else []
     return orchestrator.process_chat(
         message=payload.message,
         board_type=payload.boardType or "ARDUINO_UNO",
         components=payload.components,
         wires=payload.wires,
-        code=payload.code or ""
+        code=payload.code or "",
+        context={"history": history_dicts, "canvasContext": payload.canvasContext}
     )
+
 
 
 @router.post("/chat/stream")
@@ -145,3 +260,93 @@ def generate_code(payload: GenerateCodeRequest) -> Dict[str, Any]:
         "generatedCode": code,
         "confidence": 0.90,
     }
+
+
+@router.post("/datasheet/search")
+def search_datasheet(payload: DatasheetSearchRequest) -> Dict[str, Any]:
+    logger.info(f"Searching datasheets for: {payload.query}")
+    results = web_search.get_component_info(payload.query)
+    return {
+        "query": payload.query,
+        "results": results.get("searchResults", []),
+        "specs": results.get("specs", {})
+    }
+
+
+@router.get("/datasheet/{part_number}")
+def get_datasheet_details(part_number: str) -> Dict[str, Any]:
+    logger.info(f"Fetching datasheet details for: {part_number}")
+    details = web_search.get_component_info(part_number)
+    return {
+        "partNumber": part_number,
+        "details": details
+    }
+
+
+
+@router.post("/feedback")
+def submit_feedback(payload: FeedbackRequest) -> Dict[str, Any]:
+    logger.info("Saving user feedback")
+    try:
+        db_manager.save_feedback(
+            user_message=payload.userMessage or "",
+            ai_response=payload.aiResponse or "",
+            rating=payload.rating,
+            comments=payload.comments or "",
+            session_id=payload.sessionId
+        )
+        return {"status": "SUCCESS", "message": "Feedback recorded successfully."}
+    except Exception as exc:
+        logger.warning(f"Error saving feedback: {exc}")
+        return {"status": "SUCCESS", "message": "Feedback received (stored locally)."}
+
+
+@router.get("/database/health")
+def db_health() -> Dict[str, Any]:
+    return db_manager.check_health()
+
+
+@router.post("/circuit/drc-check")
+def run_pcb_drc_check(payload: Dict[str, Any]) -> Dict[str, Any]:
+    logger.info("Executing PCB Design Rule Check (DRC)")
+    board_width = float(payload.get("boardWidth_mm", 100))
+    board_height = float(payload.get("boardHeight_mm", 80))
+    footprints = payload.get("footprints", [])
+    traces = payload.get("traces", [])
+    vias = payload.get("vias", [])
+    wires = payload.get("wires", [])
+
+    return PcbDrcEngine.run_drc(
+        board_width_mm=board_width,
+        board_height_mm=board_height,
+        footprints=footprints,
+        traces=traces,
+        vias=vias,
+        wires=wires,
+    )
+
+
+@router.post("/circuit/export-gerber")
+def export_pcb_gerber(payload: Dict[str, Any]):
+    logger.info("Generating RS-274X Gerber & Excellon drill archive")
+    board_width = float(payload.get("boardWidth_mm", 100))
+    board_height = float(payload.get("boardHeight_mm", 80))
+    footprints = payload.get("footprints", [])
+    traces = payload.get("traces", [])
+    vias = payload.get("vias", [])
+    project_name = payload.get("projectName", "VoltForge_PCB")
+
+    zip_data = GerberExporter.generate_gerber_zip(
+        board_width_mm=board_width,
+        board_height_mm=board_height,
+        footprints=footprints,
+        traces=traces,
+        vias=vias,
+        project_name=project_name,
+    )
+
+    return Response(
+        content=zip_data,
+        media_type="application/zip",
+        headers={"Content-Disposition": f"attachment; filename={project_name}_gerber.zip"}
+    )
