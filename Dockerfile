@@ -32,5 +32,9 @@ COPY dataset.txt .
 # Expose microservice port
 EXPOSE 2002
 
+# Containers need to listen on their network interface; local development
+# defaults to 127.0.0.1 in config.py.
+ENV VOLTFORGE_AI_HOST=0.0.0.0
+
 # Run FastAPI app
 CMD ["python", "main.py"]

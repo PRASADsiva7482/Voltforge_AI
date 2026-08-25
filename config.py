@@ -10,8 +10,14 @@ DATASET_PATH = os.path.join(BASE_DIR, "dataset.txt")
 DATASHEET_CACHE_PATH = os.path.join(BASE_DIR, "datasheet_cache.json")
 MODEL_ARTIFACTS_DIR = os.path.join(BASE_DIR, "model", "artifacts")
 
-HOST = os.getenv("VOLTFORGE_AI_HOST", "0.0.0.0")
+HOST = os.getenv("VOLTFORGE_AI_HOST", "127.0.0.1")
 PORT = int(os.getenv("VOLTFORGE_AI_PORT", "2002"))
+
+CORS_ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+    if origin.strip()
+]
 
 # Database Configuration (matches VoltForge backend setup)
 DB_HOST = os.getenv("VOLTFORGE_DB_HOST", "100.73.197.23")

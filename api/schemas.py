@@ -89,6 +89,5 @@ class SimulationStreamRequest(BaseModel):
     components: List[Dict[str, Any]] = Field(default_factory=list)
     wires: List[Dict[str, Any]] = Field(default_factory=list)
     probes: List[str] = Field(default_factory=list)
-    durationMs: int = 1000
-    sampleRateHz: int = 100
-
+    durationMs: int = Field(default=1000, ge=1, le=60_000)
+    sampleRateHz: int = Field(default=100, ge=1, le=2_000)

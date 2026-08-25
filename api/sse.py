@@ -53,7 +53,6 @@ async def stream_chat_sse(payload: ChatRequest) -> AsyncIterator[str]:
             "valueChanges": chat_resp.valueChanges,
             "codeFixes": chat_resp.codeFixes,
         }
-        yield f"event: metadata\ndata: {json.dumps(meta_payload)}\n\n"
         yield f"event: done\ndata: {json.dumps(meta_payload)}\n\n"
 
     except Exception as e:
