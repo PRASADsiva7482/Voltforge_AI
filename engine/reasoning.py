@@ -33,6 +33,8 @@ from engine.pcb_engine import TrackWidthCalculator, ViaCurrentCapacity, Differen
 from engine.context_memory import ConversationMemory, EntityExtractor, IntentClassifier, ClarificationGenerator, AutoSuggestEngine
 from engine.security import InputSanitizer, PerformanceMetrics
 from api.schemas import ChatResponse
+from data_governance.governance import DataGovernanceError, require_approved_shard
+from evaluation.leakage import get_held_out_registry
 
 logger = logging.getLogger("voltforge-ai.reasoning")
 
@@ -40,8 +42,8 @@ logger = logging.getLogger("voltforge-ai.reasoning")
 class ElectronicsReasoningOrchestrator:
     """Enterprise 6-Pass Chain-of-Thought Reasoning Engine with full module integration."""
 
-    def __init__(self):
-        self.web_search = WebSearchEngine()
+    def __init__(self, internet_retrieval_enabled: Optional[bool] = None):
+        self.web_search = WebSearchEngine(internet_enabled=internet_retrieval_enabled)
         self.verifier = ElectricalVerifier()
         self.conversation_memory = ConversationMemory()
         self.performance_metrics = PerformanceMetrics()
@@ -50,12 +52,25 @@ class ElectronicsReasoningOrchestrator:
 
     def _load_dataset(self):
         dataset_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "dataset.txt")
+        held_out_registry = get_held_out_registry()
         if os.path.exists(dataset_path):
+            try:
+                require_approved_shard(dataset_path, "runtime-retrieval")
+            except DataGovernanceError as error:
+                logger.warning(
+                    "Local retrieval corpus denied by data governance (%s): %s",
+                    error.code,
+                    error.message,
+                )
+                return
             with open(dataset_path, "r", encoding="utf-8") as f:
                 for chunk in f.read().split("[Q]"):
                     if not chunk.strip() or "[A]" not in chunk:
                         continue
                     q, a = chunk.split("[A]", 1)
+                    if held_out_registry.match_record({"question": q, "answer": a}) is not None:
+                        logger.warning("Excluded held-out evaluation collision from local retrieval data")
+                        continue
                     self.dataset_pairs.append((q.strip().lower(), a.strip()))
 
     def process_chat(

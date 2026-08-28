@@ -1,89 +1,110 @@
-"""
-VoltForge Model Inference Runtime.
-Loads trained tokenizer, standalone NumPy Transformer, and Electronics Reasoning LLM.
-"""
+"""Fail-closed local inference runtime for approved VoltForge artifacts."""
 
-import json
-import os
+from __future__ import annotations
+
+import hashlib
 import sys
+from pathlib import Path
 from typing import Any, AsyncIterator, Dict, List, Optional
+
 import numpy as np
 
-# Add model directory to sys.path
-ai_model_dir = os.path.dirname(os.path.abspath(__file__))
-if ai_model_dir not in sys.path:
-    sys.path.insert(0, ai_model_dir)
-
-try:
-    from model.model import NumPyTransformer, TransformerConfig, softmax
-    from model.tokenizer import VoltForgeTokenizer
-    from model.reasoning_llm import ElectronicsReasoningEngine
-except ImportError:
-    from model import NumPyTransformer, TransformerConfig, softmax
-    from tokenizer import VoltForgeTokenizer
-    from reasoning_llm import ElectronicsReasoningEngine
+from model.artifact_registry import (
+    ArtifactRegistryError,
+    DEFAULT_REGISTRY_PATH,
+    ResolvedArtifact,
+    get_artifact_health,
+    resolve_active_artifact,
+)
+from model.model import NumPyTransformer, TransformerConfig, softmax
+from model.reasoning_llm import ElectronicsReasoningEngine
+from model.tokenizer import VoltForgeTokenizer
+from task_schema.compiler import compile_task_record
+from task_schema.schema import CONTRACT_VERSION, validate_task_record
 
 
 class VoltForgeInferenceEngine:
-    def __init__(self, artifacts_dir: Optional[str] = None):
-        if not artifacts_dir:
-            artifacts_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "artifacts")
-        self.artifacts_dir = artifacts_dir
+    """Load one explicitly approved model; never scan legacy artifacts."""
+
+    def __init__(self, registry_path: Optional[str] = None):
+        self.registry_path = Path(registry_path or DEFAULT_REGISTRY_PATH).resolve()
+        self.artifacts_dir: Optional[str] = None
+        self.artifact: Optional[ResolvedArtifact] = None
         self.tokenizer = VoltForgeTokenizer()
         self.config: Optional[TransformerConfig] = None
         self.model: Optional[NumPyTransformer] = None
         self.reasoning_engine: Optional[ElectronicsReasoningEngine] = None
         self.is_loaded = False
-        self._load_artifacts()
+        self.status_code = "MODEL_NOT_LOADED"
+        self.load_error = "The local model has not been loaded."
+        self._load_approved_artifact()
 
-    def _load_artifacts(self) -> None:
-        vocab_path = os.path.join(self.artifacts_dir, "vocab.json")
-        config_path = os.path.join(self.artifacts_dir, "config.json")
-        meta_path = os.path.join(self.artifacts_dir, "model_meta.json")
-        weights_path = os.path.join(self.artifacts_dir, "model_weights.npz")
-        if not os.path.exists(weights_path):
-            weights_path = os.path.join(self.artifacts_dir, "model_weights_best.npz")
-
+    def _load_approved_artifact(self) -> None:
         try:
-            if os.path.exists(vocab_path):
-                self.tokenizer.load(self.artifacts_dir)
+            artifact = resolve_active_artifact(self.registry_path)
+            config = TransformerConfig.from_dict(dict(artifact.config))
+            tokenizer = VoltForgeTokenizer()
+            tokenizer.load(str(artifact.root))
 
-            if os.path.exists(meta_path):
-                with open(meta_path, "r", encoding="utf-8") as f:
-                    meta = json.load(f)
-                    self.config = TransformerConfig.from_dict(meta.get("model_config", {}))
-            elif os.path.exists(config_path):
-                with open(config_path, "r", encoding="utf-8") as f:
-                    self.config = TransformerConfig.from_dict(json.load(f))
-            else:
-                self.config = TransformerConfig(vocab_size=len(self.tokenizer.vocab))
+            # Artifact validation completes before model allocation. Production
+            # loading therefore cannot silently serve random or partial weights.
+            model = NumPyTransformer(config, initialize_weights=False)
+            model.load_weights(str(artifact.files["weights"]))
+            if model.count_parameters() != artifact.parameter_count:
+                raise ValueError(
+                    f"Loaded model contains {model.count_parameters()} parameters; "
+                    f"manifest declares {artifact.parameter_count}."
+                )
 
-            self.model = NumPyTransformer(self.config)
-            if os.path.exists(weights_path):
-                self.model.load_weights(weights_path)
-                print(f"[+] Loaded neural Transformer weights from {os.path.basename(weights_path)}")
-
-            self.reasoning_engine = ElectronicsReasoningEngine(self.artifacts_dir)
+            self.artifact = artifact
+            self.artifacts_dir = str(artifact.root)
+            self.config = config
+            self.tokenizer = tokenizer
+            self.model = model
+            self.reasoning_engine = ElectronicsReasoningEngine(str(artifact.root))
             self.is_loaded = True
-        except Exception as exc:
-            print(f"[!] Warning: Inference engine loaded with partial fallback ({exc})")
-            self.reasoning_engine = ElectronicsReasoningEngine(self.artifacts_dir)
-            self.is_loaded = True
+            self.status_code = "MODEL_ARTIFACT_READY"
+            self.load_error = ""
+        except ArtifactRegistryError as error:
+            self.status_code = error.code
+            self.load_error = error.message
+        except Exception as error:
+            self.status_code = "MODEL_RUNTIME_LOAD_FAILED"
+            self.load_error = f"Approved local model failed runtime loading: {error}"
+
+    def health(self) -> Dict[str, Any]:
+        if self.is_loaded and self.artifact is not None:
+            return self.artifact.health()
+        health = get_artifact_health(self.registry_path)
+        if health.get("ready"):
+            health.update(
+                {
+                    "ready": False,
+                    "state": "failed",
+                    "code": self.status_code,
+                    "message": self.load_error,
+                }
+            )
+        return health
+
+    def _require_loaded(self) -> None:
+        if not self.is_loaded or self.model is None or self.config is None:
+            raise RuntimeError(f"Local model unavailable [{self.status_code}]: {self.load_error}")
 
     def compute_confidence(self, prompt: str) -> float:
-        """Estimates model confidence using average top token probability."""
-        if not self.is_loaded or not self.model:
-            return 0.88
+        """Estimate next-token confidence only for a validated loaded model."""
+        if not self.is_loaded or self.model is None or self.config is None:
+            return 0.0
         try:
             ids = self.tokenizer.encode(prompt, add_bos=True, add_eos=False)
             if not ids:
-                return 0.88
-            logits = self.model.forward(np.array(ids[-self.config.context_length:], dtype=np.int32))
-            probs = softmax(logits[-1])
-            top_prob = float(np.max(probs))
-            return max(0.65, min(0.98, top_prob * 10.0))
+                return 0.0
+            logits = self.model.forward(
+                np.array(ids[-self.config.context_length :], dtype=np.int32)
+            )
+            return float(np.max(softmax(logits[-1])))
         except Exception:
-            return 0.88
+            return 0.0
 
     def reason_and_solve(
         self,
@@ -92,25 +113,62 @@ class VoltForgeInferenceEngine:
         components: Optional[List[Dict[str, Any]]] = None,
         wires: Optional[List[Dict[str, Any]]] = None,
         code: Optional[str] = None,
-        simulation_state: Optional[Dict[str, Any]] = None
+        simulation_state: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
-        """Runs Chain-of-Thought (CoT) reasoning and generates an answer."""
-        if not self.reasoning_engine:
-            self.reasoning_engine = ElectronicsReasoningEngine(self.artifacts_dir)
+        self._require_loaded()
+        if self.reasoning_engine is None:
+            raise RuntimeError("Approved model reasoning engine is unavailable.")
         return self.reasoning_engine.reason_and_solve(
             prompt=prompt,
             board_type=board_type,
             components=components,
             wires=wires,
             code=code,
-            simulation_state=simulation_state
+            simulation_state=simulation_state,
         )
 
-    def generate_neural_text(self, prompt: str, max_tokens: int = 120, temperature: float = 0.7) -> str:
-        """Generates text directly using the trained neural Transformer model."""
-        if not self.model or not self.tokenizer:
-            return ""
-        formatted_prompt = f"[SYS] You are VoltForge AI. [USER] {prompt}"
+    def generate_neural_text(
+        self, prompt: str, max_tokens: int = 120, temperature: float = 0.7
+    ) -> str:
+        prompt_hash = hashlib.sha256(prompt.encode("utf-8")).hexdigest()
+        task_record = {
+            "schemaVersion": 1,
+            "contractVersion": CONTRACT_VERSION,
+            "recordId": f"vf-task-v1-{prompt_hash[:24]}",
+            "recordKind": "inference-request",
+            "task": "domain_chat",
+            "input": {
+                "system": {
+                    "type": "system",
+                    "text": "You are VoltForge AI, a local electronics assistant.",
+                    "policyVersion": "vf-system-policy-v1",
+                },
+                "user": {"type": "user", "text": prompt},
+                "projectContext": {
+                    "type": "project-context",
+                    "projectId": "direct-local-inference",
+                    "sourceProjectRevision": f"snapshot-sha256:{prompt_hash}",
+                    "revisionSource": "derived-snapshot",
+                    "payload": {},
+                },
+                "toolEvidence": [],
+            },
+            "metadata": {"sourceKind": "runtime", "sourceIds": []},
+        }
+        return self.generate_task_record(task_record, max_tokens=max_tokens, temperature=temperature)
+
+    def generate_task_record(
+        self,
+        task_record: Dict[str, Any],
+        max_tokens: int = 120,
+        temperature: float = 0.7,
+    ) -> str:
+        self._require_loaded()
+        assert self.model is not None
+        validated = validate_task_record(task_record)
+        if validated["recordKind"] != "inference-request":
+            raise ValueError("Neural generation requires an inference-request task record.")
+        formatted_prompt = compile_task_record(validated)
         bos_id = self.tokenizer.special_token_to_id.get("[BOS]", 2)
         eos_id = self.tokenizer.special_token_to_id.get("[EOS]", 3)
         input_ids = [bos_id] + self.tokenizer.encode(formatted_prompt)
@@ -131,18 +189,18 @@ class VoltForgeInferenceEngine:
         components: Optional[List[Dict[str, Any]]] = None,
         wires: Optional[List[Dict[str, Any]]] = None,
         code: Optional[str] = None,
-        simulation_state: Optional[Dict[str, Any]] = None
+        simulation_state: Optional[Dict[str, Any]] = None,
     ) -> AsyncIterator[Dict[str, Any]]:
-        """Streams thoughts, words, and actions in real-time SSE format."""
-        if not self.reasoning_engine:
-            self.reasoning_engine = ElectronicsReasoningEngine(self.artifacts_dir)
+        self._require_loaded()
+        if self.reasoning_engine is None:
+            raise RuntimeError("Approved model reasoning engine is unavailable.")
         async for chunk in self.reasoning_engine.stream_reasoning_and_response(
             prompt=prompt,
             board_type=board_type,
             components=components,
             wires=wires,
             code=code,
-            simulation_state=simulation_state
+            simulation_state=simulation_state,
         ):
             yield chunk
 
@@ -151,12 +209,4 @@ if __name__ == "__main__":
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     engine = VoltForgeInferenceEngine()
-    print("Inference Engine Loaded:", engine.is_loaded)
-    if engine.is_loaded:
-        test_prompt = "How to calculate LED resistor for 5V supply?"
-        res = engine.reason_and_solve(test_prompt, "ARDUINO_UNO")
-        print("\n=== THOUGHTS ===")
-        for t in res["thoughts"]:
-            print(f"- {t}")
-        print("\n=== ANSWER ===")
-        print(res["answer"])
+    print(engine.health())

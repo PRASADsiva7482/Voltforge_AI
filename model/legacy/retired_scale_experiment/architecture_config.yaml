@@ -1,0 +1,57 @@
+# =============================================================================
+# RETIRED SCALE-EXPERIMENT CONFIGURATION — never production-loadable
+# Total Parameters: ~1,059,153,920 (~1.06 Billion)
+# =============================================================================
+
+model:
+  model_name: "VoltForge-1B"
+  architecture: "DecoderOnlyTransformer"
+  vocab_size: 32768
+  context_length: 4096
+  d_model: 2048
+  n_layers: 20
+  n_heads: 16
+  n_kv_heads: 4             # Grouped-Query Attention (GQA) with 4 KV heads
+  head_dim: 128             # d_model // n_heads = 2048 // 16 = 128
+  d_ff: 5632                # SwiGLU hidden dimension (~8/3 * d_model)
+  rope_theta: 10000.0       # RoPE base frequency
+  norm_eps: 0.000001        # 1e-6 RMSNorm epsilon
+  tie_word_embeddings: false
+  dropout: 0.0
+
+training:
+  # Pretraining Stage (Chinchilla Optimal / Domain Specialization)
+  target_tokens: 20000000000       # 20 Billion tokens (full pretraining)
+  domain_tokens: 3000000000        # 3 Billion tokens (domain continual training)
+  
+  hyperparameters:
+    global_batch_size: 512         # tokens per batch = 512 * 4096 = 2,097,152 tokens
+    micro_batch_size: 4            # per GPU micro batch
+    gradient_accumulation_steps: 16
+    learning_rate: 0.0003          # 3e-4 peak LR
+    min_learning_rate: 0.00003     # 3e-5 min LR (10% of peak)
+    warmup_steps: 2000
+    lr_scheduler: "cosine"
+    weight_decay: 0.1
+    adam_beta1: 0.9
+    adam_beta2: 0.95
+    adam_eps: 0.00000001
+    gradient_clipping: 1.0
+    precision: "bfloat16"          # bfloat16 mixed precision
+
+  distributed:
+    strategy: "FSDP"               # Fully Sharded Data Parallel
+    sharding_strategy: "FULL_SHARD"
+    mixed_precision: true
+    activation_checkpointing: true
+
+  checkpoints:
+    save_interval_steps: 1000
+    eval_interval_steps: 250
+    checkpoint_dir: "artifacts/1b_checkpoints"
+    keep_best_checkpoints: 3
+
+database_logging:
+  enabled: true
+  table_runs: "ai_model_training_runs"
+  table_evals: "ai_model_evaluations"

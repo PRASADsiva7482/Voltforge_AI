@@ -18,9 +18,17 @@ import time
 from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+MODEL_ROOT = os.path.dirname(os.path.abspath(__file__))
+AI_ROOT = os.path.dirname(MODEL_ROOT)
+sys.path.insert(0, MODEL_ROOT)
+if AI_ROOT not in sys.path:
+    sys.path.insert(0, AI_ROOT)
+from data_governance.governance import require_approved_shard
+from evaluation.leakage import exclude_held_out_records, get_held_out_registry
 from model import TransformerConfig, VoltForgeTransformer
-from tokenizer import VoltForgeTokenizer
+from tokenizer import DEFAULT_TOKENIZER_RELEASE_PATH, VoltForgeTokenizer
+from task_schema.compiler import compile_task_record
+from task_schema.io import read_task_shard
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -143,22 +151,23 @@ def load_training_data(
 
     # Load from all available JSONL dataset files
     dataset_files = ["master_domain_dataset.jsonl", "dataset.jsonl"]
+    held_out_registry = get_held_out_registry()
     for fname in dataset_files:
         fpath = os.path.join(artifacts_dir, fname)
         if not os.path.exists(fpath):
             continue
+        require_approved_shard(fpath, "training")
         count = 0
-        with open(fpath, "r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if not line:
-                    continue
-                sample = json.loads(line)
-                text = sample.get("prompt", "") + " " + sample.get("completion", "")
-                tokens = [bos] + tokenizer.encode(text)[:max_seq_len - 2] + [eos]
-                if len(tokens) >= 4:
-                    sequences.append(np.array(tokens, dtype=np.int32))
-                    count += 1
+        samples = read_task_shard(fpath)
+        samples, rejected = exclude_held_out_records(samples, held_out_registry)
+        if rejected:
+            print(f"    Excluded {len(rejected)} held-out collision(s) from {fname}")
+        for sample in samples:
+            text = compile_task_record(sample)
+            tokens = [bos] + tokenizer.encode(text)[:max_seq_len - 2] + [eos]
+            if len(tokens) >= 4:
+                sequences.append(np.array(tokens, dtype=np.int32))
+                count += 1
         print(f"    Loaded {count} sequences from {fname}")
 
     return sequences
@@ -189,21 +198,11 @@ def train(
 
     # ── Load tokenizer ──
     tokenizer = VoltForgeTokenizer()
-    tokenizer_path = artifacts_dir
-    if os.path.exists(os.path.join(tokenizer_path, "vocab.json")):
-        tokenizer.load(tokenizer_path)
-        print(f"[+] Loaded tokenizer: {len(tokenizer.vocab)} tokens")
-    else:
-        print("[!] No trained tokenizer found. Training new tokenizer...")
-        dataset_path = os.path.join(artifacts_dir, "master_domain_dataset.jsonl")
-        corpus = []
-        with open(dataset_path, "r", encoding="utf-8") as f:
-            for line in f:
-                s = json.loads(line.strip())
-                corpus.append(s.get("prompt", "") + " " + s.get("completion", ""))
-        tokenizer.train(corpus, target_vocab_size=8192)
-        tokenizer.save(artifacts_dir)
-        print(f"[+] Trained new tokenizer: {len(tokenizer.vocab)} tokens")
+    tokenizer.load(DEFAULT_TOKENIZER_RELEASE_PATH)
+    print(
+        f"[+] Loaded approved tokenizer from {DEFAULT_TOKENIZER_RELEASE_PATH}: "
+        f"{len(tokenizer.vocab)} tokens"
+    )
 
     # ── Create model ──
     config = TransformerConfig(

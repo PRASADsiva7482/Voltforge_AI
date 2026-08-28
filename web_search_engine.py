@@ -7,6 +7,8 @@ from typing import Any, Dict, List, Optional
 import requests
 from bs4 import BeautifulSoup
 
+from config import get_settings
+
 logger = logging.getLogger("voltforge-ai.web_search")
 
 CACHE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "datasheet_cache.json")
@@ -48,7 +50,7 @@ class ComponentSpecExtractor:
 
         return {
             "query": query,
-            "operatingVoltage": operating_voltage or "3.3V / 5V (Standard)",
+            "operatingVoltage": operating_voltage,
             "voltagesFound": voltages[:5],
             "i2cAddresses": i2c_addresses[:4],
             "supportedInterfaces": interfaces,
@@ -57,11 +59,35 @@ class ComponentSpecExtractor:
 
 
 class WebSearchEngine:
-    """Multi-source search engine with dynamic caching for electronic components."""
+    """Local-first evidence retrieval with separately opt-in internet access."""
 
-    def __init__(self, cache_file: str = CACHE_FILE):
+    def __init__(
+        self,
+        cache_file: str = CACHE_FILE,
+        internet_enabled: Optional[bool] = None,
+        timeout_seconds: Optional[int] = None,
+    ):
+        settings = get_settings()
         self.cache_file = cache_file
+        self.internet_enabled = (
+            settings.internet_retrieval_enabled
+            if internet_enabled is None
+            else internet_enabled
+        )
+        self.timeout_seconds = timeout_seconds or settings.internet_retrieval_timeout_seconds
         self.cache: Dict[str, Dict[str, Any]] = self._load_cache()
+
+    def health(self) -> Dict[str, Any]:
+        return {
+            "enabled": self.internet_enabled,
+            "state": "enabled" if self.internet_enabled else "disabled",
+            "policy": "optional-evidence-only",
+            "generationDependency": False,
+            "localKnowledgeAvailable": True,
+            "networkSources": ["DuckDuckGo HTML", "Wikipedia API"]
+            if self.internet_enabled
+            else [],
+        }
 
     def _load_cache(self) -> Dict[str, Dict[str, Any]]:
         if os.path.exists(self.cache_file):
@@ -80,6 +106,8 @@ class WebSearchEngine:
             logger.warning(f"Could not save datasheet cache: {e}")
 
     def search_duckduckgo(self, query: str, limit: int = 4) -> List[Dict[str, str]]:
+        if not self.internet_enabled:
+            return []
         results: List[Dict[str, str]] = []
         try:
             headers = {
@@ -87,7 +115,7 @@ class WebSearchEngine:
             }
             encoded = urllib.parse.quote(f"{query} datasheet pinout wiring specs")
             url = f"https://html.duckduckgo.com/html/?q={encoded}"
-            resp = requests.get(url, headers=headers, timeout=1.5)
+            resp = requests.get(url, headers=headers, timeout=self.timeout_seconds)
             if resp.status_code == 200:
                 soup = BeautifulSoup(resp.text, "html.parser")
                 for element in soup.select(".result__body")[:limit]:
@@ -105,10 +133,12 @@ class WebSearchEngine:
         return results
 
     def search_wikipedia(self, query: str) -> List[Dict[str, str]]:
+        if not self.internet_enabled:
+            return []
         results: List[Dict[str, str]] = []
         try:
             url = f"https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch={urllib.parse.quote(query)}&format=json"
-            resp = requests.get(url, timeout=1.5)
+            resp = requests.get(url, timeout=self.timeout_seconds)
             if resp.status_code == 200:
                 data = resp.json()
                 search_items = data.get("query", {}).get("search", [])
@@ -126,30 +156,64 @@ class WebSearchEngine:
 
     def get_component_info(self, component_name: str, force_refresh: bool = False) -> Dict[str, Any]:
         key = component_name.lower().strip()
-        if not force_refresh and key in self.cache:
-            logger.info(f"Returning cached specs for '{component_name}'")
-            return self.cache[key]
 
         # Check local offline knowledge graph first
         try:
             from engine.knowledge_graph import ComponentKnowledgeGraph
             kg_info = ComponentKnowledgeGraph.get_component_info(component_name)
             if kg_info:
+                voltage = kg_info.get("operatingVoltage") or {}
+                minimum_voltage = voltage.get("min")
+                maximum_voltage = voltage.get("max")
+                operating_voltage = (
+                    f"{minimum_voltage}V - {maximum_voltage}V"
+                    if minimum_voltage is not None and maximum_voltage is not None
+                    else None
+                )
+                current_draw = kg_info.get("currentDraw_mA")
                 return {
                     "component": component_name,
                     "searchResults": [{"title": kg_info.get("fullName", component_name), "snippet": f"{kg_info.get('fullName')}: {', '.join(kg_info.get('requiredExternalComponents', []))}", "source": "VoltForge Local Knowledge Graph", "url": "local://datasheet"}],
 
                     "specs": {
                         "query": component_name,
-                        "operatingVoltage": f"{kg_info.get('operatingVoltage', {}).get('min', 3.3)}V - {kg_info.get('operatingVoltage', {}).get('max', 5.0)}V",
+                        "operatingVoltage": operating_voltage,
                         "supportedInterfaces": kg_info.get("interfaces", []),
                         "i2cAddresses": kg_info.get("i2cAddress", []),
-                        "summarySnippet": f"{kg_info.get('fullName', '')} ({kg_info.get('category', '')}). Interfaces: {', '.join(kg_info.get('interfaces', []))}. Current: {kg_info.get('currentDraw_mA', 0)}mA.",
+                        "summarySnippet": f"{kg_info.get('fullName', '')} ({kg_info.get('category', '')}). Interfaces: {', '.join(kg_info.get('interfaces', []))}." + (f" Current: {current_draw}mA." if current_draw is not None else ""),
                     },
                     "citations": [{"title": kg_info.get("fullName", component_name), "url": "local://knowledge-base", "source": "VoltForge Offline Database"}],
+                    "retrieval": {
+                        "mode": "local",
+                        "internetEnabled": self.internet_enabled,
+                        "internetUsed": False,
+                    },
                 }
         except Exception as e:
             logger.warning(f"Local KG lookup error: {e}")
+
+        if not self.internet_enabled:
+            return {
+                "component": component_name,
+                "searchResults": [],
+                "specs": ComponentSpecExtractor.extract_specs(component_name, []),
+                "citations": [],
+                "retrieval": {
+                    "mode": "offline-no-local-evidence",
+                    "internetEnabled": False,
+                    "internetUsed": False,
+                },
+            }
+
+        if not force_refresh and key in self.cache:
+            logger.info(f"Returning cached internet evidence for '{component_name}'")
+            cached = dict(self.cache[key])
+            cached["retrieval"] = {
+                "mode": "internet-cache",
+                "internetEnabled": True,
+                "internetUsed": False,
+            }
+            return cached
 
         logger.info(f"Searching web for component '{component_name}'...")
         web_results = self.search_duckduckgo(component_name)
@@ -166,6 +230,11 @@ class WebSearchEngine:
                 {"title": r["title"], "url": r["url"], "source": r.get("source", "Web")}
                 for r in web_results
             ],
+            "retrieval": {
+                "mode": "internet-live" if web_results else "internet-no-evidence",
+                "internetEnabled": True,
+                "internetUsed": True,
+            },
         }
 
         if web_results:

@@ -1,6 +1,6 @@
 import logging
 from typing import Any, Dict, List, Optional
-from fastapi import APIRouter, HTTPException, Query, Response
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from fastapi.responses import StreamingResponse
 
 from api.schemas import (
@@ -14,7 +14,9 @@ from api.schemas import (
     SimulationStreamRequest,
     ValidateRequest,
 )
-from api.sse import stream_chat_sse, stream_simulation_sse
+from api.chat import stream_chat_sse
+from api.security import require_service_token
+from api.sse import stream_simulation_sse
 from api.database import DatabaseManager
 from circuit_verifier import ElectricalVerifier
 from engine.code_generator import FirmwareCodeGenerator
@@ -28,6 +30,7 @@ from engine.bom_sourcing import BomSourcingEngine
 from engine.drc_engine import PcbDrcEngine
 from engine.gerber_exporter import GerberExporter
 from web_search_engine import WebSearchEngine
+from model.artifact_registry import get_artifact_health
 
 logger = logging.getLogger("voltforge-ai.routes")
 
@@ -119,28 +122,44 @@ async def simulation_stream(payload: SimulationStreamRequest):
 
 @router.get("/health")
 def health_check() -> Dict[str, Any]:
+    local_model = get_artifact_health()
     return {
         "status": "UP",
         "service": "Voltforge AI Microservice",
         "engine": "Voltforge Electronics Reasoning Engine",
         "ragEnabled": True,
         "version": "2.0.0",
+        "localModel": local_model,
+        "generation": {
+            "mode": "local-deterministic",
+            "networkRequired": False,
+        },
+        "internetRetrieval": web_search.health(),
     }
 
 
 @router.get("/system/health")
 def system_health() -> Dict[str, Any]:
     db_health = db_manager.check_health()
+    local_model = get_artifact_health()
     return {
         "status": "ok",
         "service": "Voltforge AI Microservice",
         "version": "2.0.0",
         "database": db_health,
+        "localModel": local_model,
+        "generation": {
+            "mode": "local-deterministic",
+            "networkRequired": False,
+        },
+        "internetRetrieval": web_search.health(),
         "features": {
             "circuitVerifier": True,
             "spiceEngine": True,
             "reasoningOrchestrator": True,
-            "webSearchEngine": True,
+            "localKnowledgeRetrieval": True,
+            "internetRetrievalEnabled": web_search.internet_enabled,
+            "localModelReady": bool(local_model["ready"]),
         }
     }
 
@@ -160,9 +179,9 @@ def chat(payload: ChatRequest) -> ChatResponse:
 
 
 
-@router.post("/chat/stream")
+@router.post("/chat/stream", dependencies=[Depends(require_service_token)])
 async def chat_stream(payload: ChatRequest):
-    logger.info(f"Processing streaming chat request: {payload.message}")
+    logger.info("Processing streaming chat request")
     return StreamingResponse(
         stream_chat_sse(payload),
         media_type="text/event-stream",

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai-008-current-curated-corpus",
+  "corpusVersion": "1.0.0",
+  "asOfDate": "2026-08-28",
+  "recordCount": 49,
+  "recordTypeCounts": {
+    "board": 10,
+    "pin-map": 8,
+    "component": 4,
+    "wiring-recipe": 8,
+    "firmware-api": 4,
+    "compiler-diagnostic": 4,
+    "simulation-behavior": 4,
+    "safety-constraint": 7
+  },
+  "supportedRecordCount": 44,
+  "variantRequiredRecordCount": 4,
+  "referenceOnlyRecordCount": 1,
+  "evidenceReferenceCount": 57,
+  "publisherCounts": {
+    "Adafruit Industries": 11,
+    "Arduino": 10,
+    "Espressif Systems": 4,
+    "Raspberry": 2,
+    "Raspberry Pi Ltd": 3,
+    "VoltForge": 27
+  },
+  "conflictGroups": [
+    {
+      "conflictGroup": "conflict.board.arduino-uno",
+      "recordIds": [
+        "vf-knowledge-v1-board.arduino.uno-r3",
+        "vf-knowledge-v1-board.arduino.uno-r4-wifi"
+      ]
+    },
+    {
+      "conflictGroup": "conflict.board.esp32-devkit",
+      "recordIds": [
+        "vf-knowledge-v1-board.espressif.esp32-devkitc-v4-wroom32e-n4",
+        "vf-knowledge-v1-board.espressif.esp32-s3-devkitc1-n8"
+      ]
+    },
+    {
+      "conflictGroup": "conflict.board.raspberry-pi-pico",
+      "recordIds": [
+        "vf-knowledge-v1-board.raspberry-pi.pico-rp2040",
+        "vf-knowledge-v1-board.raspberry-pi.pico2-rp2350"
+      ]
+    },
+    {
+      "conflictGroup": "conflict.component.ssd1306-breakout",
+      "recordIds": [
+        "vf-knowledge-v1-component.adafruit.ssd1306-128x64-stemma",
+        "vf-knowledge-v1-component.adafruit.ssd1306-128x64-v1"
+      ]
+    }
+  ],
+  "unsupportedPolicy": "No match or missing evidence returns unknown; family conflicts require an exact variant.",
+  "allRecordsSchemaValid": true,
+  "allClaimsEvidenceBound": true,
+  "allRelationsResolved": true,
+  "packChecksumsBoundByCatalog": true
+}

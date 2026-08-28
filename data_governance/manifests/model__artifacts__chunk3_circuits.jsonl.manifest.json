@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "shardId": "vf-shard-88cc2c8ba437e28f8679",
+  "path": "model/artifacts/chunk3_circuits.jsonl",
+  "recordFormat": "jsonl-v0",
+  "recordCount": 14,
+  "sizeBytes": 38589,
+  "sha256": "88cc2c8ba437e28f8679757838bf6407927cd6b4deea917f2b87d58e707984ab",
+  "status": "quarantined",
+  "eligibleUses": [],
+  "reason": "No retained producer, origin, revision, or license record exists.",
+  "createdAtUtc": "2026-08-28T07:19:31.061537+00:00",
+  "sourceRegistry": {
+    "registryId": "voltforge-source-registry",
+    "version": "1.2.0",
+    "sha256": "aa4eb56780317fb94857a4f05d420a6de84cc6420e0ee83a6c27d636aadbfcde"
+  },
+  "sources": [
+    {
+      "sourceId": "vf-src-unknown-circuit-corpus-v0",
+      "revision": "unknown",
+      "checksum": null,
+      "licenseStatus": "unverified",
+      "privacyClass": "unknown",
+      "approvalStatus": "quarantined"
+    }
+  ],
+  "producer": {
+    "id": "unknown",
+    "version": "unknown",
+    "path": null,
+    "sha256": null
+  },
+  "preprocessing": {
+    "id": "unknown",
+    "version": "unknown",
+    "path": null,
+    "sha256": null
+  },
+  "taskSchema": {
+    "id": "legacy-untyped",
+    "version": "0",
+    "path": null,
+    "sha256": null
+  },
+  "recordProvenance": {
+    "mode": "shard-inherited",
+    "selector": "all-records",
+    "sourceIds": [
+      "vf-src-unknown-circuit-corpus-v0"
+    ],
+    "statement": "Every non-empty record in this shard inherits this immutable source and producer snapshot."
+  },
+  "retention": {
+    "sourcePolicies": [
+      {
+        "sourceId": "vf-src-unknown-circuit-corpus-v0",
+        "policy": {
+          "class": "quarantined-audit-evidence",
+          "duration": "until deletion",
+          "reviewTrigger": "source evidence becomes available"
+        },
+        "deletionProcedure": "Delete chunk3_circuits.jsonl and its manifest after running and retaining a source-removal impact report."
+      }
+    ]
+  },
+  "manifestSha256": "8d4794a684f3ad6a20cbea0eb40fccbdf37d1025f6f9930b44a9c7dc2cbb59fb"
+}

@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai015-gen1-scale-decision-policy-v1",
+  "purpose": "Choose edge, core, server, or no neural release from measured owned-data, architecture, training, global-gate, runtime, and hardware evidence. Parameter count is never release evidence.",
+  "evidence": {
+    "architectureSweep": {
+      "path": "benchmarks/reports/gen1-architecture-sweep-v1.json",
+      "fileSha256": "71db668908692e1916fff83c4a0ed4f834e50d132c0fb278a15d34cc17589a29",
+      "reportSha256": "f24c63057ce232216d79915bca664e61b79665cde6df3123509b6c41ab9d8932"
+    },
+    "bootstrapScorecard": {
+      "path": "evaluation/reports/gen1-bootstrap-heldout-v1.json",
+      "fileSha256": "924eaa3579d47400db27c13d642d2a08251895ea9733215d41bd29a4dc7f4ec9",
+      "reportSha256": "8b201e041db4d9101e1bf04ca3eb219488c2961ed60cfbd95a39a90d5ac1f57d"
+    },
+    "bestBootstrapConfig": {
+      "path": "model/gen1/configs/gen1-bootstrap-best-v1.json",
+      "fileSha256": "90a10f65b3feca8122ff440e8c302c55671f6cf61216f6a68e0317f8f282a098",
+      "manifestSha256": "e1098d64ffe60ac5f091c5f29cba3f00e0418f945beeec243ca87dbe72fe7ce4"
+    },
+    "globalMetricPolicy": {
+      "path": "evaluation/metrics.v1.json",
+      "fileSha256": "aaf6362aef491efde84a7e6e17548897872144235dcd6ff44d0376b96f1e83c7"
+    },
+    "activeRegistry": {
+      "path": "model/registry/active_model.json",
+      "requiredState": "no-approved-artifact"
+    }
+  },
+  "profiles": [
+    {
+      "name": "edge",
+      "parameterRange": {"minimum": 8000000, "maximum": 25000000},
+      "minimumApprovedTrainingTokens": 100000000,
+      "hardwareRequirement": "Measured on the CPU development reference tier and must clear all release latency/resource gates."
+    },
+    {
+      "name": "core",
+      "parameterRange": {"minimum": 25000000, "maximum": 60000000},
+      "minimumApprovedTrainingTokens": 500000000,
+      "hardwareRequirement": "Requires a separately measured owned workstation/server tier and material quality value over edge."
+    },
+    {
+      "name": "server",
+      "parameterRange": {"minimum": 60000000, "maximum": 150000000},
+      "minimumApprovedTrainingTokens": 1200000000,
+      "hardwareRequirement": "Requires an owned self-hosted reference tier and a proven material core ceiling before construction."
+    }
+  ],
+  "releaseGates": {
+    "minimumDataCoveragePercent": 100.0,
+    "requiredGlobalMetricCount": 13,
+    "requiredGlobalMetricsPassing": 13,
+    "maximumCriticalCaseFailures": 0,
+    "requireApprovedGenerationRuntime": true,
+    "requireApprovedArtifactActivationPath": true,
+    "requireReleaseApprovedCheckpoint": true
+  },
+  "largerProfileGates": {
+    "minimumIndependentSeeds": 3,
+    "confidenceLevel": 0.95,
+    "minimumCriticalDomainCompositeImprovementPoints": 2.0,
+    "minimumBootstrapProxyLossImprovementPercent": 1.0,
+    "requireConfidenceLowerBoundAboveZero": true,
+    "requireNoCriticalMetricRegression": true,
+    "requireSmallerProfileAtDataTarget": true,
+    "requireSmallerProfileOptimizationPlateau": true,
+    "requireMeasuredTargetHardware": true
+  },
+  "hypothesisRules": {
+    "dataLimited": "Supported when approved unique data is below the selected profile target and validation is still improving at the repeated-data ceiling.",
+    "optimizationLimited": "Supported only after sufficient unique data, at least three controlled seeds, and a measured plateau or instability under an approved schedule sweep.",
+    "architectureLimited": "Supported only when controlled architecture alternatives improve critical domain metrics materially beyond noise at fixed sufficient data and compute.",
+    "capacityLimited": "Supported only after the smaller profile reaches data and optimization readiness and a larger profile clears every larger-profile gate."
+  },
+  "decisionOptions": ["edge-neural-release", "core-neural-release", "server-neural-release", "no-neural-release"],
+  "fallbackPolicy": {
+    "selectedWhenAnyReleaseGateFails": "no-neural-release",
+    "retainBestCheckpointAs": "experimental-inactive-bootstrap",
+    "activeRegistryMustRemainNull": true,
+    "deterministicToolsRemainAuthoritative": true,
+    "approvedLocalRetrievalMayContinue": true,
+    "internetRetrievalIsEvidenceOnly": true,
+    "nextGate": "VFAI-016"
+  }
+}

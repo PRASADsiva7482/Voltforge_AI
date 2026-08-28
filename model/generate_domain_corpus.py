@@ -21,6 +21,21 @@ import random
 import sys
 from typing import Any, Dict, List, Tuple
 
+
+AI_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if AI_ROOT not in sys.path:
+    sys.path.insert(0, AI_ROOT)
+
+from data_governance.governance import write_approved_shard_manifest
+from evaluation.leakage import exclude_held_out_records, get_held_out_registry
+from task_schema.adapters import legacy_example_to_task_record
+from task_schema.io import write_task_shard
+
+
+GENERATOR_ID = "vf-domain-corpus-generator"
+GENERATOR_VERSION = "2.0.0"
+GENERATOR_SOURCE_IDS = ("vf-src-project-domain-generator-v1",)
+
 # ═══════════════════════════════════════════════════════════════════════
 # BOARD DATABASE — 49 Microcontroller Development Boards
 # ═══════════════════════════════════════════════════════════════════════
@@ -630,21 +645,62 @@ def generate_all_chunks(output_dir: str) -> Dict[str, int]:
         "chunk7_refusals.jsonl": c7,
     }
 
+    chunk_tasks = {
+        "chunk1_boards.jsonl": "board_pins",
+        "chunk2_physics.jsonl": "domain_chat",
+        "chunk3_components.jsonl": "domain_chat",
+        "chunk4_firmware.jsonl": "firmware_generation",
+        "chunk5_diagnostics.jsonl": "circuit_validation",
+        "chunk6_conversational.jsonl": "domain_chat",
+        "chunk7_refusals.jsonl": "refusal",
+    }
+    chunks = {
+        name: [
+            legacy_example_to_task_record(
+                record,
+                task=chunk_tasks[name],
+                source_ids=GENERATOR_SOURCE_IDS,
+                generator_id=GENERATOR_ID,
+                generator_version=GENERATOR_VERSION,
+            )
+            for record in records
+        ]
+        for name, records in chunks.items()
+    }
+
+    held_out_registry = get_held_out_registry()
+    chunks = {
+        name: exclude_held_out_records(records, held_out_registry)[0]
+        for name, records in chunks.items()
+    }
+
     counts = {}
     master = []
     for fname, data in chunks.items():
         path = os.path.join(output_dir, fname)
-        with open(path, "w", encoding="utf-8") as f:
-            for s in data:
-                f.write(json.dumps(s, ensure_ascii=False) + "\n")
+        write_task_shard(path, data)
+        write_approved_shard_manifest(
+            path,
+            source_ids=GENERATOR_SOURCE_IDS,
+            producer_id=GENERATOR_ID,
+            producer_version=GENERATOR_VERSION,
+            producer_path="model/generate_domain_corpus.py",
+            record_format="vf-task-record-jsonl-v1",
+        )
         counts[fname] = len(data)
         master.extend(data)
 
     random.shuffle(master)
     master_path = os.path.join(output_dir, "master_domain_dataset.jsonl")
-    with open(master_path, "w", encoding="utf-8") as f:
-        for s in master:
-            f.write(json.dumps(s, ensure_ascii=False) + "\n")
+    write_task_shard(master_path, master)
+    write_approved_shard_manifest(
+        master_path,
+        source_ids=GENERATOR_SOURCE_IDS,
+        producer_id=GENERATOR_ID,
+        producer_version=GENERATOR_VERSION,
+        producer_path="model/generate_domain_corpus.py",
+        record_format="vf-task-record-jsonl-v1",
+    )
     counts["master_domain_dataset.jsonl"] = len(master)
 
     return counts

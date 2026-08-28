@@ -1,0 +1,229 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vf-tokenizer-evaluation-v1",
+  "tokenizer": {
+    "tokenizerId": "vfdlm-byte-bpe",
+    "version": "1.0.0",
+    "algorithm": "voltforge-byte-bpe",
+    "vocabSize": 3072,
+    "mergeCount": 2800,
+    "files": {
+      "vocab.json": "fdaeaba167223060739e685e775c4adf160fa40f13159a0290b4d2f79b16a3b2",
+      "merges.json": "3921d8cdf957f2218160c6fdb7e00da6c4cbd47a0d99fc4f18065fd2225b95a4",
+      "tokenizer_config.json": "9c205ab5aaa51488ef1bd11da9833da493000ff332abfb1a119ef637586d00fd"
+    }
+  },
+  "frozenSplit": {
+    "id": "vf-tokenizer-split-v1",
+    "seed": "vfai-010-split-20260828",
+    "method": "per-task SHA-256 rank with approximately 10 percent evaluation",
+    "trainingRecordCount": 138,
+    "evaluationRecordCount": 16,
+    "trainingRecordIdsSha256": "5c59a9266aa6669c26497499629069d5769a31e17bd489140cfc26981ac783c0",
+    "evaluationRecordIds": [
+      "vf-task-v1-003502244bccef2d43aa9dac",
+      "vf-task-v1-054bfcaa5d313bb13229331d",
+      "vf-task-v1-075c80eb980e123446659de2",
+      "vf-task-v1-0b9d2ae30989f0a5daef9789",
+      "vf-task-v1-0bdfc52c22cb274995a23d89",
+      "vf-task-v1-2835a1a4e8881e5bd069b9e4",
+      "vf-task-v1-299d98bb2e8c6de170ff1c4a",
+      "vf-task-v1-3c75991c284ff14ee8e8dc33",
+      "vf-task-v1-50c6232dd355dc21b0f18f37",
+      "vf-task-v1-53537aa7b5016cc29d1df07c",
+      "vf-task-v1-7920182b1539188d81950223",
+      "vf-task-v1-86498ae824c0e770d511c118",
+      "vf-task-v1-935c0d2a2c56fef4cb3e6b37",
+      "vf-task-v1-b5b83549cc91c7d20163498d",
+      "vf-task-v1-da0227c8b6d19bfe5a23fe72",
+      "vf-task-v1-e572357a012729b027a4889b"
+    ],
+    "trainingCorpusSha256": "3abd4cd7f003ac0c7946157e9edd52cea62ea793b97a6a3572f3297f8e743c65",
+    "evaluationCorpusSha256": "6853eb90641b45edf90edc0c3bbeb07fbf6f666c266a9e37e63490dd8aa0f01a",
+    "taskBalance": {
+      "circuit_validation": 2,
+      "compiler_repair": 1,
+      "domain_chat": 3,
+      "firmware_generation": 1,
+      "pin_routing": 2,
+      "refusal": 1,
+      "structured_output": 2,
+      "uncertainty": 1,
+      "wiring": 3
+    }
+  },
+  "lineage": [
+    {
+      "shardId": "vf-shard-5785d06938bb19812ee6",
+      "path": "synthetic_data/shards/v1/grounded-electronics.jsonl",
+      "sha256": "5785d06938bb19812ee657e6dfabc4b4eb6bcdd76cb5d42fde34c49265bdbd6a",
+      "recordCount": 80,
+      "manifestPath": "data_governance/manifests/synthetic_data__shards__v1__grounded-electronics.jsonl.manifest.json",
+      "manifestSha256": "c5ec4ba494e5829ba2d215872ce4e374216eb312fb63e43d7137a58df2a61992",
+      "sourceIds": [
+        "vf-src-curated-electronics-corpus-v1",
+        "vf-src-verified-synthetic-pipeline-v1"
+      ]
+    },
+    {
+      "shardId": "vf-shard-348d56d93695dcba96bc",
+      "path": "synthetic_data/shards/v1/circuit-safety.jsonl",
+      "sha256": "348d56d93695dcba96bceed004e2451ebf93c636e464f2592dacd1971d3db95d",
+      "recordCount": 56,
+      "manifestPath": "data_governance/manifests/synthetic_data__shards__v1__circuit-safety.jsonl.manifest.json",
+      "manifestSha256": "3ae63b94f968d21cca1f6a450f405bf276660930813ffebda7743c0af381ff2b",
+      "sourceIds": [
+        "vf-src-curated-electronics-corpus-v1",
+        "vf-src-verified-synthetic-pipeline-v1"
+      ]
+    },
+    {
+      "shardId": "vf-shard-ab7663861f4fe8ec022d",
+      "path": "synthetic_data/shards/v1/firmware.jsonl",
+      "sha256": "ab7663861f4fe8ec022d045e945169ec0af0f526b34eacba701eaa112adc21f1",
+      "recordCount": 12,
+      "manifestPath": "data_governance/manifests/synthetic_data__shards__v1__firmware.jsonl.manifest.json",
+      "manifestSha256": "20663cdf8ba90e4eff8a95b440c54d95f12a7b42cddbb40857a910a773e10f31",
+      "sourceIds": [
+        "vf-src-curated-electronics-corpus-v1",
+        "vf-src-verified-synthetic-pipeline-v1"
+      ]
+    },
+    {
+      "shardId": "vf-shard-31d0d5b4d2890f40fe88",
+      "path": "synthetic_data/shards/v1/compiler-repair.jsonl",
+      "sha256": "31d0d5b4d2890f40fe880eead3c52f98b1cdb9ce505367e45e62fc2b83f474d0",
+      "recordCount": 6,
+      "manifestPath": "data_governance/manifests/synthetic_data__shards__v1__compiler-repair.jsonl.manifest.json",
+      "manifestSha256": "473306f16ff7e00ad07205106b69b5d67ba386ed1bd3f2180109f3725e2457a9",
+      "sourceIds": [
+        "vf-src-curated-electronics-corpus-v1",
+        "vf-src-verified-synthetic-pipeline-v1"
+      ]
+    }
+  ],
+  "compression": {
+    "new": {
+      "documents": 16,
+      "utf8Bytes": 59500,
+      "tokens": 8996,
+      "bytesPerToken": 6.614051
+    },
+    "legacy": {
+      "documents": 16,
+      "utf8Bytes": 59500,
+      "tokens": 36829,
+      "unknownTokens": 0,
+      "bytesPerToken": 1.615575
+    },
+    "tokenReductionPercent": 75.574,
+    "bytesPerTokenImprovementPercent": 309.393,
+    "decision": "pass"
+  },
+  "fragmentation": {
+    "policy": "New token count must not exceed a lossless legacy result; a legacy result containing [UNK] is lossy and cannot win by discarding bytes.",
+    "categories": {
+      "firmware_code": {
+        "examples": 2,
+        "newTokens": 67,
+        "legacyTokens": 73,
+        "legacyUnknownTokens": 0,
+        "newMaximumPieces": 39,
+        "legacyMaximumPieces": 56,
+        "comparison": "token-count",
+        "decision": "pass"
+      },
+      "engineering_units": {
+        "examples": 2,
+        "newTokens": 75,
+        "legacyTokens": 75,
+        "legacyUnknownTokens": 2,
+        "newMaximumPieces": 40,
+        "legacyMaximumPieces": 44,
+        "comparison": "new-lossless-legacy-lossy",
+        "decision": "pass"
+      },
+      "pin_names": {
+        "examples": 2,
+        "newTokens": 45,
+        "legacyTokens": 49,
+        "legacyUnknownTokens": 0,
+        "newMaximumPieces": 33,
+        "legacyMaximumPieces": 32,
+        "comparison": "token-count",
+        "decision": "pass"
+      },
+      "component_identifiers": {
+        "examples": 2,
+        "newTokens": 18,
+        "legacyTokens": 63,
+        "legacyUnknownTokens": 0,
+        "newMaximumPieces": 11,
+        "legacyMaximumPieces": 36,
+        "comparison": "token-count",
+        "decision": "pass"
+      },
+      "structured_json": {
+        "examples": 2,
+        "newTokens": 29,
+        "legacyTokens": 62,
+        "legacyUnknownTokens": 0,
+        "newMaximumPieces": 16,
+        "legacyMaximumPieces": 36,
+        "comparison": "token-count",
+        "decision": "pass"
+      },
+      "unicode": {
+        "examples": 2,
+        "newTokens": 103,
+        "legacyTokens": 62,
+        "legacyUnknownTokens": 21,
+        "newMaximumPieces": 63,
+        "legacyMaximumPieces": 31,
+        "comparison": "new-lossless-legacy-lossy",
+        "decision": "pass"
+      }
+    },
+    "decision": "pass"
+  },
+  "roundTrip": {
+    "contract": "decode(encode(text)) equals the original Python string, including lone surrogates",
+    "unknownTokenReachableForBytes": false,
+    "probeCategories": [
+      "component_identifiers",
+      "engineering_units",
+      "firmware_code",
+      "pin_names",
+      "structured_json",
+      "unicode"
+    ],
+    "decision": "pass"
+  },
+  "vocabularyCost": {
+    "newVocabSize": 3072,
+    "legacyVocabSize": 4096,
+    "sizeReductionPercent": 25.0,
+    "baseByteTokens": 256,
+    "specialTokens": 16,
+    "decision": "pass"
+  },
+  "legacyBaseline": {
+    "classification": "quarantined-comparison-only-never-a-training-input",
+    "artifacts": {
+      "vocab.json": {
+        "path": "model/artifacts/vocab.json",
+        "sha256": "ad172892c11130df40e019881b414a6a5545198f007cd2e385b19b3b5010a4e3"
+      },
+      "merges.json": {
+        "path": "model/artifacts/merges.json",
+        "sha256": "ade9024a21bc7d854cf8dd31fb502e5ffe8e67a5d4594732cad5db73b4c343c4"
+      },
+      "tokenizer_config.json": {
+        "path": "model/artifacts/tokenizer_config.json",
+        "sha256": "e6f1b245d021020b07209e31d9d3cf9f76ec9e19700b8da5b390694b9bcde88c"
+      }
+    }
+  },
+  "decision": "pass",
+  "reportSha256": "26b767f2b5baa3e3bf27990bf9541aa70700a340daced46d9f20e46b07505c2e"
+}

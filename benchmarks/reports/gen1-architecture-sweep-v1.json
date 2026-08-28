@@ -1,0 +1,1347 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai013-gen1-architecture-scorecard-v1",
+  "generatedAtUtc": "2026-08-28T13:16:31.595683Z",
+  "sweepId": "vfai013-gen1-architecture-sweep-v1",
+  "planPath": "gen1_sweep/plan.v1.json",
+  "planFileSha256": "6a80c7dc3b3fc81d3d83d8ea5df3a4ad677ac502b6007f12f578147c495d657c",
+  "planFingerprint": "89b6474ef369d655f8c5be0909864537762da18f776216d2167eaf90ee016ed6",
+  "referenceTier": "cpu-development-reference",
+  "controls": {
+    "approvedDatasetId": "vfai009-approved-packed-v1",
+    "tokenizerId": "vfdlm-byte-bpe",
+    "vocabSize": 3072,
+    "packingBlockSize": 128,
+    "optimizerSteps": 16,
+    "microBatchSize": 4,
+    "gradientAccumulationSteps": 1,
+    "expectedPredictedTokens": 8128,
+    "seed": 13013,
+    "peakLearningRate": 0.0005,
+    "minimumLearningRate": 5e-05,
+    "warmupSteps": 2,
+    "maxGradientNorm": 1.0,
+    "precision": "float32",
+    "device": "cpu",
+    "torchNumThreads": 4,
+    "torchNumInteropThreads": 1,
+    "validationProtocol": "Complete immutable vf-tokenizer-split-v1 validation records packed at 128 tokens; report token-weighted next-token loss, perplexity, and top-1 token accuracy.",
+    "inferencePromptTokens": 32,
+    "generatedTokens": 12,
+    "inferenceWarmupRuns": 2,
+    "inferenceMeasuredRuns": 5
+  },
+  "dimensionCoverage": [
+    "context",
+    "depth",
+    "dropout",
+    "ffn-ratio",
+    "full-multi-head-attention",
+    "grouped-query-attention",
+    "kv-heads",
+    "profile",
+    "query-heads",
+    "regularization",
+    "weight-decay",
+    "width"
+  ],
+  "nonExecutableControls": [
+    {
+      "id": "vocabulary-4096-control",
+      "dimension": "vocabulary",
+      "status": "rejected-before-training",
+      "reason": "The approved project-owned tokenizer has exactly 3,072 IDs. Expanding or truncating it would change the frozen tokenizer/data contract and would make this an uncontrolled comparison; no pretrained or legacy vocabulary may substitute for it.",
+      "owner": "A future tokenizer release item must train and independently approve any alternative project-owned vocabulary before it can enter a model sweep."
+    }
+  ],
+  "qualityBoundary": {
+    "proxy": "Frozen VFAI-010 model-validation next-token loss/perplexity/top-1 accuracy",
+    "releaseSuite": "not executed against raw decoder; VFAI-014 and runtime integration must produce independent VFAI-005 release scorecards",
+    "releaseCredit": 0.0
+  },
+  "energyBoundary": {
+    "energyMeasurementAvailable": false,
+    "reason": "No calibrated package or wall power sensor is exposed by the CPU reference host; process CPU and wall time are reported instead of invented energy."
+  },
+  "scorecard": [
+    {
+      "schemaVersion": 1,
+      "sweepId": "vfai013-gen1-architecture-sweep-v1",
+      "planFingerprint": "89b6474ef369d655f8c5be0909864537762da18f776216d2167eaf90ee016ed6",
+      "candidateId": "edge-deep-gqa",
+      "deploymentProfile": "edge",
+      "dimensions": [
+        "depth",
+        "width",
+        "grouped-query-attention"
+      ],
+      "status": "completed",
+      "modelConfig": {
+        "schemaVersion": 1,
+        "architectureId": "vfdlm-gen1-decoder-v1",
+        "vocabSize": 3072,
+        "maxSequenceLength": 128,
+        "dModel": 320,
+        "nLayers": 12,
+        "nHeads": 8,
+        "nKvHeads": 2,
+        "dFf": 864,
+        "ropeTheta": 10000.0,
+        "normEpsilon": 1e-05,
+        "dropout": 0.0,
+        "tieEmbeddings": true,
+        "initializationStd": 0.02,
+        "seed": 13013
+      },
+      "parameterCount": 14016320,
+      "weightDecay": 0.1,
+      "controls": {
+        "packingBlockSize": 128,
+        "optimizerSteps": 16,
+        "predictedTokens": 8128,
+        "seed": 13013,
+        "precision": "float32",
+        "device": "cpu",
+        "torchNumThreads": 4,
+        "torchNumInteropThreads": 1,
+        "datasetFingerprint": "5706ce7350c88262bbfdea6c5a00784dda6d4c177c1b33549ce663849e575e84",
+        "trainingConfigFingerprint": "1c67b477680beccc9c143405a1621fe7d38a5d5b84983f981adb1b57dee172f7"
+      },
+      "quality": {
+        "initial": {
+          "nextTokenLoss": 8.087865144770394,
+          "perplexity": 3254.731766918421,
+          "top1TokenAccuracy": 0.0005538938739337543,
+          "correctTokens": 5,
+          "predictedTokens": 9027,
+          "releaseCredit": 0.0,
+          "classification": "architecture-proxy-only-not-release-evaluation"
+        },
+        "final": {
+          "nextTokenLoss": 7.185258059746221,
+          "perplexity": 1319.8297892739304,
+          "top1TokenAccuracy": 0.008308408109006314,
+          "correctTokens": 75,
+          "predictedTokens": 9027,
+          "releaseCredit": 0.0,
+          "classification": "architecture-proxy-only-not-release-evaluation"
+        },
+        "lossImprovement": 0.9026070850241732
+      },
+      "training": {
+        "wallSeconds": 14.918531499999517,
+        "processCpuSeconds": 81.34375,
+        "predictedTokens": 8128,
+        "tokensPerSecond": 544.8257423996633,
+        "peakMemory": {
+          "startWorkingSetMiB": 202.926,
+          "peakWorkingSetMiB": 765.531,
+          "peakIncreaseMiB": 562.605
+        },
+        "finalGradientNormBeforeClip": 1.126244068145752
+      },
+      "inference": {
+        "promptTokens": 32,
+        "generatedTokensPerRun": 12,
+        "measuredRuns": 5,
+        "firstTokenLatencyMs": {
+          "median": 28.892999995150603,
+          "p95": 32.93812000047183,
+          "samples": [
+            29.50379999674624,
+            27.471599998534657,
+            26.04810000048019,
+            33.796700001403224,
+            28.892999995150603
+          ]
+        },
+        "cachedDecodeTokensPerSecond": {
+          "median": 59.61998223229448,
+          "samples": [
+            59.61998223229448,
+            43.81339000883697,
+            57.48802419918489,
+            63.21290508518939,
+            61.880805193117055
+          ]
+        },
+        "memory": {
+          "startWorkingSetMiB": 619.754,
+          "peakWorkingSetMiB": 765.531,
+          "peakIncreaseMiB": 145.777
+        }
+      },
+      "artifact": {
+        "checkpointBytes": 168349011,
+        "modelWeightsSha256": "58aa91e544e740181817da9ef3f98a5e058ea037056a6351e2afcc75dd8114c3",
+        "trainingStateSha256": "b4e265a3e32edb18856d60b45d8f80f99ee21dfbc19cd11ee21c05b0f685d0c2"
+      },
+      "energyRuntimeCost": {
+        "energyMeasurementAvailable": false,
+        "energyReason": "Reference host exposes no calibrated package/wall power sensor; no watt-hour value is invented.",
+        "trainingWallSeconds": 14.918531499999517,
+        "processCpuSeconds": 81.34375,
+        "cpuSecondsPerMillionTrainingTokens": 10007.843257874016
+      },
+      "environment": {
+        "generatedAtUtc": "2026-08-28T13:13:04.136256Z",
+        "referenceTier": "cpu-development-reference",
+        "pythonVersion": "3.12.13",
+        "torchVersion": "2.8.0+cpu",
+        "hardware": {
+          "platform": "Windows-11-10.0.26200-SP0",
+          "machine": "AMD64",
+          "processor": "Intel64 Family 6 Model 142 Stepping 12, GenuineIntel",
+          "logicalCpuCount": 8,
+          "pythonVersion": "3.12.13",
+          "torchVersion": "2.8.0+cpu",
+          "device": "cpu",
+          "precision": "float32",
+          "cudaAvailable": false,
+          "cpuCapability": "AVX2"
+        },
+        "codeRevision": {
+          "gitCommit": "6fb96d2c1c0edf03c57792d2a02d44c5edcc6df5",
+          "workingTreeDirty": true,
+          "sourceFingerprint": "2c11a58485f353aeeed652ef1be5ef5d5559bce1a7b1f2772d06d2b5f8e0cb43",
+          "files": [
+            {
+              "path": "gen1_sweep/plan.v1.json",
+              "bytes": 6225,
+              "sha256": "6a80c7dc3b3fc81d3d83d8ea5df3a4ad677ac502b6007f12f578147c495d657c"
+            },
+            {
+              "path": "gen1_sweep/sweep.py",
+              "bytes": 30147,
+              "sha256": "a3ca0a2ae2827f9c543ab87c568a2213ebc98e1210d51c4eba035f818a283e06"
+            },
+            {
+              "path": "gen1_training/config.py",
+              "bytes": 8559,
+              "sha256": "cd0ee1e09876fb59dc704defc5d70be8705efde346c550df62b5b016ed364bb4"
+            },
+            {
+              "path": "gen1_training/data.py",
+              "bytes": 19648,
+              "sha256": "e9372b4805f88e68c119da2907cb045079cabfc2f88a07a06816217d13873a2b"
+            },
+            {
+              "path": "gen1_training/trainer.py",
+              "bytes": 36350,
+              "sha256": "a33127a7e908cc4fb322522cf9389136987c54715c559756616f094b1e28c5ea"
+            },
+            {
+              "path": "model/gen1/config.py",
+              "bytes": 8070,
+              "sha256": "3d33e243caf190391579144682532c604ff7642bd9611749c55ce7141b205e2d"
+            },
+            {
+              "path": "model/gen1/model.py",
+              "bytes": 25560,
+              "sha256": "450e389c7558e8580cd335864bd4b664adf0c7e72aeb2df5d6cf326fa955fcac"
+            },
+            {
+              "path": "model/tokenizer.py",
+              "bytes": 25163,
+              "sha256": "39f0a3773f044eb9934222cf9c5dbc22212a155fe886a2e195a1175761a84e35"
+            },
+            {
+              "path": "task_schema/compiler.py",
+              "bytes": 4269,
+              "sha256": "679663525f214ebab2d40ada78f6c41b0c0640ffafe77e38d4c47d12b0541236"
+            },
+            {
+              "path": "tools/run_gen1_sweep.py",
+              "bytes": 3703,
+              "sha256": "b8b47e4a873aa9de50d8018b7773d62d5a20cdef19e484d372a6ae78278ac637"
+            },
+            {
+              "path": "tools/train_gen1.py",
+              "bytes": 3739,
+              "sha256": "a4e665eed553a4bb55a8261953fcefece029cbea887436412bb0d576913416b1"
+            }
+          ]
+        }
+      },
+      "resultSha256": "2a8a81c3c544b3f1b332453bc04e85c37a5224f0832d3bc370d4304400d86f3a"
+    },
+    {
+      "schemaVersion": 1,
+      "sweepId": "vfai013-gen1-architecture-sweep-v1",
+      "planFingerprint": "89b6474ef369d655f8c5be0909864537762da18f776216d2167eaf90ee016ed6",
+      "candidateId": "edge-wide-gqa",
+      "deploymentProfile": "edge",
+      "dimensions": [
+        "depth",
+        "width",
+        "grouped-query-attention"
+      ],
+      "status": "completed",
+      "modelConfig": {
+        "schemaVersion": 1,
+        "architectureId": "vfdlm-gen1-decoder-v1",
+        "vocabSize": 3072,
+        "maxSequenceLength": 128,
+        "dModel": 448,
+        "nLayers": 6,
+        "nHeads": 8,
+        "nKvHeads": 2,
+        "dFf": 1216,
+        "ropeTheta": 10000.0,
+        "normEpsilon": 1e-05,
+        "dropout": 0.0,
+        "tieEmbeddings": true,
+        "initializationStd": 0.02,
+        "seed": 13013
+      },
+      "parameterCount": 14198464,
+      "weightDecay": 0.1,
+      "controls": {
+        "packingBlockSize": 128,
+        "optimizerSteps": 16,
+        "predictedTokens": 8128,
+        "seed": 13013,
+        "precision": "float32",
+        "device": "cpu",
+        "torchNumThreads": 4,
+        "torchNumInteropThreads": 1,
+        "datasetFingerprint": "5706ce7350c88262bbfdea6c5a00784dda6d4c177c1b33549ce663849e575e84",
+        "trainingConfigFingerprint": "b2905987924debc9a043cac4f76ccd8a667a9a7d81ad3592e35b9e3730476860"
+      },
+      "quality": {
+        "initial": {
+          "nextTokenLoss": 8.108121731543548,
+          "perplexity": 3321.3338110393684,
+          "top1TokenAccuracy": 0.00022155754957350172,
+          "correctTokens": 2,
+          "predictedTokens": 9027,
+          "releaseCredit": 0.0,
+          "classification": "architecture-proxy-only-not-release-evaluation"
+        },
+        "final": {
+          "nextTokenLoss": 6.8724948502833545,
+          "perplexity": 965.3539776378105,
+          "top1TokenAccuracy": 0.008308408109006314,
+          "correctTokens": 75,
+          "predictedTokens": 9027,
+          "releaseCredit": 0.0,
+          "classification": "architecture-proxy-only-not-release-evaluation"
+        },
+        "lossImprovement": 1.2356268812601936
+      },
+      "training": {
+        "wallSeconds": 12.80389439999999,
+        "processCpuSeconds": 70.265625,
+        "predictedTokens": 8128,
+        "tokensPerSecond": 634.8068600128416,
+        "peakMemory": {
+          "startWorkingSetMiB": 202.953,
+          "peakWorkingSetMiB": 637.582,
+          "peakIncreaseMiB": 434.629
+        },
+        "finalGradientNormBeforeClip": 1.2136998176574707
+      },
+      "inference": {
+        "promptTokens": 32,
+        "generatedTokensPerRun": 12,
+        "measuredRuns": 5,
+        "firstTokenLatencyMs": {
+          "median": 16.600599999947008,
+          "p95": 23.65538000158267,
+          "samples": [
+            17.668899999989662,
+            25.152000001980923,
+            16.600599999947008,
+            16.547899998840876,
+            16.32380000228295
+          ]
+        },
+        "cachedDecodeTokensPerSecond": {
+          "median": 98.54546888433288,
+          "samples": [
+            98.54546888433288,
+            95.11456982296124,
+            96.74718378016158,
+            101.81009086509357,
+            101.33336281664398
+          ]
+        },
+        "memory": {
+          "startWorkingSetMiB": 547.656,
+          "peakWorkingSetMiB": 637.582,
+          "peakIncreaseMiB": 89.926
+        }
+      },
+      "artifact": {
+        "checkpointBytes": 170473282,
+        "modelWeightsSha256": "f0057d9ddddddb5f359f57091e8ef29d1c1a9eee25e7bce5b5b40fc623454162",
+        "trainingStateSha256": "ac4a8bba29085667605f092c24e46b63c1eff63bdcd27d9e207d9a1cfd718067"
+      },
+      "energyRuntimeCost": {
+        "energyMeasurementAvailable": false,
+        "energyReason": "Reference host exposes no calibrated package/wall power sensor; no watt-hour value is invented.",
+        "trainingWallSeconds": 12.80389439999999,
+        "processCpuSeconds": 70.265625,
+        "cpuSecondsPerMillionTrainingTokens": 8644.88496555118
+      },
+      "environment": {
+        "generatedAtUtc": "2026-08-28T13:13:36.861068Z",
+        "referenceTier": "cpu-development-reference",
+        "pythonVersion": "3.12.13",
+        "torchVersion": "2.8.0+cpu",
+        "hardware": {
+          "platform": "Windows-11-10.0.26200-SP0",
+          "machine": "AMD64",
+          "processor": "Intel64 Family 6 Model 142 Stepping 12, GenuineIntel",
+          "logicalCpuCount": 8,
+          "pythonVersion": "3.12.13",
+          "torchVersion": "2.8.0+cpu",
+          "device": "cpu",
+          "precision": "float32",
+          "cudaAvailable": false,
+          "cpuCapability": "AVX2"
+        },
+        "codeRevision": {
+          "gitCommit": "6fb96d2c1c0edf03c57792d2a02d44c5edcc6df5",
+          "workingTreeDirty": true,
+          "sourceFingerprint": "2c11a58485f353aeeed652ef1be5ef5d5559bce1a7b1f2772d06d2b5f8e0cb43",
+          "files": [
+            {
+              "path": "gen1_sweep/plan.v1.json",
+              "bytes": 6225,
+              "sha256": "6a80c7dc3b3fc81d3d83d8ea5df3a4ad677ac502b6007f12f578147c495d657c"
+            },
+            {
+              "path": "gen1_sweep/sweep.py",
+              "bytes": 30147,
+              "sha256": "a3ca0a2ae2827f9c543ab87c568a2213ebc98e1210d51c4eba035f818a283e06"
+            },
+            {
+              "path": "gen1_training/config.py",
+              "bytes": 8559,
+              "sha256": "cd0ee1e09876fb59dc704defc5d70be8705efde346c550df62b5b016ed364bb4"
+            },
+            {
+              "path": "gen1_training/data.py",
+              "bytes": 19648,
+              "sha256": "e9372b4805f88e68c119da2907cb045079cabfc2f88a07a06816217d13873a2b"
+            },
+            {
+              "path": "gen1_training/trainer.py",
+              "bytes": 36350,
+              "sha256": "a33127a7e908cc4fb322522cf9389136987c54715c559756616f094b1e28c5ea"
+            },
+            {
+              "path": "model/gen1/config.py",
+              "bytes": 8070,
+              "sha256": "3d33e243caf190391579144682532c604ff7642bd9611749c55ce7141b205e2d"
+            },
+            {
+              "path": "model/gen1/model.py",
+              "bytes": 25560,
+              "sha256": "450e389c7558e8580cd335864bd4b664adf0c7e72aeb2df5d6cf326fa955fcac"
+            },
+            {
+              "path": "model/tokenizer.py",
+              "bytes": 25163,
+              "sha256": "39f0a3773f044eb9934222cf9c5dbc22212a155fe886a2e195a1175761a84e35"
+            },
+            {
+              "path": "task_schema/compiler.py",
+              "bytes": 4269,
+              "sha256": "679663525f214ebab2d40ada78f6c41b0c0640ffafe77e38d4c47d12b0541236"
+            },
+            {
+              "path": "tools/run_gen1_sweep.py",
+              "bytes": 3703,
+              "sha256": "b8b47e4a873aa9de50d8018b7773d62d5a20cdef19e484d372a6ae78278ac637"
+            },
+            {
+              "path": "tools/train_gen1.py",
+              "bytes": 3739,
+              "sha256": "a4e665eed553a4bb55a8261953fcefece029cbea887436412bb0d576913416b1"
+            }
+          ]
+        }
+      },
+      "resultSha256": "67f57c0ce201aa077da2b6e3b09c7650966ddeb5bfce0a8af06063dea79e4f7e"
+    },
+    {
+      "schemaVersion": 1,
+      "sweepId": "vfai013-gen1-architecture-sweep-v1",
+      "planFingerprint": "89b6474ef369d655f8c5be0909864537762da18f776216d2167eaf90ee016ed6",
+      "candidateId": "edge-wide-mha",
+      "deploymentProfile": "edge",
+      "dimensions": [
+        "kv-heads",
+        "full-multi-head-attention"
+      ],
+      "status": "completed",
+      "modelConfig": {
+        "schemaVersion": 1,
+        "architectureId": "vfdlm-gen1-decoder-v1",
+        "vocabSize": 3072,
+        "maxSequenceLength": 128,
+        "dModel": 448,
+        "nLayers": 6,
+        "nHeads": 8,
+        "nKvHeads": 8,
+        "dFf": 1216,
+        "ropeTheta": 10000.0,
+        "normEpsilon": 1e-05,
+        "dropout": 0.0,
+        "tieEmbeddings": true,
+        "initializationStd": 0.02,
+        "seed": 13013
+      },
+      "parameterCount": 16004800,
+      "weightDecay": 0.1,
+      "controls": {
+        "packingBlockSize": 128,
+        "optimizerSteps": 16,
+        "predictedTokens": 8128,
+        "seed": 13013,
+        "precision": "float32",
+        "device": "cpu",
+        "torchNumThreads": 4,
+        "torchNumInteropThreads": 1,
+        "datasetFingerprint": "5706ce7350c88262bbfdea6c5a00784dda6d4c177c1b33549ce663849e575e84",
+        "trainingConfigFingerprint": "bfad0608145a72921ca21fabdbf9dc5bacafe63fb570884b6dbf5c446355ead5"
+      },
+      "quality": {
+        "initial": {
+          "nextTokenLoss": 8.114588886449884,
+          "perplexity": 3342.8829971471314,
+          "top1TokenAccuracy": 0.0005538938739337543,
+          "correctTokens": 5,
+          "predictedTokens": 9027,
+          "releaseCredit": 0.0,
+          "classification": "architecture-proxy-only-not-release-evaluation"
+        },
+        "final": {
+          "nextTokenLoss": 6.908518005608588,
+          "perplexity": 1000.7630175763716,
+          "top1TokenAccuracy": 0.010856319929101584,
+          "correctTokens": 98,
+          "predictedTokens": 9027,
+          "releaseCredit": 0.0,
+          "classification": "architecture-proxy-only-not-release-evaluation"
+        },
+        "lossImprovement": 1.2060708808412954
+      },
+      "training": {
+        "wallSeconds": 14.997416600002907,
+        "processCpuSeconds": 78.140625,
+        "predictedTokens": 8128,
+        "tokensPerSecond": 541.9600066319705,
+        "peakMemory": {
+          "startWorkingSetMiB": 202.43,
+          "peakWorkingSetMiB": 649.488,
+          "peakIncreaseMiB": 447.059
+        },
+        "finalGradientNormBeforeClip": 1.2206485271453857
+      },
+      "inference": {
+        "promptTokens": 32,
+        "generatedTokensPerRun": 12,
+        "measuredRuns": 5,
+        "firstTokenLatencyMs": {
+          "median": 20.661700000346173,
+          "p95": 22.829339996678755,
+          "samples": [
+            20.471700001507998,
+            19.16689999779919,
+            20.661700000346173,
+            21.747899998445064,
+            23.099699996237177
+          ]
+        },
+        "cachedDecodeTokensPerSecond": {
+          "median": 79.56611872012854,
+          "samples": [
+            51.534124022540325,
+            79.56611872012854,
+            92.16836982772594,
+            82.77136592501722,
+            61.66862978465196
+          ]
+        },
+        "memory": {
+          "startWorkingSetMiB": 563.641,
+          "peakWorkingSetMiB": 649.488,
+          "peakIncreaseMiB": 85.848
+        }
+      },
+      "artifact": {
+        "checkpointBytes": 192149442,
+        "modelWeightsSha256": "bf51be995fd3628e0d6793dcd28e746fbc0dcdfe56a58fe5643803104885f73f",
+        "trainingStateSha256": "373196165b9e8bd2823907dc113b367d4daf796b198a4600232373a49583517b"
+      },
+      "energyRuntimeCost": {
+        "energyMeasurementAvailable": false,
+        "energyReason": "Reference host exposes no calibrated package/wall power sensor; no watt-hour value is invented.",
+        "trainingWallSeconds": 14.997416600002907,
+        "processCpuSeconds": 78.140625,
+        "cpuSecondsPerMillionTrainingTokens": 9613.757997047243
+      },
+      "environment": {
+        "generatedAtUtc": "2026-08-28T13:14:10.124114Z",
+        "referenceTier": "cpu-development-reference",
+        "pythonVersion": "3.12.13",
+        "torchVersion": "2.8.0+cpu",
+        "hardware": {
+          "platform": "Windows-11-10.0.26200-SP0",
+          "machine": "AMD64",
+          "processor": "Intel64 Family 6 Model 142 Stepping 12, GenuineIntel",
+          "logicalCpuCount": 8,
+          "pythonVersion": "3.12.13",
+          "torchVersion": "2.8.0+cpu",
+          "device": "cpu",
+          "precision": "float32",
+          "cudaAvailable": false,
+          "cpuCapability": "AVX2"
+        },
+        "codeRevision": {
+          "gitCommit": "6fb96d2c1c0edf03c57792d2a02d44c5edcc6df5",
+          "workingTreeDirty": true,
+          "sourceFingerprint": "2c11a58485f353aeeed652ef1be5ef5d5559bce1a7b1f2772d06d2b5f8e0cb43",
+          "files": [
+            {
+              "path": "gen1_sweep/plan.v1.json",
+              "bytes": 6225,
+              "sha256": "6a80c7dc3b3fc81d3d83d8ea5df3a4ad677ac502b6007f12f578147c495d657c"
+            },
+            {
+              "path": "gen1_sweep/sweep.py",
+              "bytes": 30147,
+              "sha256": "a3ca0a2ae2827f9c543ab87c568a2213ebc98e1210d51c4eba035f818a283e06"
+            },
+            {
+              "path": "gen1_training/config.py",
+              "bytes": 8559,
+              "sha256": "cd0ee1e09876fb59dc704defc5d70be8705efde346c550df62b5b016ed364bb4"
+            },
+            {
+              "path": "gen1_training/data.py",
+              "bytes": 19648,
+              "sha256": "e9372b4805f88e68c119da2907cb045079cabfc2f88a07a06816217d13873a2b"
+            },
+            {
+              "path": "gen1_training/trainer.py",
+              "bytes": 36350,
+              "sha256": "a33127a7e908cc4fb322522cf9389136987c54715c559756616f094b1e28c5ea"
+            },
+            {
+              "path": "model/gen1/config.py",
+              "bytes": 8070,
+              "sha256": "3d33e243caf190391579144682532c604ff7642bd9611749c55ce7141b205e2d"
+            },
+            {
+              "path": "model/gen1/model.py",
+              "bytes": 25560,
+              "sha256": "450e389c7558e8580cd335864bd4b664adf0c7e72aeb2df5d6cf326fa955fcac"
+            },
+            {
+              "path": "model/tokenizer.py",
+              "bytes": 25163,
+              "sha256": "39f0a3773f044eb9934222cf9c5dbc22212a155fe886a2e195a1175761a84e35"
+            },
+            {
+              "path": "task_schema/compiler.py",
+              "bytes": 4269,
+              "sha256": "679663525f214ebab2d40ada78f6c41b0c0640ffafe77e38d4c47d12b0541236"
+            },
+            {
+              "path": "tools/run_gen1_sweep.py",
+              "bytes": 3703,
+              "sha256": "b8b47e4a873aa9de50d8018b7773d62d5a20cdef19e484d372a6ae78278ac637"
+            },
+            {
+              "path": "tools/train_gen1.py",
+              "bytes": 3739,
+              "sha256": "a4e665eed553a4bb55a8261953fcefece029cbea887436412bb0d576913416b1"
+            }
+          ]
+        }
+      },
+      "resultSha256": "a4618ba3a4db1e968689960e60c31eb0a6c617103b34a485be0505334e745070"
+    },
+    {
+      "schemaVersion": 1,
+      "sweepId": "vfai013-gen1-architecture-sweep-v1",
+      "planFingerprint": "89b6474ef369d655f8c5be0909864537762da18f776216d2167eaf90ee016ed6",
+      "candidateId": "edge-heads-ffn",
+      "deploymentProfile": "edge",
+      "dimensions": [
+        "query-heads",
+        "kv-heads",
+        "ffn-ratio"
+      ],
+      "status": "completed",
+      "modelConfig": {
+        "schemaVersion": 1,
+        "architectureId": "vfdlm-gen1-decoder-v1",
+        "vocabSize": 3072,
+        "maxSequenceLength": 128,
+        "dModel": 384,
+        "nLayers": 8,
+        "nHeads": 12,
+        "nKvHeads": 3,
+        "dFf": 768,
+        "ropeTheta": 10000.0,
+        "normEpsilon": 1e-05,
+        "dropout": 0.0,
+        "tieEmbeddings": true,
+        "initializationStd": 0.02,
+        "seed": 13013
+      },
+      "parameterCount": 11213184,
+      "weightDecay": 0.1,
+      "controls": {
+        "packingBlockSize": 128,
+        "optimizerSteps": 16,
+        "predictedTokens": 8128,
+        "seed": 13013,
+        "precision": "float32",
+        "device": "cpu",
+        "torchNumThreads": 4,
+        "torchNumInteropThreads": 1,
+        "datasetFingerprint": "5706ce7350c88262bbfdea6c5a00784dda6d4c177c1b33549ce663849e575e84",
+        "trainingConfigFingerprint": "1b29248810b45415c552cd76e174f9f0f202a7a9f21c1f657d27eb8690917ffc"
+      },
+      "quality": {
+        "initial": {
+          "nextTokenLoss": 8.110300075179836,
+          "perplexity": 3328.5767033006982,
+          "top1TokenAccuracy": 0.00033233632436025255,
+          "correctTokens": 3,
+          "predictedTokens": 9027,
+          "releaseCredit": 0.0,
+          "classification": "architecture-proxy-only-not-release-evaluation"
+        },
+        "final": {
+          "nextTokenLoss": 7.025602409368709,
+          "perplexity": 1125.0721088823368,
+          "top1TokenAccuracy": 0.010967098703888335,
+          "correctTokens": 99,
+          "predictedTokens": 9027,
+          "releaseCredit": 0.0,
+          "classification": "architecture-proxy-only-not-release-evaluation"
+        },
+        "lossImprovement": 1.0846976658111274
+      },
+      "training": {
+        "wallSeconds": 12.622517199997674,
+        "processCpuSeconds": 69.53125,
+        "predictedTokens": 8128,
+        "tokensPerSecond": 643.9286135416395,
+        "peakMemory": {
+          "startWorkingSetMiB": 202.688,
+          "peakWorkingSetMiB": 656.875,
+          "peakIncreaseMiB": 454.188
+        },
+        "finalGradientNormBeforeClip": 1.1988632678985596
+      },
+      "inference": {
+        "promptTokens": 32,
+        "generatedTokensPerRun": 12,
+        "measuredRuns": 5,
+        "firstTokenLatencyMs": {
+          "median": 21.865900002012495,
+          "p95": 27.79434000112815,
+          "samples": [
+            21.60639999783598,
+            16.696300001058262,
+            24.757300001510885,
+            21.865900002012495,
+            28.553600001032464
+          ]
+        },
+        "cachedDecodeTokensPerSecond": {
+          "median": 81.18446660628547,
+          "samples": [
+            81.18446660628547,
+            89.23465062590512,
+            84.30992328006354,
+            63.17104882228531,
+            58.72529800398885
+          ]
+        },
+        "memory": {
+          "startWorkingSetMiB": 498.07,
+          "peakWorkingSetMiB": 656.875,
+          "peakIncreaseMiB": 158.805
+        }
+      },
+      "artifact": {
+        "checkpointBytes": 134670426,
+        "modelWeightsSha256": "471bac2db86933da169c9bf32d64c73c9ed1dcc1773696b8f6cc9369336a2f9c",
+        "trainingStateSha256": "88858bd66f52414ce4a38cf2935e435916ac695adf12cea07969049b37652cc4"
+      },
+      "energyRuntimeCost": {
+        "energyMeasurementAvailable": false,
+        "energyReason": "Reference host exposes no calibrated package/wall power sensor; no watt-hour value is invented.",
+        "trainingWallSeconds": 12.622517199997674,
+        "processCpuSeconds": 69.53125,
+        "cpuSecondsPerMillionTrainingTokens": 8554.533710629921
+      },
+      "environment": {
+        "generatedAtUtc": "2026-08-28T13:14:45.260810Z",
+        "referenceTier": "cpu-development-reference",
+        "pythonVersion": "3.12.13",
+        "torchVersion": "2.8.0+cpu",
+        "hardware": {
+          "platform": "Windows-11-10.0.26200-SP0",
+          "machine": "AMD64",
+          "processor": "Intel64 Family 6 Model 142 Stepping 12, GenuineIntel",
+          "logicalCpuCount": 8,
+          "pythonVersion": "3.12.13",
+          "torchVersion": "2.8.0+cpu",
+          "device": "cpu",
+          "precision": "float32",
+          "cudaAvailable": false,
+          "cpuCapability": "AVX2"
+        },
+        "codeRevision": {
+          "gitCommit": "6fb96d2c1c0edf03c57792d2a02d44c5edcc6df5",
+          "workingTreeDirty": true,
+          "sourceFingerprint": "2c11a58485f353aeeed652ef1be5ef5d5559bce1a7b1f2772d06d2b5f8e0cb43",
+          "files": [
+            {
+              "path": "gen1_sweep/plan.v1.json",
+              "bytes": 6225,
+              "sha256": "6a80c7dc3b3fc81d3d83d8ea5df3a4ad677ac502b6007f12f578147c495d657c"
+            },
+            {
+              "path": "gen1_sweep/sweep.py",
+              "bytes": 30147,
+              "sha256": "a3ca0a2ae2827f9c543ab87c568a2213ebc98e1210d51c4eba035f818a283e06"
+            },
+            {
+              "path": "gen1_training/config.py",
+              "bytes": 8559,
+              "sha256": "cd0ee1e09876fb59dc704defc5d70be8705efde346c550df62b5b016ed364bb4"
+            },
+            {
+              "path": "gen1_training/data.py",
+              "bytes": 19648,
+              "sha256": "e9372b4805f88e68c119da2907cb045079cabfc2f88a07a06816217d13873a2b"
+            },
+            {
+              "path": "gen1_training/trainer.py",
+              "bytes": 36350,
+              "sha256": "a33127a7e908cc4fb322522cf9389136987c54715c559756616f094b1e28c5ea"
+            },
+            {
+              "path": "model/gen1/config.py",
+              "bytes": 8070,
+              "sha256": "3d33e243caf190391579144682532c604ff7642bd9611749c55ce7141b205e2d"
+            },
+            {
+              "path": "model/gen1/model.py",
+              "bytes": 25560,
+              "sha256": "450e389c7558e8580cd335864bd4b664adf0c7e72aeb2df5d6cf326fa955fcac"
+            },
+            {
+              "path": "model/tokenizer.py",
+              "bytes": 25163,
+              "sha256": "39f0a3773f044eb9934222cf9c5dbc22212a155fe886a2e195a1175761a84e35"
+            },
+            {
+              "path": "task_schema/compiler.py",
+              "bytes": 4269,
+              "sha256": "679663525f214ebab2d40ada78f6c41b0c0640ffafe77e38d4c47d12b0541236"
+            },
+            {
+              "path": "tools/run_gen1_sweep.py",
+              "bytes": 3703,
+              "sha256": "b8b47e4a873aa9de50d8018b7773d62d5a20cdef19e484d372a6ae78278ac637"
+            },
+            {
+              "path": "tools/train_gen1.py",
+              "bytes": 3739,
+              "sha256": "a4e665eed553a4bb55a8261953fcefece029cbea887436412bb0d576913416b1"
+            }
+          ]
+        }
+      },
+      "resultSha256": "ce1037de2b47dd69b530c1fe6e9792b43d69216591299f962e1ab08a1652c9fb"
+    },
+    {
+      "schemaVersion": 1,
+      "sweepId": "vfai013-gen1-architecture-sweep-v1",
+      "planFingerprint": "89b6474ef369d655f8c5be0909864537762da18f776216d2167eaf90ee016ed6",
+      "candidateId": "edge-context-regularized",
+      "deploymentProfile": "edge",
+      "dimensions": [
+        "context",
+        "dropout",
+        "weight-decay",
+        "ffn-ratio"
+      ],
+      "status": "completed",
+      "modelConfig": {
+        "schemaVersion": 1,
+        "architectureId": "vfdlm-gen1-decoder-v1",
+        "vocabSize": 3072,
+        "maxSequenceLength": 256,
+        "dModel": 384,
+        "nLayers": 8,
+        "nHeads": 8,
+        "nKvHeads": 2,
+        "dFf": 1024,
+        "ropeTheta": 10000.0,
+        "normEpsilon": 1e-05,
+        "dropout": 0.1,
+        "tieEmbeddings": true,
+        "initializationStd": 0.02,
+        "seed": 13013
+      },
+      "parameterCount": 13572480,
+      "weightDecay": 0.05,
+      "controls": {
+        "packingBlockSize": 128,
+        "optimizerSteps": 16,
+        "predictedTokens": 8128,
+        "seed": 13013,
+        "precision": "float32",
+        "device": "cpu",
+        "torchNumThreads": 4,
+        "torchNumInteropThreads": 1,
+        "datasetFingerprint": "5706ce7350c88262bbfdea6c5a00784dda6d4c177c1b33549ce663849e575e84",
+        "trainingConfigFingerprint": "287df46c1fafc981fd305091d8905f081db1f3f2cc9697d3f698395b440f81ad"
+      },
+      "quality": {
+        "initial": {
+          "nextTokenLoss": 8.106090281854057,
+          "perplexity": 3314.593537081927,
+          "top1TokenAccuracy": 0.0005538938739337543,
+          "correctTokens": 5,
+          "predictedTokens": 9027,
+          "releaseCredit": 0.0,
+          "classification": "architecture-proxy-only-not-release-evaluation"
+        },
+        "final": {
+          "nextTokenLoss": 6.991016438016071,
+          "perplexity": 1086.8256058137838,
+          "top1TokenAccuracy": 0.011077877478675086,
+          "correctTokens": 100,
+          "predictedTokens": 9027,
+          "releaseCredit": 0.0,
+          "classification": "architecture-proxy-only-not-release-evaluation"
+        },
+        "lossImprovement": 1.115073843837986
+      },
+      "training": {
+        "wallSeconds": 16.657826299997396,
+        "processCpuSeconds": 86.203125,
+        "predictedTokens": 8128,
+        "tokensPerSecond": 487.93881348140064,
+        "peakMemory": {
+          "startWorkingSetMiB": 202.863,
+          "peakWorkingSetMiB": 697.168,
+          "peakIncreaseMiB": 494.305
+        },
+        "finalGradientNormBeforeClip": 1.1936390399932861
+      },
+      "inference": {
+        "promptTokens": 32,
+        "generatedTokensPerRun": 12,
+        "measuredRuns": 5,
+        "firstTokenLatencyMs": {
+          "median": 21.636600002238993,
+          "p95": 31.121100002201274,
+          "samples": [
+            20.5366000009235,
+            24.81390000320971,
+            32.697900001949165,
+            17.099800003052223,
+            21.636600002238993
+          ]
+        },
+        "cachedDecodeTokensPerSecond": {
+          "median": 71.76516870874639,
+          "samples": [
+            84.3648858025068,
+            56.39108344116091,
+            71.76516870874639,
+            78.27576980935581,
+            42.96049352934741
+          ]
+        },
+        "memory": {
+          "startWorkingSetMiB": 565.059,
+          "peakWorkingSetMiB": 697.168,
+          "peakIncreaseMiB": 132.109
+        }
+      },
+      "artifact": {
+        "checkpointBytes": 162981990,
+        "modelWeightsSha256": "fc7816b4adfe7bfaab28838e6601fcf15c1e0c95d652d225f348f3875de864d5",
+        "trainingStateSha256": "f10f0eda1f5810d5835316b2258c2b7460e6e3bb38822e4b820d5713ab4a47c1"
+      },
+      "energyRuntimeCost": {
+        "energyMeasurementAvailable": false,
+        "energyReason": "Reference host exposes no calibrated package/wall power sensor; no watt-hour value is invented.",
+        "trainingWallSeconds": 16.657826299997396,
+        "processCpuSeconds": 86.203125,
+        "cpuSecondsPerMillionTrainingTokens": 10605.699434055117
+      },
+      "environment": {
+        "generatedAtUtc": "2026-08-28T13:15:20.831611Z",
+        "referenceTier": "cpu-development-reference",
+        "pythonVersion": "3.12.13",
+        "torchVersion": "2.8.0+cpu",
+        "hardware": {
+          "platform": "Windows-11-10.0.26200-SP0",
+          "machine": "AMD64",
+          "processor": "Intel64 Family 6 Model 142 Stepping 12, GenuineIntel",
+          "logicalCpuCount": 8,
+          "pythonVersion": "3.12.13",
+          "torchVersion": "2.8.0+cpu",
+          "device": "cpu",
+          "precision": "float32",
+          "cudaAvailable": false,
+          "cpuCapability": "AVX2"
+        },
+        "codeRevision": {
+          "gitCommit": "6fb96d2c1c0edf03c57792d2a02d44c5edcc6df5",
+          "workingTreeDirty": true,
+          "sourceFingerprint": "2c11a58485f353aeeed652ef1be5ef5d5559bce1a7b1f2772d06d2b5f8e0cb43",
+          "files": [
+            {
+              "path": "gen1_sweep/plan.v1.json",
+              "bytes": 6225,
+              "sha256": "6a80c7dc3b3fc81d3d83d8ea5df3a4ad677ac502b6007f12f578147c495d657c"
+            },
+            {
+              "path": "gen1_sweep/sweep.py",
+              "bytes": 30147,
+              "sha256": "a3ca0a2ae2827f9c543ab87c568a2213ebc98e1210d51c4eba035f818a283e06"
+            },
+            {
+              "path": "gen1_training/config.py",
+              "bytes": 8559,
+              "sha256": "cd0ee1e09876fb59dc704defc5d70be8705efde346c550df62b5b016ed364bb4"
+            },
+            {
+              "path": "gen1_training/data.py",
+              "bytes": 19648,
+              "sha256": "e9372b4805f88e68c119da2907cb045079cabfc2f88a07a06816217d13873a2b"
+            },
+            {
+              "path": "gen1_training/trainer.py",
+              "bytes": 36350,
+              "sha256": "a33127a7e908cc4fb322522cf9389136987c54715c559756616f094b1e28c5ea"
+            },
+            {
+              "path": "model/gen1/config.py",
+              "bytes": 8070,
+              "sha256": "3d33e243caf190391579144682532c604ff7642bd9611749c55ce7141b205e2d"
+            },
+            {
+              "path": "model/gen1/model.py",
+              "bytes": 25560,
+              "sha256": "450e389c7558e8580cd335864bd4b664adf0c7e72aeb2df5d6cf326fa955fcac"
+            },
+            {
+              "path": "model/tokenizer.py",
+              "bytes": 25163,
+              "sha256": "39f0a3773f044eb9934222cf9c5dbc22212a155fe886a2e195a1175761a84e35"
+            },
+            {
+              "path": "task_schema/compiler.py",
+              "bytes": 4269,
+              "sha256": "679663525f214ebab2d40ada78f6c41b0c0640ffafe77e38d4c47d12b0541236"
+            },
+            {
+              "path": "tools/run_gen1_sweep.py",
+              "bytes": 3703,
+              "sha256": "b8b47e4a873aa9de50d8018b7773d62d5a20cdef19e484d372a6ae78278ac637"
+            },
+            {
+              "path": "tools/train_gen1.py",
+              "bytes": 3739,
+              "sha256": "a4e665eed553a4bb55a8261953fcefece029cbea887436412bb0d576913416b1"
+            }
+          ]
+        }
+      },
+      "resultSha256": "310885f3e8c5c16841b8eb72f28811fa895a4213b425d46c42c8e7dd0899dac3"
+    },
+    {
+      "schemaVersion": 1,
+      "sweepId": "vfai013-gen1-architecture-sweep-v1",
+      "planFingerprint": "89b6474ef369d655f8c5be0909864537762da18f776216d2167eaf90ee016ed6",
+      "candidateId": "core-balanced",
+      "deploymentProfile": "core",
+      "dimensions": [
+        "profile",
+        "depth",
+        "width",
+        "context",
+        "regularization"
+      ],
+      "status": "completed",
+      "modelConfig": {
+        "schemaVersion": 1,
+        "architectureId": "vfdlm-gen1-decoder-v1",
+        "vocabSize": 3072,
+        "maxSequenceLength": 256,
+        "dModel": 512,
+        "nLayers": 10,
+        "nHeads": 8,
+        "nKvHeads": 2,
+        "dFf": 1376,
+        "ropeTheta": 10000.0,
+        "normEpsilon": 1e-05,
+        "dropout": 0.1,
+        "tieEmbeddings": true,
+        "initializationStd": 0.02,
+        "seed": 13013
+      },
+      "parameterCount": 29272576,
+      "weightDecay": 0.1,
+      "controls": {
+        "packingBlockSize": 128,
+        "optimizerSteps": 16,
+        "predictedTokens": 8128,
+        "seed": 13013,
+        "precision": "float32",
+        "device": "cpu",
+        "torchNumThreads": 4,
+        "torchNumInteropThreads": 1,
+        "datasetFingerprint": "5706ce7350c88262bbfdea6c5a00784dda6d4c177c1b33549ce663849e575e84",
+        "trainingConfigFingerprint": "88540d90117d934f2f1710d6f3802dc971863f3f61e43062a2ec83390db459c0"
+      },
+      "quality": {
+        "initial": {
+          "nextTokenLoss": 8.141959894610704,
+          "perplexity": 3435.6447754999117,
+          "top1TokenAccuracy": 0.00022155754957350172,
+          "correctTokens": 2,
+          "predictedTokens": 9027,
+          "releaseCredit": 0.0,
+          "classification": "architecture-proxy-only-not-release-evaluation"
+        },
+        "final": {
+          "nextTokenLoss": 6.836235336862794,
+          "perplexity": 930.9777117411079,
+          "top1TokenAccuracy": 0.01019164728038108,
+          "correctTokens": 92,
+          "predictedTokens": 9027,
+          "releaseCredit": 0.0,
+          "classification": "architecture-proxy-only-not-release-evaluation"
+        },
+        "lossImprovement": 1.3057245577479097
+      },
+      "training": {
+        "wallSeconds": 30.140861300002143,
+        "processCpuSeconds": 153.375,
+        "predictedTokens": 8128,
+        "tokensPerSecond": 269.6671445151908,
+        "peakMemory": {
+          "startWorkingSetMiB": 202.605,
+          "peakWorkingSetMiB": 987.141,
+          "peakIncreaseMiB": 784.535
+        },
+        "finalGradientNormBeforeClip": 1.258730411529541
+      },
+      "inference": {
+        "promptTokens": 32,
+        "generatedTokensPerRun": 12,
+        "measuredRuns": 5,
+        "firstTokenLatencyMs": {
+          "median": 34.31809999892721,
+          "p95": 36.034999997355044,
+          "samples": [
+            34.59100000327453,
+            30.332199996337295,
+            29.194299997470807,
+            36.39599999587517,
+            34.31809999892721
+          ]
+        },
+        "cachedDecodeTokensPerSecond": {
+          "median": 54.44994663904215,
+          "samples": [
+            54.44994663904215,
+            51.24989167615915,
+            54.605556761687474,
+            51.28982246858935,
+            55.05968469878891
+          ]
+        },
+        "memory": {
+          "startWorkingSetMiB": 816.812,
+          "peakWorkingSetMiB": 987.141,
+          "peakIncreaseMiB": 170.328
+        }
+      },
+      "artifact": {
+        "checkpointBytes": 351403704,
+        "modelWeightsSha256": "a780b6f54299e59bfd5ba6c314cb1b6b9287a1421b9b7aa732ee15c6f6372117",
+        "trainingStateSha256": "20e56c931ae0ca00339b971fb839fa328bec5a6251f94db8e30c31b45f4c0059"
+      },
+      "energyRuntimeCost": {
+        "energyMeasurementAvailable": false,
+        "energyReason": "Reference host exposes no calibrated package/wall power sensor; no watt-hour value is invented.",
+        "trainingWallSeconds": 30.140861300002143,
+        "processCpuSeconds": 153.375,
+        "cpuSecondsPerMillionTrainingTokens": 18869.95570866142
+      },
+      "environment": {
+        "generatedAtUtc": "2026-08-28T13:16:21.859388Z",
+        "referenceTier": "cpu-development-reference",
+        "pythonVersion": "3.12.13",
+        "torchVersion": "2.8.0+cpu",
+        "hardware": {
+          "platform": "Windows-11-10.0.26200-SP0",
+          "machine": "AMD64",
+          "processor": "Intel64 Family 6 Model 142 Stepping 12, GenuineIntel",
+          "logicalCpuCount": 8,
+          "pythonVersion": "3.12.13",
+          "torchVersion": "2.8.0+cpu",
+          "device": "cpu",
+          "precision": "float32",
+          "cudaAvailable": false,
+          "cpuCapability": "AVX2"
+        },
+        "codeRevision": {
+          "gitCommit": "6fb96d2c1c0edf03c57792d2a02d44c5edcc6df5",
+          "workingTreeDirty": true,
+          "sourceFingerprint": "2c11a58485f353aeeed652ef1be5ef5d5559bce1a7b1f2772d06d2b5f8e0cb43",
+          "files": [
+            {
+              "path": "gen1_sweep/plan.v1.json",
+              "bytes": 6225,
+              "sha256": "6a80c7dc3b3fc81d3d83d8ea5df3a4ad677ac502b6007f12f578147c495d657c"
+            },
+            {
+              "path": "gen1_sweep/sweep.py",
+              "bytes": 30147,
+              "sha256": "a3ca0a2ae2827f9c543ab87c568a2213ebc98e1210d51c4eba035f818a283e06"
+            },
+            {
+              "path": "gen1_training/config.py",
+              "bytes": 8559,
+              "sha256": "cd0ee1e09876fb59dc704defc5d70be8705efde346c550df62b5b016ed364bb4"
+            },
+            {
+              "path": "gen1_training/data.py",
+              "bytes": 19648,
+              "sha256": "e9372b4805f88e68c119da2907cb045079cabfc2f88a07a06816217d13873a2b"
+            },
+            {
+              "path": "gen1_training/trainer.py",
+              "bytes": 36350,
+              "sha256": "a33127a7e908cc4fb322522cf9389136987c54715c559756616f094b1e28c5ea"
+            },
+            {
+              "path": "model/gen1/config.py",
+              "bytes": 8070,
+              "sha256": "3d33e243caf190391579144682532c604ff7642bd9611749c55ce7141b205e2d"
+            },
+            {
+              "path": "model/gen1/model.py",
+              "bytes": 25560,
+              "sha256": "450e389c7558e8580cd335864bd4b664adf0c7e72aeb2df5d6cf326fa955fcac"
+            },
+            {
+              "path": "model/tokenizer.py",
+              "bytes": 25163,
+              "sha256": "39f0a3773f044eb9934222cf9c5dbc22212a155fe886a2e195a1175761a84e35"
+            },
+            {
+              "path": "task_schema/compiler.py",
+              "bytes": 4269,
+              "sha256": "679663525f214ebab2d40ada78f6c41b0c0640ffafe77e38d4c47d12b0541236"
+            },
+            {
+              "path": "tools/run_gen1_sweep.py",
+              "bytes": 3703,
+              "sha256": "b8b47e4a873aa9de50d8018b7773d62d5a20cdef19e484d372a6ae78278ac637"
+            },
+            {
+              "path": "tools/train_gen1.py",
+              "bytes": 3739,
+              "sha256": "a4e665eed553a4bb55a8261953fcefece029cbea887436412bb0d576913416b1"
+            }
+          ]
+        }
+      },
+      "resultSha256": "b3d79dc0bdfcc71edbf21bf7d84c3336f24ae04da6cb9e7b9a12f8ac59a2f36a"
+    }
+  ],
+  "selectionPolicy": {
+    "paretoObjectives": [
+      "minimize validation loss",
+      "maximize validation token accuracy",
+      "minimize training wall time",
+      "minimize first-token latency",
+      "maximize cached decode tokens per second",
+      "minimize peak working set",
+      "minimize checkpoint artifact bytes",
+      "minimize process CPU seconds"
+    ],
+    "edgeQualityTolerancePercent": 0.5,
+    "coreMinimumMaterialLossImprovementPercent": 1.0,
+    "rule": "Select only from the measured Pareto frontier. Prefer edge unless the best core loss improves on the best edge by at least the material threshold. Among quality-eligible frontier candidates, minimize a normalized quality-and-runtime cost with no reward for parameter count."
+  },
+  "selection": {
+    "selectedCandidateId": "edge-wide-gqa",
+    "deploymentProfile": "edge",
+    "parameterCount": 14198464,
+    "paretoFrontier": [
+      "core-balanced",
+      "edge-context-regularized",
+      "edge-heads-ffn",
+      "edge-wide-gqa",
+      "edge-wide-mha"
+    ],
+    "bestEdgeValidationLoss": 6.8724948502833545,
+    "bestCoreValidationLoss": 6.836235336862794,
+    "coreLossImprovementPercent": 0.5276033552657455,
+    "coreMaterialThresholdMet": false,
+    "qualityTolerancePercent": 0.5,
+    "qualityEligibleCandidates": [
+      "edge-wide-gqa"
+    ],
+    "efficiencyScores": [
+      {
+        "candidateId": "edge-wide-gqa",
+        "qualityGapPercent": 0.0,
+        "efficiencyScore": 0.0
+      }
+    ],
+    "selectionRule": "Select only from the measured Pareto frontier. Prefer edge unless the best core loss improves on the best edge by at least the material threshold. Among quality-eligible frontier candidates, minimize a normalized quality-and-runtime cost with no reward for parameter count.",
+    "parameterCountRewarded": false,
+    "status": "selected-for-vfai014-bootstrap-training-not-release",
+    "rationale": "Core was not selected because its proxy-loss improvement did not meet the material cost threshold."
+  },
+  "selectedModelConfig": {
+    "schemaVersion": 1,
+    "architectureId": "vfdlm-gen1-decoder-v1",
+    "vocabSize": 3072,
+    "maxSequenceLength": 128,
+    "dModel": 448,
+    "nLayers": 6,
+    "nHeads": 8,
+    "nKvHeads": 2,
+    "dFf": 1216,
+    "ropeTheta": 10000.0,
+    "normEpsilon": 1e-05,
+    "dropout": 0.0,
+    "tieEmbeddings": true,
+    "initializationStd": 0.02,
+    "seed": 13013
+  },
+  "trainingDataReadiness": {
+    "approvedTrainingTokens": 71411,
+    "edgeMinimumTargetTokens": 100000000,
+    "targetCoveragePercent": 0.071411,
+    "releaseScaleReady": false,
+    "note": "Selection authorizes only VFAI-014 bootstrap training/evaluation, not a production model claim."
+  },
+  "reportSha256": "f24c63057ce232216d79915bca664e61b79665cde6df3123509b6c41ab9d8932"
+}

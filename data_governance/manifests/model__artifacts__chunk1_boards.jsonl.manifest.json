@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "shardId": "vf-shard-73453d769400022f26eb",
+  "path": "model/artifacts/chunk1_boards.jsonl",
+  "recordFormat": "jsonl-v0",
+  "recordCount": 536,
+  "sizeBytes": 295161,
+  "sha256": "73453d769400022f26eb84fa2750993d9140ae8378a9542205483ad1249ea422",
+  "status": "quarantined",
+  "eligibleUses": [],
+  "reason": "The retained output predates immutable run, generator, preprocessing, and source snapshots.",
+  "createdAtUtc": "2026-08-28T07:19:31.044941+00:00",
+  "sourceRegistry": {
+    "registryId": "voltforge-source-registry",
+    "version": "1.2.0",
+    "sha256": "aa4eb56780317fb94857a4f05d420a6de84cc6420e0ee83a6c27d636aadbfcde"
+  },
+  "sources": [
+    {
+      "sourceId": "vf-src-project-domain-generator-v1",
+      "revision": "2.0.0",
+      "checksum": "233e8157019ec3bafdc4e130470c7c38369582ce20834526e4157e5e828a1293",
+      "licenseStatus": "approved",
+      "privacyClass": "project-authored-non-user-data",
+      "approvalStatus": "approved"
+    }
+  ],
+  "producer": {
+    "id": "vf-domain-corpus-generator",
+    "version": "pre-governance",
+    "path": "model/generate_domain_corpus.py",
+    "sha256": "233e8157019ec3bafdc4e130470c7c38369582ce20834526e4157e5e828a1293"
+  },
+  "preprocessing": {
+    "id": "unknown-pre-governance-process",
+    "version": "unknown",
+    "path": null,
+    "sha256": null
+  },
+  "taskSchema": {
+    "id": "legacy-untyped",
+    "version": "0",
+    "path": null,
+    "sha256": null
+  },
+  "recordProvenance": {
+    "mode": "shard-inherited",
+    "selector": "all-records",
+    "sourceIds": [
+      "vf-src-project-domain-generator-v1"
+    ],
+    "statement": "Every non-empty record in this shard inherits this immutable source and producer snapshot."
+  },
+  "retention": {
+    "sourcePolicies": [
+      {
+        "sourceId": "vf-src-project-domain-generator-v1",
+        "policy": {
+          "class": "project-source",
+          "duration": "while referenced by an approved shard or artifact",
+          "reviewTrigger": "source revision or policy change"
+        },
+        "deletionProcedure": "Run tools/source_removal_impact.py for this source, deactivate affected approved artifacts, delete affected shards and manifests, then retrain and repeat release gates."
+      }
+    ]
+  },
+  "manifestSha256": "33a093b58de084e340f20779e92313c10ff7afaa65b3aad1e113db0b73b00983"
+}

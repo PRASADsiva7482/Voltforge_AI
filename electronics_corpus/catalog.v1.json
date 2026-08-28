@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "corpusId": "voltforge-curated-electronics-corpus",
+  "version": "1.0.0",
+  "effectiveFrom": "2026-08-28",
+  "source": {
+    "sourceId": "vf-src-curated-electronics-corpus-v1",
+    "sourceRevision": "1.0.0"
+  },
+  "recordSchema": {
+    "path": "knowledge-record.schema.json",
+    "sha256": "f31318dbd5bec05eabe51556728e47157199c688be5586b3f79ca10ca02ee656"
+  },
+  "builder": {
+    "id": "vf-curated-electronics-corpus-builder",
+    "version": "1.0.0",
+    "path": "builder.py",
+    "sha256": "cf97ddb1066c6b5461d61be1532aade1baa0cde70008a682605a253c227a33c2"
+  },
+  "recordCount": 49,
+  "recordTypeCounts": {
+    "board": 10,
+    "pin-map": 8,
+    "component": 4,
+    "wiring-recipe": 8,
+    "firmware-api": 4,
+    "compiler-diagnostic": 4,
+    "simulation-behavior": 4,
+    "safety-constraint": 7
+  },
+  "packs": [
+    {
+      "packId": "vf-pack-board-v1",
+      "recordType": "board",
+      "path": "packs/v1/board.jsonl",
+      "recordCount": 10,
+      "sizeBytes": 25970,
+      "sha256": "2f878c68259e319838b5e407e5a1be7b2ff41a08340b449337fb5d02659cfb52"
+    },
+    {
+      "packId": "vf-pack-pin-map-v1",
+      "recordType": "pin-map",
+      "path": "packs/v1/pin-map.jsonl",
+      "recordCount": 8,
+      "sizeBytes": 17891,
+      "sha256": "e0a506fa347fb77b330353a8d4e8dc6e54282fda18ede8943f7dde5a6325b29a"
+    },
+    {
+      "packId": "vf-pack-component-v1",
+      "recordType": "component",
+      "path": "packs/v1/component.jsonl",
+      "recordCount": 4,
+      "sizeBytes": 8988,
+      "sha256": "ccbc21945cefe7409b1de2e1f7d68aa9f23afeac9fa497228a867a1a92e4ac28"
+    },
+    {
+      "packId": "vf-pack-wiring-recipe-v1",
+      "recordType": "wiring-recipe",
+      "path": "packs/v1/wiring-recipe.jsonl",
+      "recordCount": 8,
+      "sizeBytes": 26196,
+      "sha256": "b71e78dd0a64a38252ffafef854b787cd7dc47fa4ceeb965e046433bff513a40"
+    },
+    {
+      "packId": "vf-pack-firmware-api-v1",
+      "recordType": "firmware-api",
+      "path": "packs/v1/firmware-api.jsonl",
+      "recordCount": 4,
+      "sizeBytes": 11130,
+      "sha256": "c165df798734a5f020e8d324923d45400742c36565177105b7ef3e3f439a0be3"
+    },
+    {
+      "packId": "vf-pack-compiler-diagnostic-v1",
+      "recordType": "compiler-diagnostic",
+      "path": "packs/v1/compiler-diagnostic.jsonl",
+      "recordCount": 4,
+      "sizeBytes": 8215,
+      "sha256": "a5f133ca7806519edf272822e16a699b697f318b002084517eb5d804a5e19baa"
+    },
+    {
+      "packId": "vf-pack-simulation-behavior-v1",
+      "recordType": "simulation-behavior",
+      "path": "packs/v1/simulation-behavior.jsonl",
+      "recordCount": 4,
+      "sizeBytes": 7468,
+      "sha256": "51a663929f0db3175bb3e213cd4b9e3f57b593d189dc2897bc3f0c832546d2d1"
+    },
+    {
+      "packId": "vf-pack-safety-constraint-v1",
+      "recordType": "safety-constraint",
+      "path": "packs/v1/safety-constraint.jsonl",
+      "recordCount": 7,
+      "sizeBytes": 13018,
+      "sha256": "e8f7ad75aa22234cafb0538bc5ae9d49df5d725e1490e3429e0a8daaaeb94d18"
+    }
+  ],
+  "supportPolicy": {
+    "lookupModes": [
+      "exact",
+      "variant-qualified"
+    ],
+    "rankedRetrievalIncluded": false,
+    "unsupportedResult": "unknown",
+    "ambiguousResult": "variant-required"
+  }
+}

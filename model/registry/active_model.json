@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "identityContract": {
+    "productName": "VoltForge AI",
+    "familyName": "VoltForge Domain Language Model",
+    "familySlug": "vfdlm",
+    "artifactIdPattern": "vfdlm-g{generation}-{edge|core|server}-v{semanticVersion}"
+  },
+  "activeArtifactId": null,
+  "releaseStatus": "none",
+  "state": "no-approved-artifact",
+  "reason": "No current VoltForge model artifact has passed the approved data, training, evaluation, compatibility, and release gates.",
+  "artifacts": []
+}

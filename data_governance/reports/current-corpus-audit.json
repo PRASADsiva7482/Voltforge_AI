@@ -1,0 +1,338 @@
+{
+  "schemaVersion": 1,
+  "auditId": "vfai-006-current-corpus-audit",
+  "generatedAtUtc": "2026-08-28T07:19:31.182819+00:00",
+  "policyVersion": "1.0.0",
+  "sourceRegistryVersion": "1.2.0",
+  "catalogSha256": "27fd9035068f5dfa4a26d80da1b451d36224c3b08acd02fefefce9e9de6c2afc",
+  "summary": {
+    "retainedDatasetCount": 12,
+    "recordCount": 17814,
+    "approvedTrainingShardCount": 0,
+    "approvedRuntimeRetrievalCount": 0,
+    "quarantinedDatasetCount": 12,
+    "catalogCoverageComplete": true,
+    "decision": "pass"
+  },
+  "defaultExclusions": {
+    "unlicensedScrapedTraining": "deny",
+    "privateUserProjectTraining": "deny",
+    "unregisteredSourceTraining": "deny",
+    "liveWebResultsPersistedToTraining": false
+  },
+  "datasets": [
+    {
+      "path": "dataset.txt",
+      "manifestPath": "data_governance/manifests/dataset.txt.manifest.json",
+      "records": 362,
+      "sizeBytes": 85787,
+      "sha256": "db5b42f71e3fc74b7ba2514997865b2f653eb9c8623eb5ddb0bd8222577d1802",
+      "status": "quarantined",
+      "trainingEligible": false,
+      "runtimeRetrievalEligible": false,
+      "sourceIds": [
+        "vf-src-legacy-dataset-txt-v0"
+      ],
+      "sourceDecisions": [
+        {
+          "sourceId": "vf-src-legacy-dataset-txt-v0",
+          "usage": "training",
+          "allowed": false,
+          "decision": "deny",
+          "reasons": [
+            "source-kind-denied-for-training",
+            "license-not-approved",
+            "privacy-not-approved-for-training",
+            "requested-use-not-allowed",
+            "requested-use-explicitly-prohibited",
+            "source-not-approved"
+          ]
+        }
+      ],
+      "reason": "Origin and license evidence are missing; direct training and runtime retrieval are denied."
+    },
+    {
+      "path": "model/artifacts/chunk1_boards.jsonl",
+      "manifestPath": "data_governance/manifests/model__artifacts__chunk1_boards.jsonl.manifest.json",
+      "records": 536,
+      "sizeBytes": 295161,
+      "sha256": "73453d769400022f26eb84fa2750993d9140ae8378a9542205483ad1249ea422",
+      "status": "quarantined",
+      "trainingEligible": false,
+      "runtimeRetrievalEligible": false,
+      "sourceIds": [
+        "vf-src-project-domain-generator-v1"
+      ],
+      "sourceDecisions": [
+        {
+          "sourceId": "vf-src-project-domain-generator-v1",
+          "usage": "training",
+          "allowed": true,
+          "decision": "allow",
+          "reasons": []
+        }
+      ],
+      "reason": "The retained output predates immutable run, generator, preprocessing, and source snapshots."
+    },
+    {
+      "path": "model/artifacts/chunk2_physics.jsonl",
+      "manifestPath": "data_governance/manifests/model__artifacts__chunk2_physics.jsonl.manifest.json",
+      "records": 865,
+      "sizeBytes": 415458,
+      "sha256": "1a0b3257e6352fb0992f6a57839d989db7aedce787a7341f8fff97595a58c8d5",
+      "status": "quarantined",
+      "trainingEligible": false,
+      "runtimeRetrievalEligible": false,
+      "sourceIds": [
+        "vf-src-project-domain-generator-v1"
+      ],
+      "sourceDecisions": [
+        {
+          "sourceId": "vf-src-project-domain-generator-v1",
+          "usage": "training",
+          "allowed": true,
+          "decision": "allow",
+          "reasons": []
+        }
+      ],
+      "reason": "The retained output predates immutable run, generator, preprocessing, and source snapshots."
+    },
+    {
+      "path": "model/artifacts/chunk3_circuits.jsonl",
+      "manifestPath": "data_governance/manifests/model__artifacts__chunk3_circuits.jsonl.manifest.json",
+      "records": 14,
+      "sizeBytes": 38589,
+      "sha256": "88cc2c8ba437e28f8679757838bf6407927cd6b4deea917f2b87d58e707984ab",
+      "status": "quarantined",
+      "trainingEligible": false,
+      "runtimeRetrievalEligible": false,
+      "sourceIds": [
+        "vf-src-unknown-circuit-corpus-v0"
+      ],
+      "sourceDecisions": [
+        {
+          "sourceId": "vf-src-unknown-circuit-corpus-v0",
+          "usage": "training",
+          "allowed": false,
+          "decision": "deny",
+          "reasons": [
+            "source-kind-denied-for-training",
+            "license-not-approved",
+            "privacy-not-approved-for-training",
+            "requested-use-not-allowed",
+            "requested-use-explicitly-prohibited",
+            "source-not-approved"
+          ]
+        }
+      ],
+      "reason": "No retained producer, origin, revision, or license record exists."
+    },
+    {
+      "path": "model/artifacts/chunk3_components.jsonl",
+      "manifestPath": "data_governance/manifests/model__artifacts__chunk3_components.jsonl.manifest.json",
+      "records": 120,
+      "sizeBytes": 60556,
+      "sha256": "1db59dd53d1c5c579fa26ea39f1359a117b3122ce8625beb1bb6d7916c827020",
+      "status": "quarantined",
+      "trainingEligible": false,
+      "runtimeRetrievalEligible": false,
+      "sourceIds": [
+        "vf-src-project-domain-generator-v1"
+      ],
+      "sourceDecisions": [
+        {
+          "sourceId": "vf-src-project-domain-generator-v1",
+          "usage": "training",
+          "allowed": true,
+          "decision": "allow",
+          "reasons": []
+        }
+      ],
+      "reason": "The retained output predates immutable run, generator, preprocessing, and source snapshots."
+    },
+    {
+      "path": "model/artifacts/chunk4_firmware.jsonl",
+      "manifestPath": "data_governance/manifests/model__artifacts__chunk4_firmware.jsonl.manifest.json",
+      "records": 252,
+      "sizeBytes": 250255,
+      "sha256": "f1b4a123bfc4ffab5611416142d7c55d272001bd8a96a0424674618754f3a324",
+      "status": "quarantined",
+      "trainingEligible": false,
+      "runtimeRetrievalEligible": false,
+      "sourceIds": [
+        "vf-src-project-domain-generator-v1"
+      ],
+      "sourceDecisions": [
+        {
+          "sourceId": "vf-src-project-domain-generator-v1",
+          "usage": "training",
+          "allowed": true,
+          "decision": "allow",
+          "reasons": []
+        }
+      ],
+      "reason": "The retained output predates immutable run, generator, preprocessing, and source snapshots."
+    },
+    {
+      "path": "model/artifacts/chunk5_diagnostics.jsonl",
+      "manifestPath": "data_governance/manifests/model__artifacts__chunk5_diagnostics.jsonl.manifest.json",
+      "records": 336,
+      "sizeBytes": 233071,
+      "sha256": "c1be8f95948bcd5d03557d98990ac3ea0fd0337305fb5c48e6178c3705a70472",
+      "status": "quarantined",
+      "trainingEligible": false,
+      "runtimeRetrievalEligible": false,
+      "sourceIds": [
+        "vf-src-project-domain-generator-v1"
+      ],
+      "sourceDecisions": [
+        {
+          "sourceId": "vf-src-project-domain-generator-v1",
+          "usage": "training",
+          "allowed": true,
+          "decision": "allow",
+          "reasons": []
+        }
+      ],
+      "reason": "The retained output predates immutable run, generator, preprocessing, and source snapshots."
+    },
+    {
+      "path": "model/artifacts/chunk6_conversational.jsonl",
+      "manifestPath": "data_governance/manifests/model__artifacts__chunk6_conversational.jsonl.manifest.json",
+      "records": 80,
+      "sizeBytes": 41669,
+      "sha256": "5abf553b8d55b62825a8446f999dedba514209494e24c4a46a2f3e775fe29f55",
+      "status": "quarantined",
+      "trainingEligible": false,
+      "runtimeRetrievalEligible": false,
+      "sourceIds": [
+        "vf-src-project-domain-generator-v1"
+      ],
+      "sourceDecisions": [
+        {
+          "sourceId": "vf-src-project-domain-generator-v1",
+          "usage": "training",
+          "allowed": true,
+          "decision": "allow",
+          "reasons": []
+        }
+      ],
+      "reason": "The retained output predates immutable run, generator, preprocessing, and source snapshots."
+    },
+    {
+      "path": "model/artifacts/chunk7_refusals.jsonl",
+      "manifestPath": "data_governance/manifests/model__artifacts__chunk7_refusals.jsonl.manifest.json",
+      "records": 30,
+      "sizeBytes": 17619,
+      "sha256": "7acc45d84d4649da8cbea4187b63fabc7f33c1e659e34ff99256c11f9357df85",
+      "status": "quarantined",
+      "trainingEligible": false,
+      "runtimeRetrievalEligible": false,
+      "sourceIds": [
+        "vf-src-project-domain-generator-v1"
+      ],
+      "sourceDecisions": [
+        {
+          "sourceId": "vf-src-project-domain-generator-v1",
+          "usage": "training",
+          "allowed": true,
+          "decision": "allow",
+          "reasons": []
+        }
+      ],
+      "reason": "The retained output predates immutable run, generator, preprocessing, and source snapshots."
+    },
+    {
+      "path": "model/artifacts/dataset.jsonl",
+      "manifestPath": "data_governance/manifests/model__artifacts__dataset.jsonl.manifest.json",
+      "records": 10500,
+      "sizeBytes": 5457916,
+      "sha256": "176effc2e25cd6d4c2534a4d36f85d5a60607c20289e654d7c6ee71151e5db78",
+      "status": "quarantined",
+      "trainingEligible": false,
+      "runtimeRetrievalEligible": false,
+      "sourceIds": [
+        "vf-src-project-multitask-generator-v1",
+        "vf-src-legacy-dataset-txt-v0"
+      ],
+      "sourceDecisions": [
+        {
+          "sourceId": "vf-src-project-multitask-generator-v1",
+          "usage": "training",
+          "allowed": true,
+          "decision": "allow",
+          "reasons": []
+        },
+        {
+          "sourceId": "vf-src-legacy-dataset-txt-v0",
+          "usage": "training",
+          "allowed": false,
+          "decision": "deny",
+          "reasons": [
+            "source-kind-denied-for-training",
+            "license-not-approved",
+            "privacy-not-approved-for-training",
+            "requested-use-not-allowed",
+            "requested-use-explicitly-prohibited",
+            "source-not-approved"
+          ]
+        }
+      ],
+      "reason": "The output depends on an unlicensed legacy seed and predates an immutable generation manifest."
+    },
+    {
+      "path": "model/artifacts/dataset_1b.jsonl",
+      "manifestPath": "data_governance/manifests/model__artifacts__dataset_1b.jsonl.manifest.json",
+      "records": 2500,
+      "sizeBytes": 2348878,
+      "sha256": "f9a4a9c795baa288ef4fce8c4193ca19cff1b885c05a7a93bbc675d62c051013",
+      "status": "quarantined",
+      "trainingEligible": false,
+      "runtimeRetrievalEligible": false,
+      "sourceIds": [
+        "vf-src-retired-scale-generator-v0"
+      ],
+      "sourceDecisions": [
+        {
+          "sourceId": "vf-src-retired-scale-generator-v0",
+          "usage": "training",
+          "allowed": false,
+          "decision": "deny",
+          "reasons": [
+            "source-kind-denied-for-training",
+            "license-not-approved",
+            "privacy-not-approved-for-training",
+            "requested-use-not-allowed",
+            "requested-use-explicitly-prohibited",
+            "source-not-approved"
+          ]
+        }
+      ],
+      "reason": "The generator is retired and its retained output has no approved immutable run lineage."
+    },
+    {
+      "path": "model/artifacts/master_domain_dataset.jsonl",
+      "manifestPath": "data_governance/manifests/model__artifacts__master_domain_dataset.jsonl.manifest.json",
+      "records": 2219,
+      "sizeBytes": 1313789,
+      "sha256": "52ccd02a1d8d5120bd84b33c7887c61761a9ed6850a1926a3214e1b1b0a15113",
+      "status": "quarantined",
+      "trainingEligible": false,
+      "runtimeRetrievalEligible": false,
+      "sourceIds": [
+        "vf-src-project-domain-generator-v1"
+      ],
+      "sourceDecisions": [
+        {
+          "sourceId": "vf-src-project-domain-generator-v1",
+          "usage": "training",
+          "allowed": true,
+          "decision": "allow",
+          "reasons": []
+        }
+      ],
+      "reason": "The retained aggregate predates immutable run, generator, preprocessing, and source snapshots."
+    }
+  ],
+  "reportSha256": "2d4f1e8c09ec146a3b96c02cdc2177625d2bb9e4c1e61256b3927f06f89332d3"
+}

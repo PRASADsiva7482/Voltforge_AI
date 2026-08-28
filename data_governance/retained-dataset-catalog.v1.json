@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "catalogId": "vfai-006-retained-datasets",
+  "datasets": [
+    {
+      "path": "dataset.txt",
+      "recordFormat": "qa-text-v0",
+      "sourceIds": ["vf-src-legacy-dataset-txt-v0"],
+      "producer": {"id": "unknown-legacy-authoring", "version": "unknown", "path": null},
+      "preprocessing": {"id": "unknown-legacy-process", "version": "unknown", "path": null},
+      "quarantineReason": "Origin and license evidence are missing; direct training and runtime retrieval are denied."
+    },
+    {
+      "path": "model/artifacts/chunk1_boards.jsonl",
+      "recordFormat": "jsonl-v0",
+      "sourceIds": ["vf-src-project-domain-generator-v1"],
+      "producer": {"id": "vf-domain-corpus-generator", "version": "pre-governance", "path": "model/generate_domain_corpus.py"},
+      "preprocessing": {"id": "unknown-pre-governance-process", "version": "unknown", "path": null},
+      "quarantineReason": "The retained output predates immutable run, generator, preprocessing, and source snapshots."
+    },
+    {
+      "path": "model/artifacts/chunk2_physics.jsonl",
+      "recordFormat": "jsonl-v0",
+      "sourceIds": ["vf-src-project-domain-generator-v1"],
+      "producer": {"id": "vf-domain-corpus-generator", "version": "pre-governance", "path": "model/generate_domain_corpus.py"},
+      "preprocessing": {"id": "unknown-pre-governance-process", "version": "unknown", "path": null},
+      "quarantineReason": "The retained output predates immutable run, generator, preprocessing, and source snapshots."
+    },
+    {
+      "path": "model/artifacts/chunk3_circuits.jsonl",
+      "recordFormat": "jsonl-v0",
+      "sourceIds": ["vf-src-unknown-circuit-corpus-v0"],
+      "producer": {"id": "unknown", "version": "unknown", "path": null},
+      "preprocessing": {"id": "unknown", "version": "unknown", "path": null},
+      "quarantineReason": "No retained producer, origin, revision, or license record exists."
+    },
+    {
+      "path": "model/artifacts/chunk3_components.jsonl",
+      "recordFormat": "jsonl-v0",
+      "sourceIds": ["vf-src-project-domain-generator-v1"],
+      "producer": {"id": "vf-domain-corpus-generator", "version": "pre-governance", "path": "model/generate_domain_corpus.py"},
+      "preprocessing": {"id": "unknown-pre-governance-process", "version": "unknown", "path": null},
+      "quarantineReason": "The retained output predates immutable run, generator, preprocessing, and source snapshots."
+    },
+    {
+      "path": "model/artifacts/chunk4_firmware.jsonl",
+      "recordFormat": "jsonl-v0",
+      "sourceIds": ["vf-src-project-domain-generator-v1"],
+      "producer": {"id": "vf-domain-corpus-generator", "version": "pre-governance", "path": "model/generate_domain_corpus.py"},
+      "preprocessing": {"id": "unknown-pre-governance-process", "version": "unknown", "path": null},
+      "quarantineReason": "The retained output predates immutable run, generator, preprocessing, and source snapshots."
+    },
+    {
+      "path": "model/artifacts/chunk5_diagnostics.jsonl",
+      "recordFormat": "jsonl-v0",
+      "sourceIds": ["vf-src-project-domain-generator-v1"],
+      "producer": {"id": "vf-domain-corpus-generator", "version": "pre-governance", "path": "model/generate_domain_corpus.py"},
+      "preprocessing": {"id": "unknown-pre-governance-process", "version": "unknown", "path": null},
+      "quarantineReason": "The retained output predates immutable run, generator, preprocessing, and source snapshots."
+    },
+    {
+      "path": "model/artifacts/chunk6_conversational.jsonl",
+      "recordFormat": "jsonl-v0",
+      "sourceIds": ["vf-src-project-domain-generator-v1"],
+      "producer": {"id": "vf-domain-corpus-generator", "version": "pre-governance", "path": "model/generate_domain_corpus.py"},
+      "preprocessing": {"id": "unknown-pre-governance-process", "version": "unknown", "path": null},
+      "quarantineReason": "The retained output predates immutable run, generator, preprocessing, and source snapshots."
+    },
+    {
+      "path": "model/artifacts/chunk7_refusals.jsonl",
+      "recordFormat": "jsonl-v0",
+      "sourceIds": ["vf-src-project-domain-generator-v1"],
+      "producer": {"id": "vf-domain-corpus-generator", "version": "pre-governance", "path": "model/generate_domain_corpus.py"},
+      "preprocessing": {"id": "unknown-pre-governance-process", "version": "unknown", "path": null},
+      "quarantineReason": "The retained output predates immutable run, generator, preprocessing, and source snapshots."
+    },
+    {
+      "path": "model/artifacts/dataset.jsonl",
+      "recordFormat": "jsonl-v0",
+      "sourceIds": ["vf-src-project-multitask-generator-v1", "vf-src-legacy-dataset-txt-v0"],
+      "producer": {"id": "vf-multitask-dataset-generator", "version": "pre-governance", "path": "model/generate_dataset.py"},
+      "preprocessing": {"id": "unknown-pre-governance-process", "version": "unknown", "path": null},
+      "quarantineReason": "The output depends on an unlicensed legacy seed and predates an immutable generation manifest."
+    },
+    {
+      "path": "model/artifacts/dataset_1b.jsonl",
+      "recordFormat": "jsonl-v0",
+      "sourceIds": ["vf-src-retired-scale-generator-v0"],
+      "producer": {"id": "retired-scale-experiment-generator", "version": "retired-v0", "path": "model/legacy/retired_scale_experiment/dataset_generator.py"},
+      "preprocessing": {"id": "unknown-legacy-process", "version": "unknown", "path": null},
+      "quarantineReason": "The generator is retired and its retained output has no approved immutable run lineage."
+    },
+    {
+      "path": "model/artifacts/master_domain_dataset.jsonl",
+      "recordFormat": "jsonl-v0",
+      "sourceIds": ["vf-src-project-domain-generator-v1"],
+      "producer": {"id": "vf-domain-corpus-generator", "version": "pre-governance", "path": "model/generate_domain_corpus.py"},
+      "preprocessing": {"id": "unknown-pre-governance-process", "version": "unknown", "path": null},
+      "quarantineReason": "The retained aggregate predates immutable run, generator, preprocessing, and source snapshots."
+    }
+  ]
+}

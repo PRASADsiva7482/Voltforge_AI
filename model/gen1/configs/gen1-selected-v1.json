@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "artifactKind": "vfdlm-gen1-selected-bootstrap-config",
+  "selectionStatus": "selected-for-vfai014-bootstrap-training-not-release",
+  "candidateId": "edge-wide-gqa",
+  "deploymentProfile": "edge",
+  "parameterCount": 14198464,
+  "modelConfig": {
+    "schemaVersion": 1,
+    "architectureId": "vfdlm-gen1-decoder-v1",
+    "vocabSize": 3072,
+    "maxSequenceLength": 128,
+    "dModel": 448,
+    "nLayers": 6,
+    "nHeads": 8,
+    "nKvHeads": 2,
+    "dFf": 1216,
+    "ropeTheta": 10000.0,
+    "normEpsilon": 1e-05,
+    "dropout": 0.0,
+    "tieEmbeddings": true,
+    "initializationStd": 0.02,
+    "seed": 13013
+  },
+  "recommendedTrainingControls": {
+    "packingBlockSize": 128,
+    "weightDecay": 0.1,
+    "precision": "float32",
+    "device": "cpu"
+  },
+  "evidence": {
+    "sweepReportPath": "benchmarks/reports/gen1-architecture-sweep-v1.json",
+    "sweepReportSha256": "f24c63057ce232216d79915bca664e61b79665cde6df3123509b6c41ab9d8932",
+    "sweepReportFileSha256": "71db668908692e1916fff83c4a0ed4f834e50d132c0fb278a15d34cc17589a29",
+    "planFingerprint": "89b6474ef369d655f8c5be0909864537762da18f776216d2167eaf90ee016ed6"
+  },
+  "releaseApproved": false,
+  "nextGate": "VFAI-014",
+  "manifestSha256": "9b972a59352b07c5df87cb9572b5da600fd0a37a0c12afd4c43de1cdae24614d"
+}

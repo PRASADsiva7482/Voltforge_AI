@@ -1,0 +1,313 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai015-gen1-scale-decision-v1",
+  "generatedAtUtc": "2026-08-28T17:17:10.480388Z",
+  "policyId": "vfai015-gen1-scale-decision-policy-v1",
+  "policyPath": "gen1_decision/policy.v1.json",
+  "policyFileSha256": "9c0343cc565f5699b4c48d91434db7462be0bc6245400a977275d7db5bb73397",
+  "policyFingerprint": "6264a575060b79cb4b90684e2360a1bc0094e954916821a2626088cf4cdb64eb",
+  "registryObservation": {
+    "path": "model/registry/active_model.json",
+    "fileSha256AtDecision": "d32cbc3f6fb3fe5367dd8263aaeefecabc5760cd62a9cc043fa2e0a34ee66093",
+    "state": "no-approved-artifact",
+    "activeArtifactId": null,
+    "releaseStatus": "none",
+    "futureVFAI016MutationExpected": true
+  },
+  "decision": {
+    "selectedOption": "no-neural-release",
+    "modelDisposition": "retain-edge-bootstrap-as-experimental-inactive",
+    "scaleDecision": "do-not-scale-parameters",
+    "revisionPriority": "approved-data-and-generation-evaluation-before-more-capacity",
+    "activeRuntimeDecision": "keep-no-approved-neural-artifact",
+    "parameterIncreaseApproved": false,
+    "additionalRepeatedDataTrainingApproved": false,
+    "reason": "Every neural release option fails mandatory release gates, and both larger profiles fail data, replication, critical-domain, runtime, plateau, and hardware evidence requirements.",
+    "nextGate": "VFAI-016"
+  },
+  "profileReadiness": {
+    "edge": {
+      "approvedTrainingTokens": 71411,
+      "minimumApprovedTrainingTokens": 100000000,
+      "coveragePercent": 0.071411,
+      "tokensMissing": 99928589,
+      "dataReady": false
+    },
+    "core": {
+      "approvedTrainingTokens": 71411,
+      "minimumApprovedTrainingTokens": 500000000,
+      "coveragePercent": 0.0142822,
+      "tokensMissing": 499928589,
+      "dataReady": false
+    },
+    "server": {
+      "approvedTrainingTokens": 71411,
+      "minimumApprovedTrainingTokens": 1200000000,
+      "coveragePercent": 0.005950916666666667,
+      "tokensMissing": 1199928589,
+      "dataReady": false
+    }
+  },
+  "hypothesisAssessment": {
+    "dataLimited": {
+      "verdict": "supported-primary-bottleneck",
+      "confidence": "high",
+      "evidence": {
+        "edgeDataCoveragePercent": 0.071411,
+        "trainingExposureMultiple": 1.818596835177146,
+        "fullHeldoutLossMonotonicallyImproved": true,
+        "outputHeldoutLossMonotonicallyImproved": true,
+        "lastIntervalFullLossImprovementPercent": 0.5221695426795345,
+        "lastIntervalOutputLossImprovementPercent": 0.6584871482793543,
+        "minimumTaskLossImprovementPercent": 23.4926686470955,
+        "maximumTaskLossImprovementPercent": 28.006862998492913
+      },
+      "action": "Expand diverse, governed, VoltForge-owned records and independent held-out coverage before repeating training or increasing parameters."
+    },
+    "optimizationLimited": {
+      "verdict": "not-established-secondary-hypothesis",
+      "confidence": "insufficient-evidence",
+      "evidence": {
+        "independentBootstrapSeeds": 1,
+        "selectedCheckpointWasLastStep": true,
+        "lossPlateauObserved": false,
+        "approvedUniqueDataExhaustedBeforeScheduleComparison": true
+      },
+      "action": "Do not tune on repeated records. Re-test schedules with at least three seeds only after materially more unique approved data exists."
+    },
+    "architectureLimited": {
+      "verdict": "not-supported",
+      "confidence": "moderate",
+      "evidence": {
+        "selectedArchitecture": "edge-wide-gqa",
+        "coreProxyLossImprovementPercent": 0.5276033552657455,
+        "materialProxyThresholdPercent": 1.0,
+        "coreMaterialThresholdMet": false,
+        "coreCost": {
+          "parameterRatioVsSelectedEdge": 2.061672023114613,
+          "trainingWallTimeRatioVsSelectedEdge": 2.354038572826887,
+          "peakMemoryRatioVsSelectedEdge": 1.5482573221954194,
+          "checkpointBytesRatioVsSelectedEdge": 2.06134181190927,
+          "decodeThroughputRatioVsSelectedEdge": 0.5525362784863547
+        }
+      },
+      "action": "Keep the measured edge architecture as the experimental baseline; do not infer an architecture ceiling from an undertrained one-seed sweep."
+    },
+    "capacityLimited": {
+      "verdict": "not-supported-and-scaling-would-worsen-data-readiness",
+      "confidence": "high-for-current-data",
+      "evidence": {
+        "edgeTokensPerParameter": 0.005029487696697333,
+        "coreTokensPerParameter": 0.002439518817886065,
+        "coreEligibility": {
+          "eligible": false,
+          "failedGates": [
+            "INSUFFICIENT_APPROVED_DATA",
+            "INSUFFICIENT_INDEPENDENT_SEEDS",
+            "CRITICAL_DOMAIN_GAIN_NOT_MATERIAL",
+            "GAIN_NOT_ABOVE_NOISE",
+            "BOOTSTRAP_PROXY_GAIN_NOT_MATERIAL",
+            "SMALLER_PROFILE_DATA_NOT_READY",
+            "SMALLER_PROFILE_NOT_AT_OPTIMIZATION_CEILING",
+            "TARGET_HARDWARE_UNMEASURED",
+            "GLOBAL_METRICS_NOT_ALL_PASSING",
+            "GENERATION_RUNTIME_UNAPPROVED"
+          ],
+          "observed": {
+            "dataCoveragePercent": 0.0142822,
+            "independentSeeds": 1,
+            "criticalDomainCompositeImprovementPoints": 0.0,
+            "confidenceLowerBoundImprovementPoints": 0.0,
+            "bootstrapProxyLossImprovementPercent": 0.5276033552657455,
+            "criticalMetricRegressions": 0,
+            "smallerProfileAtDataTarget": false,
+            "smallerProfileOptimizationPlateau": false,
+            "targetHardwareMeasured": false,
+            "candidateGlobalMetricsPassing": 0,
+            "candidateCriticalCaseFailures": 0,
+            "generationRuntimeApproved": false
+          }
+        },
+        "serverCandidateMeasured": false,
+        "serverEligibility": {
+          "eligible": false,
+          "failedGates": [
+            "INSUFFICIENT_APPROVED_DATA",
+            "INSUFFICIENT_INDEPENDENT_SEEDS",
+            "CRITICAL_DOMAIN_GAIN_NOT_MATERIAL",
+            "GAIN_NOT_ABOVE_NOISE",
+            "BOOTSTRAP_PROXY_GAIN_NOT_MATERIAL",
+            "SMALLER_PROFILE_DATA_NOT_READY",
+            "SMALLER_PROFILE_NOT_AT_OPTIMIZATION_CEILING",
+            "TARGET_HARDWARE_UNMEASURED",
+            "GLOBAL_METRICS_NOT_ALL_PASSING",
+            "GENERATION_RUNTIME_UNAPPROVED"
+          ],
+          "observed": {
+            "dataCoveragePercent": 0.005950916666666667,
+            "independentSeeds": 0,
+            "criticalDomainCompositeImprovementPoints": 0.0,
+            "confidenceLowerBoundImprovementPoints": 0.0,
+            "bootstrapProxyLossImprovementPercent": 0.0,
+            "criticalMetricRegressions": 0,
+            "smallerProfileAtDataTarget": false,
+            "smallerProfileOptimizationPlateau": false,
+            "targetHardwareMeasured": false,
+            "candidateGlobalMetricsPassing": 0,
+            "candidateCriticalCaseFailures": 0,
+            "generationRuntimeApproved": false
+          }
+        }
+      },
+      "action": "Do not construct or train a larger profile until edge reaches its data target, plateaus under replicated optimization, and larger-profile critical gains clear confidence and hardware gates."
+    }
+  },
+  "optionDecisionLog": [
+    {
+      "option": "edge-neural-release",
+      "selected": false,
+      "disposition": "retain-experimental-inactive",
+      "failedGates": [
+        "INSUFFICIENT_APPROVED_DATA",
+        "GLOBAL_METRICS_NOT_ALL_PASSING",
+        "GENERATION_RUNTIME_UNAPPROVED",
+        "ARTIFACT_ACTIVATION_PATH_UNAPPROVED",
+        "CHECKPOINT_NOT_RELEASE_APPROVED"
+      ],
+      "evidence": {
+        "parameterCount": 14198464,
+        "dataCoveragePercent": 0.071411,
+        "fullTop1TokenAccuracy": 0.0193862855876814,
+        "outputTop1TokenAccuracy": 0.020864381520119227,
+        "globalMetricsPassing": 0,
+        "globalMetricsRequired": 13
+      }
+    },
+    {
+      "option": "core-neural-release",
+      "selected": false,
+      "disposition": "reject-scale",
+      "failedGates": [
+        "INSUFFICIENT_APPROVED_DATA",
+        "INSUFFICIENT_INDEPENDENT_SEEDS",
+        "CRITICAL_DOMAIN_GAIN_NOT_MATERIAL",
+        "GAIN_NOT_ABOVE_NOISE",
+        "BOOTSTRAP_PROXY_GAIN_NOT_MATERIAL",
+        "SMALLER_PROFILE_DATA_NOT_READY",
+        "SMALLER_PROFILE_NOT_AT_OPTIMIZATION_CEILING",
+        "TARGET_HARDWARE_UNMEASURED",
+        "GLOBAL_METRICS_NOT_ALL_PASSING",
+        "GENERATION_RUNTIME_UNAPPROVED"
+      ],
+      "evidence": {
+        "parameterCount": 29272576,
+        "dataCoveragePercent": 0.0142822,
+        "proxyLossImprovementPercent": 0.5276033552657455,
+        "criticalDomainGenerationEvidenceAvailable": false,
+        "independentSeeds": 1,
+        "cost": {
+          "parameterRatioVsSelectedEdge": 2.061672023114613,
+          "trainingWallTimeRatioVsSelectedEdge": 2.354038572826887,
+          "peakMemoryRatioVsSelectedEdge": 1.5482573221954194,
+          "checkpointBytesRatioVsSelectedEdge": 2.06134181190927,
+          "decodeThroughputRatioVsSelectedEdge": 0.5525362784863547
+        }
+      }
+    },
+    {
+      "option": "server-neural-release",
+      "selected": false,
+      "disposition": "reject-unmeasured-scale",
+      "failedGates": [
+        "INSUFFICIENT_APPROVED_DATA",
+        "INSUFFICIENT_INDEPENDENT_SEEDS",
+        "CRITICAL_DOMAIN_GAIN_NOT_MATERIAL",
+        "GAIN_NOT_ABOVE_NOISE",
+        "BOOTSTRAP_PROXY_GAIN_NOT_MATERIAL",
+        "SMALLER_PROFILE_DATA_NOT_READY",
+        "SMALLER_PROFILE_NOT_AT_OPTIMIZATION_CEILING",
+        "TARGET_HARDWARE_UNMEASURED",
+        "GLOBAL_METRICS_NOT_ALL_PASSING",
+        "GENERATION_RUNTIME_UNAPPROVED"
+      ],
+      "evidence": {
+        "candidateConstructed": false,
+        "dataCoveragePercent": 0.005950916666666667,
+        "coreCeilingDemonstrated": false,
+        "targetHardwareMeasured": false
+      }
+    },
+    {
+      "option": "no-neural-release",
+      "selected": true,
+      "disposition": "selected-safe-state",
+      "failedGates": [],
+      "evidence": {
+        "checkpointRetainedForResearch": true,
+        "checkpointReleaseApproved": false,
+        "activeNeuralArtifactRequired": false,
+        "deterministicToolsRemainAuthoritative": true
+      }
+    }
+  ],
+  "criticalGainBeyondNoise": {
+    "currentStatus": "not-demonstrated",
+    "reason": "The core comparison has one seed and teacher-forced proxy loss only; it has no checkpoint generation results, confidence interval, or critical-domain composite score.",
+    "futureMinimumEvidence": {
+      "independentSeeds": 3,
+      "confidenceLevel": 0.95,
+      "criticalDomainCompositeImprovementPoints": 2.0,
+      "confidenceLowerBoundMustExceedPoints": 0.0,
+      "criticalMetricRegressionsAllowed": 0,
+      "allGlobalMetricsMustPass": true
+    }
+  },
+  "revisionSequence": [
+    {
+      "order": 1,
+      "action": "Preserve the step-256 edge checkpoint and scorecards as an immutable experimental baseline; do not activate it.",
+      "exitEvidence": "VFAI-016 packages an experimental inactive artifact with checksums while activeArtifactId remains null."
+    },
+    {
+      "order": 2,
+      "action": "Expand governed project-owned data and independent held-out coverage, prioritizing current critical failures, task diversity, exact variants, and compiler/simulation/retrieval evidence.",
+      "exitEvidence": "Edge has at least 100M approved quality-controlled tokens with leakage-free, independently governed evaluation coverage."
+    },
+    {
+      "order": 3,
+      "action": "Build the local experimental inference, context, and output-gate path without making the checkpoint active or borrowing deterministic credit.",
+      "exitEvidence": "The raw checkpoint can execute all 26 frozen cases offline and receives its own 13-metric scorecard."
+    },
+    {
+      "order": 4,
+      "action": "Retrain the edge profile with at least three deterministic seeds and controlled schedule/data ablations; diagnose a real plateau before capacity changes.",
+      "exitEvidence": "Replicated edge learning curves and confidence intervals separate data and optimization effects."
+    },
+    {
+      "order": 5,
+      "action": "Reconsider core only if edge is data-ready and plateaued and core improves critical domain composite score beyond noise without any critical regression on measured target hardware.",
+      "exitEvidence": "Every larger-profile gate passes; otherwise no parameter increase is authorized."
+    }
+  ],
+  "safeOperatingBoundary": {
+    "activeArtifactIdMustRemainNullAtDecision": true,
+    "deterministicToolsRemainAuthoritative": true,
+    "approvedLocalRetrievalMayContinue": true,
+    "internetRetrievalRole": "optional-untrusted-evidence-with-citations-never-a-model",
+    "experimentalCheckpointMayServeUsers": false,
+    "experimentalCheckpointMayAutoApplyChanges": false,
+    "VFAI016PackagingPermission": "experimental-inactive-only",
+    "VFAI016ActivationPermission": false
+  },
+  "evidenceSummary": {
+    "approvedTrainingTokens": 71411,
+    "architectureSweepReportSha256": "f24c63057ce232216d79915bca664e61b79665cde6df3123509b6c41ab9d8932",
+    "bootstrapReportSha256": "8b201e041db4d9101e1bf04ca3eb219488c2961ed60cfbd95a39a90d5ac1f57d",
+    "bestBootstrapManifestSha256": "e1098d64ffe60ac5f091c5f29cba3f00e0418f945beeec243ca87dbe72fe7ce4",
+    "selectedBootstrapStep": 256,
+    "bootstrapFirstEvaluatedStep": 32,
+    "bootstrapGlobalMetricsPassing": 0,
+    "bootstrapGlobalMetricCount": 13
+  },
+  "reportSha256": "54d8c8601e86881c7341fce839d9526641b5b08ae5466e17a39a2174bc962e4f"
+}

@@ -1,9 +1,13 @@
-import os
 import unittest
 import uuid
-from api.database import DatabaseManager, db
+from api.database import db
+from config import DB_ENABLED, DB_PASSWORD
 
 
+@unittest.skipUnless(
+    DB_ENABLED and bool(DB_PASSWORD),
+    "Set VOLTFORGE_AI_DB_ENABLED=true and configure DB credentials to run integration tests.",
+)
 class TestDatabaseManager(unittest.TestCase):
     def setUp(self):
         self.db = db

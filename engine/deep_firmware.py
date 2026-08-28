@@ -9,27 +9,47 @@ import re
 import logging
 from typing import Any, Dict, List
 
+from electronics_corpus import get_electronics_corpus
+
 logger = logging.getLogger("voltforge-ai.deep_firmware")
-
-
-# Board-specific memory limits
-BOARD_MEMORY = {
-    "ARDUINO_UNO": {"flash_KB": 32, "sram_KB": 2, "eeprom_KB": 1, "architecture": "AVR ATmega328P"},
-    "ARDUINO_MEGA": {"flash_KB": 256, "sram_KB": 8, "eeprom_KB": 4, "architecture": "AVR ATmega2560"},
-    "ARDUINO_NANO": {"flash_KB": 32, "sram_KB": 2, "eeprom_KB": 1, "architecture": "AVR ATmega328P"},
-    "ESP32": {"flash_KB": 4096, "sram_KB": 520, "eeprom_KB": 0, "architecture": "Xtensa LX6 Dual-Core"},
-    "ESP8266": {"flash_KB": 4096, "sram_KB": 80, "eeprom_KB": 0, "architecture": "Xtensa LX106"},
-    "RASPBERRY_PI_PICO": {"flash_KB": 2048, "sram_KB": 264, "eeprom_KB": 0, "architecture": "ARM Cortex-M0+ RP2040"},
-    "STM32_BLUEPILL": {"flash_KB": 64, "sram_KB": 20, "eeprom_KB": 0, "architecture": "ARM Cortex-M3 STM32F103"},
-}
 
 
 class DeepFirmwareAnalyzer:
     """Advanced firmware static analysis beyond basic checks."""
 
+    @staticmethod
+    def _board_memory(board_type: str) -> Dict[str, Any]:
+        result = get_electronics_corpus().lookup("board", board_type)
+        if result.status != "found":
+            return {
+                "status": result.status,
+                "reasonCode": result.reasonCode,
+                "board": board_type,
+            }
+        record = result.records[0]
+        claims = get_electronics_corpus().claims(record)
+        return {
+            "status": "found",
+            "reasonCode": result.reasonCode,
+            "board": board_type,
+            "recordId": record["recordId"],
+            "effectiveRevision": record["effectiveRevision"]["revision"],
+            "flashBytes": claims["flash-bytes"],
+            "sramBytes": claims["sram-bytes"],
+            "architecture": claims["architecture"],
+        }
+
     @classmethod
     def analyze_memory_usage(cls, code: str, board_type: str = "ARDUINO_UNO") -> Dict[str, Any]:
-        board = BOARD_MEMORY.get(board_type, BOARD_MEMORY["ARDUINO_UNO"])
+        board = cls._board_memory(board_type)
+        if board["status"] != "found":
+            return {
+                **board,
+                "estimatedSRAM_bytes": None,
+                "sramUsagePercent": None,
+                "issues": [],
+                "missingEvidence": ["exact supported board variant and memory ratings"],
+            }
 
         # Estimate global variable SRAM usage
         global_vars = re.findall(r'^(?:int|long|float|double|bool|byte|char|uint\w+|String)\s+(\w+)', code, re.MULTILINE)
@@ -51,7 +71,7 @@ class DeepFirmwareAnalyzer:
             type_size = type_sizes.get(atype, 2)
             estimated_sram += type_size * int(size)
 
-        sram_percent = (estimated_sram / (board["sram_KB"] * 1024)) * 100
+        sram_percent = (estimated_sram / board["sramBytes"]) * 100
 
         issues = []
         if sram_percent > 80:
@@ -62,10 +82,13 @@ class DeepFirmwareAnalyzer:
             issues.append({"severity": "WARNING", "message": "String literals consume SRAM. Wrap constant strings in `F()` macro to store in flash."})
 
         return {
+            "status": "found",
+            "knowledgeRecordId": board["recordId"],
+            "effectiveRevision": board["effectiveRevision"],
             "board": board_type,
             "architecture": board["architecture"],
-            "flashCapacity_KB": board["flash_KB"],
-            "sramCapacity_KB": board["sram_KB"],
+            "flashCapacity_KB": round(board["flashBytes"] / 1024, 3),
+            "sramCapacity_KB": round(board["sramBytes"] / 1024, 3),
             "estimatedSRAM_bytes": estimated_sram,
             "sramUsagePercent": round(sram_percent, 1),
             "globalVariableCount": len(global_vars),
@@ -155,8 +178,14 @@ class DeepFirmwareAnalyzer:
 
     @classmethod
     def generate_deep_sleep_config(cls, board_type: str, wakeup_source: str = "timer", sleep_duration_s: int = 60) -> Dict[str, Any]:
-        """Generates deep sleep configuration code for ESP32."""
-        if "ESP32" in board_type.upper():
+        """Generate deep sleep code only for an exact supported ESP32 variant."""
+        board = cls._board_memory(board_type)
+        if board["status"] != "found":
+            return {
+                **board,
+                "error": f"Deep sleep configuration requires an exact supported ESP32 variant; {board_type!r} is not evidenced.",
+            }
+        if "ESP32" in str(board["architecture"]).upper() or "XTENSA" in str(board["architecture"]).upper():
             if wakeup_source == "timer":
                 code = f"""
 #include <esp_sleep.h>
@@ -206,6 +235,9 @@ void setup() {
 void loop() {}"""
 
             return {
+                "status": "found",
+                "knowledgeRecordId": board["recordId"],
+                "effectiveRevision": board["effectiveRevision"],
                 "board": board_type,
                 "wakeupSource": wakeup_source,
                 "sleepDuration_s": sleep_duration_s if wakeup_source == "timer" else "N/A",
@@ -213,12 +245,25 @@ void loop() {}"""
                 "generatedCode": code.strip(),
             }
 
-        return {"error": f"Deep sleep configuration not available for {board_type}. Use ESP32 or ESP8266."}
+        return {
+            "status": "unknown",
+            "reasonCode": "firmware-api-not-curated-for-board",
+            "board": board_type,
+            "error": f"Deep sleep configuration is not curated for {board_type}.",
+        }
 
     @classmethod
     def estimate_binary_size(cls, code: str, board_type: str = "ARDUINO_UNO") -> Dict[str, Any]:
         """Estimates compiled binary size from source code."""
-        board = BOARD_MEMORY.get(board_type, BOARD_MEMORY["ARDUINO_UNO"])
+        board = cls._board_memory(board_type)
+        if board["status"] != "found":
+            return {
+                **board,
+                "estimatedFlash_bytes": None,
+                "flashUsagePercent": None,
+                "fitsInFlash": None,
+                "missingEvidence": ["exact supported board variant and flash rating"],
+            }
         
         # Count includes (each library adds overhead)
         includes = re.findall(r'#include\s*[<"]([^>"]+)[>"]', code)
@@ -233,13 +278,16 @@ void loop() {}"""
         code_size = len(code.encode()) * 2  # rough: 2 bytes per source byte
         total_flash = base_size + lib_size + code_size
         
-        flash_percent = (total_flash / (board["flash_KB"] * 1024)) * 100
+        flash_percent = (total_flash / board["flashBytes"]) * 100
 
         return {
+            "status": "found",
+            "knowledgeRecordId": board["recordId"],
+            "effectiveRevision": board["effectiveRevision"],
             "board": board_type,
             "estimatedFlash_bytes": total_flash,
             "estimatedFlash_KB": round(total_flash / 1024, 1),
-            "flashCapacity_KB": board["flash_KB"],
+            "flashCapacity_KB": round(board["flashBytes"] / 1024, 3),
             "flashUsagePercent": round(flash_percent, 1),
             "librariesDetected": includes,
             "fitsInFlash": flash_percent < 100,

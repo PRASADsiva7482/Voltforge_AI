@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.env
+datasheet_cache.json
+.toolchains/
+training_runs/

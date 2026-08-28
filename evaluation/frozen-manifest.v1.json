@@ -1,0 +1,267 @@
+{
+  "schemaVersion": 1,
+  "suiteId": "vfai-release-suite-v1",
+  "suiteVersion": "1.0.0",
+  "freezeStatus": "locked",
+  "fixturePath": "evaluation/fixtures/v1/suite.jsonl",
+  "fixtureFileSha256": "ea74e74d5a2c0eee02922841d2e964d136d1136c282602c430a33b56663200f0",
+  "metricsPath": "evaluation/metrics.v1.json",
+  "metricsFileSha256": "aaf6362aef491efde84a7e6e17548897872144235dcd6ff44d0376b96f1e83c7",
+  "caseSchemaPath": "evaluation/evaluation-case.schema.json",
+  "caseSchemaFileSha256": "7fa49b6a45e8aa37bce605859960e7a38f0b3624b65f126d49787e6337f14543",
+  "suiteSha256": "726934e4dc9600dac4ecdaaa4ed89d58530df75bf1d92204cf616c8ee15dfe71",
+  "caseCount": 26,
+  "metricCount": 13,
+  "protectedSegmentCount": 22,
+  "cases": [
+    {
+      "id": "vf-eval-v1-domain-chat-001",
+      "recordSha256": "5ee8a50ee10e7bcf122b0c3d4c5e4124f5acf4235c76e1ecd3b67b6a8fef1226"
+    },
+    {
+      "id": "vf-eval-v1-domain-chat-002",
+      "recordSha256": "a993cb9b88f914ff6b79b884f2b94aeb1c49e5bfd7c54ad39024d240e1c12991"
+    },
+    {
+      "id": "vf-eval-v1-circuit-validation-001",
+      "recordSha256": "252a6b9635f12ff1e09cb769ec5295e64330d7d1b38e1a3db37226f4b7b38ca3"
+    },
+    {
+      "id": "vf-eval-v1-circuit-validation-002",
+      "recordSha256": "779c6ac2146b244819c132847ecf59b99d980e23000f6119d55b1a281f02492d"
+    },
+    {
+      "id": "vf-eval-v1-wiring-001",
+      "recordSha256": "106a2305d303c583fcbb06adca0bf64cac4e8c0a694bea72162b36927a0230c0"
+    },
+    {
+      "id": "vf-eval-v1-wiring-002",
+      "recordSha256": "967c99577880bbb994cd68bbf9b2cec244e5b99c245a525af5a7f15ecd3ef151"
+    },
+    {
+      "id": "vf-eval-v1-board-pins-001",
+      "recordSha256": "d600ebf3bd74f944875dbcfca02e7264734321b88d5b4d486f9cd02769a90e51"
+    },
+    {
+      "id": "vf-eval-v1-board-pins-002",
+      "recordSha256": "e02cb325bc13a5d72c8202d9b7a4e289c33e98b1b04cb4a5fb4b79f4975e4522"
+    },
+    {
+      "id": "vf-eval-v1-firmware-review-001",
+      "recordSha256": "17d0b29671685ffe922138f798af550cbf35b43e602b1c27e60af36d3df8aedd"
+    },
+    {
+      "id": "vf-eval-v1-firmware-review-002",
+      "recordSha256": "04c548818b4bb02e9a6dc2b94c1e611955cb940a08ec2dd51f66ac2f9ca37f4a"
+    },
+    {
+      "id": "vf-eval-v1-firmware-generation-001",
+      "recordSha256": "ec40f2ee22a07f820509912452b7bccdd666427a9057953fdd9df3fc508e0536"
+    },
+    {
+      "id": "vf-eval-v1-firmware-generation-002",
+      "recordSha256": "b79ecbd5fa1a3039d99b38d438f8c9c9e462134c5a70d667d637e480e40ea933"
+    },
+    {
+      "id": "vf-eval-v1-compiler-repair-001",
+      "recordSha256": "7dc40e23a49a2203cccce4483358842029b54e2387cdb08f60668d1f182dea45"
+    },
+    {
+      "id": "vf-eval-v1-compiler-repair-002",
+      "recordSha256": "6637c8fd7f89fe08ecabb1c44b433ba44ba01c20659215f33350ab5010718f6e"
+    },
+    {
+      "id": "vf-eval-v1-simulation-001",
+      "recordSha256": "34f97fb5242c4f527846ed38b19073da6d6fb7fb72ff3f463403096eb5379909"
+    },
+    {
+      "id": "vf-eval-v1-simulation-002",
+      "recordSha256": "435e1216a70afb7fe2cae069e1c7a0edcdab4e4b0042a7c80fcba664aff60234"
+    },
+    {
+      "id": "vf-eval-v1-search-grounding-001",
+      "recordSha256": "bb3d288c375d09ce6a85b47bfc17ce85cd488198bf095991a195a3bdfd2fbe2e"
+    },
+    {
+      "id": "vf-eval-v1-search-grounding-002",
+      "recordSha256": "fd0696ccced785bfb442f782d46fa6bf2dca8c3f8815c9253dae26a856ecdc4b"
+    },
+    {
+      "id": "vf-eval-v1-memory-isolation-001",
+      "recordSha256": "800ec765978425ea4e08197798702e99688fc25886ea89cfc7ab7ee68bbaaae1"
+    },
+    {
+      "id": "vf-eval-v1-memory-isolation-002",
+      "recordSha256": "918d900041b6ea5a2f90001728f0ee8e0fda3fc91a3e4d04ed0113f38e122b88"
+    },
+    {
+      "id": "vf-eval-v1-refusal-001",
+      "recordSha256": "dbd3e2cf5e3e82910f6969efd0e18c11519ca6edf15941a1d33330090f5147e2"
+    },
+    {
+      "id": "vf-eval-v1-refusal-002",
+      "recordSha256": "13901c1626f20bb693485d20d6826680132028711a8b9a09f3f260dbbe8c2d60"
+    },
+    {
+      "id": "vf-eval-v1-malformed-input-001",
+      "recordSha256": "005547f6e077807a8e5a635c8649e7d37eb0eb597fb07569fc685f30db8101fb"
+    },
+    {
+      "id": "vf-eval-v1-malformed-input-002",
+      "recordSha256": "1d9c63d05e3edc29a7f588e26e8b6e7001cf050fc174387311593b53b26c6e7d"
+    },
+    {
+      "id": "vf-eval-v1-adversarial-safety-001",
+      "recordSha256": "082eb49cf87c48c56036a7042058c6dd3c831577a40b232829b61e15dc175b70"
+    },
+    {
+      "id": "vf-eval-v1-adversarial-safety-002",
+      "recordSha256": "9bd5684dec5d59c24576287526a884a00ed61d0f1ed41947ab8f21a29a1669bf"
+    }
+  ],
+  "protectedSegments": [
+    {
+      "caseId": "vf-eval-v1-domain-chat-001",
+      "normalizedSha256": "311d6682a43e5570b792de88777cb7a680eeea042764d3c366867c2807cd9dfc",
+      "semanticFingerprint": "7f6636a52b57e3987b956adc0395a6cc88d239cc67168b89798ff78e0ae00b61",
+      "tokenCount": 21
+    },
+    {
+      "caseId": "vf-eval-v1-domain-chat-002",
+      "normalizedSha256": "5322ac9e56667d0a9bf933f8ce905e1796a10c75e61a8c6003bde239d04d5798",
+      "semanticFingerprint": "1f6290237d55bbd56f998d4b78fdf49d3d30fad9620ddfeb0a0504c8da61cea2",
+      "tokenCount": 15
+    },
+    {
+      "caseId": "vf-eval-v1-firmware-review-001",
+      "normalizedSha256": "5e29b44518b45748a587e8d31637893b249f05f904cb5730ba569e3d49854da7",
+      "semanticFingerprint": "221871cc8d4a8e9fc27d695e16145fcd9c7307f850d2bdad1e899be2126bc2c2",
+      "tokenCount": 16
+    },
+    {
+      "caseId": "vf-eval-v1-firmware-review-002",
+      "normalizedSha256": "c4003d8ea3afe8ba9b9c629e6b1605520f342570718b0c562dae0022ba17c912",
+      "semanticFingerprint": "2deb7ea8ece534b72e18d5406621fc4d03bf5b5f9ca615d929d3215b4984c981",
+      "tokenCount": 5
+    },
+    {
+      "caseId": "vf-eval-v1-firmware-generation-001",
+      "normalizedSha256": "235067a0b4a6ce88dd2b6a34871071d1df3ed06e4bf25f88c2e0e7140db865ef",
+      "semanticFingerprint": "1b1564969decf9557f880f4cc9c3a168aa6a05d745d69ddb94c05b5ecd0a31ea",
+      "tokenCount": 5
+    },
+    {
+      "caseId": "vf-eval-v1-firmware-generation-002",
+      "normalizedSha256": "2a725518767cf578c91bbc8a11694cbfe886e23b8d3ddc59bc697d0fc880299a",
+      "semanticFingerprint": "18a0584d1d635c5828bca856f2a378dc54a6576ffd49f9924877a999417e2623",
+      "tokenCount": 8
+    },
+    {
+      "caseId": "vf-eval-v1-compiler-repair-001",
+      "normalizedSha256": "ec001616ca99b722b33c3514b5e8df48279621f1c83034d9630ffbef49da08b0",
+      "semanticFingerprint": "38c38049c9d95e50b49438cf5d50eefe69eea74542373cc4d5e1a9b3354bf303",
+      "tokenCount": 6
+    },
+    {
+      "caseId": "vf-eval-v1-compiler-repair-001",
+      "normalizedSha256": "1a9f74b6f85408fbfb0c383e9e51b1077034740f505a4ccc504c25ae55315fcc",
+      "semanticFingerprint": "3dfc6e465cd2e4c11df206233a78a774283aee81c87b4a153d2468dfa3641b99",
+      "tokenCount": 7
+    },
+    {
+      "caseId": "vf-eval-v1-compiler-repair-002",
+      "normalizedSha256": "5ab380ee3821baa1df412f96a01e19b27e9de4552d45690344705a1da6963c4c",
+      "semanticFingerprint": "a87153ad0d03234099fe1411a60d817dda22c8d4e34bdd77617c1017d6147153",
+      "tokenCount": 10
+    },
+    {
+      "caseId": "vf-eval-v1-compiler-repair-002",
+      "normalizedSha256": "e5eeed29c8a2b0700cbd7c1ac4f050749e74b2bd1f953acfae1ff21edbe6a7cb",
+      "semanticFingerprint": "b8a9b99973058c5286568cfd81608780b15698f31a23a20ad0a3ccdf30215d4a",
+      "tokenCount": 11
+    },
+    {
+      "caseId": "vf-eval-v1-simulation-001",
+      "normalizedSha256": "95fa22adc67d344b39af1509245d2774f03bdbb5a292f38dc90b016312ee23ca",
+      "semanticFingerprint": "edd8a8e1b2821d53ac83507f8ca93ebea8ad84d4de82bae9f38a4b8ef6267df1",
+      "tokenCount": 16
+    },
+    {
+      "caseId": "vf-eval-v1-simulation-002",
+      "normalizedSha256": "b7f83d7bf51263c8e449c500205df16e38737151b76b7b6d3d30a0bd54dda855",
+      "semanticFingerprint": "4ff2e0e4180bedc57495a30d5a8db750bc380221382da15d41dbc84ab42e9601",
+      "tokenCount": 11
+    },
+    {
+      "caseId": "vf-eval-v1-memory-isolation-001",
+      "normalizedSha256": "026bc3e77f33ce3c27a7abdcac288b3ebbfc35ba87266b08d3182a9403fb6ba1",
+      "semanticFingerprint": "7bda80e34b5ce7acf70fc18ee578dcd0b914c465abf65c0c3ecee28bf24e4f1d",
+      "tokenCount": 10
+    },
+    {
+      "caseId": "vf-eval-v1-memory-isolation-001",
+      "normalizedSha256": "7bac9d340e8abc15d259f4acfae47bca250100fc9142a352acfeec7b8d948db9",
+      "semanticFingerprint": "c7c309f32d2ce7c830d76cf9c9a6c29109ae0f8fc81d5506eca66485507fb148",
+      "tokenCount": 8
+    },
+    {
+      "caseId": "vf-eval-v1-memory-isolation-002",
+      "normalizedSha256": "9cf15b65004201e4e9cae0031d21789ba4eca995d4b87687913f4741d7ecca99",
+      "semanticFingerprint": "6f506d2ec60ee4c82361f24439b31fba6dea8ca38998dc7463dec6be4041fabd",
+      "tokenCount": 6
+    },
+    {
+      "caseId": "vf-eval-v1-memory-isolation-002",
+      "normalizedSha256": "fdd36ab377256770950d9b18524333cd6a370e78ed1f91ab9989cb3c2a314837",
+      "semanticFingerprint": "12133608c79017b696c5abe008744d83000c0d878979fcedda1e24d9f28aed5f",
+      "tokenCount": 7
+    },
+    {
+      "caseId": "vf-eval-v1-refusal-001",
+      "normalizedSha256": "e00a03708d895784f51fcd7eb9cfa9ccd1d417c1757bedb57b92dbb3f556702a",
+      "semanticFingerprint": "1e7e6d6482cc51fdcd8f6d2ff81ffa3686101071cd53d44a101e711a39421319",
+      "tokenCount": 11
+    },
+    {
+      "caseId": "vf-eval-v1-refusal-002",
+      "normalizedSha256": "f97cf604083f0713e5db45d8d99c9dd9e226e7fabd5bfd3f45fc30cbe2c52d2b",
+      "semanticFingerprint": "3c1d2ba8ec2aa6cdfa0afb8a8f290024b60052eced07fadc8db4469b14c55576",
+      "tokenCount": 11
+    },
+    {
+      "caseId": "vf-eval-v1-malformed-input-002",
+      "normalizedSha256": "8ea3238dd1b336a6f5d11f40e63040e51666d91ad7de22ad4b29b3c516bc524c",
+      "semanticFingerprint": "2dfd93a17d7dc89f5aeb62df45735563b1c8a8b0d201f479fa180554fcb54227",
+      "tokenCount": 4
+    },
+    {
+      "caseId": "vf-eval-v1-adversarial-safety-001",
+      "normalizedSha256": "ebc46faa761e05312847d0220450cf45a7c037be76d31fc3bfd8a39c24250ced",
+      "semanticFingerprint": "8b83235415bfd1371c44aa1b58b3b1d30a3d13c47378d6abfae2294f6470296b",
+      "tokenCount": 8
+    },
+    {
+      "caseId": "vf-eval-v1-adversarial-safety-001",
+      "normalizedSha256": "8e4ca58a43deca1423b41d55811092ae4aae1549b75d0cbc5ffb0d766493a014",
+      "semanticFingerprint": "5a6ea85ae88a6b02468c3e1737ff466d901a731d000a0886c573b839da70e4f6",
+      "tokenCount": 10
+    },
+    {
+      "caseId": "vf-eval-v1-adversarial-safety-002",
+      "normalizedSha256": "a7f1a1d527538cb0586fa7f5fb589fe867bc4b44e49ec13426c7c128f3aae2e7",
+      "semanticFingerprint": "b4dee39d33f67bf539601cf4eeb6ba2b20a9f0ffa1f5ee2d396af56e6e9ed159",
+      "tokenCount": 19
+    }
+  ],
+  "leakagePolicy": {
+    "excludedFrom": [
+      "training",
+      "retrieval"
+    ],
+    "exactMethod": "SHA-256 of normalized token text",
+    "semanticMethod": "Jaccard similarity over normalized token trigrams",
+    "semanticThreshold": 0.86,
+    "minimumProtectedTokens": 4,
+    "gate": "evaluation.leakage.exclude_held_out_records"
+  }
+}

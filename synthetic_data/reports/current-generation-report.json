@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vf-verified-synthetic-generation-report-v1",
+  "pipelineLockSha256": "22d6dc8fdfd720c3b6de3f93d2735fcff036eabaf6e1ff830d804bae2cf7e898",
+  "generator": {
+    "id": "vf-verified-synthetic-generator",
+    "version": "1.0.0"
+  },
+  "grammar": {
+    "id": "vf-verified-synthetic-grammar",
+    "version": "1.0.0",
+    "deterministicSeed": 2026082809
+  },
+  "summary": {
+    "candidateCount": 160,
+    "acceptedRecordCount": 154,
+    "rejectedCandidateCount": 6,
+    "exactDuplicateCount": 1,
+    "heldOutCollisionCount": 0,
+    "shardCount": 4,
+    "decision": "pass"
+  },
+  "taskBalance": {
+    "circuit_validation": {
+      "records": 24,
+      "percent": 15.584
+    },
+    "compiler_repair": {
+      "records": 6,
+      "percent": 3.896
+    },
+    "domain_chat": {
+      "records": 32,
+      "percent": 20.779
+    },
+    "firmware_generation": {
+      "records": 12,
+      "percent": 7.792
+    },
+    "pin_routing": {
+      "records": 16,
+      "percent": 10.39
+    },
+    "refusal": {
+      "records": 8,
+      "percent": 5.195
+    },
+    "structured_output": {
+      "records": 16,
+      "percent": 10.39
+    },
+    "uncertainty": {
+      "records": 8,
+      "percent": 5.195
+    },
+    "wiring": {
+      "records": 32,
+      "percent": 20.779
+    }
+  },
+  "coverage": {
+    "supportedBoards": {
+      "required": [
+        "ARDUINO_UNO",
+        "ARDUINO_MEGA",
+        "ARDUINO_NANO",
+        "ARDUINO_UNO_R4",
+        "ESP32_DEVKITC_V4_WROOM32E_N4",
+        "ESP32_S3",
+        "RASPBERRY_PI_PICO",
+        "RASPBERRY_PI_PICO_2"
+      ],
+      "covered": [
+        "ARDUINO_MEGA",
+        "ARDUINO_NANO",
+        "ARDUINO_UNO",
+        "ARDUINO_UNO_R4",
+        "ESP32_DEVKITC_V4_WROOM32E_N4",
+        "ESP32_S3",
+        "RASPBERRY_PI_PICO",
+        "RASPBERRY_PI_PICO_2"
+      ],
+      "recordCounts": {
+        "ARDUINO_MEGA": 22,
+        "ARDUINO_NANO": 22,
+        "ARDUINO_UNO": 22,
+        "ARDUINO_UNO_R4": 16,
+        "ESP32_DEVKITC_V4_WROOM32E_N4": 16,
+        "ESP32_S3": 16,
+        "RASPBERRY_PI_PICO": 16,
+        "RASPBERRY_PI_PICO_2": 16
+      },
+      "coveragePercent": 100.0
+    },
+    "components": {
+      "covered": [
+        "ADAFRUIT_SSD1306_STEMMA_128X64"
+      ],
+      "recordCounts": {
+        "ADAFRUIT_SSD1306_STEMMA_128X64": 72
+      }
+    },
+    "compiledFirmwareTargets": [
+      {
+        "board": "ARDUINO_UNO",
+        "fqbn": "arduino:avr:uno"
+      },
+      {
+        "board": "ARDUINO_MEGA",
+        "fqbn": "arduino:avr:mega"
+      },
+      {
+        "board": "ARDUINO_NANO",
+        "fqbn": "arduino:avr:nano:cpu=atmega328"
+      }
+    ]
+  },
+  "tokens": {
+    "countingContract": "exact UTF-8 bytes plus stable lexical pre-tokenizer count",
+    "utf8ByteTokenCount": 482106,
+    "lexicalTokenCount": 142935,
+    "note": "VFAI-010 will produce the model-token count after the project-owned tokenizer is trained."
+  },
+  "compileVerification": {
+    "receiptCount": 24,
+    "acceptedCompileCount": 18,
+    "expectedFailureCount": 6,
+    "toolchain": {
+      "arduinoCliVersion": "1.5.1",
+      "arduinoCliWindowsX64ZipSha256": "fabe42e0eb04d00e776a66178299ff95a46c623dbc260f997e58fd514853dd40",
+      "arduinoCliExecutableSha256": "1017de89179c3167e6b8a38ca6cc4091fa69a3cf97aafa7810f01423003f5571",
+      "arduinoAvrCoreVersion": "1.8.6",
+      "avrGccPackageVersion": "7.3.0-atmel3.6.1-arduino7",
+      "avrGppExecutableSha256": "098f5708a5d70e3abb6b504145b46c9320ef4b6d43b6b8f1c09b431e611d543b",
+      "avrPlatformTxtSha256": "513b2ee073e686a9e823a6a512e64a5a0ee33af3e1d7108e0fc869a11485a7aa"
+    },
+    "receiptsPath": "synthetic_data/receipts/v1/compile-receipts.jsonl",
+    "receiptsSha256": "710dedb808f037f74bd60fb3c5b856a4e4647cff3e882e1c2b43726e43271e97"
+  },
+  "duplicates": {
+    "method": "SHA-256 of canonical complete task record",
+    "rejected": 1
+  },
+  "rejections": {
+    "reasonCounts": {
+      "exact-duplicate": 1,
+      "firmware-target-not-in-v1-pinned-toolchain": 5
+    },
+    "items": [
+      {
+        "candidate": "vf-task-v1-0b9d2ae30989f0a5daef9789",
+        "reasonCode": "exact-duplicate",
+        "detail": "Duplicates accepted record vf-task-v1-0b9d2ae30989f0a5daef9789"
+      },
+      {
+        "candidate": "firmware:ARDUINO_UNO_R4",
+        "reasonCode": "firmware-target-not-in-v1-pinned-toolchain",
+        "detail": "No firmware record is generated until that exact board core is version-pinned and compiled."
+      },
+      {
+        "candidate": "firmware:ESP32_DEVKITC_V4_WROOM32E_N4",
+        "reasonCode": "firmware-target-not-in-v1-pinned-toolchain",
+        "detail": "No firmware record is generated until that exact board core is version-pinned and compiled."
+      },
+      {
+        "candidate": "firmware:ESP32_S3",
+        "reasonCode": "firmware-target-not-in-v1-pinned-toolchain",
+        "detail": "No firmware record is generated until that exact board core is version-pinned and compiled."
+      },
+      {
+        "candidate": "firmware:RASPBERRY_PI_PICO",
+        "reasonCode": "firmware-target-not-in-v1-pinned-toolchain",
+        "detail": "No firmware record is generated until that exact board core is version-pinned and compiled."
+      },
+      {
+        "candidate": "firmware:RASPBERRY_PI_PICO_2",
+        "reasonCode": "firmware-target-not-in-v1-pinned-toolchain",
+        "detail": "No firmware record is generated until that exact board core is version-pinned and compiled."
+      }
+    ]
+  },
+  "leakage": {
+    "gate": "evaluation.leakage.exclude_held_out_records",
+    "heldOutCollisionsRejected": 0
+  },
+  "shards": [
+    {
+      "path": "synthetic_data/shards/v1/grounded-electronics.jsonl",
+      "recordCount": 80,
+      "sha256": "5785d06938bb19812ee657e6dfabc4b4eb6bcdd76cb5d42fde34c49265bdbd6a"
+    },
+    {
+      "path": "synthetic_data/shards/v1/circuit-safety.jsonl",
+      "recordCount": 56,
+      "sha256": "348d56d93695dcba96bceed004e2451ebf93c636e464f2592dacd1971d3db95d"
+    },
+    {
+      "path": "synthetic_data/shards/v1/firmware.jsonl",
+      "recordCount": 12,
+      "sha256": "ab7663861f4fe8ec022d045e945169ec0af0f526b34eacba701eaa112adc21f1"
+    },
+    {
+      "path": "synthetic_data/shards/v1/compiler-repair.jsonl",
+      "recordCount": 6,
+      "sha256": "31d0d5b4d2890f40fe880eead3c52f98b1cdb9ce505367e45e62fc2b83f474d0"
+    }
+  ],
+  "reportSha256": "234d406a22e828320292d748b72b15b8dff8c0869adf620cf5ed2bdf07157bed"
+}

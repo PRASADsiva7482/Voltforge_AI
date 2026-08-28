@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "migrationId": "vfdlm-identity-reset-2026-08-28",
+  "status": "retired",
+  "retiredOn": "2026-08-28",
+  "replacementIdentity": {
+    "productName": "VoltForge AI",
+    "familyName": "VoltForge Domain Language Model",
+    "familySlug": "vfdlm",
+    "artifactIdPattern": "vfdlm-g{generation}-{edge|core|server}-v{semanticVersion}",
+    "activeArtifactId": null,
+    "releaseStatus": "none",
+    "reason": "Model size is an artifact fact, not a product identity or quality claim. No historical scale experiment produced a release-approved checkpoint."
+  },
+  "retiredLabels": [
+    {
+      "label": "VoltForge-1B",
+      "alsoSeenAs": [
+        "VOLTFORGE-1B",
+        "VoltForge 1B",
+        "1B Parameter Transformer",
+        "1B electronics reasoning model"
+      ],
+      "classification": "retired-untrained-scale-experiment"
+    },
+    {
+      "label": "Custom 1.1B Parameter Electronics LLM",
+      "alsoSeenAs": [
+        "~1.1 Billion parameter model",
+        "1.036 Billion Parameter Transformer"
+      ],
+      "classification": "retired-inaccurate-architecture-documentation"
+    }
+  ],
+  "legacyArtifacts": [
+    {
+      "oldPath": "model/model_1b.py",
+      "currentPath": "model/legacy/retired_scale_experiment/numpy_architecture.py",
+      "classification": "architecture-allocation-experiment"
+    },
+    {
+      "oldPath": "model/pytorch_1b.py",
+      "currentPath": "model/legacy/retired_scale_experiment/pytorch_architecture.py",
+      "classification": "untrained-architecture-definition"
+    },
+    {
+      "oldPath": "model/calculate_1b_params.py",
+      "currentPath": "model/legacy/retired_scale_experiment/parameter_audit.py",
+      "classification": "theoretical-parameter-calculator"
+    },
+    {
+      "oldPath": "model/train_1b.py",
+      "currentPath": "model/legacy/retired_scale_experiment/simulated_training.py",
+      "classification": "simulated-not-real-training"
+    },
+    {
+      "oldPath": "model/generate_1b_dataset.py",
+      "currentPath": "model/legacy/retired_scale_experiment/dataset_generator.py",
+      "classification": "unreviewed-legacy-dataset-generator"
+    },
+    {
+      "oldPath": "model/export_1b.py",
+      "currentPath": "model/legacy/retired_scale_experiment/export_manifest.py",
+      "classification": "metadata-only-export-experiment"
+    },
+    {
+      "oldPath": "model/configs/1b_model.yaml",
+      "currentPath": "model/legacy/retired_scale_experiment/architecture_config.yaml",
+      "classification": "unexecuted-scale-config"
+    },
+    {
+      "oldPath": "tests/test_model_1b.py",
+      "currentPath": "model/legacy/retired_scale_experiment/architecture_tests.py",
+      "classification": "historical-architecture-math-tests-not-model-quality-tests"
+    },
+    {
+      "oldPath": "model/artifacts/model_1b_meta.json",
+      "currentPath": "model/artifacts/model_1b_meta.json",
+      "sha256": "e038c82c69bf920f25d04335f5954d62e71fea7d273ea65879e44aecb202312f",
+      "classification": "quarantined-simulated-metadata"
+    },
+    {
+      "oldPath": "model/artifacts/voltforge_1b_config.json",
+      "currentPath": "model/artifacts/voltforge_1b_config.json",
+      "sha256": "d46bc2f5f67a9104f9a60d5d4950bf4a26603932a419cbc1d38b6dd5b55aa935",
+      "classification": "quarantined-architecture-manifest-without-weights"
+    },
+    {
+      "oldPath": "model/artifacts/dataset_1b.jsonl",
+      "currentPath": "model/artifacts/dataset_1b.jsonl",
+      "sha256": "f9a4a9c795baa288ef4fce8c4193ca19cff1b885c05a7a93bbc675d62c051013",
+      "classification": "quarantined-unreviewed-dataset"
+    }
+  ],
+  "productionRules": [
+    "Legacy paths are never listed in model/registry/active_model.json.",
+    "Legacy source is outside production imports and automated model-quality test discovery.",
+    "Historical parameter counts and metrics must not appear in API or UI capability labels.",
+    "Future artifacts must use the VFDLM identity contract and pass registry validation."
+  ]
+}

@@ -1,0 +1,375 @@
+{
+  "schemaVersion": 1,
+  "benchmarkId": "vfai-runtime-20260828T012253Z",
+  "generatedAt": "2026-08-28T01:22:53.048742Z",
+  "networkAccessAllowed": false,
+  "revision": {
+    "gitCommit": "6fb96d2c1c0edf03c57792d2a02d44c5edcc6df5",
+    "worktreeDirty": true,
+    "benchmarkHarnessSha256": "ed39b76e82ce89f38b3c9c128e2acafb29938ca9b63c43d2569aa79245ebfecb"
+  },
+  "configuration": {
+    "coldStartRuns": 3,
+    "warmupRequests": 1,
+    "measuredRequests": 5,
+    "concurrencyLevels": [
+      1,
+      2,
+      4
+    ]
+  },
+  "hardware": {
+    "referenceTier": "cpu-development-reference",
+    "operatingSystem": {
+      "system": "Windows",
+      "release": "11",
+      "version": "10.0.26200",
+      "architecture": "AMD64"
+    },
+    "cpu": {
+      "model": "Intel(R) Core(TM) i5-8265U CPU @ 1.60GHz",
+      "logicalCores": 8,
+      "physicalCores": null,
+      "physicalCoreDetection": "not-available-with-stdlib"
+    },
+    "memory": {
+      "totalBytes": 16979501056,
+      "totalGiB": 15.813
+    },
+    "storage": {
+      "benchmarkPath": "D:\\Project\\voltforge\\Voltforge_AI",
+      "totalBytes": 107374178304,
+      "freeBytes": 88645791744,
+      "totalGiB": 100.0,
+      "freeGiB": 82.558
+    },
+    "accelerator": {
+      "torchInstalled": true,
+      "torchVersion": "2.13.0",
+      "torchCudaAvailable": false,
+      "torchMpsAvailable": false,
+      "devices": [],
+      "nvidiaSmi": null,
+      "runtimeUsable": false,
+      "torchProbeError": {
+        "type": "OSError",
+        "winError": 1114,
+        "message": "The installed Torch runtime could not initialize for accelerator probing."
+      }
+    }
+  },
+  "software": {
+    "python": {
+      "version": "3.14.4",
+      "implementation": "CPython",
+      "executableArchitecture": "64bit"
+    },
+    "packages": {
+      "numpy": "2.5.1",
+      "torch": "2.13.0",
+      "fastapi": "0.139.0",
+      "pydantic": "2.13.3",
+      "uvicorn": "0.51.0"
+    }
+  },
+  "model": {
+    "health": {
+      "productName": "VoltForge AI",
+      "familyName": "VoltForge Domain Language Model",
+      "familySlug": "vfdlm",
+      "artifactId": null,
+      "generation": null,
+      "deploymentProfile": null,
+      "semanticVersion": null,
+      "ready": false,
+      "state": "unavailable",
+      "code": "NO_APPROVED_MODEL_ARTIFACT",
+      "message": "No current VoltForge model artifact has passed the approved data, training, evaluation, compatibility, and release gates.",
+      "parameterCount": null,
+      "contextLength": null,
+      "vocabSize": null,
+      "quantization": null,
+      "checksum": null,
+      "releaseStatus": "none",
+      "registryPath": "D:\\Project\\voltforge\\Voltforge_AI\\model\\registry\\active_model.json"
+    },
+    "neuralGeneration": {
+      "status": "unavailable",
+      "reasonCode": "NO_APPROVED_MODEL_ARTIFACT",
+      "artifactId": null,
+      "firstTokenLatencyMs": null,
+      "tokensPerSecond": null,
+      "peakWorkingSetMiB": null,
+      "note": "No approved neural artifact exists; deterministic character metrics are not relabelled as token metrics."
+    }
+  },
+  "benchmarks": {
+    "coldStart": {
+      "scope": "fresh Python process, service import, route registration, and fail-closed artifact health resolution",
+      "runs": [
+        {
+          "serviceImportMs": 1024.301,
+          "artifactHealthResolutionMs": 0.942,
+          "workerMeasuredStartupMs": 1025.244,
+          "memory": {
+            "startWorkingSetMiB": 28.566,
+            "peakWorkingSetMiB": 74.117,
+            "peakIncreaseMiB": 45.551
+          },
+          "modelState": {
+            "ready": false,
+            "state": "unavailable",
+            "code": "NO_APPROVED_MODEL_ARTIFACT",
+            "artifactId": null,
+            "releaseStatus": "none"
+          },
+          "processLaunchToReadyMs": 1403.481
+        },
+        {
+          "serviceImportMs": 875.834,
+          "artifactHealthResolutionMs": 0.807,
+          "workerMeasuredStartupMs": 876.641,
+          "memory": {
+            "startWorkingSetMiB": 28.492,
+            "peakWorkingSetMiB": 73.527,
+            "peakIncreaseMiB": 45.035
+          },
+          "modelState": {
+            "ready": false,
+            "state": "unavailable",
+            "code": "NO_APPROVED_MODEL_ARTIFACT",
+            "artifactId": null,
+            "releaseStatus": "none"
+          },
+          "processLaunchToReadyMs": 1258.295
+        },
+        {
+          "serviceImportMs": 867.891,
+          "artifactHealthResolutionMs": 0.872,
+          "workerMeasuredStartupMs": 868.763,
+          "memory": {
+            "startWorkingSetMiB": 28.445,
+            "peakWorkingSetMiB": 73.559,
+            "peakIncreaseMiB": 45.113
+          },
+          "modelState": {
+            "ready": false,
+            "state": "unavailable",
+            "code": "NO_APPROVED_MODEL_ARTIFACT",
+            "artifactId": null,
+            "releaseStatus": "none"
+          },
+          "processLaunchToReadyMs": 1251.83
+        }
+      ],
+      "processLaunchToReady": {
+        "unit": "ms",
+        "samples": 3,
+        "min": 1251.83,
+        "median": 1258.295,
+        "p95": 1388.962,
+        "max": 1403.481
+      },
+      "serviceImport": {
+        "unit": "ms",
+        "samples": 3,
+        "min": 867.891,
+        "median": 875.834,
+        "p95": 1009.454,
+        "max": 1024.301
+      },
+      "artifactHealthResolution": {
+        "unit": "ms",
+        "samples": 3,
+        "min": 0.807,
+        "median": 0.872,
+        "p95": 0.935,
+        "max": 0.942
+      },
+      "peakWorkingSet": {
+        "unit": "MiB",
+        "samples": 3,
+        "min": 73.527,
+        "median": 73.559,
+        "p95": 74.061,
+        "max": 74.117
+      }
+    },
+    "localDeterministicGeneration": {
+      "mode": "local-deterministic",
+      "outputUnit": "characters",
+      "tokenMetricsApplicable": false,
+      "networkAccessAllowed": false,
+      "warmupRequests": 1,
+      "measuredRequests": 5,
+      "completedRequests": 5,
+      "failedRequests": 0,
+      "sequentialWallTimeMs": 26.881,
+      "firstDeltaLatency": {
+        "unit": "ms",
+        "samples": 5,
+        "min": 4.409,
+        "median": 4.442,
+        "p95": 6.491,
+        "max": 6.812
+      },
+      "totalRequestLatency": {
+        "unit": "ms",
+        "samples": 5,
+        "min": 4.561,
+        "median": 4.609,
+        "p95": 6.682,
+        "max": 6.988
+      },
+      "generationThroughput": {
+        "unit": "characters/second",
+        "samples": 5,
+        "min": 99596.463,
+        "median": 151015.449,
+        "p95": 152349.365,
+        "max": 152608.152
+      },
+      "memory": {
+        "startWorkingSetMiB": 56.324,
+        "peakWorkingSetMiB": 56.391,
+        "peakIncreaseMiB": 0.066
+      },
+      "samples": [
+        {
+          "completed": true,
+          "errorCode": null,
+          "firstDeltaMs": 4.442,
+          "totalLatencyMs": 4.609,
+          "characters": 696,
+          "deltaChunks": 8,
+          "charactersPerSecond": 151015.449
+        },
+        {
+          "completed": true,
+          "errorCode": null,
+          "firstDeltaMs": 4.439,
+          "totalLatencyMs": 4.6,
+          "characters": 696,
+          "deltaChunks": 8,
+          "charactersPerSecond": 151314.216
+        },
+        {
+          "completed": true,
+          "errorCode": null,
+          "firstDeltaMs": 5.207,
+          "totalLatencyMs": 5.456,
+          "characters": 696,
+          "deltaChunks": 8,
+          "charactersPerSecond": 127577.674
+        },
+        {
+          "completed": true,
+          "errorCode": null,
+          "firstDeltaMs": 4.409,
+          "totalLatencyMs": 4.561,
+          "characters": 696,
+          "deltaChunks": 8,
+          "charactersPerSecond": 152608.152
+        },
+        {
+          "completed": true,
+          "errorCode": null,
+          "firstDeltaMs": 6.812,
+          "totalLatencyMs": 6.988,
+          "characters": 696,
+          "deltaChunks": 8,
+          "charactersPerSecond": 99596.463
+        }
+      ],
+      "concurrency": [
+        {
+          "concurrency": 1,
+          "requests": 5,
+          "completed": 5,
+          "failed": 0,
+          "wallTimeMs": 34.67,
+          "throughputRequestsPerSecond": 144.215,
+          "requestLatency": {
+            "unit": "ms",
+            "samples": 5,
+            "min": 5.64,
+            "median": 6.915,
+            "p95": 8.181,
+            "max": 8.483
+          },
+          "memory": {
+            "startWorkingSetMiB": 56.371,
+            "peakWorkingSetMiB": 56.477,
+            "peakIncreaseMiB": 0.105
+          }
+        },
+        {
+          "concurrency": 2,
+          "requests": 5,
+          "completed": 5,
+          "failed": 0,
+          "wallTimeMs": 31.618,
+          "throughputRequestsPerSecond": 158.137,
+          "requestLatency": {
+            "unit": "ms",
+            "samples": 5,
+            "min": 6.48,
+            "median": 11.84,
+            "p95": 14.994,
+            "max": 15.591
+          },
+          "memory": {
+            "startWorkingSetMiB": 56.445,
+            "peakWorkingSetMiB": 56.652,
+            "peakIncreaseMiB": 0.207
+          }
+        },
+        {
+          "concurrency": 4,
+          "requests": 8,
+          "completed": 8,
+          "failed": 0,
+          "wallTimeMs": 48.514,
+          "throughputRequestsPerSecond": 164.902,
+          "requestLatency": {
+            "unit": "ms",
+            "samples": 8,
+            "min": 15.108,
+            "median": 18.742,
+            "p95": 22.919,
+            "max": 24.444
+          },
+          "memory": {
+            "startWorkingSetMiB": 56.621,
+            "peakWorkingSetMiB": 56.77,
+            "peakIncreaseMiB": 0.148
+          }
+        }
+      ]
+    }
+  },
+  "derivedBudgets": {
+    "profile": "cpu-development-reference",
+    "sourceBenchmarkId": "vfai-runtime-20260828T012253Z",
+    "basis": "measured-runtime-with-explicit-headroom",
+    "notBasedOn": "artifact name or parameter-size label",
+    "calculation": {
+      "maximumColdStartMs": "ceil(measured max process launch-to-ready * 1.25 + 5ms)",
+      "maximumFirstDeltaMs": "ceil(measured p95 first-delta * 1.50 + 2ms)",
+      "minimumCharactersPerSecond": "floor(measured median * 0.70)",
+      "maximumWorkingSetMiB": "ceil(max observed working set * 1.20 + 16MiB)",
+      "maximumConcurrentP95Ms": "ceil(highest-level measured p95 * 1.50 + 2ms)",
+      "minimumConcurrentRequestsPerSecond": "measured highest-level rate * 0.70"
+    },
+    "limits": {
+      "maximumColdStartMs": 1760,
+      "maximumFirstDeltaMs": 12,
+      "minimumCharactersPerSecond": 105710,
+      "maximumWorkingSetMiB": 105,
+      "concurrency": 4,
+      "maximumConcurrentP95Ms": 37,
+      "minimumConcurrentRequestsPerSecond": 115.431,
+      "maximumFailedRequests": 0
+    }
+  }
+}

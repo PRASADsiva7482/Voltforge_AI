@@ -16,8 +16,12 @@ if ai_model_dir not in sys.path:
     sys.path.insert(0, ai_model_dir)
 
 from generate_dataset import build_full_dataset
+from generate_dataset import GENERATOR_ID, GENERATOR_SOURCE_IDS, GENERATOR_VERSION
+from data_governance.governance import write_approved_shard_manifest
 from model import NumPyTransformer, TransformerConfig, softmax
-from tokenizer import VoltForgeTokenizer
+from tokenizer import DEFAULT_TOKENIZER_RELEASE_PATH, VoltForgeTokenizer
+from task_schema.compiler import compile_task_record
+from task_schema.io import write_task_shard
 
 
 def train_pipeline(num_samples: int = 10000, vocab_size: int = 4096) -> None:
@@ -26,19 +30,27 @@ def train_pipeline(num_samples: int = 10000, vocab_size: int = 4096) -> None:
 
     print(f"[*] Step 1: Generating {num_samples} domain-specific synthetic training samples...")
     raw_data = build_full_dataset(num_samples)
-    text_corpus = [f"{item['prompt']} {item['completion']}" for item in raw_data]
+    text_corpus = [compile_task_record(item) for item in raw_data]
 
-    print(f"[*] Step 2: Training custom BPE Tokenizer (target vocab={vocab_size})...")
-    tokenizer = VoltForgeTokenizer(vocab_size=vocab_size)
-    tokenizer.train(text_corpus[:2000], target_vocab_size=vocab_size)
-    tokenizer.save(artifacts_dir)
-    print(f"[+] Tokenizer saved to {artifacts_dir} (Vocab: {len(tokenizer.vocab)} tokens, Merges: {len(tokenizer.merges)})")
-
-    # Save dataset jsonl
+    # Persist immutable lineage before any tokenizer/model training consumes it.
     dataset_file = os.path.join(artifacts_dir, "dataset.jsonl")
-    with open(dataset_file, "w", encoding="utf-8") as f:
-        for item in raw_data:
-            f.write(json.dumps(item, ensure_ascii=False) + "\n")
+    write_task_shard(dataset_file, raw_data)
+    write_approved_shard_manifest(
+        dataset_file,
+        source_ids=GENERATOR_SOURCE_IDS,
+        producer_id=GENERATOR_ID,
+        producer_version=GENERATOR_VERSION,
+        producer_path="model/generate_dataset.py",
+        record_format="vf-task-record-jsonl-v1",
+    )
+
+    print("[*] Step 2: Loading the approved immutable VoltForge byte-BPE tokenizer...")
+    tokenizer = VoltForgeTokenizer()
+    tokenizer.load(DEFAULT_TOKENIZER_RELEASE_PATH)
+    print(
+        f"[+] Tokenizer loaded from {DEFAULT_TOKENIZER_RELEASE_PATH} "
+        f"(Vocab: {len(tokenizer.vocab)} tokens, Merges: {len(tokenizer.merges)})"
+    )
 
     print("[*] Step 3: Initializing Transformer weights and configuration...")
     config = TransformerConfig(
@@ -56,7 +68,7 @@ def train_pipeline(num_samples: int = 10000, vocab_size: int = 4096) -> None:
     model = NumPyTransformer(config)
 
     print("[*] Step 4: Training Transformer forward passes and computing cross-entropy loss...")
-    sample_tokens = [tokenizer.encode(item["prompt"] + " " + item["completion"])[:128] for item in raw_data[:100]]
+    sample_tokens = [tokenizer.encode(compile_task_record(item))[:128] for item in raw_data[:100]]
     
     total_loss = 0.0
     valid_count = 0

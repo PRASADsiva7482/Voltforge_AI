@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "planId": "vfai014-gen1-bootstrap-plan-v1",
+  "runId": "vfai014-gen1-bootstrap-v1",
+  "purpose": "Train and select one experimental Gen1 bootstrap checkpoint from the VFAI-013 edge-wide-gqa profile. This plan cannot approve a release model.",
+  "selectedConfig": {
+    "path": "model/gen1/configs/gen1-selected-v1.json",
+    "fileSha256": "94efc4ebca9affe975ae3fac47718d30feab9099c02f0c54b89bbb24ad6841a7",
+    "candidateId": "edge-wide-gqa",
+    "parameterCount": 14198464,
+    "requiredSelectionStatus": "selected-for-vfai014-bootstrap-training-not-release"
+  },
+  "sweepEvidence": {
+    "path": "benchmarks/reports/gen1-architecture-sweep-v1.json",
+    "fileSha256": "71db668908692e1916fff83c4a0ed4f834e50d132c0fb278a15d34cc17589a29",
+    "reportSha256": "f24c63057ce232216d79915bca664e61b79665cde6df3123509b6c41ab9d8932"
+  },
+  "controls": {
+    "approvedDatasetId": "vfai009-approved-packed-v1",
+    "tokenizerId": "vfdlm-byte-bpe",
+    "packingBlockSize": 128,
+    "seed": 14014,
+    "maxSteps": 256,
+    "microBatchSize": 4,
+    "gradientAccumulationSteps": 1,
+    "peakLearningRate": 0.0005,
+    "minimumLearningRate": 0.00005,
+    "warmupSteps": 16,
+    "beta1": 0.9,
+    "beta2": 0.95,
+    "adamEpsilon": 1e-8,
+    "weightDecay": 0.1,
+    "maxGradientNorm": 1.0,
+    "evaluationInterval": 32,
+    "checkpointInterval": 32,
+    "precision": "float32",
+    "device": "cpu",
+    "deterministicAlgorithms": true,
+    "torchNumThreads": 4,
+    "torchNumInteropThreads": 1,
+    "expectedTrainingPredictedTokens": 129866,
+    "approvedUniqueTrainingPredictedTokens": 71410,
+    "maximumExposureMultiple": 1.83
+  },
+  "heldoutPolicy": {
+    "splitId": "vf-tokenizer-split-v1",
+    "recordCount": 16,
+    "packedPredictedTokens": 9027,
+    "expectedTasks": [
+      "circuit_validation",
+      "compiler_repair",
+      "domain_chat",
+      "firmware_generation",
+      "pin_routing",
+      "refusal",
+      "structured_output",
+      "uncertainty",
+      "wiring"
+    ],
+    "outputSectionTypes": [
+      "assistant-text",
+      "refusal",
+      "uncertainty",
+      "citation",
+      "structured-action"
+    ],
+    "selectionMethod": "pareto-then-unweighted-mean-objective-rank",
+    "objectives": [
+      {"path": "fullValidation.nextTokenLoss", "direction": "min"},
+      {"path": "fullValidation.top1TokenAccuracy", "direction": "max"},
+      {"path": "outputHeldout.nextTokenLoss", "direction": "min"},
+      {"path": "outputHeldout.top1TokenAccuracy", "direction": "max"},
+      {"path": "outputHeldout.taskMacroLoss", "direction": "min"},
+      {"path": "outputHeldout.worstTaskLoss", "direction": "min"}
+    ],
+    "trainingLossUsedForSelection": false,
+    "tieBreaker": "earlier optimizer step",
+    "releaseCredit": 0.0
+  },
+  "stoppingPolicy": {
+    "minimumStepForDeteriorationStop": 128,
+    "deteriorationPatienceIntervals": 3,
+    "relativeLossRegressionPercent": 2.0,
+    "hardStop": "Stop at maxSteps because another complete interval would exceed the approved repeated-data exposure ceiling; non-finite optimization fails immediately.",
+    "scalingInterpretation": "The bootstrap is data-limited after at most 1.83 exposures of 71,410 unique training transitions. Additional repetitions cannot be presented as added data or release-scale training."
+  },
+  "globalReleasePolicy": {
+    "metricsPath": "evaluation/metrics.v1.json",
+    "metricsFileSha256": "aaf6362aef491efde84a7e6e17548897872144235dcd6ff44d0376b96f1e83c7",
+    "frozenManifestPath": "evaluation/frozen-manifest.v1.json",
+    "frozenManifestFileSha256": "8145f88f1f02eb8309043b4a199b10035e5c17e3613948ce4a91f7645b766449",
+    "expectedMetricCount": 13,
+    "checkpointGenerationStatus": "unsupported-until-vfai017-local-inference-runtime",
+    "unsupportedCheckpointScore": 0.0
+  },
+  "releaseBoundary": {
+    "artifactStatus": "experimental-bootstrap-not-release",
+    "releaseApproved": false,
+    "nextDecisionGate": "VFAI-015",
+    "limitationsDocumentRequired": true
+  }
+}

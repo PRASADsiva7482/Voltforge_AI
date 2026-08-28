@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "artifactKind": "vfdlm-gen1-best-bootstrap-selection",
+  "selectionStatus": "best-experimental-bootstrap-checkpoint-not-release",
+  "runId": "vfai014-gen1-bootstrap-v1",
+  "step": 256,
+  "candidateId": "edge-wide-gqa",
+  "parameterCount": 14198464,
+  "modelConfig": {
+    "schemaVersion": 1,
+    "architectureId": "vfdlm-gen1-decoder-v1",
+    "vocabSize": 3072,
+    "maxSequenceLength": 128,
+    "dModel": 448,
+    "nLayers": 6,
+    "nHeads": 8,
+    "nKvHeads": 2,
+    "dFf": 1216,
+    "ropeTheta": 10000.0,
+    "normEpsilon": 1e-05,
+    "dropout": 0.0,
+    "tieEmbeddings": true,
+    "initializationStd": 0.02,
+    "seed": 13013
+  },
+  "checkpoint": {
+    "path": "training_runs/vfai014-gen1-bootstrap-v1/checkpoints/step-00000256",
+    "bytes": 170495086,
+    "checkpointManifestFileSha256": "16c7782c31ef56aee53a6c5cda88c0d148f9ff8e81a2e13d3d7cea79dfd48269",
+    "checkpointManifestSha256": "1bdc63ec64104439ae884f27ee352caa6900e5d4c8875d6a8de914266597458d",
+    "modelWeightsSha256": "aab2474dd3263202e5aa2497fb5cc49f654c10b8d71ef74293764281b9e4711f",
+    "trainingStateSha256": "72d6edddff1d3e44d7c653e3a5f00575df69d5afeeb621743f8bb03f2d99ae47"
+  },
+  "evidence": {
+    "reportPath": "evaluation/reports/gen1-bootstrap-heldout-v1.json",
+    "reportSha256": "8b201e041db4d9101e1bf04ca3eb219488c2961ed60cfbd95a39a90d5ac1f57d",
+    "reportFileSha256": "924eaa3579d47400db27c13d642d2a08251895ea9733215d41bd29a4dc7f4ec9",
+    "planFingerprint": "5a973b1decce0ddc1dca774e90f5ea497f7bf4c849add6cb27b93d3e1d9747e9",
+    "selectionMethod": "pareto-then-unweighted-mean-objective-rank"
+  },
+  "releaseApproved": false,
+  "nextGate": "VFAI-015",
+  "manifestSha256": "e1098d64ffe60ac5f091c5f29cba3f00e0418f945beeec243ca87dbe72fe7ce4"
+}

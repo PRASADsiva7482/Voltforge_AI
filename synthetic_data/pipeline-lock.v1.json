@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "pipelineId": "vf-verified-synthetic-pipeline-v1",
+  "pipelineVersion": "1.0.0",
+  "generator": {
+    "id": "vf-verified-synthetic-generator",
+    "version": "1.0.0"
+  },
+  "grammar": {
+    "id": "vf-verified-synthetic-grammar",
+    "version": "1.0.0",
+    "deterministicSeed": 2026082809
+  },
+  "toolchain": {
+    "arduinoCliVersion": "1.5.1",
+    "arduinoCliWindowsX64ZipSha256": "fabe42e0eb04d00e776a66178299ff95a46c623dbc260f997e58fd514853dd40",
+    "arduinoCliExecutableSha256": "1017de89179c3167e6b8a38ca6cc4091fa69a3cf97aafa7810f01423003f5571",
+    "arduinoAvrCoreVersion": "1.8.6",
+    "avrGccPackageVersion": "7.3.0-atmel3.6.1-arduino7",
+    "avrGppExecutableSha256": "098f5708a5d70e3abb6b504145b46c9320ef4b6d43b6b8f1c09b431e611d543b",
+    "avrPlatformTxtSha256": "513b2ee073e686a9e823a6a512e64a5a0ee33af3e1d7108e0fc869a11485a7aa"
+  },
+  "dependencies": [
+    {
+      "path": "synthetic_data/grammar.py",
+      "sha256": "209b061b7b3c982f1ee1758f97ba8dfec2a6d15857e50c6be85e7e7a0db54d6d"
+    },
+    {
+      "path": "synthetic_data/verifiers.py",
+      "sha256": "be78e3c405b227120d6abd06806f936229dd3a44791b4ffbcc3805a4eaee0500"
+    },
+    {
+      "path": "synthetic_data/generator.py",
+      "sha256": "a8e39cc3cff17687cf01ceebf2695b0e6b97c65ed9b527ddf38555d8db0e62a0"
+    },
+    {
+      "path": "synthetic_data/pipeline.py",
+      "sha256": "b7ee9897f495d8b535e554f975dc7666cd7addad951f0f2d1d7f2fd859bbb551"
+    },
+    {
+      "path": "tools/build_verified_synthetic_data.py",
+      "sha256": "3cf754e21e29e6fbee891fb9635a4e72cc0dcf83aa19121d424809921401ed2a"
+    },
+    {
+      "path": "electronics_corpus/catalog.v1.json",
+      "sha256": "f7a98af25f318fd6bcfa349f0c5a4f7005732e5c92c437b0ecf9eea869b4098c"
+    },
+    {
+      "path": "electronics_corpus/knowledge-record.schema.json",
+      "sha256": "f31318dbd5bec05eabe51556728e47157199c688be5586b3f79ca10ca02ee656"
+    },
+    {
+      "path": "task_schema/task-record.schema.json",
+      "sha256": "a22d38d4bdd83d6bacee896d62c46547032daa9381c0c420646988f5dc2fd0fd"
+    },
+    {
+      "path": "evaluation/leakage.py",
+      "sha256": "09615b4bdd79f0da39253a3db4f03f650e15195686bd3c73ec03ede8b1ae7754"
+    },
+    {
+      "path": "engine/pin_router.py",
+      "sha256": "05fa5d6e9e5ad0392452429080a07c537bf3f57e98c68f00fca252c551012aeb"
+    }
+  ],
+  "outputs": {
+    "shards": [
+      "synthetic_data/shards/v1/grounded-electronics.jsonl",
+      "synthetic_data/shards/v1/circuit-safety.jsonl",
+      "synthetic_data/shards/v1/firmware.jsonl",
+      "synthetic_data/shards/v1/compiler-repair.jsonl"
+    ],
+    "compileReceipts": "synthetic_data/receipts/v1/compile-receipts.jsonl",
+    "generationReport": "synthetic_data/reports/current-generation-report.json"
+  },
+  "contracts": {
+    "taskRecord": "vf-task-record-jsonl-v1",
+    "compileReceipt": "vf-compile-receipt-v1",
+    "heldOutExclusion": "evaluation.leakage.exclude_held_out_records",
+    "structuredApplicationMode": "proposal-only"
+  },
+  "lockSha256": "22d6dc8fdfd720c3b6de3f93d2735fcff036eabaf6e1ff830d804bae2cf7e898"
+}
