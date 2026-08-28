@@ -17,12 +17,13 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
+HOST = os.getenv("VOLTFORGE_AI_HOST", os.getenv("HOST", "0.0.0.0"))
+PORT = int(os.getenv("VOLTFORGE_AI_PORT", os.getenv("PORT", "2002")))
 
 def _enabled(value: str | None, default: bool = False) -> bool:
     if value is None:
         return default
     return value.strip().lower() in {"1", "true", "yes", "on"}
-
 
 def _bounded_int(name: str, default: int, minimum: int, maximum: int) -> int:
     raw = os.environ.get(name, str(default)).strip()

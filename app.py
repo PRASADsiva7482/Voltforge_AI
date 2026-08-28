@@ -5,16 +5,18 @@ This module provides backwards compatibility with legacy runners (e.g. Dockerfil
 All active routing and domain logic is modularized under /api and /engine.
 """
 
-import sys
 import os
-import uvicorn
-import config
-from main import app
+import sys
 
-# Ensure directory is on python path
+# Ensure current directory is on Python path before importing local modules
 AI_DIR = os.path.dirname(os.path.abspath(__file__))
 if AI_DIR not in sys.path:
     sys.path.insert(0, AI_DIR)
 
+import uvicorn
+import config
+from main import app
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host=config.HOST, port=config.PORT, reload=False)
+
