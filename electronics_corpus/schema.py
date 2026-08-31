@@ -14,6 +14,10 @@ from task_schema.schema import TaskContractError, validate_json_schema_document
 
 
 CORPUS_CONTRACT_VERSION = "1.0.0"
+# The wire/schema contract remains compatible while each curated release gets
+# its own immutable source revision.  VFAI-FU-001 is the first expanded board
+# coverage release.
+CORPUS_SOURCE_REVISION = "1.1.0"
 CORPUS_SCHEMA_VERSION = 1
 CORPUS_ROOT = Path(__file__).resolve().parent
 KNOWLEDGE_SCHEMA_PATH = CORPUS_ROOT / "knowledge-record.schema.json"
@@ -84,7 +88,7 @@ class Provenance(ContractModel):
     sourceId: Literal["vf-src-curated-electronics-corpus-v1"] = (
         "vf-src-curated-electronics-corpus-v1"
     )
-    sourceRevision: Literal["1.0.0"] = "1.0.0"
+    sourceRevision: str = Field(pattern=ID_PATTERN)
     curator: Literal["VoltForge"] = "VoltForge"
     evidence: list[EvidenceReference] = Field(min_length=1, max_length=20)
 

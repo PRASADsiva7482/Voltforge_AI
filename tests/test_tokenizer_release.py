@@ -9,13 +9,13 @@ import pytest
 
 from model.tokenizer import (
     BASE_VOCAB_SIZE,
-    DEFAULT_TOKENIZER_RELEASE_PATH,
     SPECIAL_TOKEN_TO_ID,
     TOKENIZER_ALGORITHM,
     TokenizerContractError,
     VoltForgeTokenizer,
 )
 from tokenizer_training.pipeline import (
+    ARTIFACT_ROOT,
     PROBES,
     TARGET_VOCAB_SIZE,
     check_tokenizer_release,
@@ -24,7 +24,7 @@ from tokenizer_training.pipeline import (
 
 def released_tokenizer() -> VoltForgeTokenizer:
     tokenizer = VoltForgeTokenizer(TARGET_VOCAB_SIZE)
-    tokenizer.load(DEFAULT_TOKENIZER_RELEASE_PATH)
+    tokenizer.load(ARTIFACT_ROOT)
     return tokenizer
 
 
@@ -109,10 +109,10 @@ def test_release_retrains_exactly_and_beats_legacy_with_lower_vocab_cost() -> No
 
 def test_manifest_binds_vocab_merges_config_report_lineage_and_trainer() -> None:
     manifest = json.loads(
-        (DEFAULT_TOKENIZER_RELEASE_PATH / "tokenizer_manifest.json").read_text(encoding="utf-8")
+        (ARTIFACT_ROOT / "tokenizer_manifest.json").read_text(encoding="utf-8")
     )
     config = json.loads(
-        (DEFAULT_TOKENIZER_RELEASE_PATH / "tokenizer_config.json").read_text(encoding="utf-8")
+        (ARTIFACT_ROOT / "tokenizer_config.json").read_text(encoding="utf-8")
     )
     assert manifest["releaseStatus"] == "approved"
     assert manifest["vocabSize"] == TARGET_VOCAB_SIZE
@@ -128,7 +128,7 @@ def test_manifest_binds_vocab_merges_config_report_lineage_and_trainer() -> None
 
 def test_tampered_tokenizer_file_fails_closed(tmp_path: Path) -> None:
     copied = tmp_path / "tokenizer"
-    shutil.copytree(DEFAULT_TOKENIZER_RELEASE_PATH, copied)
+    shutil.copytree(ARTIFACT_ROOT, copied)
     vocab_path = copied / "vocab.json"
     vocab = json.loads(vocab_path.read_text(encoding="utf-8"))
     changed = deepcopy(vocab)

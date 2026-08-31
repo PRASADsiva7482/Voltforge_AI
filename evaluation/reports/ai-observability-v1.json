@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai031-ai-observability-v1",
+  "generatedAtUtc": "2026-08-31T08:07:59.981173Z",
+  "checks": {
+    "rawContentNeverRetained": true,
+    "generationPathsDistinguished": true,
+    "streamFirstTokenAndCancellationRecorded": true,
+    "queueAndResourceMetricsBounded": true,
+    "alertsCoverRequiredFailures": true
+  },
+  "observabilitySnapshot": {
+    "schemaVersion": "vfai031-observability-v1",
+    "uptimeSeconds": 0.001,
+    "throughputPerMinute": 60000.0,
+    "requests": {
+      "started": 1,
+      "completed": 1,
+      "active": 0,
+      "peakActive": 1,
+      "outcomes": {
+        "success": 1
+      },
+      "latencyMs": {
+        "count": 1,
+        "sumMs": 20.0,
+        "p50Ms": 20.0,
+        "p95Ms": 20.0,
+        "maxMs": 20.0
+      },
+      "queueTimeMs": {
+        "count": 1,
+        "sumMs": 0.0,
+        "p50Ms": 0.0,
+        "p95Ms": 0.0,
+        "maxMs": 0.0
+      },
+      "byRoute": {
+        "unknown": {
+          "count": 1,
+          "outcomes": {
+            "success": 1
+          },
+          "latencyMs": {
+            "count": 1,
+            "sumMs": 20.0,
+            "p50Ms": 20.0,
+            "p95Ms": 20.0,
+            "maxMs": 20.0
+          }
+        }
+      }
+    },
+    "stages": {},
+    "generation": {
+      "paths": {
+        "deterministic-fallback": 1,
+        "neural": 1,
+        "tool-grounded": 1
+      },
+      "modes": {
+        "deterministic-fallback": 2,
+        "neural": 1
+      },
+      "fallbackReasons": {
+        "none": 2
+      },
+      "artifactVersions": {
+        "deterministic-tools-v1": 2,
+        "vfdlm-g1-edge-v0.1.0": 1
+      },
+      "neuralAttempts": 2,
+      "toolGroundedResponses": 1
+    },
+    "streams": {
+      "started": 2,
+      "completed": 2,
+      "active": 0,
+      "outcomes": {
+        "cancelled": 1,
+        "success": 1
+      },
+      "latencyMs": {
+        "count": 2,
+        "sumMs": 0.0,
+        "p50Ms": 0.0,
+        "p95Ms": 0.0,
+        "maxMs": 0.0
+      },
+      "firstTokenLatencyMs": {
+        "count": 1,
+        "sumMs": 0.0,
+        "p50Ms": 0.0,
+        "p95Ms": 0.0,
+        "maxMs": 0.0
+      },
+      "eventCount": 4,
+      "eventBytes": 500,
+      "deltaCount": 1,
+      "outputCharacters": 42
+    },
+    "tokens": {
+      "inputObserved": 2,
+      "inputCount": 30,
+      "outputObserved": 1,
+      "outputCount": 9,
+      "estimated": false
+    },
+    "retrieval": {
+      "attempts": 2,
+      "statuses": {
+        "complete": 1,
+        "degraded": 1
+      },
+      "cacheHits": 0,
+      "failures": {
+        "PROVIDER_REQUEST_FAILED": 1
+      },
+      "latencyMs": {
+        "count": 2,
+        "sumMs": 5.0,
+        "p50Ms": 2.0,
+        "p95Ms": 2.0,
+        "maxMs": 3.0
+      }
+    },
+    "model": {
+      "loadAttempts": 1,
+      "loadSuccesses": 0,
+      "loadFailures": {
+        "other": 1
+      }
+    },
+    "resources": {
+      "sampleCount": 6,
+      "latestPythonHeapBytes": 392487,
+      "peakPythonHeapBytes": 412647,
+      "measurement": "python-traced-heap"
+    },
+    "alerts": {
+      "active": [
+        "modelLoadFailure",
+        "latencySaturation",
+        "repeatedFallback",
+        "retrievalErrors"
+      ],
+      "state": {
+        "modelLoadFailure": true,
+        "latencySaturation": true,
+        "resourceSaturation": false,
+        "repeatedFallback": true,
+        "retrievalErrors": true
+      },
+      "thresholds": {
+        "latencyAlertMs": 5,
+        "activeRequestAlert": 1,
+        "fallbackAlertCount": 2,
+        "retrievalErrorAlertCount": 1
+      }
+    },
+    "rawPromptStored": false,
+    "rawProjectContentStored": false,
+    "rawModelOutputStored": false
+  },
+  "telemetryContract": {
+    "rawPromptStored": false,
+    "rawProjectContentStored": false,
+    "rawModelOutputStored": false,
+    "requestIdLogging": "safe-bounded-only",
+    "latencyWindowSize": 256
+  },
+  "reportSha256": "95889b6983a60f47b93bf78706905b3952f54fe05fcabda59ca2cc2b7ce920a8"
+}

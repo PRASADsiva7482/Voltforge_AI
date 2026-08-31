@@ -181,19 +181,42 @@ def runtime_request_to_task_record(
     tool_events: Sequence[Mapping[str, Any]] = (),
     project_payload: Mapping[str, Any] | None = None,
     system_text: str | None = None,
+    source_project_revision: str | None = None,
+    revision_source: str | None = None,
+    record_identity: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    revision, revision_source = _runtime_revision(request)
+    if (source_project_revision is None) != (revision_source is None):
+        raise ValueError("source_project_revision and revision_source must be supplied together")
+    if source_project_revision is None:
+        revision, resolved_revision_source = _runtime_revision(request)
+    else:
+        revision = str(source_project_revision)
+        resolved_revision_source = str(revision_source)
+        if resolved_revision_source not in {
+            "client",
+            "derived-snapshot",
+            "synthetic",
+            "evaluation",
+        }:
+            raise ValueError("revision_source is unsupported")
     evidence = []
     for index, event in enumerate(tool_events):
         name = str(event.get("name") or "unknown-tool")
-        authority = "client-reported" if event.get("status") == "reported" else "deterministic"
+        declared_authority = event.get("authority")
+        authority = (
+            str(declared_authority)
+            if declared_authority in {"deterministic", "client-reported", "retrieved"}
+            else "client-reported"
+            if event.get("status") == "reported"
+            else "deterministic"
+        )
         payload = event.get("evidence") if isinstance(event.get("evidence"), dict) else {}
         evidence.append(
             {
                 "type": "tool-evidence",
                 "evidenceId": f"evidence:{index}:{_digest(event)[:20]}",
                 "toolName": _bounded_identifier("tool", name),
-                "toolVersion": "1.0.0",
+                "toolVersion": str(event.get("version") or "1.0.0").strip()[:80],
                 "status": event.get("status") if event.get("status") in {"complete", "failed", "reported", "unavailable"} else "unavailable",
                 "authority": authority,
                 "sourceProjectRevision": revision,
@@ -201,7 +224,13 @@ def runtime_request_to_task_record(
                 "payload": payload,
             }
         )
-    snapshot = request.model_dump(mode="json") if hasattr(request, "model_dump") else dict(request)
+    snapshot = (
+        dict(record_identity)
+        if record_identity is not None
+        else request.model_dump(mode="json")
+        if hasattr(request, "model_dump")
+        else dict(request)
+    )
     record = {
         "schemaVersion": 1,
         "contractVersion": CONTRACT_VERSION,
@@ -224,7 +253,7 @@ def runtime_request_to_task_record(
                 "type": "project-context",
                 "projectId": str(getattr(request, "projectId", None) or "unsaved-project"),
                 "sourceProjectRevision": revision,
-                "revisionSource": revision_source,
+                "revisionSource": resolved_revision_source,
                 "boardType": getattr(request, "boardType", None),
                 "payload": {
                     **dict(project_payload or {}),
@@ -258,17 +287,31 @@ def runtime_response_to_task_record(
             continue
         source_name = str(citation.get("source") or citation.get("title") or "runtime-source")
         snippet = str(citation.get("snippet") or citation.get("text") or "")
+        declared_citation_id = str(citation.get("citationId") or "")
+        citation_id = (
+            declared_citation_id
+            if re.fullmatch(r"[a-z0-9][a-z0-9._:-]{2,159}", declared_citation_id)
+            else f"citation:{index}:{_digest(citation)[:16]}"
+        )
+        declared_content_sha = str(citation.get("contentSha256") or "")
         citations.append(
             {
                 "type": "citation",
-                "citationId": f"citation:{index}:{_digest(citation)[:16]}",
-                "sourceId": _bounded_identifier("source", source_name),
-                "sourceRevision": _bounded_identifier(
-                    "source-revision", citation.get("revision") or _digest(citation)
+                "citationId": citation_id,
+                "sourceId": _bounded_identifier(
+                    "source", citation.get("sourceId") or source_name
                 ),
-                "title": source_name,
+                "sourceRevision": _bounded_identifier(
+                    "source-revision",
+                    citation.get("sourceRevision")
+                    or citation.get("revision")
+                    or _digest(citation),
+                ),
+                "title": str(citation.get("title") or source_name)[:500],
                 "locator": citation.get("url") or citation.get("locator"),
-                "contentSha256": hashlib.sha256(snippet.encode("utf-8")).hexdigest()
+                "contentSha256": declared_content_sha
+                if re.fullmatch(r"[a-f0-9]{64}", declared_content_sha)
+                else hashlib.sha256(snippet.encode("utf-8")).hexdigest()
                 if snippet
                 else None,
                 "evidenceRefs": [
@@ -279,16 +322,42 @@ def runtime_response_to_task_record(
             }
         )
     confidence = float(metadata.get("confidence") or 0.0)
+    grounding = metadata.get("grounding") if isinstance(metadata.get("grounding"), Mapping) else {}
+    used_evidence_refs = sorted(
+        value
+        for value in grounding.get("usedEvidenceRefs", [])
+        if value in evidence_ids
+    )
     output: dict[str, Any] = {
         "assistantText": {
             "type": "assistant-text",
             "text": response_text,
-            "evidenceRefs": sorted(evidence_ids),
+            "evidenceRefs": used_evidence_refs,
         },
         "structuredActions": actions,
         "citations": citations,
     }
-    if confidence < 0.6:
+    grounding_uncertainty = (
+        grounding.get("uncertainty")
+        if isinstance(grounding.get("uncertainty"), Mapping)
+        else {}
+    )
+    if grounding.get("status") in {"uncertain", "conflicted"}:
+        output["uncertainty"] = {
+            "type": "uncertainty",
+            "level": "high"
+            if grounding.get("status") == "conflicted"
+            else "medium",
+            "reason": str(
+                grounding_uncertainty.get("reasonCode")
+                or "The response contains evidence uncertainty."
+            )[:4000],
+            "missingEvidence": [
+                str(value)[:160]
+                for value in grounding_uncertainty.get("missingEvidence", [])[:100]
+            ],
+        }
+    elif confidence < 0.6:
         output["uncertainty"] = {
             "type": "uncertainty",
             "level": "high" if confidence < 0.35 else "medium",

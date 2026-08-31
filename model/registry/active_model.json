@@ -1,5 +1,7 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
+  "registryId": "vfdlm-local-registry-v1",
+  "revision": 3,
   "identityContract": {
     "productName": "VoltForge AI",
     "familyName": "VoltForge Domain Language Model",
@@ -7,8 +9,67 @@
     "artifactIdPattern": "vfdlm-g{generation}-{edge|core|server}-v{semanticVersion}"
   },
   "activeArtifactId": null,
+  "previousActiveArtifactId": null,
   "releaseStatus": "none",
   "state": "no-approved-artifact",
-  "reason": "No current VoltForge model artifact has passed the approved data, training, evaluation, compatibility, and release gates.",
-  "artifacts": []
+  "reason": "Experimental artifacts are cataloged, but no release-approved VoltForge neural artifact is active.",
+  "artifacts": [
+    {
+      "artifactId": "vfdlm-g1-edge-v0.1.0-bootstrap",
+      "releaseStatus": "experimental",
+      "activationEligible": false,
+      "runtime": "pytorch-gen1-v1",
+      "root": "artifacts/vfdlm-g1-edge-v0.1.0-bootstrap",
+      "manifestPath": "artifact-manifest.json",
+      "manifestSha256": "93508d7ecbbdd482982794ac9be8ffcf884a736d406f9a89616d6a59cc76cf61",
+      "manifestFileSha256": "f0a546ada7beffe2ce9e7ae6262c99a9b0073ed0fa02362508283e1c678d4b75",
+      "parameterCount": 14198464,
+      "contextLength": 128,
+      "quantization": "fp32",
+      "packageBytes": 57292019
+    },
+    {
+      "artifactId": "vfdlm-g1-edge-v0.1.1-runtime",
+      "releaseStatus": "experimental",
+      "activationEligible": false,
+      "runtime": "pytorch-gen1-v1",
+      "root": "artifacts/vfdlm-g1-edge-v0.1.1-runtime",
+      "manifestPath": "artifact-manifest.json",
+      "manifestSha256": "6e62cda425423bc64b7f12aa6c0965261c9fc9f162bc5e2f99b76531cdaa1efb",
+      "manifestFileSha256": "66fb6e8c6a2993c73855e4044f7e2410c017996faec2d7deb3c632b88d690432",
+      "parameterCount": 14198464,
+      "contextLength": 128,
+      "quantization": "fp32",
+      "packageBytes": 57292987
+    },
+    {
+      "artifactId": "vfdlm-g1-edge-v0.1.2-optimized",
+      "releaseStatus": "experimental",
+      "activationEligible": false,
+      "runtime": "pytorch-gen1-v1",
+      "root": "artifacts/vfdlm-g1-edge-v0.1.2-optimized",
+      "manifestPath": "artifact-manifest.json",
+      "manifestSha256": "fc97eae9340d725d0e6511524e8e2c81b199eef01d35d774ecf185df39288c77",
+      "manifestFileSha256": "8856829cdaaab3799f468529c65b131498f7fc81a14b7b19c8ae3cdd2fec5e19",
+      "parameterCount": 14198464,
+      "contextLength": 128,
+      "quantization": "fp32",
+      "packageBytes": 57340527
+    }
+  ],
+  "lastTransaction": {
+    "transactionId": "registry-r3-register",
+    "type": "register",
+    "artifactId": "vfdlm-g1-edge-v0.1.2-optimized",
+    "fromArtifactId": null,
+    "toArtifactId": null,
+    "createdAtUtc": "2026-08-29T01:44:37.224994Z"
+  },
+  "registrySha256": "3188ec3f52de6904094fff67f9b38ab089ae879b44eefd8f405654ad78289e90",
+  "signature": {
+    "algorithm": "Ed25519",
+    "keyId": "vf-local-registry-dev-2026-08",
+    "publicKeySha256": "a7e493f3f8b8f5fa91be2dc0d07e7b580e7bd7261122f3bd2665e81a2b7470c9",
+    "signatureBase64": "L6hzAxSN3Ts/1syLVVda7XuhLhP31+YncKW1s8EpfSbx8c2l2Im4HGH9yCqFNXy8owCKDMF7BXD56YlUlrvUAA=="
+  }
 }

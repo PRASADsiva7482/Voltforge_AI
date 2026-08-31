@@ -1,32 +1,39 @@
 {
   "schemaVersion": 1,
-  "reportId": "vfai-008-current-curated-corpus",
-  "corpusVersion": "1.0.0",
-  "asOfDate": "2026-08-28",
-  "recordCount": 49,
+  "reportId": "vfai-fu-001-current-curated-corpus",
+  "corpusVersion": "1.1.0",
+  "asOfDate": "2026-08-31",
+  "recordCount": 61,
   "recordTypeCounts": {
-    "board": 10,
-    "pin-map": 8,
+    "board": 16,
+    "pin-map": 11,
     "component": 4,
-    "wiring-recipe": 8,
+    "wiring-recipe": 11,
     "firmware-api": 4,
     "compiler-diagnostic": 4,
     "simulation-behavior": 4,
     "safety-constraint": 7
   },
-  "supportedRecordCount": 44,
-  "variantRequiredRecordCount": 4,
+  "supportedRecordCount": 53,
+  "variantRequiredRecordCount": 7,
   "referenceOnlyRecordCount": 1,
-  "evidenceReferenceCount": 57,
+  "evidenceReferenceCount": 72,
   "publisherCounts": {
-    "Adafruit Industries": 11,
-    "Arduino": 10,
+    "Adafruit Industries": 14,
+    "Arduino": 16,
     "Espressif Systems": 4,
     "Raspberry": 2,
     "Raspberry Pi Ltd": 3,
-    "VoltForge": 27
+    "VoltForge": 33
   },
   "conflictGroups": [
+    {
+      "conflictGroup": "conflict.board.arduino-nano",
+      "recordIds": [
+        "vf-knowledge-v1-board.arduino.nano-classic-atmega328p",
+        "vf-knowledge-v1-board.arduino.nano-every-atmega4809"
+      ]
+    },
     {
       "conflictGroup": "conflict.board.arduino-uno",
       "recordIds": [

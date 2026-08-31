@@ -10,13 +10,13 @@
     },
     "bootstrapScorecard": {
       "path": "evaluation/reports/gen1-bootstrap-heldout-v1.json",
-      "fileSha256": "924eaa3579d47400db27c13d642d2a08251895ea9733215d41bd29a4dc7f4ec9",
-      "reportSha256": "8b201e041db4d9101e1bf04ca3eb219488c2961ed60cfbd95a39a90d5ac1f57d"
+      "fileSha256": "4c5ce71d7190c1ef70c8eff7db1887b279497518d5b6526ec42d9fe5664c2234",
+      "reportSha256": "a0af9817ef32ddbfdff385e7f5d74958ec75d3c5c0d18528e7c05045065731e5"
     },
     "bestBootstrapConfig": {
       "path": "model/gen1/configs/gen1-bootstrap-best-v1.json",
-      "fileSha256": "90a10f65b3feca8122ff440e8c302c55671f6cf61216f6a68e0317f8f282a098",
-      "manifestSha256": "e1098d64ffe60ac5f091c5f29cba3f00e0418f945beeec243ca87dbe72fe7ce4"
+      "fileSha256": "4cbb8272ccab82585903306e9789dfe7c3e1b87aee0aff9b6d301eda5de61c92",
+      "manifestSha256": "f4bbac9be2fa10a2c05f3b7d8871aacbc6765d85c0ebaebcb8fdef979ae90ba4"
     },
     "globalMetricPolicy": {
       "path": "evaluation/metrics.v1.json",

@@ -18,7 +18,7 @@ active VoltForge assistant model. Its release state is `releaseApproved=false`.
 
 - Top-1 token accuracy is only 1.939% on the complete validation stream and
   2.086% on output-only targets. This is far below usable generation quality.
-- Training contains only 138 records and 71,410 unique next-token transitions.
+- Training contains only 138 records and 71,377 unique next-token transitions.
   The run stopped after 129,866 exposures (1.8186 corpus passes); further
   repetition is not additional knowledge.
 - Validation contains only 16 records across nine synthetic task strata. It

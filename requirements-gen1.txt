@@ -1,3 +1,4 @@
 # VFAI-011 native model framework. On Windows install this file from the
 # official CPU index; see model/gen1/README.md.
 torch==2.8.0
+cryptography==50.0.1

@@ -2,6 +2,7 @@
 
 from .config import Gen1TrainingConfig, TrainingConfigError
 from .data import (
+    CURRENT_TRAINING_TOKENIZER_RELEASE_PATH,
     PackedBatchStream,
     PackedCorpus,
     TrainingDataContractError,
@@ -11,6 +12,7 @@ from .data import (
 from .trainer import Gen1Trainer, TrainingCheckpointError, TrainingRunError
 
 __all__ = [
+    "CURRENT_TRAINING_TOKENIZER_RELEASE_PATH",
     "Gen1Trainer",
     "Gen1TrainingConfig",
     "PackedBatchStream",

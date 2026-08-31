@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai030-ai-security-threat-model-v1",
+  "generatedOn": "2026-08-31",
+  "contractVersion": "1.0.0",
+  "checkCount": 15,
+  "passedCheckCount": 15,
+  "checks": {
+    "allPythonRoutesHaveServiceDependency": true,
+    "productionTokenFailsClosed": true,
+    "productionOriginsAndRuntimeScopeAreBounded": true,
+    "productionDocsAreDisabled": true,
+    "artifactIntegrityAndSafeLoading": true,
+    "retrievalBoundaryIsFixedAndUntrusted": true,
+    "memoryIsAuthenticatedScopedAndBounded": true,
+    "feedbackDoesNotPersistRawContent": true,
+    "pythonErrorsAreContentFree": true,
+    "springBrowserAndServiceBoundaries": true,
+    "springUpstreamErrorsAreContentFree": true,
+    "requestAndStreamLimitsRemainPresent": true,
+    "adversarialSecurityTestsPresent": true,
+    "threatModelDocumentsOwnersAndResiduals": true,
+    "noThirdPartyGenerationProvider": true
+  },
+  "controls": {
+    "serviceAuthentication": "production-token-required",
+    "artifactLoading": "signed-checksum-verified-safe-formats",
+    "memory": "authenticated-bounded-redacted-project-session-scope",
+    "retrieval": "fixed-provider-no-ssrf-no-redirect-no-training",
+    "proposalMutation": "revision-guarded-explicit-review-only"
+  },
+  "residualOwners": {
+    "VFAI-031": "privacy-safe telemetry and capacity/rate visibility",
+    "VFAI-032": "cross-repository security pipeline",
+    "VFAI-033": "release, rollback, signing-key, and token rotation",
+    "VFAI-034": "governed feedback and retraining admission",
+    "VFAI-035": "deployment and incident runbook"
+  },
+  "networkAccessed": false,
+  "rawPromptStored": false,
+  "rawProjectContextStored": false,
+  "rawModelOutputStored": false,
+  "thirdPartyGenerationProvider": false,
+  "threatModelSha256": "b9db0574e2b9e74a7984df679750d9ef47b975f7a1fbc616c6fe549546efaed0",
+  "evaluatorSha256": "cd91c11bdcc633f2130c092e2b7e724e6ab9449f80b6cd1095a359845a201712",
+  "reportSha256": "c03b3af7978690924a8bd0317e250bf5fc16a287df2b0dc31d3c574cefe6ee35"
+}

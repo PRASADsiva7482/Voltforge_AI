@@ -73,3 +73,27 @@ Source approval procedure:
 To revise a source, create a new source ID or revision, update its checksum, and
 regenerate dependent shards. Do not overwrite lineage and call it the same
 immutable revision.
+
+## Runtime retrieval
+
+VFAI-022 permits runtime indexing only after `require_approved_source` accepts
+the exact source for `runtime-retrieval`. The v1 local index therefore consumes
+only `vf-src-curated-electronics-corpus-v1`; quarantined datasets, synthetic
+training shards without retrieval approval, private projects, and live web
+results are excluded. Source revision, registry-entry digest, catalog/content
+hashes, and builder hash are pinned into the index. A source removal or revision
+invalidates the index and requires a governed rebuild before any result can be
+served.
+
+VFAI-023 internet evidence is ephemeral untrusted runtime context, not a
+registered corpus source. It cannot enter a training shard unless a separate
+provenance and licensing review explicitly approves that exact source and
+revision for model training.
+
+VFAI-025 user memory is also runtime-only and is categorically excluded from
+training and retrieval corpora. Enabling project memory is consent only to
+store bounded user-approved entries and redacted recent-turn summaries; it is
+not training consent. Any future training use requires a separate explicit
+workflow, provenance record, removable source identity, and new governance
+approval. The current memory policy and schema hard-code
+`trainingUseAllowed: false`.

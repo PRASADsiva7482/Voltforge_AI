@@ -1,4 +1,5 @@
 import unittest
+import uuid
 from fastapi.testclient import TestClient
 from main import app
 
@@ -13,6 +14,17 @@ class TestFastAPIEndpoints(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         data = response.json()
         self.assertEqual(data["status"], "UP")
+
+    def test_hardware_coverage_endpoint(self):
+        response = self.client.get("/voltForge-ai/api/v1/model/hardware-coverage")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["reportId"], "vfai-fu-001-ui-hardware-coverage")
+        self.assertEqual(data["entryCount"], 49)
+        self.assertEqual(data["summary"]["verified"], 8)
+        entries = {entry["boardType"]: entry for entry in data["entries"]}
+        self.assertEqual(entries["ARDUINO_NANO_EVERY"]["status"], "verified")
+        self.assertEqual(entries["ARDUINO_NANO"]["status"], "variant-required")
 
     def test_chat_endpoint(self):
         payload = {
@@ -63,15 +75,28 @@ class TestFastAPIEndpoints(unittest.TestCase):
 
     def test_feedback_endpoint(self):
         payload = {
-            "userMessage": "Great tool",
-            "aiResponse": "Thank you",
+            "requestId": f"request-feedback-api-{uuid.uuid4().hex}",
+            "responseRecordId": "vf-task-v1-0123456789abcdef01234567",
+            "projectId": "project-feedback-api",
+            "projectRevision": "client:feedback-api-revision",
+            "artifactId": "vfdlm-g1-edge-v1.0.0-test",
+            "feedbackKind": "useful",
             "rating": 5,
-            "comments": "Very fast"
+            "evidence": "The response explained the circuit boundary clearly.",
+            "evidenceApproved": True,
         }
-        response = self.client.post("/voltForge-ai/api/v1/model/feedback", json=payload)
-        self.assertEqual(response.status_code, 200)
+        response = self.client.post(
+            "/voltForge-ai/api/v1/model/feedback",
+            json=payload,
+            headers={
+                "X-Voltforge-User-Id": "user-feedback-api",
+                "X-Voltforge-Project-Id": "project-feedback-api",
+            },
+        )
+        self.assertEqual(response.status_code, 202)
         data = response.json()
-        self.assertEqual(data["status"], "SUCCESS")
+        self.assertEqual(data["status"], "PENDING_REVIEW")
+        self.assertEqual(data["rawContentStored"], False)
 
     def test_simulation_stream_endpoint(self):
         payload = {
@@ -181,8 +206,6 @@ class TestFastAPIEndpoints(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
-
 
 
 

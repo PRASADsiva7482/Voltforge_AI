@@ -1,35 +1,35 @@
 {
   "schemaVersion": 1,
-  "shardId": "vf-shard-5785d06938bb19812ee6",
+  "shardId": "vf-shard-7fef589dc3b393001d9a",
   "path": "synthetic_data/shards/v1/grounded-electronics.jsonl",
   "recordFormat": "vf-task-record-jsonl-v1",
-  "recordCount": 80,
-  "sizeBytes": 222794,
-  "sha256": "5785d06938bb19812ee657e6dfabc4b4eb6bcdd76cb5d42fde34c49265bdbd6a",
+  "recordCount": 110,
+  "sizeBytes": 305885,
+  "sha256": "7fef589dc3b393001d9a5f2221551eb9cb607a4e4ba392bf7edfcd6666e78c04",
   "status": "approved",
   "eligibleUses": [
     "training"
   ],
   "reason": null,
-  "createdAtUtc": "2026-08-28T07:19:18.607039+00:00",
+  "createdAtUtc": "2026-08-31T07:01:06.296504+00:00",
   "sourceRegistry": {
     "registryId": "voltforge-source-registry",
     "version": "1.2.0",
-    "sha256": "aa4eb56780317fb94857a4f05d420a6de84cc6420e0ee83a6c27d636aadbfcde"
+    "sha256": "66d939d62f0909ae7a21aaecd6a84078ea597e69e0ef8183c40d4b35ec902786"
   },
   "sources": [
     {
       "sourceId": "vf-src-curated-electronics-corpus-v1",
-      "revision": "1.0.0",
-      "checksum": "cf97ddb1066c6b5461d61be1532aade1baa0cde70008a682605a253c227a33c2",
+      "revision": "1.1.0",
+      "checksum": "5a3080d1f22b927942492a19296405553a050b8daf5458234eac603be1343089",
       "licenseStatus": "approved",
       "privacyClass": "project-authored-non-user-data",
       "approvalStatus": "approved"
     },
     {
       "sourceId": "vf-src-verified-synthetic-pipeline-v1",
-      "revision": "1.0.0",
-      "checksum": "d8b493960ffa84fef3d3fb170af5481d22a02d994884d4b068c12a4d9ba3f71d",
+      "revision": "1.2.0",
+      "checksum": "b8eb81773137fec88eb42cd2c5351d951e8589c193af0560fb91a370215a1a3c",
       "licenseStatus": "approved",
       "privacyClass": "project-authored-non-user-data",
       "approvalStatus": "approved"
@@ -37,9 +37,9 @@
   ],
   "producer": {
     "id": "vf-verified-synthetic-pipeline-v1",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "path": "synthetic_data/pipeline-lock.v1.json",
-    "sha256": "d8b493960ffa84fef3d3fb170af5481d22a02d994884d4b068c12a4d9ba3f71d"
+    "sha256": "b8eb81773137fec88eb42cd2c5351d951e8589c193af0560fb91a370215a1a3c"
   },
   "preprocessing": {
     "id": "vf-held-out-exclusion",
@@ -84,5 +84,5 @@
       }
     ]
   },
-  "manifestSha256": "553412183061f2d8fbb7ff1e1a175eb9ce9e20d926aaecbd07e6965653411d68"
+  "manifestSha256": "ed0ff97d3de0ea8681ac1ed7e4b88b9dca87ff8bb754acaea5592155e7c62c6b"
 }

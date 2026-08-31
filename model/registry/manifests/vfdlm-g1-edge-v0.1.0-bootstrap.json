@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 2,
+  "artifactKind": "vfdlm-gen1-local-model-package",
+  "artifactId": "vfdlm-g1-edge-v0.1.0-bootstrap",
+  "createdAtUtc": "2026-08-28T17:35:58.962341Z",
+  "immutable": true,
+  "runtime": "pytorch-gen1-v1",
+  "compatibilityPath": "compatibility.json",
+  "generationPolicyPath": "generation-policy.json",
+  "provenancePath": "provenance.json",
+  "packageSha256": "205d0cd716bfa6a290781cea3617eec780d21547764cb4df8912a5c1f24119d2",
+  "model": {
+    "architectureId": "vfdlm-gen1-decoder-v1",
+    "checkpointFormat": "pytorch-weights-only-state-dict-v1",
+    "parameterCount": 14198464,
+    "trainableParameterCount": 14198464,
+    "nonTrainableParameterCount": 0,
+    "contextLength": 128,
+    "vocabSize": 3072,
+    "quantization": "fp32",
+    "weightDtype": "float32",
+    "configPath": "model/config.json",
+    "weightsPath": "model/weights.pt"
+  },
+  "tokenizer": {
+    "tokenizerId": "vfdlm-byte-bpe",
+    "version": "1.0.0",
+    "contractVersion": "1.0.0",
+    "releaseStatus": "approved",
+    "vocabSize": 3072,
+    "manifestPath": "tokenizer/tokenizer-manifest.json",
+    "artifactSha256": "5c9e6f4e1825eba7fcccc790bc95346c3f777bede4e92a894224d4db30ec7d64"
+  },
+  "evaluation": {
+    "reportPath": "evaluation/gen1-bootstrap-heldout-v1.json",
+    "reportSha256": "8b201e041db4d9101e1bf04ca3eb219488c2961ed60cfbd95a39a90d5ac1f57d",
+    "releaseApproved": false,
+    "globalMetricsPassing": 0,
+    "globalMetricsRequired": 13
+  },
+  "releaseState": {
+    "releaseStatus": "experimental",
+    "activationEligible": false,
+    "servingAllowed": false,
+    "decision": "retain-experimental-inactive",
+    "blockingReason": "Insufficient approved data, failed global model metrics, and no approved Gen1 generation runtime."
+  },
+  "files": [
+    {
+      "path": "compatibility.json",
+      "role": "runtime-compatibility",
+      "bytes": 756,
+      "sha256": "fab1e47cc48d5d8e6d9a43dbba4b495397846d570b82a60adb5d85dfa1826cc0"
+    },
+    {
+      "path": "evaluation/gen1-bootstrap-heldout-v1.json",
+      "role": "model-evaluation",
+      "bytes": 68139,
+      "sha256": "924eaa3579d47400db27c13d642d2a08251895ea9733215d41bd29a4dc7f4ec9"
+    },
+    {
+      "path": "evaluation/gen1-scale-decision-v1.json",
+      "role": "scale-decision",
+      "bytes": 13791,
+      "sha256": "d01052f688b8fc592b3176861013b9635bcf1a8d272c6ce51582932d6e4943c6"
+    },
+    {
+      "path": "generation-policy.json",
+      "role": "generation-policy",
+      "bytes": 608,
+      "sha256": "3ee6f8d63ec1f27761ac0053a9690ce871597af0cba9956f1a99340453b46735"
+    },
+    {
+      "path": "model/checkpoint-manifest.json",
+      "role": "checkpoint-model-manifest",
+      "bytes": 632,
+      "sha256": "9654300f7405c09f0d913d35937fe7232f6d65494e909374c850b7a0fa5744aa"
+    },
+    {
+      "path": "model/config.json",
+      "role": "model-config",
+      "bytes": 276,
+      "sha256": "57f029670823c4dbd4817af42e0c29ae4c128cfbe10f50f0725892982e98c1ca"
+    },
+    {
+      "path": "model/weights.pt",
+      "role": "model-weights",
+      "bytes": 56811323,
+      "sha256": "aab2474dd3263202e5aa2497fb5cc49f654c10b8d71ef74293764281b9e4711f"
+    },
+    {
+      "path": "provenance/gen1-bootstrap-best-v1.json",
+      "role": "checkpoint-selection",
+      "bytes": 1799,
+      "sha256": "90a10f65b3feca8122ff440e8c302c55671f6cf61216f6a68e0317f8f282a098"
+    },
+    {
+      "path": "provenance/gen1-scale-policy-v1.json",
+      "role": "decision-policy",
+      "bytes": 4266,
+      "sha256": "9c0343cc565f5699b4c48d91434db7462be0bc6245400a977275d7db5bb73397"
+    },
+    {
+      "path": "provenance.json",
+      "role": "package-provenance",
+      "bytes": 2668,
+      "sha256": "d279f6612715c8f5893476f2edb51e706b808d23273c9088fed0ef0c1b0cfdf3"
+    },
+    {
+      "path": "tokenizer/evaluation-report.json",
+      "role": "tokenizer-evaluation",
+      "bytes": 7986,
+      "sha256": "dd649d94e7e2f2654d16c9004ff11c1cb25597917a2f2b4103489fe8974dcba0"
+    },
+    {
+      "path": "tokenizer/merges.json",
+      "role": "tokenizer-merges",
+      "bytes": 239768,
+      "sha256": "3921d8cdf957f2218160c6fdb7e00da6c4cbd47a0d99fc4f18065fd2225b95a4"
+    },
+    {
+      "path": "tokenizer/tokenizer-config.json",
+      "role": "tokenizer-config",
+      "bytes": 1682,
+      "sha256": "9c205ab5aaa51488ef1bd11da9833da493000ff332abfb1a119ef637586d00fd"
+    },
+    {
+      "path": "tokenizer/tokenizer-manifest.json",
+      "role": "tokenizer-manifest",
+      "bytes": 6147,
+      "sha256": "fb236061ccabf07560ca764c37e6f1bd4b0c0a5b7c333c4cd6c156c2ab1b1c43"
+    },
+    {
+      "path": "tokenizer/vocab.json",
+      "role": "tokenizer-vocabulary",
+      "bytes": 127051,
+      "sha256": "fdaeaba167223060739e685e775c4adf160fa40f13159a0290b4d2f79b16a3b2"
+    }
+  ],
+  "manifestSha256": "93508d7ecbbdd482982794ac9be8ffcf884a736d406f9a89616d6a59cc76cf61",
+  "signature": {
+    "algorithm": "Ed25519",
+    "keyId": "vf-local-registry-dev-2026-08",
+    "publicKeySha256": "a7e493f3f8b8f5fa91be2dc0d07e7b580e7bd7261122f3bd2665e81a2b7470c9",
+    "signatureBase64": "EckOAPYUoqSccWuGIfqY97sN7ESkofj5J31I0e5174uvSWcemKuo/AA5ner25gk8OwgLEu6dZqUJiSdTVIY6Bw=="
+  }
+}

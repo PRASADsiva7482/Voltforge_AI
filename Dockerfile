@@ -19,11 +19,24 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy complete modular source code
 COPY api/ ./api/
+COPY api_contract/ ./api_contract/
 COPY engine/ ./engine/
 COPY model/ ./model/
+COPY context_compiler/ ./context_compiler/
+COPY data_governance/ ./data_governance/
+COPY electronics_corpus/ ./electronics_corpus/
+COPY engineering_tools/ ./engineering_tools/
+COPY evaluation/ ./evaluation/
+COPY feedback_governance/ ./feedback_governance/
+COPY grounding/ ./grounding/
+COPY memory_store/ ./memory_store/
+COPY internet_retrieval/ ./internet_retrieval/
+COPY local_retrieval/ ./local_retrieval/
+COPY task_schema/ ./task_schema/
 COPY tests/ ./tests/
 COPY circuit_verifier.py .
 COPY web_search_engine.py .
+COPY observability.py .
 COPY config.py .
 COPY main.py .
 COPY app.py .

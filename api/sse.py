@@ -48,8 +48,15 @@ async def stream_simulation_sse(payload: SimulationStreamRequest) -> AsyncIterat
 
         yield f"event: sim_end\ndata: {json.dumps({'status': 'COMPLETED', 'samples': total_samples})}\n\n"
     except Exception as error:
-        logger.exception("Simulation SSE stream failed")
-        yield f"event: error\ndata: {json.dumps({'error': str(error)})}\n\n"
+        logger.error("Simulation SSE stream failed (errorType=%s)", type(error).__name__)
+        yield (
+            "event: error\ndata: "
+            + json.dumps({
+                "code": "SIMULATION_STREAM_FAILED",
+                "message": "The local simulation stream could not complete.",
+            })
+            + "\n\n"
+        )
 
 
 __all__ = ["stream_chat_sse", "stream_simulation_sse"]

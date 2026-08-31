@@ -24,21 +24,21 @@
     "seed": 13013
   },
   "checkpoint": {
-    "path": "training_runs/vfai014-gen1-bootstrap-v1/checkpoints/step-00000256",
+    "path": "training_runs/vfai014-gen1-bootstrap-fu-001-v2/checkpoints/step-00000256",
     "bytes": 170495086,
-    "checkpointManifestFileSha256": "16c7782c31ef56aee53a6c5cda88c0d148f9ff8e81a2e13d3d7cea79dfd48269",
-    "checkpointManifestSha256": "1bdc63ec64104439ae884f27ee352caa6900e5d4c8875d6a8de914266597458d",
-    "modelWeightsSha256": "aab2474dd3263202e5aa2497fb5cc49f654c10b8d71ef74293764281b9e4711f",
-    "trainingStateSha256": "72d6edddff1d3e44d7c653e3a5f00575df69d5afeeb621743f8bb03f2d99ae47"
+    "checkpointManifestFileSha256": "8dd6847da5bed534eaf6c11cdc5e61954358305651456ca36217e88ab7f9c36d",
+    "checkpointManifestSha256": "317cb80a10d00f4f6b4625f8852026e792149dd864f3e4538fad0786359fb647",
+    "modelWeightsSha256": "28d76572b4e7ecaeb0ec8a8dfdf7b3e87d5202eb033aec010b136615bf298970",
+    "trainingStateSha256": "bd833688b4f51ffb79585da95d70fc892f4f3372df4de2573393510531908cc9"
   },
   "evidence": {
     "reportPath": "evaluation/reports/gen1-bootstrap-heldout-v1.json",
-    "reportSha256": "8b201e041db4d9101e1bf04ca3eb219488c2961ed60cfbd95a39a90d5ac1f57d",
-    "reportFileSha256": "924eaa3579d47400db27c13d642d2a08251895ea9733215d41bd29a4dc7f4ec9",
-    "planFingerprint": "5a973b1decce0ddc1dca774e90f5ea497f7bf4c849add6cb27b93d3e1d9747e9",
+    "reportSha256": "a0af9817ef32ddbfdff385e7f5d74958ec75d3c5c0d18528e7c05045065731e5",
+    "reportFileSha256": "4c5ce71d7190c1ef70c8eff7db1887b279497518d5b6526ec42d9fe5664c2234",
+    "planFingerprint": "31e9175824b1e7b6dfa725240ea04fd05ab60cbfcba6ab186459e0c27a3c52ca",
     "selectionMethod": "pareto-then-unweighted-mean-objective-rank"
   },
   "releaseApproved": false,
   "nextGate": "VFAI-015",
-  "manifestSha256": "e1098d64ffe60ac5f091c5f29cba3f00e0418f945beeec243ca87dbe72fe7ce4"
+  "manifestSha256": "f4bbac9be2fa10a2c05f3b7d8871aacbc6765d85c0ebaebcb8fdef979ae90ba4"
 }

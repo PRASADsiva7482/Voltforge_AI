@@ -17,9 +17,15 @@ import torch
 
 from benchmarking.runtime_baseline import PeakMemorySampler
 from gen1_sweep import check_scorecard
-from gen1_training import Gen1Trainer, Gen1TrainingConfig, PackedCorpus, load_approved_corpus
+from gen1_training import (
+    CURRENT_TRAINING_TOKENIZER_RELEASE_PATH,
+    Gen1Trainer,
+    Gen1TrainingConfig,
+    PackedCorpus,
+    load_approved_corpus,
+)
 from model.gen1 import Gen1Config, VoltForgeGen1
-from model.tokenizer import DEFAULT_TOKENIZER_RELEASE_PATH, VoltForgeTokenizer
+from model.tokenizer import VoltForgeTokenizer
 from task_schema.compiler import compile_task_record
 from task_schema.io import read_task_shard
 
@@ -385,7 +391,7 @@ def prepare_output_heldout(
     model_config: Gen1Config,
     heldout_policy: Mapping[str, Any],
     *,
-    tokenizer_directory: str | Path = DEFAULT_TOKENIZER_RELEASE_PATH,
+    tokenizer_directory: str | Path = CURRENT_TRAINING_TOKENIZER_RELEASE_PATH,
 ) -> PreparedHeldout:
     tokenizer = VoltForgeTokenizer(model_config.vocab_size)
     tokenizer.load(Path(tokenizer_directory))
@@ -971,7 +977,7 @@ def run_bootstrap(
             "nextGate": plan["releaseBoundary"]["nextDecisionGate"],
         },
         "limitations": [
-            "Only 138 approved training records and 71,410 unique next-token transitions are available; repeated exposure is not new data.",
+            "Only 138 approved training records and 71,377 unique next-token transitions are available; repeated exposure is not new data.",
             "The frozen model-validation split has only 16 records across nine synthetic task strata, so checkpoint differences are bootstrap evidence rather than release-quality estimates.",
             "The decoder has a 128-token context and has not yet been connected to the VFAI-017 local inference runtime, VFAI-019 output gates, or VFAI-020 project-context compiler.",
             "All 13 VFAI-005 generation correctness, grounding, privacy, refusal, malformed-input, and adversarial gates assign the raw checkpoint zero neural credit until an approved runtime can execute them.",

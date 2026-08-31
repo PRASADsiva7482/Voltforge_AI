@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "suiteId": "vfai022-local-retrieval-heldout-v1",
+  "suiteVersion": "1.0.0",
+  "maximumRank": 5,
+  "cases": [
+    {
+      "id": "ret-board-mega",
+      "query": "ATmega2560 flash SRAM architecture Mega Rev3",
+      "expectedRecordId": "vf-knowledge-v1-board.arduino.mega-2560-r3"
+    },
+    {
+      "id": "ret-board-nano",
+      "query": "A000005 Nano classic ATmega328P logic voltage",
+      "expectedRecordId": "vf-knowledge-v1-board.arduino.nano-classic-atmega328p"
+    },
+    {
+      "id": "ret-board-r4",
+      "query": "RA4M1 UNO R4 WiFi ABX00087 architecture",
+      "expectedRecordId": "vf-knowledge-v1-board.arduino.uno-r4-wifi"
+    },
+    {
+      "id": "ret-board-pico2",
+      "query": "RP2350 Pico 2 flash SRAM architecture",
+      "expectedRecordId": "vf-knowledge-v1-board.raspberry-pi.pico2-rp2350"
+    },
+    {
+      "id": "ret-pin-esp32-flash",
+      "query": "GPIO6 GPIO11 flash reserved pin capability",
+      "boardFilters": ["ESP32_DEVKITC_V4_WROOM32E_N4"],
+      "expectedRecordId": "vf-knowledge-v1-pin-map.espressif.esp32-devkitc-v4-wroom32e-n4"
+    },
+    {
+      "id": "ret-pin-r4-qwiic",
+      "query": "Qwiic SDA SCL default I2C pin map",
+      "boardFilters": ["ARDUINO_UNO_R4_WIFI"],
+      "expectedRecordId": "vf-knowledge-v1-pin-map.arduino.uno-r4-wifi"
+    },
+    {
+      "id": "ret-pin-pico",
+      "query": "RP2040 default I2C SDA SCL pin capabilities",
+      "boardFilters": ["RASPBERRY_PI_PICO"],
+      "expectedRecordId": "vf-knowledge-v1-pin-map.raspberry-pi.pico-rp2040"
+    },
+    {
+      "id": "ret-component-stemma",
+      "query": "SSD1306 STEMMA QT electrical ratings terminals auto reset",
+      "expectedRecordId": "vf-knowledge-v1-component.adafruit.ssd1306-128x64-stemma"
+    },
+    {
+      "id": "ret-component-old-oled",
+      "query": "older Adafruit 128x64 3.3V breakout without level shifting",
+      "expectedRecordId": "vf-knowledge-v1-component.adafruit.ssd1306-128x64-v1"
+    },
+    {
+      "id": "ret-component-relay",
+      "query": "generic relay coil trigger polarity isolation variant required",
+      "expectedRecordId": "vf-knowledge-v1-component.generic.relay-module"
+    },
+    {
+      "id": "ret-wiring-uno-oled",
+      "query": "SSD1306 I2C connections preconditions",
+      "boardFilters": ["ARDUINO_UNO"],
+      "componentFilters": ["SSD1306_STEMMA_QT"],
+      "expectedRecordId": "vf-knowledge-v1-wiring.arduino.uno-r3.ssd1306-stemma-i2c"
+    },
+    {
+      "id": "ret-wiring-pico2-oled",
+      "query": "OLED I2C wiring connections common ground",
+      "boardFilters": ["RASPBERRY_PI_PICO_2"],
+      "componentFilters": ["SSD1306_STEMMA_QT"],
+      "expectedRecordId": "vf-knowledge-v1-wiring.raspberry-pi.pico2.ssd1306-stemma-i2c"
+    },
+    {
+      "id": "ret-firmware-ssd1306",
+      "query": "Adafruit SSD1306 begin display clearDisplay API symbols include",
+      "expectedRecordId": "vf-knowledge-v1-firmware.adafruit.ssd1306"
+    },
+    {
+      "id": "ret-firmware-gpio",
+      "query": "Arduino pinMode digitalWrite digitalRead GPIO API",
+      "expectedRecordId": "vf-knowledge-v1-firmware.arduino.gpio"
+    },
+    {
+      "id": "ret-firmware-wire",
+      "query": "Arduino Wire beginTransmission endTransmission requestFrom I2C API",
+      "expectedRecordId": "vf-knowledge-v1-firmware.arduino.wire"
+    },
+    {
+      "id": "ret-firmware-pico",
+      "query": "Pico SDK i2c_init hardware I2C API",
+      "expectedRecordId": "vf-knowledge-v1-firmware.pico-sdk.i2c"
+    },
+    {
+      "id": "ret-compiler-header",
+      "query": "fatal error no such file missing header remediation",
+      "expectedRecordId": "vf-knowledge-v1-compiler.missing-header"
+    },
+    {
+      "id": "ret-compiler-undeclared",
+      "query": "was not declared in this scope identifier compiler cause",
+      "expectedRecordId": "vf-knowledge-v1-compiler.undeclared-identifier"
+    },
+    {
+      "id": "ret-compiler-linker",
+      "query": "undefined reference linker remediation implementation missing",
+      "expectedRecordId": "vf-knowledge-v1-compiler.undefined-reference"
+    },
+    {
+      "id": "ret-compiler-upload",
+      "query": "avrdude stk500 not in sync upload synchronization failure",
+      "expectedRecordId": "vf-knowledge-v1-compiler.avrdude-sync"
+    },
+    {
+      "id": "ret-simulation-resistor",
+      "query": "ideal resistor linear time invariant resistance simulation",
+      "expectedRecordId": "vf-knowledge-v1-simulation.resistor-ideal"
+    },
+    {
+      "id": "ret-simulation-i2c",
+      "query": "open drain I2C pull ups digital bus simulation model",
+      "expectedRecordId": "vf-knowledge-v1-simulation.i2c-digital"
+    },
+    {
+      "id": "ret-simulation-led",
+      "query": "LED forward drop current path piecewise simulation model",
+      "expectedRecordId": "vf-knowledge-v1-simulation.led-piecewise"
+    },
+    {
+      "id": "ret-safety-flyback",
+      "query": "flyback diode inductive load required action",
+      "expectedRecordId": "vf-knowledge-v1-safety.inductive-flyback"
+    },
+    {
+      "id": "ret-safety-led-current",
+      "query": "LED current limiting resistor unknown policy required action",
+      "expectedRecordId": "vf-knowledge-v1-safety.led-current-limit"
+    },
+    {
+      "id": "ret-safety-voltage",
+      "query": "logic voltage compatibility level shifter required action",
+      "expectedRecordId": "vf-knowledge-v1-safety.logic-voltage"
+    },
+    {
+      "id": "ret-safety-high-energy",
+      "query": "mains high energy boundary professional review isolation",
+      "expectedRecordId": "vf-knowledge-v1-safety.high-energy-boundary"
+    }
+  ]
+}

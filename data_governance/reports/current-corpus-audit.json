@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "auditId": "vfai-006-current-corpus-audit",
-  "generatedAtUtc": "2026-08-28T07:19:31.182819+00:00",
+  "generatedAtUtc": "2026-08-31T07:34:05.298779+00:00",
   "policyVersion": "1.0.0",
   "sourceRegistryVersion": "1.2.0",
   "catalogSha256": "27fd9035068f5dfa4a26d80da1b451d36224c3b08acd02fefefce9e9de6c2afc",
@@ -334,5 +334,5 @@
       "reason": "The retained aggregate predates immutable run, generator, preprocessing, and source snapshots."
     }
   ],
-  "reportSha256": "2d4f1e8c09ec146a3b96c02cdc2177625d2bb9e4c1e61256b3927f06f89332d3"
+  "reportSha256": "d9d311f36846594bbeb46eaee76e259889523e45a95a52365597d62f81d44baf"
 }

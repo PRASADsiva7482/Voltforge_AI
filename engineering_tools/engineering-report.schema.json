@@ -1,0 +1,602 @@
+{
+  "$defs": {
+    "ApprovedAction": {
+      "additionalProperties": false,
+      "properties": {
+        "actionKind": {
+          "enum": [
+            "wire-suggestion",
+            "component-addition",
+            "component-removal",
+            "value-change",
+            "code-fix"
+          ],
+          "title": "Actionkind",
+          "type": "string"
+        },
+        "payload": {
+          "additionalProperties": true,
+          "title": "Payload",
+          "type": "object"
+        }
+      },
+      "required": [
+        "actionKind",
+        "payload"
+      ],
+      "title": "ApprovedAction",
+      "type": "object"
+    },
+    "EngineeringCalculation": {
+      "additionalProperties": false,
+      "properties": {
+        "calculationId": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,199}$",
+          "title": "Calculationid",
+          "type": "string"
+        },
+        "calculationKind": {
+          "enum": [
+            "ohms-law",
+            "electrical-power"
+          ],
+          "title": "Calculationkind",
+          "type": "string"
+        },
+        "affectedProjectIds": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "title": "Affectedprojectids",
+          "type": "array"
+        },
+        "inputs": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Inputs",
+          "type": "object"
+        },
+        "result": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Result",
+          "type": "object"
+        },
+        "evidenceRefs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "title": "Evidencerefs",
+          "type": "array"
+        },
+        "exactDecimal": {
+          "const": true,
+          "default": true,
+          "title": "Exactdecimal",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "calculationId",
+        "calculationKind",
+        "affectedProjectIds",
+        "inputs",
+        "result",
+        "evidenceRefs"
+      ],
+      "title": "EngineeringCalculation",
+      "type": "object"
+    },
+    "EngineeringEvidence": {
+      "additionalProperties": false,
+      "properties": {
+        "evidenceId": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,199}$",
+          "title": "Evidenceid",
+          "type": "string"
+        },
+        "evidenceKind": {
+          "enum": [
+            "curated-knowledge",
+            "project-state",
+            "firmware-source",
+            "compiler-diagnostic",
+            "simulation-state",
+            "deterministic-calculation"
+          ],
+          "title": "Evidencekind",
+          "type": "string"
+        },
+        "authority": {
+          "enum": [
+            "deterministic",
+            "client-reported"
+          ],
+          "title": "Authority",
+          "type": "string"
+        },
+        "sourceId": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,199}$",
+          "title": "Sourceid",
+          "type": "string"
+        },
+        "sourceRevision": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Sourcerevision",
+          "type": "string"
+        },
+        "locator": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Locator",
+          "type": "string"
+        },
+        "contentSha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Contentsha256",
+          "type": "string"
+        },
+        "facts": {
+          "additionalProperties": true,
+          "title": "Facts",
+          "type": "object"
+        },
+        "rawContentStored": {
+          "const": false,
+          "default": false,
+          "title": "Rawcontentstored",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "evidenceId",
+        "evidenceKind",
+        "authority",
+        "sourceId",
+        "sourceRevision",
+        "locator",
+        "contentSha256"
+      ],
+      "title": "EngineeringEvidence",
+      "type": "object"
+    },
+    "EngineeringFinding": {
+      "additionalProperties": false,
+      "properties": {
+        "findingId": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,199}$",
+          "title": "Findingid",
+          "type": "string"
+        },
+        "ruleId": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,199}$",
+          "title": "Ruleid",
+          "type": "string"
+        },
+        "ruleVersion": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Ruleversion",
+          "type": "string"
+        },
+        "category": {
+          "enum": [
+            "circuit-netlist",
+            "board-pin",
+            "firmware-static",
+            "compiler-feedback",
+            "simulation",
+            "units-calculation",
+            "component-support"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "CRITICAL",
+            "HIGH",
+            "WARNING",
+            "INFO",
+            "UNKNOWN"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "decision": {
+          "enum": [
+            "violation",
+            "warning",
+            "unknown"
+          ],
+          "title": "Decision",
+          "type": "string"
+        },
+        "summary": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Summary",
+          "type": "string"
+        },
+        "affectedProjectIds": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "title": "Affectedprojectids",
+          "type": "array"
+        },
+        "evidenceRefs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "title": "Evidencerefs",
+          "type": "array"
+        },
+        "fix": {
+          "$ref": "#/$defs/ReviewableFix"
+        },
+        "blocking": {
+          "title": "Blocking",
+          "type": "boolean"
+        },
+        "modelOverridePolicy": {
+          "enum": [
+            "prohibited",
+            "not-applicable"
+          ],
+          "title": "Modeloverridepolicy",
+          "type": "string"
+        }
+      },
+      "required": [
+        "findingId",
+        "ruleId",
+        "ruleVersion",
+        "category",
+        "severity",
+        "decision",
+        "summary",
+        "affectedProjectIds",
+        "evidenceRefs",
+        "fix",
+        "blocking",
+        "modelOverridePolicy"
+      ],
+      "title": "EngineeringFinding",
+      "type": "object"
+    },
+    "EngineeringReportSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "toolRuns": {
+          "minimum": 0,
+          "title": "Toolruns",
+          "type": "integer"
+        },
+        "applicableToolRuns": {
+          "minimum": 0,
+          "title": "Applicabletoolruns",
+          "type": "integer"
+        },
+        "findings": {
+          "minimum": 0,
+          "title": "Findings",
+          "type": "integer"
+        },
+        "blockingFindings": {
+          "minimum": 0,
+          "title": "Blockingfindings",
+          "type": "integer"
+        },
+        "criticalFindings": {
+          "minimum": 0,
+          "title": "Criticalfindings",
+          "type": "integer"
+        },
+        "unknownFindings": {
+          "minimum": 0,
+          "title": "Unknownfindings",
+          "type": "integer"
+        },
+        "calculations": {
+          "minimum": 0,
+          "title": "Calculations",
+          "type": "integer"
+        },
+        "status": {
+          "enum": [
+            "pass",
+            "review-required",
+            "blocked"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "toolRuns",
+        "applicableToolRuns",
+        "findings",
+        "blockingFindings",
+        "criticalFindings",
+        "unknownFindings",
+        "calculations",
+        "status"
+      ],
+      "title": "EngineeringReportSummary",
+      "type": "object"
+    },
+    "EngineeringToolRun": {
+      "additionalProperties": false,
+      "properties": {
+        "toolId": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,199}$",
+          "title": "Toolid",
+          "type": "string"
+        },
+        "toolVersion": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Toolversion",
+          "type": "string"
+        },
+        "category": {
+          "enum": [
+            "circuit-netlist",
+            "board-pin",
+            "firmware-static",
+            "compiler-feedback",
+            "simulation",
+            "units-calculation",
+            "component-support"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "complete",
+            "not-applicable",
+            "unavailable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "summary": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Summary",
+          "type": "string"
+        },
+        "findings": {
+          "items": {
+            "$ref": "#/$defs/EngineeringFinding"
+          },
+          "maxItems": 50,
+          "title": "Findings",
+          "type": "array"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EngineeringEvidence"
+          },
+          "maxItems": 100,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "calculations": {
+          "items": {
+            "$ref": "#/$defs/EngineeringCalculation"
+          },
+          "maxItems": 100,
+          "title": "Calculations",
+          "type": "array"
+        },
+        "approvedActions": {
+          "items": {
+            "$ref": "#/$defs/ApprovedAction"
+          },
+          "maxItems": 50,
+          "title": "Approvedactions",
+          "type": "array"
+        },
+        "compiled": {
+          "default": false,
+          "title": "Compiled",
+          "type": "boolean"
+        },
+        "rawContentStored": {
+          "const": false,
+          "default": false,
+          "title": "Rawcontentstored",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "toolId",
+        "toolVersion",
+        "category",
+        "status",
+        "summary"
+      ],
+      "title": "EngineeringToolRun",
+      "type": "object"
+    },
+    "ReviewableFix": {
+      "additionalProperties": false,
+      "properties": {
+        "fixId": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,199}$",
+          "title": "Fixid",
+          "type": "string"
+        },
+        "summary": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Summary",
+          "type": "string"
+        },
+        "actionKind": {
+          "anyOf": [
+            {
+              "enum": [
+                "wire-suggestion",
+                "component-addition",
+                "component-removal",
+                "value-change",
+                "code-fix"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Actionkind"
+        },
+        "payload": {
+          "additionalProperties": true,
+          "title": "Payload",
+          "type": "object"
+        },
+        "applicationMode": {
+          "const": "proposal-only",
+          "default": "proposal-only",
+          "title": "Applicationmode",
+          "type": "string"
+        },
+        "requiresUserConfirmation": {
+          "const": true,
+          "default": true,
+          "title": "Requiresuserconfirmation",
+          "type": "boolean"
+        },
+        "machineApplicable": {
+          "default": false,
+          "title": "Machineapplicable",
+          "type": "boolean"
+        },
+        "evidenceRefs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "title": "Evidencerefs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "fixId",
+        "summary",
+        "evidenceRefs"
+      ],
+      "title": "ReviewableFix",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "default": 1,
+      "title": "Schemaversion",
+      "type": "integer"
+    },
+    "contractVersion": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Contractversion",
+      "type": "string"
+    },
+    "policyId": {
+      "const": "vfai021-authoritative-engineering-tools-v1",
+      "default": "vfai021-authoritative-engineering-tools-v1",
+      "title": "Policyid",
+      "type": "string"
+    },
+    "policySha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Policysha256",
+      "type": "string"
+    },
+    "reportId": {
+      "pattern": "^vf-engineering-report-v1-[a-f0-9]{24}$",
+      "title": "Reportid",
+      "type": "string"
+    },
+    "sourceProjectRevision": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Sourceprojectrevision",
+      "type": "string"
+    },
+    "revisionSource": {
+      "enum": [
+        "client",
+        "derived-snapshot",
+        "synthetic",
+        "evaluation"
+      ],
+      "title": "Revisionsource",
+      "type": "string"
+    },
+    "boardType": {
+      "maxLength": 80,
+      "minLength": 1,
+      "title": "Boardtype",
+      "type": "string"
+    },
+    "toolRuns": {
+      "items": {
+        "$ref": "#/$defs/EngineeringToolRun"
+      },
+      "maxItems": 7,
+      "minItems": 7,
+      "title": "Toolruns",
+      "type": "array"
+    },
+    "blockingFindingIds": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 350,
+      "title": "Blockingfindingids",
+      "type": "array"
+    },
+    "summary": {
+      "$ref": "#/$defs/EngineeringReportSummary"
+    },
+    "rawProjectContentStored": {
+      "const": false,
+      "default": false,
+      "title": "Rawprojectcontentstored",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "policySha256",
+    "reportId",
+    "sourceProjectRevision",
+    "revisionSource",
+    "boardType",
+    "toolRuns",
+    "summary"
+  ],
+  "title": "VoltForge authoritative engineering report v1",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:voltforge-ai:authoritative-engineering-report:v1"
+}

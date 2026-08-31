@@ -1,0 +1,236 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "default": 1,
+      "title": "Schemaversion",
+      "type": "integer"
+    },
+    "contractVersion": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Contractversion",
+      "type": "string"
+    },
+    "requestId": {
+      "anyOf": [
+        {
+          "maxLength": 160,
+          "minLength": 3,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Requestid"
+    },
+    "sessionId": {
+      "anyOf": [
+        {
+          "maxLength": 80,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Sessionid"
+    },
+    "projectRevision": {
+      "anyOf": [
+        {
+          "maxLength": 160,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Projectrevision"
+    },
+    "model": {
+      "const": "voltforge-local-engine-v1",
+      "default": "voltforge-local-engine-v1",
+      "title": "Model",
+      "type": "string"
+    },
+    "mode": {
+      "default": "deterministic-fallback",
+      "enum": [
+        "neural-quality-gated",
+        "deterministic-fallback",
+        "unavailable"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "artifact": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Artifact"
+    },
+    "readiness": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Readiness"
+    },
+    "reply": {
+      "maxLength": 24000,
+      "minLength": 1,
+      "title": "Reply",
+      "type": "string"
+    },
+    "hasCode": {
+      "default": false,
+      "title": "Hascode",
+      "type": "boolean"
+    },
+    "generatedCode": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Generatedcode"
+    },
+    "confidence": {
+      "default": 0.8,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "citations": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Citations",
+      "type": "array"
+    },
+    "wireSuggestions": {
+      "items": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "type": "object"
+      },
+      "title": "Wiresuggestions",
+      "type": "array"
+    },
+    "additions": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Additions",
+      "type": "array"
+    },
+    "removals": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Removals",
+      "type": "array"
+    },
+    "valueChanges": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Valuechanges",
+      "type": "array"
+    },
+    "codeFixes": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Codefixes",
+      "type": "array"
+    },
+    "localRetrieval": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Localretrieval"
+    },
+    "internetRetrieval": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Internetretrieval"
+    },
+    "grounding": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Grounding"
+    },
+    "memory": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Memory"
+    }
+  },
+  "required": [
+    "reply"
+  ],
+  "title": "ChatResponse",
+  "type": "object"
+}

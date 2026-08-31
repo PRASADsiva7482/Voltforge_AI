@@ -135,8 +135,8 @@ def test_approved_loader_revalidates_frozen_split_lineage_and_tokenizer() -> Non
     corpus = load_approved_corpus(Gen1Config())
     assert corpus.corpus_kind == "approved-vfai009"
     assert corpus.manifest["approvalStatus"] == "approved"
-    assert corpus.manifest["trainingRecordCount"] == 138
-    assert corpus.manifest["validationRecordCount"] == 16
+    assert corpus.manifest["trainingRecordCount"] == 227
+    assert corpus.manifest["validationRecordCount"] == 23
     assert len(corpus.manifest["shards"]) == 4
     assert corpus.manifest["tokenizer"]["tokenizerId"] == "vfdlm-byte-bpe"
     assert len(corpus.manifest["tokenizer"]["artifactSha256"]) == 64

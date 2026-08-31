@@ -23,7 +23,7 @@ from model.tokenizer import SPECIAL_TOKEN_TO_ID, TOKENIZER_ALGORITHM
 
 MODEL_ROOT = Path(__file__).resolve().parent
 DEFAULT_REGISTRY_PATH = MODEL_ROOT / "registry" / "active_model.json"
-SUPPORTED_SCHEMA_VERSION = 1
+SUPPORTED_SCHEMA_VERSIONS = frozenset({1, 2})
 SUPPORTED_RUNTIME = "numpy-transformer-v1"
 REQUIRED_FILES = (
     "config",
@@ -280,11 +280,25 @@ def resolve_active_artifact(registry_path: str | Path | None = None) -> Resolved
     registry_data = _read_json(registry, "MODEL_REGISTRY_INVALID")
     if not isinstance(registry_data, dict):
         raise ArtifactRegistryError("MODEL_REGISTRY_INVALID", "Model registry must be a JSON object.")
-    if registry_data.get("schemaVersion") != SUPPORTED_SCHEMA_VERSION:
+    schema_version = registry_data.get("schemaVersion")
+    if schema_version not in SUPPORTED_SCHEMA_VERSIONS:
         raise ArtifactRegistryError(
             "MODEL_REGISTRY_SCHEMA_UNSUPPORTED",
-            f"Model registry schemaVersion must be {SUPPORTED_SCHEMA_VERSION}.",
+            "Model registry schemaVersion must be one of: 1, 2.",
         )
+    if schema_version == 2:
+        # A schema-2 registry is trusted only after its Ed25519 signature and
+        # state invariants pass.  Import lazily so the legacy NumPy loader stays
+        # independent from the future Gen1 runtime implementation.
+        from model.registry_manager import RegistryManagerError, verify_registry
+
+        try:
+            registry_data = verify_registry(
+                registry,
+                trust_store_path=registry.parent / "trust" / "trusted-keys.json",
+            )
+        except RegistryManagerError as error:
+            raise ArtifactRegistryError(error.code, error.message) from error
 
     active_id = registry_data.get("activeArtifactId")
     if not isinstance(active_id, str) or not active_id.strip():
@@ -311,6 +325,11 @@ def resolve_active_artifact(registry_path: str | Path | None = None) -> Resolved
         raise ArtifactRegistryError(
             "MODEL_ARTIFACT_NOT_APPROVED",
             f"Active artifact {active_id!r} is not release-approved.",
+        )
+    runtime = entry.get("runtime")
+    if runtime != SUPPORTED_RUNTIME:
+        raise ArtifactRegistryError(
+            "MODEL_RUNTIME_UNSUPPORTED", f"Artifact runtime {runtime!r} is not supported."
         )
     data_lineage = entry.get("dataLineage")
     if not isinstance(data_lineage, dict):
@@ -346,12 +365,6 @@ def resolve_active_artifact(registry_path: str | Path | None = None) -> Resolved
             "MODEL_ARTIFACT_CHECKSUM_INVALID",
             "Artifact checksum must be a lowercase SHA-256 value.",
         )
-    runtime = entry.get("runtime")
-    if runtime != SUPPORTED_RUNTIME:
-        raise ArtifactRegistryError(
-            "MODEL_RUNTIME_UNSUPPORTED", f"Artifact runtime {runtime!r} is not supported."
-        )
-
     model_root = registry.parent.parent.resolve()
     root_value = entry.get("root")
     if not isinstance(root_value, str) or not root_value:
@@ -460,6 +473,44 @@ def get_artifact_health(registry_path: str | Path | None = None) -> dict[str, An
             "releaseStatus": "none" if error.code == "NO_APPROVED_MODEL_ARTIFACT" else "invalid",
             "registryPath": str(registry),
         })
+        if error.code == "NO_APPROVED_MODEL_ARTIFACT":
+            try:
+                registry_data = _read_json(registry, "MODEL_REGISTRY_INVALID")
+                if isinstance(registry_data, dict) and registry_data.get("schemaVersion") == 2:
+                    from model.registry_manager import RegistryManagerError, verify_registry
+
+                    try:
+                        verified_registry = verify_registry(
+                            registry,
+                            trust_store_path=registry.parent / "trust" / "trusted-keys.json",
+                        )
+                    except RegistryManagerError:
+                        verified_registry = None
+                    if verified_registry is not None:
+                        catalog = [
+                            {
+                                "artifactId": item["artifactId"],
+                                "releaseStatus": item["releaseStatus"],
+                                "activationEligible": item["activationEligible"],
+                                "runtime": item["runtime"],
+                                "parameterCount": item["parameterCount"],
+                                "contextLength": item["contextLength"],
+                                "quantization": item["quantization"],
+                                "manifestSha256": item["manifestSha256"],
+                            }
+                            for item in verified_registry["artifacts"]
+                        ]
+                        health.update(
+                            {
+                                "registrySchemaVersion": verified_registry["schemaVersion"],
+                                "registryRevision": verified_registry["revision"],
+                                "registrySha256": verified_registry["registrySha256"],
+                                "catalogArtifactCount": len(catalog),
+                                "catalogArtifacts": catalog,
+                            }
+                        )
+            except ArtifactRegistryError:
+                pass
         return health
     except Exception:
         health = empty_identity_health()

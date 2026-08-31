@@ -14,6 +14,7 @@ import time
 from typing import Any, Dict, List, Optional
 from circuit_verifier import ElectricalVerifier
 from web_search_engine import WebSearchEngine
+from internet_retrieval import retrieval_trigger
 from engine.code_generator import FirmwareCodeGenerator
 from engine.fuzzy_resolver import FuzzyResolver
 from engine.physics_solver import ElectricalPhysicsSolver
@@ -130,7 +131,7 @@ class ElectronicsReasoningOrchestrator:
             # Extract previous system context
             prev_prompt = last_user_msg or "circuit"
             combined_prompt = f"{prev_prompt} with {message}"
-            logger.info(f"Resolved multi-turn synthesis prompt: {combined_prompt}")
+            logger.info("Resolved bounded multi-turn synthesis context")
             synth = NLCircuitSynthesizer.synthesize(combined_prompt, effective_board)
             if synth["success"]:
                 bom = BOMExporter.generate_bom(synth["components"], effective_board)
@@ -755,8 +756,15 @@ class ElectronicsReasoningOrchestrator:
         # PASS 5: Web Search & Datasheet Retrieval
         # ═══════════════════════════════════════════════════
         if intent == "datasheet" or any(term in lower for term in ("datasheet", "spec", "pinout", "what is", "how to connect", "i2c address", "chip", "module", "sensor", "search")):
+            internet_trigger = retrieval_trigger(message, "no-results")
             target_comp = resolved_components[0] if resolved_components else message
-            s_info = self.web_search.get_component_info(target_comp)
+            s_info = (
+                self.web_search.get_component_info(
+                    target_comp, retrieval_reason=internet_trigger
+                )
+                if internet_trigger != "not-triggered"
+                else None
+            )
             if s_info and s_info.get("searchResults"):
                 specs = s_info.get("specs", {})
                 citations = s_info.get("citations", [])

@@ -24,11 +24,11 @@ from tokenizer_training.legacy_baseline import LegacyTokenizerBaseline, legacy_a
 
 AI_ROOT = Path(__file__).resolve().parents[1]
 TOKENIZER_ID = "vfdlm-byte-bpe"
-TOKENIZER_VERSION = "1.0.0"
+TOKENIZER_VERSION = "1.1.0"
 TARGET_VOCAB_SIZE = 3072
 MINIMUM_PAIR_FREQUENCY = 2
 SPLIT_SEED = "vfai-010-split-20260828"
-ARTIFACT_ROOT = AI_ROOT / "model" / "tokenizers" / "vfdlm-byte-bpe-v1.0.0"
+ARTIFACT_ROOT = AI_ROOT / "model" / "tokenizers" / "vfdlm-byte-bpe-v1.1.0"
 REPORT_PATH = ARTIFACT_ROOT / "evaluation-report.json"
 MANIFEST_PATH = ARTIFACT_ROOT / "tokenizer_manifest.json"
 LEGACY_ARTIFACT_ROOT = AI_ROOT / "model" / "artifacts"
@@ -98,7 +98,8 @@ def _record_hash(record: Mapping[str, Any]) -> str:
 
 
 def _load_approved_records() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    check_synthetic_release(recompile=False)
+    release = check_synthetic_release(recompile=False)
+    expected_count = int(release["summary"]["acceptedRecordCount"])
     records: list[dict[str, Any]] = []
     lineage: list[dict[str, Any]] = []
     for filename in SHARDS:
@@ -117,7 +118,7 @@ def _load_approved_records() -> tuple[list[dict[str, Any]], list[dict[str, Any]]
                 "sourceIds": manifest["recordProvenance"]["sourceIds"],
             }
         )
-    if len(records) != 154 or len({item["recordId"] for item in records}) != len(records):
+    if len(records) != expected_count or len({item["recordId"] for item in records}) != len(records):
         raise TokenizerReleaseError("Approved VFAI-009 record set is incomplete or duplicated")
     return records, lineage
 

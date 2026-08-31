@@ -12,19 +12,19 @@
   "files": {
     "vocab": {
       "path": "vocab.json",
-      "sha256": "fdaeaba167223060739e685e775c4adf160fa40f13159a0290b4d2f79b16a3b2"
+      "sha256": "7162d099a5a63e6516a799cf2bc283ec55f593911914ccf4b345797b0a4bbd55"
     },
     "merges": {
       "path": "merges.json",
-      "sha256": "3921d8cdf957f2218160c6fdb7e00da6c4cbd47a0d99fc4f18065fd2225b95a4"
+      "sha256": "4692a24b00364efbd7928c53a13de8b15a2b64716f7aa7ae299bed7b4a2b16a3"
     },
     "config": {
       "path": "tokenizer_config.json",
-      "sha256": "9c205ab5aaa51488ef1bd11da9833da493000ff332abfb1a119ef637586d00fd"
+      "sha256": "e7afab498a691e2602c3ec6e5a80553bc2f1f2b8dd089ea95e59fa21465c313d"
     },
     "evaluationReport": {
       "path": "evaluation-report.json",
-      "sha256": "dd649d94e7e2f2654d16c9004ff11c1cb25597917a2f2b4103489fe8974dcba0"
+      "sha256": "79e3b4394d9b5bae4268572dff3069d71cf08c3db5ee96570d822ae916b452f6"
     }
   },
   "lineage": {
@@ -33,55 +33,55 @@
       "vf-src-verified-synthetic-pipeline-v1"
     ],
     "shardIds": [
-      "vf-shard-5785d06938bb19812ee6",
-      "vf-shard-348d56d93695dcba96bc",
-      "vf-shard-ab7663861f4fe8ec022d",
-      "vf-shard-31d0d5b4d2890f40fe88"
+      "vf-shard-714b767d2e7f90b2e975",
+      "vf-shard-552700494266b48956af",
+      "vf-shard-dfa00394be4430d7dc31",
+      "vf-shard-af68248a3cb692c98afc"
     ],
     "shards": [
       {
-        "shardId": "vf-shard-5785d06938bb19812ee6",
+        "shardId": "vf-shard-714b767d2e7f90b2e975",
         "path": "synthetic_data/shards/v1/grounded-electronics.jsonl",
-        "sha256": "5785d06938bb19812ee657e6dfabc4b4eb6bcdd76cb5d42fde34c49265bdbd6a",
+        "sha256": "714b767d2e7f90b2e9755b8e0b29aa3887c48eaed14116e8746c1fb8fc559148",
         "recordCount": 80,
         "manifestPath": "data_governance/manifests/synthetic_data__shards__v1__grounded-electronics.jsonl.manifest.json",
-        "manifestSha256": "c5ec4ba494e5829ba2d215872ce4e374216eb312fb63e43d7137a58df2a61992",
+        "manifestSha256": "a26fe19ad8c3999ccb4960064a24a222a50652fd4ef3829f2c9c83110329f4b2",
         "sourceIds": [
           "vf-src-curated-electronics-corpus-v1",
           "vf-src-verified-synthetic-pipeline-v1"
         ]
       },
       {
-        "shardId": "vf-shard-348d56d93695dcba96bc",
+        "shardId": "vf-shard-552700494266b48956af",
         "path": "synthetic_data/shards/v1/circuit-safety.jsonl",
-        "sha256": "348d56d93695dcba96bceed004e2451ebf93c636e464f2592dacd1971d3db95d",
+        "sha256": "552700494266b48956afc583287464b89e2d5581ffe400c5c22d6c5791d669c3",
         "recordCount": 56,
         "manifestPath": "data_governance/manifests/synthetic_data__shards__v1__circuit-safety.jsonl.manifest.json",
-        "manifestSha256": "3ae63b94f968d21cca1f6a450f405bf276660930813ffebda7743c0af381ff2b",
+        "manifestSha256": "a74032a269da3c5378c55d38b0b0163fa6008bb1ab580d8603af2d5d5b3230a1",
         "sourceIds": [
           "vf-src-curated-electronics-corpus-v1",
           "vf-src-verified-synthetic-pipeline-v1"
         ]
       },
       {
-        "shardId": "vf-shard-ab7663861f4fe8ec022d",
+        "shardId": "vf-shard-dfa00394be4430d7dc31",
         "path": "synthetic_data/shards/v1/firmware.jsonl",
-        "sha256": "ab7663861f4fe8ec022d045e945169ec0af0f526b34eacba701eaa112adc21f1",
+        "sha256": "dfa00394be4430d7dc31c0fa69054ce3c7d7890acdd989d0a7768af36611ce64",
         "recordCount": 12,
         "manifestPath": "data_governance/manifests/synthetic_data__shards__v1__firmware.jsonl.manifest.json",
-        "manifestSha256": "20663cdf8ba90e4eff8a95b440c54d95f12a7b42cddbb40857a910a773e10f31",
+        "manifestSha256": "0c21407399be8e6264994262fb80fa950b3b53367bf608a93256b0463797656d",
         "sourceIds": [
           "vf-src-curated-electronics-corpus-v1",
           "vf-src-verified-synthetic-pipeline-v1"
         ]
       },
       {
-        "shardId": "vf-shard-31d0d5b4d2890f40fe88",
+        "shardId": "vf-shard-af68248a3cb692c98afc",
         "path": "synthetic_data/shards/v1/compiler-repair.jsonl",
-        "sha256": "31d0d5b4d2890f40fe880eead3c52f98b1cdb9ce505367e45e62fc2b83f474d0",
+        "sha256": "af68248a3cb692c98afc42da812f27b05ccd20d727113628f14ffa9250ba558b",
         "recordCount": 6,
         "manifestPath": "data_governance/manifests/synthetic_data__shards__v1__compiler-repair.jsonl.manifest.json",
-        "manifestSha256": "473306f16ff7e00ad07205106b69b5d67ba386ed1bd3f2180109f3725e2457a9",
+        "manifestSha256": "45d05ae48ea37b44275eea76d487678bf5c45583720ea65141303e7f89d3fd65",
         "sourceIds": [
           "vf-src-curated-electronics-corpus-v1",
           "vf-src-verified-synthetic-pipeline-v1"
@@ -94,27 +94,27 @@
       "method": "per-task SHA-256 rank with approximately 10 percent evaluation",
       "trainingRecordCount": 138,
       "evaluationRecordCount": 16,
-      "trainingRecordIdsSha256": "5c59a9266aa6669c26497499629069d5769a31e17bd489140cfc26981ac783c0",
+      "trainingRecordIdsSha256": "aaf32295022551a322dd10893905bd9ca932f350164bc6042af2afa036ec42fc",
       "evaluationRecordIds": [
-        "vf-task-v1-003502244bccef2d43aa9dac",
-        "vf-task-v1-054bfcaa5d313bb13229331d",
-        "vf-task-v1-075c80eb980e123446659de2",
-        "vf-task-v1-0b9d2ae30989f0a5daef9789",
-        "vf-task-v1-0bdfc52c22cb274995a23d89",
-        "vf-task-v1-2835a1a4e8881e5bd069b9e4",
         "vf-task-v1-299d98bb2e8c6de170ff1c4a",
-        "vf-task-v1-3c75991c284ff14ee8e8dc33",
-        "vf-task-v1-50c6232dd355dc21b0f18f37",
-        "vf-task-v1-53537aa7b5016cc29d1df07c",
-        "vf-task-v1-7920182b1539188d81950223",
-        "vf-task-v1-86498ae824c0e770d511c118",
-        "vf-task-v1-935c0d2a2c56fef4cb3e6b37",
-        "vf-task-v1-b5b83549cc91c7d20163498d",
-        "vf-task-v1-da0227c8b6d19bfe5a23fe72",
-        "vf-task-v1-e572357a012729b027a4889b"
+        "vf-task-v1-38f0d8dd680e9febf6c340fe",
+        "vf-task-v1-4d85eb862952495630f4ebd9",
+        "vf-task-v1-594666bd8066763fef0c09cb",
+        "vf-task-v1-75353a4a1a4b85fbfbc20cd3",
+        "vf-task-v1-798b1a1a72c4f1345a49d6d7",
+        "vf-task-v1-83335f76323ce53a3a850efd",
+        "vf-task-v1-9cfc0bb9c464834fbdadfaf1",
+        "vf-task-v1-afae22e52e5d999946bcf424",
+        "vf-task-v1-b25cd232a6d2dbef9384b491",
+        "vf-task-v1-b412a56155399926eec86854",
+        "vf-task-v1-bffe9959a5cd8791a2e4b763",
+        "vf-task-v1-c654f1c517ca031af53215a9",
+        "vf-task-v1-de14f38756dc91a611a45134",
+        "vf-task-v1-e572357a012729b027a4889b",
+        "vf-task-v1-ff1f36ef3b3d09f856c90738"
       ],
-      "trainingCorpusSha256": "3abd4cd7f003ac0c7946157e9edd52cea62ea793b97a6a3572f3297f8e743c65",
-      "evaluationCorpusSha256": "6853eb90641b45edf90edc0c3bbeb07fbf6f666c266a9e37e63490dd8aa0f01a",
+      "trainingCorpusSha256": "365861bc14b145d387778bd76f5285fd646d016e5258efdee2ebaeb91284ee6e",
+      "evaluationCorpusSha256": "b33c6d016fe9d1d2cbd5549e749834db9990daec6bbbc90d4ba38108386660cf",
       "taskBalance": {
         "circuit_validation": 2,
         "compiler_repair": 1,
@@ -151,5 +151,5 @@
     "manifestFilename": "tokenizer_manifest.json",
     "gate": "model.artifact_registry._validate_tokenizer"
   },
-  "artifactSha256": "5c9e6f4e1825eba7fcccc790bc95346c3f777bede4e92a894224d4db30ec7d64"
+  "artifactSha256": "248b15409f3cc1f2f114c91b212b938db0a61d94e758f9d5985368c3d4f1d8c7"
 }

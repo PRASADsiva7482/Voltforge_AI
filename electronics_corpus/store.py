@@ -12,6 +12,7 @@ from typing import Any, Iterable
 
 from electronics_corpus.schema import (
     CORPUS_CONTRACT_VERSION,
+    CORPUS_SOURCE_REVISION,
     CORPUS_ROOT,
     KnowledgeContractError,
     validate_knowledge_record,
@@ -99,7 +100,7 @@ class ElectronicsCorpus:
             raise KnowledgeContractError(
                 "KNOWLEDGE_CATALOG_INVALID", "Corpus catalog has an unsupported contract."
             )
-        if catalog.get("version") != CORPUS_CONTRACT_VERSION:
+        if catalog.get("version") != CORPUS_SOURCE_REVISION:
             raise KnowledgeContractError(
                 "KNOWLEDGE_CATALOG_VERSION_UNSUPPORTED", "Corpus version is not supported."
             )

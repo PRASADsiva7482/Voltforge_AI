@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai016-gen1-package-v1",
+  "generatedAtUtc": "2026-08-28T17:37:41.689203Z",
+  "artifactId": "vfdlm-g1-edge-v0.1.0-bootstrap",
+  "artifactRoot": "model/registry/artifacts/vfdlm-g1-edge-v0.1.0-bootstrap",
+  "artifactDirectoryTracked": false,
+  "manifestSha256": "93508d7ecbbdd482982794ac9be8ffcf884a736d406f9a89616d6a59cc76cf61",
+  "manifestFileSha256": "f0a546ada7beffe2ce9e7ae6262c99a9b0073ed0fa02362508283e1c678d4b75",
+  "manifestMirrorPath": "model/registry/manifests/vfdlm-g1-edge-v0.1.0-bootstrap.json",
+  "packageBytes": 57292019,
+  "fileCount": 16,
+  "signature": {
+    "algorithm": "Ed25519",
+    "keyId": "vf-local-registry-dev-2026-08",
+    "publicKeySha256": "a7e493f3f8b8f5fa91be2dc0d07e7b580e7bd7261122f3bd2665e81a2b7470c9",
+    "signatureBase64": "EckOAPYUoqSccWuGIfqY97sN7ESkofj5J31I0e5174uvSWcemKuo/AA5ner25gk8OwgLEu6dZqUJiSdTVIY6Bw=="
+  },
+  "verification": {
+    "signatureVerified": true,
+    "exactFileSetVerified": true,
+    "allChecksumsVerified": true,
+    "compatibilityVerified": true,
+    "releaseStatus": "experimental",
+    "activationEligible": false,
+    "active": false
+  },
+  "registry": {
+    "path": "model/registry/active_model.json",
+    "schemaVersion": 2,
+    "revision": 1,
+    "registrySha256": "62a61fdd624a30aac5410204398d06f82ab419087e47b16b4bd27e166126594f",
+    "signature": {
+      "algorithm": "Ed25519",
+      "keyId": "vf-local-registry-dev-2026-08",
+      "publicKeySha256": "a7e493f3f8b8f5fa91be2dc0d07e7b580e7bd7261122f3bd2665e81a2b7470c9",
+      "signatureBase64": "U7dWW56fZN69ZADaLkzwTbB0HBTTQxK874Yls2y9Cm0Wttr94NvagxwHs8+BdvenThMJETJ+wCcX7LINK+FMDA=="
+    },
+    "activeArtifactId": null,
+    "catalogEntry": {
+      "artifactId": "vfdlm-g1-edge-v0.1.0-bootstrap",
+      "releaseStatus": "experimental",
+      "activationEligible": false,
+      "runtime": "pytorch-gen1-v1",
+      "root": "artifacts/vfdlm-g1-edge-v0.1.0-bootstrap",
+      "manifestPath": "artifact-manifest.json",
+      "manifestSha256": "93508d7ecbbdd482982794ac9be8ffcf884a736d406f9a89616d6a59cc76cf61",
+      "manifestFileSha256": "f0a546ada7beffe2ce9e7ae6262c99a9b0073ed0fa02362508283e1c678d4b75",
+      "parameterCount": 14198464,
+      "contextLength": 128,
+      "quantization": "fp32",
+      "packageBytes": 57292019
+    }
+  },
+  "sourceEvidence": {
+    "selection": {
+      "path": "model/gen1/configs/gen1-bootstrap-best-v1.json",
+      "bytes": 1799,
+      "sha256": "90a10f65b3feca8122ff440e8c302c55671f6cf61216f6a68e0317f8f282a098"
+    },
+    "evaluation": {
+      "path": "evaluation/reports/gen1-bootstrap-heldout-v1.json",
+      "bytes": 68139,
+      "sha256": "924eaa3579d47400db27c13d642d2a08251895ea9733215d41bd29a4dc7f4ec9"
+    },
+    "scaleDecision": {
+      "path": "model/gen1/decisions/gen1-scale-decision-v1.json",
+      "bytes": 13791,
+      "sha256": "d01052f688b8fc592b3176861013b9635bcf1a8d272c6ce51582932d6e4943c6"
+    },
+    "checkpointManifest": {
+      "path": "training_runs/vfai014-gen1-bootstrap-v1/checkpoints/step-00000256/checkpoint-manifest.json",
+      "bytes": 2279,
+      "sha256": "16c7782c31ef56aee53a6c5cda88c0d148f9ff8e81a2e13d3d7cea79dfd48269"
+    },
+    "weights": {
+      "path": "training_runs/vfai014-gen1-bootstrap-v1/checkpoints/step-00000256/model/weights.pt",
+      "bytes": 56811323,
+      "sha256": "aab2474dd3263202e5aa2497fb5cc49f654c10b8d71ef74293764281b9e4711f"
+    },
+    "tokenizerManifest": {
+      "path": "model/tokenizers/vfdlm-byte-bpe-v1.0.0/tokenizer_manifest.json",
+      "bytes": 6147,
+      "sha256": "fb236061ccabf07560ca764c37e6f1bd4b0c0a5b7c333c4cd6c156c2ab1b1c43"
+    }
+  },
+  "operatorBoundary": "This report proves packaging integrity only. The artifact is experimental and must not be activated or served.",
+  "reportSha256": "547fc49fc8d3c21881fb6c347ebf625caf0627ebe1d445ccafcd8aed0e4e40bc"
+}

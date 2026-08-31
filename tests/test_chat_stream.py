@@ -7,6 +7,7 @@ import pytest
 import requests
 from fastapi.testclient import TestClient
 
+import api.chat as chat_module
 from api.chat import _get_local_orchestrator, stream_chat_sse
 from api.schemas import ChatRequest
 from config import get_settings
@@ -29,16 +30,52 @@ def test_chat_stream_is_explicitly_local_and_completes(monkeypatch) -> None:
     start = event_payload(events[0])
     complete = event_payload(events[-1])
 
-    assert start["mode"] == "local-deterministic"
+    assert start["mode"] == "deterministic-fallback"
     assert start["model"] == "voltforge-local-engine-v1"
     assert start["generationNetworkAccess"] is False
-    assert start["internetRetrieval"] == {
-        "enabled": False,
-        "policy": "optional-evidence-only",
-        "generationDependency": False,
+    assert start["fallbackUsed"] is True
+    assert start["fallbackReasonCode"] == "NO_APPROVED_MODEL_ARTIFACT"
+    assert start["fallbackSource"] == "voltforge-deterministic-tools"
+    assert start["neuralAttempted"] is False
+    assert start["neuralArtifactId"] is None
+    assert start["qualityGate"] == {
+        "policyId": "vfai019-generation-quality-policy-v1",
+        "status": "not-run",
+        "code": "QG_NOT_RUN_MODEL_UNAVAILABLE",
+        "rawOutputStored": False,
     }
+    assert start["contextCompiler"]["ready"] is True
+    assert start["contextCompiler"]["policyId"] == "vfai020-project-context-policy-v1"
+    assert start["contextCompiler"]["rawPromptStored"] is False
+    assert start["engineeringTools"]["ready"] is True
+    assert start["engineeringTools"]["policyId"] == (
+        "vfai021-authoritative-engineering-tools-v1"
+    )
+    assert start["engineeringTools"]["criticalModelOverrideAllowed"] is False
+    assert start["localRetrieval"]["ready"] is True
+    assert start["localRetrieval"]["policyId"] == (
+        "vfai022-curated-local-retrieval-v1"
+    )
+    assert start["localRetrieval"]["embeddingsEnabled"] is False
+    assert start["internetRetrieval"]["enabled"] is False
+    assert start["internetRetrieval"]["state"] == "offline"
+    assert start["internetRetrieval"]["policyId"] == (
+        "vfai023-secure-internet-evidence-v1"
+    )
+    assert start["internetRetrieval"]["generationDependency"] is False
+    assert start["internetRetrieval"]["arbitraryUrlFetchAllowed"] is False
+    assert start["internetRetrieval"]["webContentTrainingAllowed"] is False
     assert any(event.startswith("event: delta") for event in events)
-    assert complete["mode"] == "local-deterministic"
+    assert complete["mode"] == "deterministic-fallback"
+    assert complete["fallbackUsed"] is True
+    assert complete["fallbackReasonCode"] == "NO_APPROVED_MODEL_ARTIFACT"
+    assert complete["neuralAttempted"] is False
+    assert complete["qualityGate"]["status"] == "not-run"
+    assert complete["contextCompiler"]["status"] == "compiled"
+    assert complete["contextCompiler"]["promptTokens"] <= complete["contextCompiler"][
+        "promptTokenLimit"
+    ]
+    assert complete["contextCompiler"]["rawProjectContextStored"] is False
     assert complete["reply"]
 
 
@@ -55,9 +92,49 @@ def test_chat_stream_emits_local_engine_checks(monkeypatch) -> None:
         }
     )
     events = asyncio.run(collect_events(request))
-    assert any(event.startswith("event: tool") and "validate_circuit" in event for event in events)
-    assert any(event.startswith("event: tool") and "review_firmware" in event for event in events)
-    assert any('"compiled":false' in event for event in events)
+    assert any(
+        event.startswith("event: tool") and "engineering-authority-index" in event
+        for event in events
+    )
+    assert any("firmware.pin-mode-missing" in event for event in events)
+    assert any(
+        event.startswith("event: tool") and "curated-local-retrieval" in event
+        for event in events
+    )
+    assert any('"modelOverrideAllowed":false' in event for event in events)
+
+
+def test_ready_model_without_context_compiler_does_not_attempt_or_fabricate_neural(
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("VOLTFORGE_AI_STORE_CONVERSATIONS", "false")
+    monkeypatch.setenv("VOLTFORGE_AI_INTERNET_RETRIEVAL_ENABLED", "false")
+    monkeypatch.setattr(
+        chat_module.model_runtime_service,
+        "health",
+        lambda: {"ready": True, "code": "READY", "artifactId": "approved-future-artifact"},
+    )
+
+    def forbidden_runtime_access():
+        raise AssertionError("Chat accessed neural runtime without a context compiler")
+
+    monkeypatch.setattr(
+        chat_module.model_runtime_service,
+        "runtime_for_generation",
+        forbidden_runtime_access,
+    )
+
+    events = asyncio.run(collect_events(ChatRequest(message="Explain this LED circuit")))
+    start = event_payload(events[0])
+    complete = event_payload(events[-1])
+
+    assert start["neuralModelReady"] is True
+    assert start["fallbackReasonCode"] == "NEURAL_GENERATION_NOT_ENABLED"
+    assert start["neuralAttempted"] is False
+    assert start["qualityGate"]["code"] == "QG_NOT_RUN_GENERATION_DISABLED"
+    assert complete["fallbackReasonCode"] == "NEURAL_GENERATION_NOT_ENABLED"
+    assert complete["neuralAttempted"] is False
+    assert complete["reply"]
 
 
 def test_local_generation_completes_when_all_outbound_network_is_blocked(monkeypatch) -> None:
@@ -120,11 +197,30 @@ def test_health_separates_local_generation_and_optional_retrieval(monkeypatch) -
     assert response.status_code == 200
     data = response.json()
     assert data["generation"] == {
-        "mode": "local-deterministic",
+        "mode": "deterministic-fallback",
         "networkRequired": False,
+        "neuralOutputPolicy": "quality-gated-only",
+        "qualityGatePolicyId": "vfai019-generation-quality-policy-v1",
+        "fallbackSource": "voltforge-deterministic-tools",
     }
+    assert data["generationQuality"]["policyId"] == "vfai019-generation-quality-policy-v1"
+    assert data["generationQuality"]["rawPromptStored"] is False
+    assert data["generationQuality"]["rawOutputStored"] is False
+    assert data["contextCompiler"]["ready"] is True
+    assert data["contextCompiler"]["policyId"] == "vfai020-project-context-policy-v1"
+    assert data["contextCompiler"]["minimumSupportedContextWindowTokens"] == 768
+    assert data["engineeringTools"]["ready"] is True
+    assert data["engineeringTools"]["toolCount"] == 7
+    assert data["engineeringTools"]["criticalModelOverrideAllowed"] is False
+    assert data["localRetrieval"]["ready"] is True
+    assert data["localRetrieval"]["indexVersion"] == "1.1.0"
+    assert data["localRetrieval"]["staleResultsAllowed"] is False
     assert data["internetRetrieval"]["policy"] == "optional-evidence-only"
+    assert data["internetRetrieval"]["policyId"] == (
+        "vfai023-secure-internet-evidence-v1"
+    )
     assert data["internetRetrieval"]["generationDependency"] is False
+    assert data["internetRetrieval"]["arbitraryUrlFetchAllowed"] is False
     assert "llmProvider" not in data
     assert "llmConfigured" not in data
 

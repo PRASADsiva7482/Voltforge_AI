@@ -36,7 +36,9 @@ from synthetic_data.verifiers import (
     SyntheticVerificationError,
     canonical_json,
     compiler_receipt,
+    compiler_session,
     content_sha256,
+    reset_toolchain_identity_cache,
     toolchain_identity,
     validate_compiler_receipt,
 )
@@ -70,6 +72,7 @@ LOCKED_DEPENDENCIES = (
     "synthetic_data/verifiers.py",
     "synthetic_data/generator.py",
     "synthetic_data/pipeline.py",
+    "synthetic_data/toolchains.v1.json",
     "tools/build_verified_synthetic_data.py",
     "electronics_corpus/catalog.v1.json",
     "electronics_corpus/knowledge-record.schema.json",
@@ -81,6 +84,13 @@ LOCKED_DEPENDENCIES = (
 
 def _relative(path: Path) -> str:
     return path.resolve().relative_to(AI_ROOT).as_posix()
+
+
+def _toolchain_profiles() -> dict[str, dict[str, Any]]:
+    return {
+        profile_id: toolchain_identity(profile_id, require_files=False)
+        for profile_id in sorted({target.toolchain_id for target in FIRMWARE_TARGETS})
+    }
 
 
 def _json_bytes(value: Any) -> bytes:
@@ -122,7 +132,7 @@ def build_pipeline_lock() -> dict[str, Any]:
             "version": GRAMMAR_VERSION,
             "deterministicSeed": DETERMINISTIC_SEED,
         },
-        "toolchain": toolchain_identity(require_files=False),
+        "toolchains": _toolchain_profiles(),
         "dependencies": dependencies,
         "outputs": {
             "shards": [f"synthetic_data/shards/v1/{name}" for name in SHARDS],
@@ -141,11 +151,13 @@ def build_pipeline_lock() -> dict[str, Any]:
 
 
 def write_pipeline_lock() -> Path:
+    reset_toolchain_identity_cache()
     _atomic_write(LOCK_PATH, _json_bytes(build_pipeline_lock()))
     return LOCK_PATH
 
 
 def verify_pipeline_lock() -> dict[str, Any]:
+    reset_toolchain_identity_cache()
     if not LOCK_PATH.is_file():
         raise SyntheticVerificationError("Synthetic pipeline lock is missing")
     try:
@@ -163,10 +175,11 @@ def verify_pipeline_lock() -> dict[str, Any]:
 def _compile_all() -> dict[str, dict[str, Any]]:
     receipts: dict[str, dict[str, Any]] = {}
     cases = render_firmware_sources()
-    for index, case in enumerate(cases, start=1):
-        print(f"compile gate {index}/{len(cases)}: {case['caseId']}", flush=True)
-        receipt = compiler_receipt(case)
-        receipts[str(case["caseId"])] = receipt
+    with compiler_session():
+        for index, case in enumerate(cases, start=1):
+            print(f"compile gate {index}/{len(cases)}: {case['caseId']}", flush=True)
+            receipt = compiler_receipt(case)
+            receipts[str(case["caseId"])] = receipt
     return receipts
 
 
@@ -319,7 +332,12 @@ def _build_dataset(
                 "recordCounts": dict(sorted(component_counts.items())),
             },
             "compiledFirmwareTargets": [
-                {"board": target.board, "fqbn": target.fqbn} for target in FIRMWARE_TARGETS
+                {
+                    "board": target.board,
+                    "fqbn": target.fqbn,
+                    "toolchainId": target.toolchain_id,
+                }
+                for target in FIRMWARE_TARGETS
             ],
         },
         "tokens": {
@@ -332,7 +350,7 @@ def _build_dataset(
             "receiptCount": len(receipt_values),
             "acceptedCompileCount": sum(1 for item in receipt_values if item["observedSuccess"]),
             "expectedFailureCount": sum(1 for item in receipt_values if not item["observedSuccess"]),
-            "toolchain": toolchain_identity(require_files=False),
+            "toolchains": _toolchain_profiles(),
             "receiptsPath": _relative(RECEIPT_PATH),
             "receiptsSha256": hashlib.sha256(
                 _jsonl_bytes(receipts[case_id] for case_id in sorted(receipts))
@@ -370,6 +388,20 @@ def write_release() -> dict[str, Any]:
     receipts = _compile_all()
     receipt_bytes = _jsonl_bytes(receipts[case_id] for case_id in sorted(receipts))
     _atomic_write(RECEIPT_PATH, receipt_bytes)
+    return _write_release_outputs(receipts)
+
+
+def refresh_release() -> dict[str, Any]:
+    """Refresh governed outputs only when every retained receipt is still current."""
+
+    verify_pipeline_lock()
+    _require_sources()
+    return _write_release_outputs(_load_receipts())
+
+
+def _write_release_outputs(
+    receipts: Mapping[str, Mapping[str, Any]],
+) -> dict[str, Any]:
     shards, report = _build_dataset(receipts)
     for filename, records in shards.items():
         write_task_shard(SHARD_ROOT / filename, records)

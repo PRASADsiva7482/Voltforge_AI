@@ -100,7 +100,7 @@
         "owner": "VoltForge",
         "evidence": "The repository-owned builder contains normalized factual claims and bounded source references only; it retains no copied source prose, live web responses, model output, or private project data."
       },
-      "revision": "1.0.0",
+      "revision": "1.1.0",
       "license": {
         "status": "approved",
         "identifier": "VoltForge-Proprietary",
@@ -125,7 +125,7 @@
         "version": "1.0.0",
         "path": "electronics_corpus/schema.py"
       },
-      "checksum": "cf97ddb1066c6b5461d61be1532aade1baa0cde70008a682605a253c227a33c2",
+      "checksum": "5a3080d1f22b927942492a19296405553a050b8daf5458234eac603be1343089",
       "retention": {
         "class": "project-curated-source",
         "duration": "while referenced by an approved shard, runtime index, or model artifact",
@@ -143,7 +143,7 @@
         "owner": "VoltForge",
         "evidence": "The immutable lock binds VoltForge-owned grammars, deterministic corpus/netlist verifiers, task and leakage contracts, and a version-pinned compiler toolchain. No third-party model, web result, private project, or quarantined corpus is an input."
       },
-      "revision": "1.0.0",
+      "revision": "1.2.0",
       "license": {
         "status": "approved",
         "identifier": "VoltForge-Proprietary",
@@ -173,7 +173,7 @@
         "version": "1.0.0",
         "path": "evaluation/leakage.py"
       },
-      "checksum": "d8b493960ffa84fef3d3fb170af5481d22a02d994884d4b068c12a4d9ba3f71d",
+      "checksum": "b8eb81773137fec88eb42cd2c5351d951e8589c193af0560fb91a370215a1a3c",
       "retention": {
         "class": "project-verified-training-source",
         "duration": "while referenced by an approved shard or model artifact",

@@ -9,11 +9,11 @@
   "status": "quarantined",
   "eligibleUses": [],
   "reason": "The generator is retired and its retained output has no approved immutable run lineage.",
-  "createdAtUtc": "2026-08-28T07:19:31.159449+00:00",
+  "createdAtUtc": "2026-08-31T07:34:05.100481+00:00",
   "sourceRegistry": {
     "registryId": "voltforge-source-registry",
     "version": "1.2.0",
-    "sha256": "aa4eb56780317fb94857a4f05d420a6de84cc6420e0ee83a6c27d636aadbfcde"
+    "sha256": "66d939d62f0909ae7a21aaecd6a84078ea597e69e0ef8183c40d4b35ec902786"
   },
   "sources": [
     {
@@ -64,5 +64,5 @@
       }
     ]
   },
-  "manifestSha256": "0801d3d009fba86c7ce5b9124706e89b94e149c73d48adb3c0821f3e1e1f994c"
+  "manifestSha256": "9599e299edace891877d39111484acec7c61fb893a25e5abd474a449e7021371"
 }

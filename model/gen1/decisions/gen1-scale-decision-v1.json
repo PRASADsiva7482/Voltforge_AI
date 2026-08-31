@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "reportId": "vfai015-gen1-scale-decision-v1",
-  "generatedAtUtc": "2026-08-28T17:17:10.480388Z",
+  "generatedAtUtc": "2026-08-31T02:48:50.692471Z",
   "policyId": "vfai015-gen1-scale-decision-policy-v1",
   "policyPath": "gen1_decision/policy.v1.json",
-  "policyFileSha256": "9c0343cc565f5699b4c48d91434db7462be0bc6245400a977275d7db5bb73397",
-  "policyFingerprint": "6264a575060b79cb4b90684e2360a1bc0094e954916821a2626088cf4cdb64eb",
+  "policyFileSha256": "a64b2c4d1ac2f6b2e734eff30ff784c78febc929b7fbcdfad311813880a1d53b",
+  "policyFingerprint": "172e92090e97135ae9ddff839b92ce00c9bf8be80d020def788324fc87541161",
   "registryObservation": {
     "path": "model/registry/active_model.json",
-    "fileSha256AtDecision": "d32cbc3f6fb3fe5367dd8263aaeefecabc5760cd62a9cc043fa2e0a34ee66093",
+    "fileSha256AtDecision": "9ae71d3d13a5b05c90b45e2ad9ef9150abac4a70715840b2d08e9b9db75c897b",
     "state": "no-approved-artifact",
     "activeArtifactId": null,
     "releaseStatus": "none",
@@ -54,13 +54,13 @@
       "confidence": "high",
       "evidence": {
         "edgeDataCoveragePercent": 0.071411,
-        "trainingExposureMultiple": 1.818596835177146,
+        "trainingExposureMultiple": 1.8185129663617132,
         "fullHeldoutLossMonotonicallyImproved": true,
         "outputHeldoutLossMonotonicallyImproved": true,
-        "lastIntervalFullLossImprovementPercent": 0.5221695426795345,
-        "lastIntervalOutputLossImprovementPercent": 0.6584871482793543,
-        "minimumTaskLossImprovementPercent": 23.4926686470955,
-        "maximumTaskLossImprovementPercent": 28.006862998492913
+        "lastIntervalFullLossImprovementPercent": 0.4738884361654523,
+        "lastIntervalOutputLossImprovementPercent": 0.5151184480530624,
+        "minimumTaskLossImprovementPercent": 22.373269802253184,
+        "maximumTaskLossImprovementPercent": 28.600601423350252
       },
       "action": "Expand diverse, governed, VoltForge-owned records and independent held-out coverage before repeating training or increasing parameters."
     },
@@ -177,8 +177,8 @@
       "evidence": {
         "parameterCount": 14198464,
         "dataCoveragePercent": 0.071411,
-        "fullTop1TokenAccuracy": 0.0193862855876814,
-        "outputTop1TokenAccuracy": 0.020864381520119227,
+        "fullTop1TokenAccuracy": 0.021517180810187726,
+        "outputTop1TokenAccuracy": 0.017533432392273403,
         "globalMetricsPassing": 0,
         "globalMetricsRequired": 13
       }
@@ -302,12 +302,12 @@
   "evidenceSummary": {
     "approvedTrainingTokens": 71411,
     "architectureSweepReportSha256": "f24c63057ce232216d79915bca664e61b79665cde6df3123509b6c41ab9d8932",
-    "bootstrapReportSha256": "8b201e041db4d9101e1bf04ca3eb219488c2961ed60cfbd95a39a90d5ac1f57d",
-    "bestBootstrapManifestSha256": "e1098d64ffe60ac5f091c5f29cba3f00e0418f945beeec243ca87dbe72fe7ce4",
+    "bootstrapReportSha256": "a0af9817ef32ddbfdff385e7f5d74958ec75d3c5c0d18528e7c05045065731e5",
+    "bestBootstrapManifestSha256": "f4bbac9be2fa10a2c05f3b7d8871aacbc6765d85c0ebaebcb8fdef979ae90ba4",
     "selectedBootstrapStep": 256,
     "bootstrapFirstEvaluatedStep": 32,
     "bootstrapGlobalMetricsPassing": 0,
     "bootstrapGlobalMetricCount": 13
   },
-  "reportSha256": "54d8c8601e86881c7341fce839d9526641b5b08ae5466e17a39a2174bc962e4f"
+  "reportSha256": "847ba741dadf025b15dab483a219cb0e5a36d86eccc1a3067289d5436a26dfe4"
 }

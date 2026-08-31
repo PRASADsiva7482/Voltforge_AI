@@ -203,8 +203,7 @@
           "type": "string"
         },
         "sourceRevision": {
-          "const": "1.0.0",
-          "default": "1.0.0",
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,159}$",
           "title": "Sourcerevision",
           "type": "string"
         },
@@ -225,6 +224,7 @@
         }
       },
       "required": [
+        "sourceRevision",
         "evidence"
       ],
       "title": "Provenance",

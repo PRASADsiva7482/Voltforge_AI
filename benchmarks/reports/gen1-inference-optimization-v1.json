@@ -1,0 +1,1345 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai018-gen1-inference-optimization-v1",
+  "generatedAtUtc": "2026-08-29T01:42:48.688255Z",
+  "networkAccessAllowed": false,
+  "sourceArtifactId": "vfdlm-g1-edge-v0.1.1-runtime",
+  "sourceArtifactManifestSha256": "6e62cda425423bc64b7f12aa6c0965261c9fc9f162bc5e2f99b76531cdaa1efb",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.12.13",
+    "torch": "2.8.0+cpu",
+    "torchThreadsAtHarnessStart": 4,
+    "cudaAvailable": false,
+    "mpsAvailable": false,
+    "harnessSha256": "3980bd738bf9177fb2a2a1eea53c72f1be56f682daafd9b5b1252d2d44b65d6a"
+  },
+  "candidateMatrix": [
+    {
+      "candidateId": "reference",
+      "technique": "reference",
+      "comparisonBaselineId": "reference",
+      "runtimeSelectable": false,
+      "profile": {
+        "profileId": "vfai018-reference-fp32-manual-no-kv",
+        "kvCacheEnabled": false,
+        "attentionBackend": "manual",
+        "torchThreads": 4,
+        "mmapWeights": false,
+        "quantization": "fp32",
+        "dynamicBatchMaxSize": 1
+      }
+    },
+    {
+      "candidateId": "kv-cache",
+      "technique": "kv-cache",
+      "comparisonBaselineId": "reference",
+      "runtimeSelectable": true,
+      "profile": {
+        "profileId": "vfai017-safe-fp32-manual-kv",
+        "kvCacheEnabled": true,
+        "attentionBackend": "manual",
+        "torchThreads": 4,
+        "mmapWeights": false,
+        "quantization": "fp32",
+        "dynamicBatchMaxSize": 1
+      }
+    },
+    {
+      "candidateId": "sdpa",
+      "technique": "attention-kernel",
+      "comparisonBaselineId": "kv-cache",
+      "runtimeSelectable": true,
+      "profile": {
+        "profileId": "vfai018-fp32-sdpa-kv",
+        "kvCacheEnabled": true,
+        "attentionBackend": "sdpa",
+        "torchThreads": 4,
+        "mmapWeights": false,
+        "quantization": "fp32",
+        "dynamicBatchMaxSize": 1
+      }
+    },
+    {
+      "candidateId": "memory-map",
+      "technique": "memory-mapping",
+      "comparisonBaselineId": "kv-cache",
+      "runtimeSelectable": true,
+      "profile": {
+        "profileId": "vfai018-fp32-manual-kv-mmap",
+        "kvCacheEnabled": true,
+        "attentionBackend": "manual",
+        "torchThreads": 4,
+        "mmapWeights": true,
+        "quantization": "fp32",
+        "dynamicBatchMaxSize": 1
+      }
+    },
+    {
+      "candidateId": "threads-1",
+      "technique": "thread-setting",
+      "comparisonBaselineId": "kv-cache",
+      "runtimeSelectable": true,
+      "profile": {
+        "profileId": "vfai018-fp32-manual-kv-t1",
+        "kvCacheEnabled": true,
+        "attentionBackend": "manual",
+        "torchThreads": 1,
+        "mmapWeights": false,
+        "quantization": "fp32",
+        "dynamicBatchMaxSize": 1
+      }
+    },
+    {
+      "candidateId": "threads-2",
+      "technique": "thread-setting",
+      "comparisonBaselineId": "kv-cache",
+      "runtimeSelectable": true,
+      "profile": {
+        "profileId": "vfai018-fp32-manual-kv-t2",
+        "kvCacheEnabled": true,
+        "attentionBackend": "manual",
+        "torchThreads": 2,
+        "mmapWeights": false,
+        "quantization": "fp32",
+        "dynamicBatchMaxSize": 1
+      }
+    },
+    {
+      "candidateId": "threads-8",
+      "technique": "thread-setting",
+      "comparisonBaselineId": "kv-cache",
+      "runtimeSelectable": true,
+      "profile": {
+        "profileId": "vfai018-fp32-manual-kv-t8",
+        "kvCacheEnabled": true,
+        "attentionBackend": "manual",
+        "torchThreads": 8,
+        "mmapWeights": false,
+        "quantization": "fp32",
+        "dynamicBatchMaxSize": 1
+      }
+    },
+    {
+      "candidateId": "dynamic-batch-4",
+      "technique": "dynamic-batching",
+      "comparisonBaselineId": "kv-cache",
+      "runtimeSelectable": false,
+      "profile": {
+        "profileId": "vfai018-fp32-manual-kv-b4",
+        "kvCacheEnabled": true,
+        "attentionBackend": "manual",
+        "torchThreads": 4,
+        "mmapWeights": false,
+        "quantization": "fp32",
+        "dynamicBatchMaxSize": 4
+      }
+    },
+    {
+      "candidateId": "int8",
+      "technique": "quantization-int8",
+      "comparisonBaselineId": "kv-cache",
+      "runtimeSelectable": false,
+      "profile": {
+        "profileId": "vfai018-int8-weight-only-manual-kv",
+        "kvCacheEnabled": true,
+        "attentionBackend": "manual",
+        "torchThreads": 4,
+        "mmapWeights": false,
+        "quantization": "int8-weight-only",
+        "dynamicBatchMaxSize": 1
+      }
+    },
+    {
+      "candidateId": "int4",
+      "technique": "quantization-int4",
+      "comparisonBaselineId": "kv-cache",
+      "runtimeSelectable": false,
+      "profile": {
+        "profileId": "vfai018-int4-weight-only-manual-kv",
+        "kvCacheEnabled": true,
+        "attentionBackend": "manual",
+        "torchThreads": 4,
+        "mmapWeights": false,
+        "quantization": "int4-weight-only",
+        "dynamicBatchMaxSize": 1
+      }
+    }
+  ],
+  "measurements": [
+    {
+      "candidateId": "reference",
+      "technique": "reference",
+      "comparisonBaselineId": "reference",
+      "runtimeSelectable": false,
+      "status": "measured",
+      "profile": {
+        "profileId": "vfai018-reference-fp32-manual-no-kv",
+        "kvCacheEnabled": false,
+        "attentionBackend": "manual",
+        "torchThreads": 4,
+        "mmapWeights": false,
+        "quantization": "fp32",
+        "dynamicBatchMaxSize": 1
+      },
+      "artifact": {
+        "artifactId": "vfdlm-g1-edge-v0.1.1-runtime",
+        "manifestSha256": "6e62cda425423bc64b7f12aa6c0965261c9fc9f162bc5e2f99b76531cdaa1efb",
+        "parameterCount": 14198464,
+        "weightDtype": "float32"
+      },
+      "quality": {
+        "splitId": "vf-tokenizer-split-v1",
+        "validationStreamSha256": "6d8926edecc6172ce2f1c97977b8b8eee0bf33d3b4b0a319bf3aa5c80c644db0",
+        "predictedTokens": 9027,
+        "nextTokenLoss": 5.9367194,
+        "perplexity": 378.690557321,
+        "top1Accuracy": 0.019386286,
+        "elapsedMs": 2597.2591,
+        "tokensPerSecond": 3475.587014
+      },
+      "generation": {
+        "requestCount": 4,
+        "batchSize": 1,
+        "generatedTokensPerRepeat": 32,
+        "repeats": 3,
+        "latencyMs": {
+          "median": 774.1903,
+          "p95": 795.06922
+        },
+        "firstTokenLatencyMs": {
+          "median": 91.352,
+          "p95": 97.5818
+        },
+        "throughputTokensPerSecond": 41.333507,
+        "outputTokenIdsSha256": "1705586e5cf6b18d74317230b56d6c114e9f09df9c73ae5cf6b74ea45ce6e396",
+        "rawOutputsStored": false
+      },
+      "memory": {
+        "processBeforeLoadMiB": 191.347656,
+        "processAfterRunMiB": 367.15625,
+        "load": {
+          "startWorkingSetMiB": 191.348,
+          "peakWorkingSetMiB": 307.914,
+          "peakIncreaseMiB": 116.566
+        },
+        "execution": {
+          "startWorkingSetMiB": 310.055,
+          "peakWorkingSetMiB": 367.246,
+          "peakIncreaseMiB": 57.191
+        },
+        "residentTensorBytes": 56793856
+      },
+      "loadLatencyMs": 1688.9712,
+      "optimization": {
+        "profileId": "vfai018-reference-fp32-manual-no-kv",
+        "quantizedLinearCount": 0,
+        "residentTensorBytes": 56793856
+      },
+      "fixture": {
+        "suitePath": "evaluation/fixtures/v1/suite.jsonl",
+        "suiteFileSha256": "ea74e74d5a2c0eee02922841d2e964d136d1136c282602c430a33b56663200f0",
+        "manifestPath": "evaluation/frozen-manifest.v1.json",
+        "manifestFileSha256": "8145f88f1f02eb8309043b4a199b10035e5c17e3613948ce4a91f7645b766449",
+        "promptCount": 4,
+        "promptSha256": [
+          "f4cf081aa47cb7dd4fec03135fb3cbbcbf83f57dea091a3258d45ad393cdf1d9",
+          "8dabff00a03d4cbe00c2b905e42f9345a39b881d45f0f891e58cf93abe341f79",
+          "5df6b1ce12da5eb82ebc4859a8ac011715eaeddd3d91d523a98d9b0183c645cd",
+          "1c6176b2b773438e0e2a9ff37250ae3077f7028a23f13a33c53e92267b79994c"
+        ],
+        "rawPromptsStored": false,
+        "rawOutputsStored": false
+      },
+      "networkAccessAllowed": false,
+      "comparison": {
+        "quality": {
+          "nextTokenLossDeltaPercent": 0.0,
+          "top1AccuracyDeltaPoints": 0.0,
+          "greedyOutputExactMatch": true,
+          "preserved": true
+        },
+        "latency": {
+          "medianGenerationChangePercent": 0.0,
+          "medianFirstTokenChangePercent": 0.0
+        },
+        "throughput": {
+          "changePercent": 0.0
+        },
+        "memory": {
+          "residentTensorBytesChangePercent": 0.0,
+          "residentTensorBytesDelta": 0
+        },
+        "materiallyBetter": false
+      },
+      "decision": {
+        "qualityGatePassed": true,
+        "performanceGatePassed": false,
+        "portableAcrossDeclaredTiers": true,
+        "eligibleForSelection": false
+      }
+    },
+    {
+      "candidateId": "kv-cache",
+      "technique": "kv-cache",
+      "comparisonBaselineId": "reference",
+      "runtimeSelectable": true,
+      "status": "measured",
+      "profile": {
+        "profileId": "vfai017-safe-fp32-manual-kv",
+        "kvCacheEnabled": true,
+        "attentionBackend": "manual",
+        "torchThreads": 4,
+        "mmapWeights": false,
+        "quantization": "fp32",
+        "dynamicBatchMaxSize": 1
+      },
+      "artifact": {
+        "artifactId": "vfdlm-g1-edge-v0.1.1-runtime",
+        "manifestSha256": "6e62cda425423bc64b7f12aa6c0965261c9fc9f162bc5e2f99b76531cdaa1efb",
+        "parameterCount": 14198464,
+        "weightDtype": "float32"
+      },
+      "quality": {
+        "splitId": "vf-tokenizer-split-v1",
+        "validationStreamSha256": "6d8926edecc6172ce2f1c97977b8b8eee0bf33d3b4b0a319bf3aa5c80c644db0",
+        "predictedTokens": 9027,
+        "nextTokenLoss": 5.9367194,
+        "perplexity": 378.690557321,
+        "top1Accuracy": 0.019386286,
+        "elapsedMs": 2568.0427,
+        "tokensPerSecond": 3515.128467
+      },
+      "generation": {
+        "requestCount": 4,
+        "batchSize": 1,
+        "generatedTokensPerRepeat": 32,
+        "repeats": 3,
+        "latencyMs": {
+          "median": 383.9919,
+          "p95": 396.21957
+        },
+        "firstTokenLatencyMs": {
+          "median": 84.0901,
+          "p95": 89.33683
+        },
+        "throughputTokensPerSecond": 83.335091,
+        "outputTokenIdsSha256": "1705586e5cf6b18d74317230b56d6c114e9f09df9c73ae5cf6b74ea45ce6e396",
+        "rawOutputsStored": false
+      },
+      "memory": {
+        "processBeforeLoadMiB": 192.042969,
+        "processAfterRunMiB": 342.28125,
+        "load": {
+          "startWorkingSetMiB": 192.043,
+          "peakWorkingSetMiB": 307.926,
+          "peakIncreaseMiB": 115.883
+        },
+        "execution": {
+          "startWorkingSetMiB": 310.195,
+          "peakWorkingSetMiB": 365.656,
+          "peakIncreaseMiB": 55.461
+        },
+        "residentTensorBytes": 56793856
+      },
+      "loadLatencyMs": 1627.7014,
+      "optimization": {
+        "profileId": "vfai017-safe-fp32-manual-kv",
+        "quantizedLinearCount": 0,
+        "residentTensorBytes": 56793856
+      },
+      "fixture": {
+        "suitePath": "evaluation/fixtures/v1/suite.jsonl",
+        "suiteFileSha256": "ea74e74d5a2c0eee02922841d2e964d136d1136c282602c430a33b56663200f0",
+        "manifestPath": "evaluation/frozen-manifest.v1.json",
+        "manifestFileSha256": "8145f88f1f02eb8309043b4a199b10035e5c17e3613948ce4a91f7645b766449",
+        "promptCount": 4,
+        "promptSha256": [
+          "f4cf081aa47cb7dd4fec03135fb3cbbcbf83f57dea091a3258d45ad393cdf1d9",
+          "8dabff00a03d4cbe00c2b905e42f9345a39b881d45f0f891e58cf93abe341f79",
+          "5df6b1ce12da5eb82ebc4859a8ac011715eaeddd3d91d523a98d9b0183c645cd",
+          "1c6176b2b773438e0e2a9ff37250ae3077f7028a23f13a33c53e92267b79994c"
+        ],
+        "rawPromptsStored": false,
+        "rawOutputsStored": false
+      },
+      "networkAccessAllowed": false,
+      "comparison": {
+        "quality": {
+          "nextTokenLossDeltaPercent": 0.0,
+          "top1AccuracyDeltaPoints": 0.0,
+          "greedyOutputExactMatch": true,
+          "preserved": true
+        },
+        "latency": {
+          "medianGenerationChangePercent": -50.400838,
+          "medianFirstTokenChangePercent": -7.949361
+        },
+        "throughput": {
+          "changePercent": 101.616309
+        },
+        "memory": {
+          "residentTensorBytesChangePercent": 0.0,
+          "residentTensorBytesDelta": 0
+        },
+        "materiallyBetter": true
+      },
+      "decision": {
+        "qualityGatePassed": true,
+        "performanceGatePassed": true,
+        "portableAcrossDeclaredTiers": true,
+        "eligibleForSelection": true
+      }
+    },
+    {
+      "candidateId": "sdpa",
+      "technique": "attention-kernel",
+      "comparisonBaselineId": "kv-cache",
+      "runtimeSelectable": true,
+      "status": "measured",
+      "profile": {
+        "profileId": "vfai018-fp32-sdpa-kv",
+        "kvCacheEnabled": true,
+        "attentionBackend": "sdpa",
+        "torchThreads": 4,
+        "mmapWeights": false,
+        "quantization": "fp32",
+        "dynamicBatchMaxSize": 1
+      },
+      "artifact": {
+        "artifactId": "vfdlm-g1-edge-v0.1.1-runtime",
+        "manifestSha256": "6e62cda425423bc64b7f12aa6c0965261c9fc9f162bc5e2f99b76531cdaa1efb",
+        "parameterCount": 14198464,
+        "weightDtype": "float32"
+      },
+      "quality": {
+        "splitId": "vf-tokenizer-split-v1",
+        "validationStreamSha256": "6d8926edecc6172ce2f1c97977b8b8eee0bf33d3b4b0a319bf3aa5c80c644db0",
+        "predictedTokens": 9027,
+        "nextTokenLoss": 5.9367194,
+        "perplexity": 378.690557321,
+        "top1Accuracy": 0.019386286,
+        "elapsedMs": 2432.2237,
+        "tokensPerSecond": 3711.418485
+      },
+      "generation": {
+        "requestCount": 4,
+        "batchSize": 1,
+        "generatedTokensPerRepeat": 32,
+        "repeats": 3,
+        "latencyMs": {
+          "median": 365.5,
+          "p95": 367.67116
+        },
+        "firstTokenLatencyMs": {
+          "median": 79.9078,
+          "p95": 80.38696
+        },
+        "throughputTokensPerSecond": 87.5513,
+        "outputTokenIdsSha256": "1705586e5cf6b18d74317230b56d6c114e9f09df9c73ae5cf6b74ea45ce6e396",
+        "rawOutputsStored": false
+      },
+      "memory": {
+        "processBeforeLoadMiB": 191.871094,
+        "processAfterRunMiB": 366.351562,
+        "load": {
+          "startWorkingSetMiB": 191.871,
+          "peakWorkingSetMiB": 309.438,
+          "peakIncreaseMiB": 117.566
+        },
+        "execution": {
+          "startWorkingSetMiB": 311.559,
+          "peakWorkingSetMiB": 366.438,
+          "peakIncreaseMiB": 54.879
+        },
+        "residentTensorBytes": 56793856
+      },
+      "loadLatencyMs": 1673.0143,
+      "optimization": {
+        "profileId": "vfai018-fp32-sdpa-kv",
+        "quantizedLinearCount": 0,
+        "residentTensorBytes": 56793856
+      },
+      "fixture": {
+        "suitePath": "evaluation/fixtures/v1/suite.jsonl",
+        "suiteFileSha256": "ea74e74d5a2c0eee02922841d2e964d136d1136c282602c430a33b56663200f0",
+        "manifestPath": "evaluation/frozen-manifest.v1.json",
+        "manifestFileSha256": "8145f88f1f02eb8309043b4a199b10035e5c17e3613948ce4a91f7645b766449",
+        "promptCount": 4,
+        "promptSha256": [
+          "f4cf081aa47cb7dd4fec03135fb3cbbcbf83f57dea091a3258d45ad393cdf1d9",
+          "8dabff00a03d4cbe00c2b905e42f9345a39b881d45f0f891e58cf93abe341f79",
+          "5df6b1ce12da5eb82ebc4859a8ac011715eaeddd3d91d523a98d9b0183c645cd",
+          "1c6176b2b773438e0e2a9ff37250ae3077f7028a23f13a33c53e92267b79994c"
+        ],
+        "rawPromptsStored": false,
+        "rawOutputsStored": false
+      },
+      "networkAccessAllowed": false,
+      "comparison": {
+        "quality": {
+          "nextTokenLossDeltaPercent": 0.0,
+          "top1AccuracyDeltaPoints": 0.0,
+          "greedyOutputExactMatch": true,
+          "preserved": true
+        },
+        "latency": {
+          "medianGenerationChangePercent": -4.815701,
+          "medianFirstTokenChangePercent": -4.973594
+        },
+        "throughput": {
+          "changePercent": 5.059344
+        },
+        "memory": {
+          "residentTensorBytesChangePercent": 0.0,
+          "residentTensorBytesDelta": 0
+        },
+        "materiallyBetter": true
+      },
+      "decision": {
+        "qualityGatePassed": true,
+        "performanceGatePassed": true,
+        "portableAcrossDeclaredTiers": true,
+        "eligibleForSelection": true
+      }
+    },
+    {
+      "candidateId": "memory-map",
+      "technique": "memory-mapping",
+      "comparisonBaselineId": "kv-cache",
+      "runtimeSelectable": true,
+      "status": "measured",
+      "profile": {
+        "profileId": "vfai018-fp32-manual-kv-mmap",
+        "kvCacheEnabled": true,
+        "attentionBackend": "manual",
+        "torchThreads": 4,
+        "mmapWeights": true,
+        "quantization": "fp32",
+        "dynamicBatchMaxSize": 1
+      },
+      "artifact": {
+        "artifactId": "vfdlm-g1-edge-v0.1.1-runtime",
+        "manifestSha256": "6e62cda425423bc64b7f12aa6c0965261c9fc9f162bc5e2f99b76531cdaa1efb",
+        "parameterCount": 14198464,
+        "weightDtype": "float32"
+      },
+      "quality": {
+        "splitId": "vf-tokenizer-split-v1",
+        "validationStreamSha256": "6d8926edecc6172ce2f1c97977b8b8eee0bf33d3b4b0a319bf3aa5c80c644db0",
+        "predictedTokens": 9027,
+        "nextTokenLoss": 5.9367194,
+        "perplexity": 378.690557321,
+        "top1Accuracy": 0.019386286,
+        "elapsedMs": 2494.4615,
+        "tokensPerSecond": 3618.817127
+      },
+      "generation": {
+        "requestCount": 4,
+        "batchSize": 1,
+        "generatedTokensPerRepeat": 32,
+        "repeats": 3,
+        "latencyMs": {
+          "median": 380.2719,
+          "p95": 385.26564
+        },
+        "firstTokenLatencyMs": {
+          "median": 84.5743,
+          "p95": 84.83449
+        },
+        "throughputTokensPerSecond": 84.150315,
+        "outputTokenIdsSha256": "1705586e5cf6b18d74317230b56d6c114e9f09df9c73ae5cf6b74ea45ce6e396",
+        "rawOutputsStored": false
+      },
+      "memory": {
+        "processBeforeLoadMiB": 191.691406,
+        "processAfterRunMiB": 358.867188,
+        "load": {
+          "startWorkingSetMiB": 191.691,
+          "peakWorkingSetMiB": 256.828,
+          "peakIncreaseMiB": 65.137
+        },
+        "execution": {
+          "startWorkingSetMiB": 258.945,
+          "peakWorkingSetMiB": 358.891,
+          "peakIncreaseMiB": 99.945
+        },
+        "residentTensorBytes": 56793856
+      },
+      "loadLatencyMs": 1580.496,
+      "optimization": {
+        "profileId": "vfai018-fp32-manual-kv-mmap",
+        "quantizedLinearCount": 0,
+        "residentTensorBytes": 56793856
+      },
+      "fixture": {
+        "suitePath": "evaluation/fixtures/v1/suite.jsonl",
+        "suiteFileSha256": "ea74e74d5a2c0eee02922841d2e964d136d1136c282602c430a33b56663200f0",
+        "manifestPath": "evaluation/frozen-manifest.v1.json",
+        "manifestFileSha256": "8145f88f1f02eb8309043b4a199b10035e5c17e3613948ce4a91f7645b766449",
+        "promptCount": 4,
+        "promptSha256": [
+          "f4cf081aa47cb7dd4fec03135fb3cbbcbf83f57dea091a3258d45ad393cdf1d9",
+          "8dabff00a03d4cbe00c2b905e42f9345a39b881d45f0f891e58cf93abe341f79",
+          "5df6b1ce12da5eb82ebc4859a8ac011715eaeddd3d91d523a98d9b0183c645cd",
+          "1c6176b2b773438e0e2a9ff37250ae3077f7028a23f13a33c53e92267b79994c"
+        ],
+        "rawPromptsStored": false,
+        "rawOutputsStored": false
+      },
+      "networkAccessAllowed": false,
+      "comparison": {
+        "quality": {
+          "nextTokenLossDeltaPercent": 0.0,
+          "top1AccuracyDeltaPoints": 0.0,
+          "greedyOutputExactMatch": true,
+          "preserved": true
+        },
+        "latency": {
+          "medianGenerationChangePercent": -0.96877,
+          "medianFirstTokenChangePercent": 0.575811
+        },
+        "throughput": {
+          "changePercent": 0.978248
+        },
+        "memory": {
+          "residentTensorBytesChangePercent": 0.0,
+          "residentTensorBytesDelta": 0
+        },
+        "materiallyBetter": false
+      },
+      "decision": {
+        "qualityGatePassed": true,
+        "performanceGatePassed": false,
+        "portableAcrossDeclaredTiers": true,
+        "eligibleForSelection": false
+      }
+    },
+    {
+      "candidateId": "threads-1",
+      "technique": "thread-setting",
+      "comparisonBaselineId": "kv-cache",
+      "runtimeSelectable": true,
+      "status": "measured",
+      "profile": {
+        "profileId": "vfai018-fp32-manual-kv-t1",
+        "kvCacheEnabled": true,
+        "attentionBackend": "manual",
+        "torchThreads": 1,
+        "mmapWeights": false,
+        "quantization": "fp32",
+        "dynamicBatchMaxSize": 1
+      },
+      "artifact": {
+        "artifactId": "vfdlm-g1-edge-v0.1.1-runtime",
+        "manifestSha256": "6e62cda425423bc64b7f12aa6c0965261c9fc9f162bc5e2f99b76531cdaa1efb",
+        "parameterCount": 14198464,
+        "weightDtype": "float32"
+      },
+      "quality": {
+        "splitId": "vf-tokenizer-split-v1",
+        "validationStreamSha256": "6d8926edecc6172ce2f1c97977b8b8eee0bf33d3b4b0a319bf3aa5c80c644db0",
+        "predictedTokens": 9027,
+        "nextTokenLoss": 5.936719454,
+        "perplexity": 378.690577645,
+        "top1Accuracy": 0.019386286,
+        "elapsedMs": 4620.0005,
+        "tokensPerSecond": 1953.895892
+      },
+      "generation": {
+        "requestCount": 4,
+        "batchSize": 1,
+        "generatedTokensPerRepeat": 32,
+        "repeats": 3,
+        "latencyMs": {
+          "median": 431.4179,
+          "p95": 432.13655
+        },
+        "firstTokenLatencyMs": {
+          "median": 129.4766,
+          "p95": 129.75677
+        },
+        "throughputTokensPerSecond": 74.17402,
+        "outputTokenIdsSha256": "1705586e5cf6b18d74317230b56d6c114e9f09df9c73ae5cf6b74ea45ce6e396",
+        "rawOutputsStored": false
+      },
+      "memory": {
+        "processBeforeLoadMiB": 191.78125,
+        "processAfterRunMiB": 358.324219,
+        "load": {
+          "startWorkingSetMiB": 191.781,
+          "peakWorkingSetMiB": 307.496,
+          "peakIncreaseMiB": 115.715
+        },
+        "execution": {
+          "startWorkingSetMiB": 309.754,
+          "peakWorkingSetMiB": 365.422,
+          "peakIncreaseMiB": 55.668
+        },
+        "residentTensorBytes": 56793856
+      },
+      "loadLatencyMs": 1582.1642,
+      "optimization": {
+        "profileId": "vfai018-fp32-manual-kv-t1",
+        "quantizedLinearCount": 0,
+        "residentTensorBytes": 56793856
+      },
+      "fixture": {
+        "suitePath": "evaluation/fixtures/v1/suite.jsonl",
+        "suiteFileSha256": "ea74e74d5a2c0eee02922841d2e964d136d1136c282602c430a33b56663200f0",
+        "manifestPath": "evaluation/frozen-manifest.v1.json",
+        "manifestFileSha256": "8145f88f1f02eb8309043b4a199b10035e5c17e3613948ce4a91f7645b766449",
+        "promptCount": 4,
+        "promptSha256": [
+          "f4cf081aa47cb7dd4fec03135fb3cbbcbf83f57dea091a3258d45ad393cdf1d9",
+          "8dabff00a03d4cbe00c2b905e42f9345a39b881d45f0f891e58cf93abe341f79",
+          "5df6b1ce12da5eb82ebc4859a8ac011715eaeddd3d91d523a98d9b0183c645cd",
+          "1c6176b2b773438e0e2a9ff37250ae3077f7028a23f13a33c53e92267b79994c"
+        ],
+        "rawPromptsStored": false,
+        "rawOutputsStored": false
+      },
+      "networkAccessAllowed": false,
+      "comparison": {
+        "quality": {
+          "nextTokenLossDeltaPercent": 1e-06,
+          "top1AccuracyDeltaPoints": 0.0,
+          "greedyOutputExactMatch": true,
+          "preserved": true
+        },
+        "latency": {
+          "medianGenerationChangePercent": 12.350781,
+          "medianFirstTokenChangePercent": 53.973654
+        },
+        "throughput": {
+          "changePercent": -10.993053
+        },
+        "memory": {
+          "residentTensorBytesChangePercent": 0.0,
+          "residentTensorBytesDelta": 0
+        },
+        "materiallyBetter": false
+      },
+      "decision": {
+        "qualityGatePassed": true,
+        "performanceGatePassed": false,
+        "portableAcrossDeclaredTiers": true,
+        "eligibleForSelection": false
+      }
+    },
+    {
+      "candidateId": "threads-2",
+      "technique": "thread-setting",
+      "comparisonBaselineId": "kv-cache",
+      "runtimeSelectable": true,
+      "status": "measured",
+      "profile": {
+        "profileId": "vfai018-fp32-manual-kv-t2",
+        "kvCacheEnabled": true,
+        "attentionBackend": "manual",
+        "torchThreads": 2,
+        "mmapWeights": false,
+        "quantization": "fp32",
+        "dynamicBatchMaxSize": 1
+      },
+      "artifact": {
+        "artifactId": "vfdlm-g1-edge-v0.1.1-runtime",
+        "manifestSha256": "6e62cda425423bc64b7f12aa6c0965261c9fc9f162bc5e2f99b76531cdaa1efb",
+        "parameterCount": 14198464,
+        "weightDtype": "float32"
+      },
+      "quality": {
+        "splitId": "vf-tokenizer-split-v1",
+        "validationStreamSha256": "6d8926edecc6172ce2f1c97977b8b8eee0bf33d3b4b0a319bf3aa5c80c644db0",
+        "predictedTokens": 9027,
+        "nextTokenLoss": 5.9367194,
+        "perplexity": 378.690557321,
+        "top1Accuracy": 0.019386286,
+        "elapsedMs": 2945.6169,
+        "tokensPerSecond": 3064.553303
+      },
+      "generation": {
+        "requestCount": 4,
+        "batchSize": 1,
+        "generatedTokensPerRepeat": 32,
+        "repeats": 3,
+        "latencyMs": {
+          "median": 374.7591,
+          "p95": 378.83268
+        },
+        "firstTokenLatencyMs": {
+          "median": 92.085,
+          "p95": 97.28205
+        },
+        "throughputTokensPerSecond": 85.388187,
+        "outputTokenIdsSha256": "1705586e5cf6b18d74317230b56d6c114e9f09df9c73ae5cf6b74ea45ce6e396",
+        "rawOutputsStored": false
+      },
+      "memory": {
+        "processBeforeLoadMiB": 191.734375,
+        "processAfterRunMiB": 368.382812,
+        "load": {
+          "startWorkingSetMiB": 191.734,
+          "peakWorkingSetMiB": 308.656,
+          "peakIncreaseMiB": 116.922
+        },
+        "execution": {
+          "startWorkingSetMiB": 310.762,
+          "peakWorkingSetMiB": 368.406,
+          "peakIncreaseMiB": 57.645
+        },
+        "residentTensorBytes": 56793856
+      },
+      "loadLatencyMs": 1653.0109,
+      "optimization": {
+        "profileId": "vfai018-fp32-manual-kv-t2",
+        "quantizedLinearCount": 0,
+        "residentTensorBytes": 56793856
+      },
+      "fixture": {
+        "suitePath": "evaluation/fixtures/v1/suite.jsonl",
+        "suiteFileSha256": "ea74e74d5a2c0eee02922841d2e964d136d1136c282602c430a33b56663200f0",
+        "manifestPath": "evaluation/frozen-manifest.v1.json",
+        "manifestFileSha256": "8145f88f1f02eb8309043b4a199b10035e5c17e3613948ce4a91f7645b766449",
+        "promptCount": 4,
+        "promptSha256": [
+          "f4cf081aa47cb7dd4fec03135fb3cbbcbf83f57dea091a3258d45ad393cdf1d9",
+          "8dabff00a03d4cbe00c2b905e42f9345a39b881d45f0f891e58cf93abe341f79",
+          "5df6b1ce12da5eb82ebc4859a8ac011715eaeddd3d91d523a98d9b0183c645cd",
+          "1c6176b2b773438e0e2a9ff37250ae3077f7028a23f13a33c53e92267b79994c"
+        ],
+        "rawPromptsStored": false,
+        "rawOutputsStored": false
+      },
+      "networkAccessAllowed": false,
+      "comparison": {
+        "quality": {
+          "nextTokenLossDeltaPercent": 0.0,
+          "top1AccuracyDeltaPoints": 0.0,
+          "greedyOutputExactMatch": true,
+          "preserved": true
+        },
+        "latency": {
+          "medianGenerationChangePercent": -2.404426,
+          "medianFirstTokenChangePercent": 9.50754
+        },
+        "throughput": {
+          "changePercent": 2.463663
+        },
+        "memory": {
+          "residentTensorBytesChangePercent": 0.0,
+          "residentTensorBytesDelta": 0
+        },
+        "materiallyBetter": false
+      },
+      "decision": {
+        "qualityGatePassed": true,
+        "performanceGatePassed": false,
+        "portableAcrossDeclaredTiers": true,
+        "eligibleForSelection": false
+      }
+    },
+    {
+      "candidateId": "threads-8",
+      "technique": "thread-setting",
+      "comparisonBaselineId": "kv-cache",
+      "runtimeSelectable": true,
+      "status": "measured",
+      "profile": {
+        "profileId": "vfai018-fp32-manual-kv-t8",
+        "kvCacheEnabled": true,
+        "attentionBackend": "manual",
+        "torchThreads": 8,
+        "mmapWeights": false,
+        "quantization": "fp32",
+        "dynamicBatchMaxSize": 1
+      },
+      "artifact": {
+        "artifactId": "vfdlm-g1-edge-v0.1.1-runtime",
+        "manifestSha256": "6e62cda425423bc64b7f12aa6c0965261c9fc9f162bc5e2f99b76531cdaa1efb",
+        "parameterCount": 14198464,
+        "weightDtype": "float32"
+      },
+      "quality": {
+        "splitId": "vf-tokenizer-split-v1",
+        "validationStreamSha256": "6d8926edecc6172ce2f1c97977b8b8eee0bf33d3b4b0a319bf3aa5c80c644db0",
+        "predictedTokens": 9027,
+        "nextTokenLoss": 5.9367194,
+        "perplexity": 378.690557321,
+        "top1Accuracy": 0.019386286,
+        "elapsedMs": 2052.4354,
+        "tokensPerSecond": 4398.189585
+      },
+      "generation": {
+        "requestCount": 4,
+        "batchSize": 1,
+        "generatedTokensPerRepeat": 32,
+        "repeats": 3,
+        "latencyMs": {
+          "median": 445.8496,
+          "p95": 465.52837
+        },
+        "firstTokenLatencyMs": {
+          "median": 82.7239,
+          "p95": 86.02708
+        },
+        "throughputTokensPerSecond": 71.773082,
+        "outputTokenIdsSha256": "1705586e5cf6b18d74317230b56d6c114e9f09df9c73ae5cf6b74ea45ce6e396",
+        "rawOutputsStored": false
+      },
+      "memory": {
+        "processBeforeLoadMiB": 191.890625,
+        "processAfterRunMiB": 346.589844,
+        "load": {
+          "startWorkingSetMiB": 191.891,
+          "peakWorkingSetMiB": 309.25,
+          "peakIncreaseMiB": 117.359
+        },
+        "execution": {
+          "startWorkingSetMiB": 311.719,
+          "peakWorkingSetMiB": 368.375,
+          "peakIncreaseMiB": 56.656
+        },
+        "residentTensorBytes": 56793856
+      },
+      "loadLatencyMs": 1654.5709,
+      "optimization": {
+        "profileId": "vfai018-fp32-manual-kv-t8",
+        "quantizedLinearCount": 0,
+        "residentTensorBytes": 56793856
+      },
+      "fixture": {
+        "suitePath": "evaluation/fixtures/v1/suite.jsonl",
+        "suiteFileSha256": "ea74e74d5a2c0eee02922841d2e964d136d1136c282602c430a33b56663200f0",
+        "manifestPath": "evaluation/frozen-manifest.v1.json",
+        "manifestFileSha256": "8145f88f1f02eb8309043b4a199b10035e5c17e3613948ce4a91f7645b766449",
+        "promptCount": 4,
+        "promptSha256": [
+          "f4cf081aa47cb7dd4fec03135fb3cbbcbf83f57dea091a3258d45ad393cdf1d9",
+          "8dabff00a03d4cbe00c2b905e42f9345a39b881d45f0f891e58cf93abe341f79",
+          "5df6b1ce12da5eb82ebc4859a8ac011715eaeddd3d91d523a98d9b0183c645cd",
+          "1c6176b2b773438e0e2a9ff37250ae3077f7028a23f13a33c53e92267b79994c"
+        ],
+        "rawPromptsStored": false,
+        "rawOutputsStored": false
+      },
+      "networkAccessAllowed": false,
+      "comparison": {
+        "quality": {
+          "nextTokenLossDeltaPercent": 0.0,
+          "top1AccuracyDeltaPoints": 0.0,
+          "greedyOutputExactMatch": true,
+          "preserved": true
+        },
+        "latency": {
+          "medianGenerationChangePercent": 16.109116,
+          "medianFirstTokenChangePercent": -1.624686
+        },
+        "throughput": {
+          "changePercent": -13.874118
+        },
+        "memory": {
+          "residentTensorBytesChangePercent": 0.0,
+          "residentTensorBytesDelta": 0
+        },
+        "materiallyBetter": false
+      },
+      "decision": {
+        "qualityGatePassed": true,
+        "performanceGatePassed": false,
+        "portableAcrossDeclaredTiers": true,
+        "eligibleForSelection": false
+      }
+    },
+    {
+      "candidateId": "dynamic-batch-4",
+      "technique": "dynamic-batching",
+      "comparisonBaselineId": "kv-cache",
+      "runtimeSelectable": false,
+      "status": "measured",
+      "profile": {
+        "profileId": "vfai018-fp32-manual-kv-b4",
+        "kvCacheEnabled": true,
+        "attentionBackend": "manual",
+        "torchThreads": 4,
+        "mmapWeights": false,
+        "quantization": "fp32",
+        "dynamicBatchMaxSize": 4
+      },
+      "artifact": {
+        "artifactId": "vfdlm-g1-edge-v0.1.1-runtime",
+        "manifestSha256": "6e62cda425423bc64b7f12aa6c0965261c9fc9f162bc5e2f99b76531cdaa1efb",
+        "parameterCount": 14198464,
+        "weightDtype": "float32"
+      },
+      "quality": {
+        "splitId": "vf-tokenizer-split-v1",
+        "validationStreamSha256": "6d8926edecc6172ce2f1c97977b8b8eee0bf33d3b4b0a319bf3aa5c80c644db0",
+        "predictedTokens": 9027,
+        "nextTokenLoss": 5.9367194,
+        "perplexity": 378.690557321,
+        "top1Accuracy": 0.019386286,
+        "elapsedMs": 2473.9343,
+        "tokensPerSecond": 3648.843868
+      },
+      "generation": {
+        "requestCount": 4,
+        "batchSize": 4,
+        "generatedTokensPerRepeat": 32,
+        "repeats": 3,
+        "latencyMs": {
+          "median": 142.1001,
+          "p95": 164.09943
+        },
+        "firstTokenLatencyMs": {
+          "median": 51.4036,
+          "p95": 61.01389
+        },
+        "throughputTokensPerSecond": 225.193367,
+        "outputTokenIdsSha256": "1705586e5cf6b18d74317230b56d6c114e9f09df9c73ae5cf6b74ea45ce6e396",
+        "rawOutputsStored": false
+      },
+      "memory": {
+        "processBeforeLoadMiB": 191.328125,
+        "processAfterRunMiB": 366.828125,
+        "load": {
+          "startWorkingSetMiB": 191.328,
+          "peakWorkingSetMiB": 308.148,
+          "peakIncreaseMiB": 116.82
+        },
+        "execution": {
+          "startWorkingSetMiB": 310.266,
+          "peakWorkingSetMiB": 367.0,
+          "peakIncreaseMiB": 56.734
+        },
+        "residentTensorBytes": 56793856
+      },
+      "loadLatencyMs": 1589.1761,
+      "optimization": {
+        "profileId": "vfai018-fp32-manual-kv-b4",
+        "quantizedLinearCount": 0,
+        "residentTensorBytes": 56793856
+      },
+      "fixture": {
+        "suitePath": "evaluation/fixtures/v1/suite.jsonl",
+        "suiteFileSha256": "ea74e74d5a2c0eee02922841d2e964d136d1136c282602c430a33b56663200f0",
+        "manifestPath": "evaluation/frozen-manifest.v1.json",
+        "manifestFileSha256": "8145f88f1f02eb8309043b4a199b10035e5c17e3613948ce4a91f7645b766449",
+        "promptCount": 4,
+        "promptSha256": [
+          "f4cf081aa47cb7dd4fec03135fb3cbbcbf83f57dea091a3258d45ad393cdf1d9",
+          "8dabff00a03d4cbe00c2b905e42f9345a39b881d45f0f891e58cf93abe341f79",
+          "5df6b1ce12da5eb82ebc4859a8ac011715eaeddd3d91d523a98d9b0183c645cd",
+          "1c6176b2b773438e0e2a9ff37250ae3077f7028a23f13a33c53e92267b79994c"
+        ],
+        "rawPromptsStored": false,
+        "rawOutputsStored": false
+      },
+      "networkAccessAllowed": false,
+      "comparison": {
+        "quality": {
+          "nextTokenLossDeltaPercent": 0.0,
+          "top1AccuracyDeltaPoints": 0.0,
+          "greedyOutputExactMatch": true,
+          "preserved": true
+        },
+        "latency": {
+          "medianGenerationChangePercent": -62.993985,
+          "medianFirstTokenChangePercent": -38.870806
+        },
+        "throughput": {
+          "changePercent": 170.226341
+        },
+        "memory": {
+          "residentTensorBytesChangePercent": 0.0,
+          "residentTensorBytesDelta": 0
+        },
+        "materiallyBetter": true
+      },
+      "decision": {
+        "qualityGatePassed": true,
+        "performanceGatePassed": true,
+        "portableAcrossDeclaredTiers": true,
+        "eligibleForSelection": false
+      }
+    },
+    {
+      "candidateId": "int8",
+      "technique": "quantization-int8",
+      "comparisonBaselineId": "kv-cache",
+      "runtimeSelectable": false,
+      "status": "measured",
+      "profile": {
+        "profileId": "vfai018-int8-weight-only-manual-kv",
+        "kvCacheEnabled": true,
+        "attentionBackend": "manual",
+        "torchThreads": 4,
+        "mmapWeights": false,
+        "quantization": "int8-weight-only",
+        "dynamicBatchMaxSize": 1
+      },
+      "artifact": {
+        "artifactId": "vfdlm-g1-edge-v0.1.1-runtime",
+        "manifestSha256": "6e62cda425423bc64b7f12aa6c0965261c9fc9f162bc5e2f99b76531cdaa1efb",
+        "parameterCount": 14198464,
+        "weightDtype": "float32"
+      },
+      "quality": {
+        "splitId": "vf-tokenizer-split-v1",
+        "validationStreamSha256": "6d8926edecc6172ce2f1c97977b8b8eee0bf33d3b4b0a319bf3aa5c80c644db0",
+        "predictedTokens": 9027,
+        "nextTokenLoss": 5.936679892,
+        "perplexity": 378.675596182,
+        "top1Accuracy": 0.019497064,
+        "elapsedMs": 2812.4356,
+        "tokensPerSecond": 3209.673494
+      },
+      "generation": {
+        "requestCount": 4,
+        "batchSize": 1,
+        "generatedTokensPerRepeat": 32,
+        "repeats": 3,
+        "latencyMs": {
+          "median": 743.7207,
+          "p95": 804.12042
+        },
+        "firstTokenLatencyMs": {
+          "median": 131.1061,
+          "p95": 132.23245
+        },
+        "throughputTokensPerSecond": 43.026905,
+        "outputTokenIdsSha256": "1705586e5cf6b18d74317230b56d6c114e9f09df9c73ae5cf6b74ea45ce6e396",
+        "rawOutputsStored": false
+      },
+      "memory": {
+        "processBeforeLoadMiB": 191.355469,
+        "processAfterRunMiB": 333.300781,
+        "load": {
+          "startWorkingSetMiB": 191.355,
+          "peakWorkingSetMiB": 316.684,
+          "peakIncreaseMiB": 125.328
+        },
+        "execution": {
+          "startWorkingSetMiB": 318.629,
+          "peakWorkingSetMiB": 343.887,
+          "peakIncreaseMiB": 25.258
+        },
+        "residentTensorBytes": 19829248
+      },
+      "loadLatencyMs": 1778.836,
+      "optimization": {
+        "profileId": "vfai018-int8-weight-only-manual-kv",
+        "quantizedLinearCount": 43,
+        "residentTensorBytes": 19829248
+      },
+      "fixture": {
+        "suitePath": "evaluation/fixtures/v1/suite.jsonl",
+        "suiteFileSha256": "ea74e74d5a2c0eee02922841d2e964d136d1136c282602c430a33b56663200f0",
+        "manifestPath": "evaluation/frozen-manifest.v1.json",
+        "manifestFileSha256": "8145f88f1f02eb8309043b4a199b10035e5c17e3613948ce4a91f7645b766449",
+        "promptCount": 4,
+        "promptSha256": [
+          "f4cf081aa47cb7dd4fec03135fb3cbbcbf83f57dea091a3258d45ad393cdf1d9",
+          "8dabff00a03d4cbe00c2b905e42f9345a39b881d45f0f891e58cf93abe341f79",
+          "5df6b1ce12da5eb82ebc4859a8ac011715eaeddd3d91d523a98d9b0183c645cd",
+          "1c6176b2b773438e0e2a9ff37250ae3077f7028a23f13a33c53e92267b79994c"
+        ],
+        "rawPromptsStored": false,
+        "rawOutputsStored": false
+      },
+      "networkAccessAllowed": false,
+      "comparison": {
+        "quality": {
+          "nextTokenLossDeltaPercent": -0.000665,
+          "top1AccuracyDeltaPoints": 0.011078,
+          "greedyOutputExactMatch": true,
+          "preserved": true
+        },
+        "latency": {
+          "medianGenerationChangePercent": 93.681351,
+          "medianFirstTokenChangePercent": 55.911457
+        },
+        "throughput": {
+          "changePercent": -48.368803
+        },
+        "memory": {
+          "residentTensorBytesChangePercent": -65.085575,
+          "residentTensorBytesDelta": -36964608
+        },
+        "materiallyBetter": true
+      },
+      "decision": {
+        "qualityGatePassed": true,
+        "performanceGatePassed": true,
+        "portableAcrossDeclaredTiers": false,
+        "eligibleForSelection": false
+      }
+    },
+    {
+      "candidateId": "int4",
+      "technique": "quantization-int4",
+      "comparisonBaselineId": "kv-cache",
+      "runtimeSelectable": false,
+      "status": "measured",
+      "profile": {
+        "profileId": "vfai018-int4-weight-only-manual-kv",
+        "kvCacheEnabled": true,
+        "attentionBackend": "manual",
+        "torchThreads": 4,
+        "mmapWeights": false,
+        "quantization": "int4-weight-only",
+        "dynamicBatchMaxSize": 1
+      },
+      "artifact": {
+        "artifactId": "vfdlm-g1-edge-v0.1.1-runtime",
+        "manifestSha256": "6e62cda425423bc64b7f12aa6c0965261c9fc9f162bc5e2f99b76531cdaa1efb",
+        "parameterCount": 14198464,
+        "weightDtype": "float32"
+      },
+      "quality": {
+        "splitId": "vf-tokenizer-split-v1",
+        "validationStreamSha256": "6d8926edecc6172ce2f1c97977b8b8eee0bf33d3b4b0a319bf3aa5c80c644db0",
+        "predictedTokens": 9027,
+        "nextTokenLoss": 5.938860467,
+        "perplexity": 379.50222768,
+        "top1Accuracy": 0.019940179,
+        "elapsedMs": 3162.7397,
+        "tokensPerSecond": 2854.171021
+      },
+      "generation": {
+        "requestCount": 4,
+        "batchSize": 1,
+        "generatedTokensPerRepeat": 32,
+        "repeats": 3,
+        "latencyMs": {
+          "median": 1406.9719,
+          "p95": 1473.87898
+        },
+        "firstTokenLatencyMs": {
+          "median": 213.7572,
+          "p95": 241.73928
+        },
+        "throughputTokensPerSecond": 22.74388,
+        "outputTokenIdsSha256": "1705586e5cf6b18d74317230b56d6c114e9f09df9c73ae5cf6b74ea45ce6e396",
+        "rawOutputsStored": false
+      },
+      "memory": {
+        "processBeforeLoadMiB": 191.800781,
+        "processAfterRunMiB": 320.117188,
+        "load": {
+          "startWorkingSetMiB": 191.801,
+          "peakWorkingSetMiB": 317.246,
+          "peakIncreaseMiB": 125.445
+        },
+        "execution": {
+          "startWorkingSetMiB": 316.137,
+          "peakWorkingSetMiB": 333.859,
+          "peakIncreaseMiB": 17.723
+        },
+        "residentTensorBytes": 12732928
+      },
+      "loadLatencyMs": 1673.1678,
+      "optimization": {
+        "profileId": "vfai018-int4-weight-only-manual-kv",
+        "quantizedLinearCount": 43,
+        "residentTensorBytes": 12732928
+      },
+      "fixture": {
+        "suitePath": "evaluation/fixtures/v1/suite.jsonl",
+        "suiteFileSha256": "ea74e74d5a2c0eee02922841d2e964d136d1136c282602c430a33b56663200f0",
+        "manifestPath": "evaluation/frozen-manifest.v1.json",
+        "manifestFileSha256": "8145f88f1f02eb8309043b4a199b10035e5c17e3613948ce4a91f7645b766449",
+        "promptCount": 4,
+        "promptSha256": [
+          "f4cf081aa47cb7dd4fec03135fb3cbbcbf83f57dea091a3258d45ad393cdf1d9",
+          "8dabff00a03d4cbe00c2b905e42f9345a39b881d45f0f891e58cf93abe341f79",
+          "5df6b1ce12da5eb82ebc4859a8ac011715eaeddd3d91d523a98d9b0183c645cd",
+          "1c6176b2b773438e0e2a9ff37250ae3077f7028a23f13a33c53e92267b79994c"
+        ],
+        "rawPromptsStored": false,
+        "rawOutputsStored": false
+      },
+      "networkAccessAllowed": false,
+      "comparison": {
+        "quality": {
+          "nextTokenLossDeltaPercent": 0.036065,
+          "top1AccuracyDeltaPoints": 0.055389,
+          "greedyOutputExactMatch": true,
+          "preserved": true
+        },
+        "latency": {
+          "medianGenerationChangePercent": 266.406661,
+          "medianFirstTokenChangePercent": 154.200197
+        },
+        "throughput": {
+          "changePercent": -72.70792
+        },
+        "memory": {
+          "residentTensorBytesChangePercent": -77.580448,
+          "residentTensorBytesDelta": -44060928
+        },
+        "materiallyBetter": true
+      },
+      "decision": {
+        "qualityGatePassed": true,
+        "performanceGatePassed": true,
+        "portableAcrossDeclaredTiers": false,
+        "eligibleForSelection": false
+      }
+    }
+  ],
+  "selection": {
+    "selectedCandidateId": "sdpa",
+    "selectedProfile": {
+      "profileId": "vfai018-fp32-sdpa-kv",
+      "kvCacheEnabled": true,
+      "attentionBackend": "sdpa",
+      "torchThreads": 4,
+      "mmapWeights": false,
+      "quantization": "fp32",
+      "dynamicBatchMaxSize": 1
+    },
+    "fallbackProfile": {
+      "profileId": "vfai017-safe-fp32-manual-kv",
+      "kvCacheEnabled": true,
+      "attentionBackend": "manual",
+      "torchThreads": 4,
+      "mmapWeights": false,
+      "quantization": "fp32",
+      "dynamicBatchMaxSize": 1
+    },
+    "reason": "Selected the fastest quality-preserving, runtime-selectable FP32 candidate on the measured CPU tier.",
+    "modelReleaseApproved": false,
+    "serviceActivationApproved": false
+  },
+  "portability": {
+    "releasedWeightFormat": "pytorch-fp32-weights-only-state-dict-v1",
+    "declaredTiers": [
+      {
+        "tier": "cpu",
+        "status": "measured",
+        "required": true
+      },
+      {
+        "tier": "cuda",
+        "status": "conditional-unmeasured",
+        "required": false
+      },
+      {
+        "tier": "mps",
+        "status": "conditional-unmeasured",
+        "required": false
+      }
+    ],
+    "quantizedFormatsReleased": [],
+    "reason": "Only FP32 is selected; CPU-only int8/int4 probes cannot define a portable release."
+  },
+  "limitations": [
+    "The checkpoint remains undertrained and receives no release-quality credit.",
+    "Timing is host-specific and does not claim CUDA or MPS performance.",
+    "Dynamic batching is measurement-only until a cancellation-aware service scheduler exists.",
+    "Int8/int4 are local runtime probes, not signed released weight formats."
+  ],
+  "reportSha256": "5dcd29ce8b46f7a48c3e56d00cb02d5a2b4dc814fe0cd3737be198494bc8286d"
+}

@@ -2,13 +2,15 @@
 
 from __future__ import annotations
 
+from contextlib import contextmanager
+from functools import lru_cache
 import hashlib
 import json
 from pathlib import Path
 import re
 import subprocess
 import tempfile
-from typing import Any, Mapping, Sequence
+from typing import Any, Iterator, Mapping, Sequence
 
 from electronics_corpus import get_electronics_corpus
 from engine.pin_router import PinRouter
@@ -18,37 +20,10 @@ AI_ROOT = Path(__file__).resolve().parents[1]
 TOOLCHAIN_ROOT = AI_ROOT / ".toolchains"
 CLI_PATH = TOOLCHAIN_ROOT / "arduino-cli-1.5.1" / "arduino-cli.exe"
 CLI_CONFIG_PATH = TOOLCHAIN_ROOT / "arduino-cli.yaml"
-AVR_GPP_PATH = (
-    TOOLCHAIN_ROOT
-    / "arduino-data"
-    / "packages"
-    / "arduino"
-    / "tools"
-    / "avr-gcc"
-    / "7.3.0-atmel3.6.1-arduino7"
-    / "bin"
-    / "avr-g++.exe"
-)
-AVR_PLATFORM_PATH = (
-    TOOLCHAIN_ROOT
-    / "arduino-data"
-    / "packages"
-    / "arduino"
-    / "hardware"
-    / "avr"
-    / "1.8.6"
-    / "platform.txt"
-)
-
-TOOLCHAIN_CONTRACT = {
-    "arduinoCliVersion": "1.5.1",
-    "arduinoCliWindowsX64ZipSha256": "fabe42e0eb04d00e776a66178299ff95a46c623dbc260f997e58fd514853dd40",
-    "arduinoCliExecutableSha256": "1017de89179c3167e6b8a38ca6cc4091fa69a3cf97aafa7810f01423003f5571",
-    "arduinoAvrCoreVersion": "1.8.6",
-    "avrGccPackageVersion": "7.3.0-atmel3.6.1-arduino7",
-    "avrGppExecutableSha256": "098f5708a5d70e3abb6b504145b46c9320ef4b6d43b6b8f1c09b431e611d543b",
-    "avrPlatformTxtSha256": "513b2ee073e686a9e823a6a512e64a5a0ee33af3e1d7108e0fc869a11485a7aa",
-}
+TOOLCHAIN_MANIFEST_PATH = Path(__file__).with_name("toolchains.v1.json")
+OFFLINE_NETWORK_POLICY = "offline-no-network"
+TEMPORARY_BUILD_POLICY = "workspace-temporary-only"
+_ACTIVE_COMPILER_SESSION: Path | None = None
 
 
 class SyntheticVerificationError(RuntimeError):
@@ -224,24 +199,130 @@ def safety_receipt() -> dict[str, Any]:
     }
 
 
-def toolchain_identity(*, require_files: bool) -> dict[str, Any]:
-    paths = (CLI_PATH, AVR_GPP_PATH, AVR_PLATFORM_PATH)
-    if require_files and any(not path.is_file() for path in paths):
-        missing = [str(path) for path in paths if not path.is_file()]
-        raise SyntheticVerificationError(f"Pinned Arduino toolchain is incomplete: {missing}")
-    identity = dict(TOOLCHAIN_CONTRACT)
-    if all(path.is_file() for path in paths):
-        actual = {
-            "arduinoCliExecutableSha256": sha256_file(CLI_PATH),
-            "avrGppExecutableSha256": sha256_file(AVR_GPP_PATH),
-            "avrPlatformTxtSha256": sha256_file(AVR_PLATFORM_PATH),
-        }
-        mismatches = [name for name, value in actual.items() if identity[name] != value]
-        if mismatches:
+def _toolchain_manifest() -> dict[str, Any]:
+    try:
+        manifest = json.loads(TOOLCHAIN_MANIFEST_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise SyntheticVerificationError("Compiler toolchain manifest is invalid or missing") from error
+    if manifest.get("schemaVersion") != 1 or not isinstance(manifest.get("profiles"), dict):
+        raise SyntheticVerificationError("Compiler toolchain manifest contract is invalid")
+    return manifest
+
+
+def _profile_for_fqbn(fqbn: str) -> str:
+    manifest = _toolchain_manifest()
+    matches = [
+        profile_id
+        for profile_id, profile in manifest["profiles"].items()
+        if fqbn in profile.get("fqbn", [])
+    ]
+    if len(matches) != 1:
+        raise SyntheticVerificationError(f"No unique compiler profile is bound to FQBN {fqbn}")
+    return str(matches[0])
+
+
+def _validate_toolchain_source(profile_id: str, profile: Mapping[str, Any], *, require_files: bool) -> None:
+    source = profile.get("source")
+    if not source:
+        return
+    source_root = AI_ROOT / str(source["path"])
+    if not source_root.exists():
+        if require_files:
+            raise SyntheticVerificationError(f"Pinned compiler source is missing: {source_root}")
+        return
+    try:
+        actual_revision = subprocess.check_output(
+            ["git", "-C", str(source_root), "rev-parse", "HEAD"],
+            text=True,
+            stderr=subprocess.STDOUT,
+        ).strip()
+    except (OSError, subprocess.CalledProcessError) as error:
+        raise SyntheticVerificationError(f"Pinned compiler source cannot be verified: {profile_id}") from error
+    if actual_revision != source["revision"]:
+        raise SyntheticVerificationError(f"Pinned compiler source revision changed: {profile_id}")
+    for relative, expected in source.get("submodules", {}).items():
+        submodule = source_root / str(relative)
+        try:
+            actual = subprocess.check_output(
+                ["git", "-C", str(submodule), "rev-parse", "HEAD"],
+                text=True,
+                stderr=subprocess.STDOUT,
+            ).strip()
+        except (OSError, subprocess.CalledProcessError) as error:
             raise SyntheticVerificationError(
-                "Pinned Arduino toolchain checksum mismatch: " + ", ".join(mismatches)
+                f"Pinned compiler submodule cannot be verified: {profile_id}:{relative}"
+            ) from error
+        if actual != expected:
+            raise SyntheticVerificationError(
+                f"Pinned compiler submodule revision changed: {profile_id}:{relative}"
             )
+
+
+def _toolchain_identity_uncached(
+    profile_id: str = "arduino-avr-1.8.6", *, require_files: bool
+) -> dict[str, Any]:
+    manifest = _toolchain_manifest()
+    profile = manifest["profiles"].get(profile_id)
+    if not isinstance(profile, dict):
+        raise SyntheticVerificationError(f"Unknown compiler toolchain profile: {profile_id}")
+    cli = manifest.get("arduinoCli")
+    if not isinstance(cli, dict):
+        raise SyntheticVerificationError("Arduino CLI identity is missing from compiler manifest")
+    expected_files = {str(cli["path"]): str(cli["sha256"])}
+    expected_files.update({str(path): str(value) for path, value in profile.get("fileHashes", {}).items()})
+    missing = []
+    mismatches = []
+    for relative, expected in expected_files.items():
+        path = AI_ROOT / relative
+        if not path.is_file():
+            missing.append(relative)
+        elif sha256_file(path) != expected:
+            mismatches.append(relative)
+    if mismatches:
+        raise SyntheticVerificationError(
+            f"Pinned compiler toolchain checksum mismatch for {profile_id}: {mismatches}"
+        )
+    if require_files and missing:
+        raise SyntheticVerificationError(
+            f"Pinned compiler toolchain is incomplete for {profile_id}: {missing}"
+        )
+    _validate_toolchain_source(profile_id, profile, require_files=require_files)
+    identity = {
+        "manifestId": manifest["manifestId"],
+        "manifestVersion": manifest["manifestVersion"],
+        "profileId": profile_id,
+        "coreId": profile["coreId"],
+        "coreVersion": profile["coreVersion"],
+        "arduinoCliVersion": cli["version"],
+        "arduinoCliExecutableSha256": cli["sha256"],
+        "license": dict(profile["license"]),
+        "packageArchives": [dict(item) for item in profile.get("packageArchives", [])],
+        "fileHashes": dict(profile.get("fileHashes", {})),
+    }
+    if profile.get("source"):
+        identity["source"] = dict(profile["source"])
     return identity
+
+
+@lru_cache(maxsize=None)
+def _cached_toolchain_identity(profile_id: str, require_files: bool) -> str:
+    return canonical_json(
+        _toolchain_identity_uncached(profile_id, require_files=require_files)
+    )
+
+
+def reset_toolchain_identity_cache() -> None:
+    """Start a fresh immutable toolchain-identity verification operation."""
+
+    _cached_toolchain_identity.cache_clear()
+
+
+def toolchain_identity(
+    profile_id: str = "arduino-avr-1.8.6", *, require_files: bool
+) -> dict[str, Any]:
+    """Verify one profile once per operation and return an isolated identity."""
+
+    return json.loads(_cached_toolchain_identity(profile_id, require_files))
 
 
 def _normalized_compiler_output(value: str, temporary_root: Path) -> str:
@@ -251,39 +332,82 @@ def _normalized_compiler_output(value: str, temporary_root: Path) -> str:
     normalized = normalized.replace(str(AI_ROOT).replace("\\", "/"), "<AI_ROOT>")
     normalized = normalized.replace("\\", "/")
     normalized = re.sub(r"[A-Za-z]:/[^\r\n\"]*?vfai-compile-[^/\r\n\"]+", "<TEMP_SKETCH>", normalized)
+    normalized = re.sub(
+        r"[A-Za-z]:/[^\r\n\"]+/AppData/Local/arduino/sketches/[A-Fa-f0-9]+",
+        "<CLI_CACHE>",
+        normalized,
+    )
     return normalized.strip()
+
+
+@contextmanager
+def compiler_session() -> Iterator[None]:
+    """Share temporary compiler state for one release while isolating each FQBN.
+
+    Arduino CLI's ``--clean`` flag disables its build cache.  A release has many
+    sources per FQBN, so cleaning every case needlessly recompiles the same core
+    and makes re-verification prohibitively expensive.  The session keeps one
+    temporary build directory per exact FQBN, lets the CLI reuse that state, and
+    removes the complete session when the release operation ends.
+    """
+
+    global _ACTIVE_COMPILER_SESSION
+    previous = _ACTIVE_COMPILER_SESSION
+    work_root = TOOLCHAIN_ROOT / "compile-work"
+    work_root.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="vfai-compile-session-", dir=work_root) as temp_name:
+        _ACTIVE_COMPILER_SESSION = Path(temp_name)
+        try:
+            yield
+        finally:
+            _ACTIVE_COMPILER_SESSION = previous
 
 
 def compiler_receipt(case: Mapping[str, Any]) -> dict[str, Any]:
     """Compile one sketch and return a deterministic, source-bound receipt."""
 
-    identity = toolchain_identity(require_files=True)
+    profile_id = str(case.get("toolchainId") or _profile_for_fqbn(str(case["fqbn"])))
+    identity = toolchain_identity(profile_id, require_files=True)
     source = str(case["source"])
     expected_success = bool(case["expectedSuccess"])
     work_root = TOOLCHAIN_ROOT / "compile-work"
     work_root.mkdir(parents=True, exist_ok=True)
-    with tempfile.TemporaryDirectory(prefix="vfai-compile-", dir=work_root) as temp_name:
-        temporary_root = Path(temp_name)
-        sketch_name = "verified_sketch"
-        sketch_dir = temporary_root / sketch_name
-        sketch_dir.mkdir()
-        (sketch_dir / f"{sketch_name}.ino").write_text(source, encoding="utf-8", newline="\n")
-        command = [
-            str(CLI_PATH),
-            "--config-file",
-            str(CLI_CONFIG_PATH),
-            "compile",
-            "--fqbn",
-            str(case["fqbn"]),
-            "--warnings",
-            "all",
-            str(sketch_dir),
-        ]
+    temporary_owner = None
+    if _ACTIVE_COMPILER_SESSION is None:
+        temporary_owner = tempfile.TemporaryDirectory(prefix="vfai-compile-", dir=work_root)
+        temporary_root = Path(temporary_owner.name)
+    else:
+        temporary_root = _ACTIVE_COMPILER_SESSION
+    fqbn_key = re.sub(r"[^A-Za-z0-9._-]+", "_", str(case["fqbn"]))
+    sketch_name = "verified_sketch"
+    sketch_dir = temporary_root / "sketches" / fqbn_key / sketch_name
+    build_dir = temporary_root / "build" / fqbn_key
+    sketch_dir.mkdir(parents=True, exist_ok=True)
+    (sketch_dir / f"{sketch_name}.ino").write_text(source, encoding="utf-8", newline="\n")
+    command = [
+        str(CLI_PATH),
+        "--config-file",
+        str(CLI_CONFIG_PATH),
+        "compile",
+        "--jobs",
+        "0",
+        "--fqbn",
+        str(case["fqbn"]),
+        "--warnings",
+        "all",
+        "--build-path",
+        str(build_dir),
+        str(sketch_dir),
+    ]
+    try:
         completed = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", errors="replace")
         succeeded = completed.returncode == 0
         normalized_output = _normalized_compiler_output(
             completed.stdout + "\n" + completed.stderr, temporary_root
         )
+    finally:
+        if temporary_owner is not None:
+            temporary_owner.cleanup()
     if succeeded != expected_success:
         raise SyntheticVerificationError(
             f"Compiler outcome mismatch for {case['caseId']}: expected {expected_success}, got {succeeded}"
@@ -292,16 +416,34 @@ def compiler_receipt(case: Mapping[str, Any]) -> dict[str, Any]:
     receipt_material = {
         "caseId": case["caseId"],
         "fqbn": case["fqbn"],
+        "toolchainId": profile_id,
         "sourceSha256": source_hash,
         "expectedSuccess": expected_success,
         "observedSuccess": succeeded,
         "toolchain": identity,
+        "networkPolicy": OFFLINE_NETWORK_POLICY,
+        "buildPathPolicy": TEMPORARY_BUILD_POLICY,
     }
     return {
         "schemaVersion": 1,
         "receiptId": "vf-compile-receipt-v1-" + content_sha256(receipt_material)[:24],
         **receipt_material,
         "exitCode": completed.returncode,
+        "compilerCommand": [
+            "arduino-cli",
+            "--config-file",
+            "<LOCAL_CONFIG>",
+            "compile",
+            "--jobs",
+            "0",
+            "--fqbn",
+            str(case["fqbn"]),
+            "--warnings",
+            "all",
+            "--build-path",
+            "<TEMP_BUILD>",
+            "<TEMP_SKETCH>",
+        ],
         "outcomeClass": "compile-success" if succeeded else "expected-compile-failure",
         "normalizedOutputSha256": sha256_bytes(normalized_output.encode("utf-8")),
         "normalizedOutputSummary": (
@@ -313,8 +455,13 @@ def compiler_receipt(case: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def validate_compiler_receipt(case: Mapping[str, Any], receipt: Mapping[str, Any]) -> dict[str, Any]:
+    profile_id = str(case.get("toolchainId") or _profile_for_fqbn(str(case["fqbn"])))
     source_hash = sha256_bytes(str(case["source"]).encode("utf-8"))
-    if receipt.get("caseId") != case["caseId"] or receipt.get("sourceSha256") != source_hash:
+    if (
+        receipt.get("caseId") != case["caseId"]
+        or receipt.get("toolchainId") != profile_id
+        or receipt.get("sourceSha256") != source_hash
+    ):
         raise SyntheticVerificationError(f"Compile receipt is not bound to source case {case['caseId']}")
     if receipt.get("fqbn") != case["fqbn"]:
         raise SyntheticVerificationError(f"Compile receipt FQBN changed for {case['caseId']}")
@@ -335,15 +482,39 @@ def validate_compiler_receipt(case: Mapping[str, Any], receipt: Mapping[str, Any
     output_hash = receipt.get("normalizedOutputSha256")
     if not isinstance(output_hash, str) or re.fullmatch(r"[a-f0-9]{64}", output_hash) is None:
         raise SyntheticVerificationError(f"Compile receipt output checksum is invalid for {case['caseId']}")
-    if receipt.get("toolchain") != toolchain_identity(require_files=False):
+    if receipt.get("networkPolicy") != OFFLINE_NETWORK_POLICY:
+        raise SyntheticVerificationError(f"Compile receipt network policy is invalid for {case['caseId']}")
+    if receipt.get("buildPathPolicy") != TEMPORARY_BUILD_POLICY:
+        raise SyntheticVerificationError(f"Compile receipt build path policy is invalid for {case['caseId']}")
+    expected_command = [
+        "arduino-cli",
+        "--config-file",
+        "<LOCAL_CONFIG>",
+        "compile",
+        "--jobs",
+        "0",
+        "--fqbn",
+        str(case["fqbn"]),
+        "--warnings",
+        "all",
+        "--build-path",
+        "<TEMP_BUILD>",
+        "<TEMP_SKETCH>",
+    ]
+    if receipt.get("compilerCommand") != expected_command:
+        raise SyntheticVerificationError(f"Compile receipt command is invalid for {case['caseId']}")
+    if receipt.get("toolchain") != toolchain_identity(profile_id, require_files=False):
         raise SyntheticVerificationError(f"Compile receipt toolchain changed for {case['caseId']}")
     receipt_material = {
         "caseId": case["caseId"],
         "fqbn": case["fqbn"],
+        "toolchainId": profile_id,
         "sourceSha256": source_hash,
         "expectedSuccess": expected,
         "observedSuccess": expected,
         "toolchain": receipt["toolchain"],
+        "networkPolicy": OFFLINE_NETWORK_POLICY,
+        "buildPathPolicy": TEMPORARY_BUILD_POLICY,
     }
     expected_id = "vf-compile-receipt-v1-" + content_sha256(receipt_material)[:24]
     if receipt.get("receiptId") != expected_id:

@@ -8,7 +8,7 @@ import hashlib
 from importlib.metadata import PackageNotFoundError, version
 import json
 from pathlib import Path
-from typing import Any, TypeAlias
+from typing import Any, Literal, TypeAlias
 
 
 PINNED_TORCH_VERSION = "2.8.0"
@@ -38,6 +38,7 @@ from .config import (
 
 LayerKVCache: TypeAlias = tuple[Tensor, Tensor]
 KVCache: TypeAlias = tuple[LayerKVCache, ...]
+AttentionBackend: TypeAlias = Literal["manual", "sdpa"]
 
 
 class CheckpointContractError(RuntimeError):
@@ -103,6 +104,7 @@ class GroupedQueryAttention(nn.Module):
         self.v_proj = nn.Linear(config.d_model, config.kv_width, **factory)
         self.o_proj = nn.Linear(config.d_model, config.d_model, **factory)
         self.attention_dropout = nn.Dropout(config.dropout)
+        self.attention_backend: AttentionBackend = "manual"
 
     def _shape_query(self, value: Tensor) -> Tensor:
         batch, length, _ = value.shape
@@ -154,10 +156,6 @@ class GroupedQueryAttention(nn.Module):
         repeat_factor = self.config.n_heads // self.config.n_kv_heads
         expanded_key = key.repeat_interleave(repeat_factor, dim=1)
         expanded_value = value.repeat_interleave(repeat_factor, dim=1)
-        scores = torch.matmul(query, expanded_key.transpose(-2, -1)) * (
-            self.config.head_dim ** -0.5
-        )
-
         query_positions = torch.arange(
             past_length,
             past_length + query_length,
@@ -173,15 +171,31 @@ class GroupedQueryAttention(nn.Module):
             allowed = allowed & attention_mask.to(device=hidden_states.device, dtype=torch.bool)[
                 :, None, None, :
             ]
-
-        probabilities = torch.softmax(
-            scores.float().masked_fill(~allowed, torch.finfo(torch.float32).min),
-            dim=-1,
-        )
-        probabilities = probabilities * allowed
-        probabilities = probabilities / probabilities.sum(dim=-1, keepdim=True).clamp_min(1e-12)
-        probabilities = self.attention_dropout(probabilities.to(hidden_states.dtype))
-        attended = torch.matmul(probabilities, expanded_value)
+        if self.attention_backend == "sdpa":
+            attended = F.scaled_dot_product_attention(
+                query,
+                expanded_key,
+                expanded_value,
+                attn_mask=allowed,
+                dropout_p=self.config.dropout if self.training else 0.0,
+                is_causal=False,
+            )
+        elif self.attention_backend == "manual":
+            scores = torch.matmul(query, expanded_key.transpose(-2, -1)) * (
+                self.config.head_dim ** -0.5
+            )
+            probabilities = torch.softmax(
+                scores.float().masked_fill(~allowed, torch.finfo(torch.float32).min),
+                dim=-1,
+            )
+            probabilities = probabilities * allowed
+            probabilities = probabilities / probabilities.sum(
+                dim=-1, keepdim=True
+            ).clamp_min(1e-12)
+            probabilities = self.attention_dropout(probabilities.to(hidden_states.dtype))
+            attended = torch.matmul(probabilities, expanded_value)
+        else:
+            raise ValueError(f"unsupported attention backend: {self.attention_backend}")
         attended = attended.transpose(1, 2).contiguous().view(
             batch, query_length, self.config.d_model
         )
@@ -351,6 +365,12 @@ class VoltForgeGen1(nn.Module):
         self._assert_parameter_contract()
         return self.config.parameter_count()
 
+    def set_attention_backend(self, backend: AttentionBackend) -> None:
+        if backend not in {"manual", "sdpa"}:
+            raise ValueError("attention backend must be manual or sdpa")
+        for layer in self.layers:
+            layer.attention.attention_backend = backend
+
     def _ensure_materialized(self) -> None:
         if not self._materialized or any(parameter.is_meta for parameter in self.parameters()):
             raise RuntimeError(
@@ -480,6 +500,7 @@ class VoltForgeGen1(nn.Module):
         *,
         device: str | torch.device = "cpu",
         dtype: torch.dtype | None = None,
+        mmap_weights: bool = False,
         allocation_limit: int = DEFAULT_ALLOCATION_LIMIT,
     ) -> "VoltForgeGen1":
         target = Path(directory)
@@ -524,7 +545,12 @@ class VoltForgeGen1(nn.Module):
         )
         expected_state = model.state_dict()
         try:
-            loaded_state = torch.load(weights_path, map_location="cpu", weights_only=True)
+            loaded_state = torch.load(
+                weights_path,
+                map_location="cpu",
+                weights_only=True,
+                mmap=mmap_weights,
+            )
         except Exception as exc:
             raise CheckpointContractError(f"unable to load checkpoint weights: {exc}") from exc
         if not isinstance(loaded_state, Mapping):

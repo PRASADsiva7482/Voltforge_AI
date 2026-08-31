@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai024-claim-grounding-v1",
+  "contractVersion": "1.0.0",
+  "policySha256": "1497847cdadb41aeaf0f52ed7e36d9fa0712c805a8b26318291dd50c102c25ab",
+  "purpose": "Bind high-risk VoltForge factual claims to the exact bounded evidence available to the model, expose source class, compare conflicts, and force visible uncertainty when support is absent.",
+  "claimTypes": {
+    "datasheet-rating": {
+      "allowedEvidenceKinds": ["deterministic", "local", "internet"],
+      "missingReasonCode": "DATASHEET_EVIDENCE_REQUIRED",
+      "maximumConfidence": 0.9
+    },
+    "pin-capability": {
+      "allowedEvidenceKinds": ["deterministic", "local"],
+      "missingReasonCode": "PIN_CAPABILITY_EVIDENCE_REQUIRED",
+      "maximumConfidence": 0.95
+    },
+    "library-api": {
+      "allowedEvidenceKinds": ["deterministic", "local", "internet"],
+      "missingReasonCode": "LIBRARY_API_EVIDENCE_REQUIRED",
+      "maximumConfidence": 0.85
+    },
+    "current-web": {
+      "allowedEvidenceKinds": ["internet"],
+      "missingReasonCode": "CURRENT_WEB_EVIDENCE_REQUIRED",
+      "maximumConfidence": 0.7
+    }
+  },
+  "evidencePrecedence": ["deterministic", "local", "project", "internet"],
+  "conflictPolicy": {
+    "forceVisibleConflictWording": true,
+    "structuredActionsAllowed": false,
+    "maximumConfidence": 0.5,
+    "maximumConflicts": 12
+  },
+  "uncertaintyPolicy": {
+    "replaceUnsupportedHighRiskClaim": true,
+    "structuredActionsAllowed": false,
+    "maximumConfidence": 0.6,
+    "maximumMissingEvidenceItems": 12
+  },
+  "limits": {
+    "maximumClaims": 24,
+    "maximumCitations": 25,
+    "maximumCitationsPerClaim": 2,
+    "maximumEvidenceRefsPerCitation": 4,
+    "maximumClaimCharacters": 2000,
+    "maximumCitationSnippetCharacters": 800,
+    "maximumTitleCharacters": 500
+  },
+  "citationPolicy": {
+    "citationMustResolveToModelEvidence": true,
+    "exactModelPayloadHashRequired": true,
+    "unselectedRetrievalResultsAllowed": false,
+    "unknownCitationAllowed": false,
+    "citationEventRequired": true
+  },
+  "privacy": {
+    "rawPromptStored": false,
+    "rawProjectContextStored": false,
+    "rawModelOutputStored": false,
+    "claimTextStoredInMetadata": false
+  },
+  "authority": {
+    "deterministicEngineeringCanBeOverridden": false,
+    "internetIsUntrusted": true,
+    "retrievalCanAuthorizeStructuredActions": false
+  }
+}

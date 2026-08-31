@@ -1,0 +1,492 @@
+{
+  "schemaVersion": 1,
+  "backlogType": "voltforge-ai-post-master-followups",
+  "title": "VoltForge AI deferred review backlog",
+  "createdOn": "2026-08-28",
+  "updatedOn": "2026-08-31",
+  "sourceBacklog": "AI_MASTER_BACKLOG.json",
+  "status": "collecting",
+  "purpose": "Capture worthwhile AI features, investigations, or improvements that cannot be completed safely within their current master-backlog item. These entries are reviewed only after the master backlog is complete unless promoted explicitly by the owner.",
+  "rules": {
+    "doNotUseForAvoidableWork": true,
+    "requireSourceMasterItem": true,
+    "requireConcreteBlockingEvidence": true,
+    "requireProposedReviewGate": true,
+    "doNotImplementBeforeMasterCompletionWithoutOwnerApproval": true,
+    "statuses": [
+      "proposed",
+      "accepted_for_later",
+      "rejected",
+      "promoted",
+      "done"
+    ]
+  },
+  "items": [
+    {
+      "id": "VFAI-FU-001",
+      "sourceMasterItem": "VFAI-008",
+      "status": "done",
+      "priority": "P1",
+      "title": "Expand exact curated coverage across the remaining UI hardware catalog",
+      "reasonDeferred": "The UI exposes many additional board-family and clone-oriented labels that do not identify one electrically stable manufacturer SKU or revision. Adding ratings or pin maps from those labels alone would violate VFAI-008's exact-variant and evidence requirements.",
+      "blockingEvidence": [
+        "Voltforge_UI/src/features/canvas/boardCatalog.ts contains board families beyond the eight exact variants approved in electronics_corpus v1.",
+        "Generic STM32 Blue Pill and ESP8266 development-board names can represent incompatible MCU markings, flash sizes, carrier layouts, USB circuitry, and pin mappings.",
+        "Manufacturer documents, exact SKU/revision mappings, and maintained pinout evidence must be reviewed per variant; existing UI marketing labels and legacy generator tables are not sufficient provenance."
+      ],
+      "proposedWork": [
+        "Inventory every remaining UI board and component type against an exact manufacturer SKU/revision or explicitly classify it variant-required/unsupported.",
+        "Add manufacturer-evidenced board, pin-map, component, wiring, firmware, diagnostic, simulation, and safety records without weakening checksum or unknown-result gates.",
+        "Add UI coverage reporting that distinguishes selectable canvas artwork from AI-verified electrical support."
+      ],
+      "reviewGate": "After the master backlog is complete, review coverage priorities using real project demand and approve only variants with primary documentation and stable identifiers.",
+      "acceptanceCriteria": [
+        "Every promoted hardware type resolves to an exact evidenced variant and effective revision.",
+        "Clone/family conflicts remain separate and generic aliases never select one silently.",
+        "Corpus build, governance, retrieval, task generation, and release evaluation remain green."
+      ],
+      "startedOn": "2026-08-31",
+      "completedOn": "2026-08-31",
+      "implementation": {
+        "summary": "Expanded the curated electronics corpus to revision 1.1.0 with exact Arduino Nano Every, Leonardo, and Micro variants, added their pin maps, OLED wiring recipes, and Arduino API applicability, and added a checksum-bound UI coverage report with verified, variant-required, and unsupported states.",
+        "changedFiles": [
+          "electronics_corpus/builder.py",
+          "electronics_corpus/schema.py",
+          "electronics_corpus/store.py",
+          "hardware_coverage/service.py",
+          "api/routes.py",
+          "../Voltforge_BL/src/main/java/in/voltforge/api/ai/service/AiService.java",
+          "../Voltforge_BL/src/main/java/in/voltforge/api/ai/service/impl/AiServiceImpl.java",
+          "../Voltforge_BL/src/main/java/in/voltforge/api/ai/controller/AiController.java",
+          "../Voltforge_UI/src/features/editor/ProjectSettingsModal.tsx",
+          "../Voltforge_UI/src/features/ai/aiHardwareCoverage.ts"
+        ],
+        "evidence": [
+          "Arduino Nano Every ABX00028 / ATmega4809 manufacturer documentation",
+          "Arduino Leonardo A000057 / ATmega32U4 manufacturer documentation",
+          "Arduino Micro A000053 / ATmega32U4 manufacturer documentation",
+          "Existing Raspberry Pi Pico and Espressif manufacturer records retained with exact variants"
+        ],
+        "verification": [
+          "UI catalog parity: 49 of 49 board entries",
+          "Coverage summary: 8 verified, 22 variant-required, 19 unsupported",
+          "Curated corpus: 61 records, schema/checksum/governance checks pass",
+          "Local retrieval: 61 records and 104 chunks, 1.0 recall/MRR/citation entailment evaluation",
+          "Verified synthetic release: 154 accepted records, 0 held-out collisions",
+          "Full AI regression: 448 passed, 5 skipped, 5 subtests passed",
+          "Cross-repository fast lane: 27 passed, 0 failed"
+        ],
+        "deferredReview": [
+          "VFAI-FU-011 exact component catalog coverage",
+          "VFAI-FU-012 board footprint and pin-geometry reconciliation"
+        ]
+      }
+    },
+    {
+      "id": "VFAI-FU-002",
+      "sourceMasterItem": "VFAI-009",
+      "status": "done",
+      "priority": "P1",
+      "title": "Add compiler-verified firmware shards for the remaining exact board variants",
+      "reasonDeferred": "VFAI-009 can only admit firmware labels proven by a version-pinned target compiler. The first release pins the official Arduino AVR core for UNO R3, Mega 2560 Rev3, and Nano classic; installing unrelated board cores without separate version, license, checksum, FQBN, and resource review would weaken the immutable toolchain gate.",
+      "blockingEvidence": [
+        "The verified release rejects firmware candidates for Arduino UNO R4 WiFi, ESP32-DevKitC V4 WROOM-32E-N4, ESP32-S3-DevKitC-1 N8, Raspberry Pi Pico, and Raspberry Pi Pico 2 with firmware-target-not-in-v1-pinned-toolchain.",
+        "Those exact boards require Renesas, Espressif, and RP2040/RP2350 target cores rather than the pinned Arduino AVR Boards 1.8.6 core.",
+        "Each added core materially expands local toolchain size and must be bound by executable/core checksums and exact FQBN compile receipts before generated code can enter training."
+      ],
+      "proposedWork": [
+        "Select and pin maintained compiler/core versions and exact FQBNs for each remaining curated board variant.",
+        "Record package licenses, archive and installed-tool hashes, deterministic compile commands, and offline no-write receipt validation.",
+        "Generate board-specific firmware and compiler-repair tasks, compile every unique source, rerun duplicate/leakage gates, and publish a new immutable dataset revision."
+      ],
+      "reviewGate": "After the master backlog is complete, prioritize target cores using actual VoltForge project demand, installation size, maintenance status, and reproducible CI availability.",
+      "acceptanceCriteria": [
+        "Every promoted firmware record has a source-bound successful compile receipt for the exact board FQBN and pinned toolchain.",
+        "Broken compiler-repair inputs fail as labeled and proposed repairs compile successfully.",
+        "Toolchain packages and pipeline dependencies are checksum-bound, license-reviewed, reproducible, and do not add any external AI model.",
+        "Dataset governance, held-out leakage, deterministic generation, and full release gates remain green."
+      ],
+      "startedOn": "2026-08-31",
+      "completedOn": "2026-08-31",
+      "implementation": {
+        "summary": "Expanded the verified synthetic compiler boundary to all 11 exact curated board variants using five checksum-bound local toolchain profiles. The v1.2 grammar now emits board-specific firmware and broken/fixed compiler-repair sources, retains 88 exact-FQBN receipts, publishes a 250-record governed release, and trains a separate owned tokenizer v1.1.0 without changing or relabeling existing inactive Gen1 model artifacts.",
+        "changedFiles": [
+          "synthetic_data/grammar.py",
+          "synthetic_data/generator.py",
+          "synthetic_data/verifiers.py",
+          "synthetic_data/toolchains.v1.json",
+          "synthetic_data/pipeline.py",
+          "synthetic_data/pipeline-lock.v1.json",
+          "synthetic_data/receipts/v1/compile-receipts.jsonl",
+          "synthetic_data/shards/v1",
+          "synthetic_data/reports/current-generation-report.json",
+          "data_governance/source-registry.v1.json",
+          "tokenizer_training/pipeline.py",
+          "model/tokenizers/vfdlm-byte-bpe-v1.1.0",
+          "gen1_training/data.py",
+          "gen1_bootstrap/bootstrap.py",
+          "tests/test_verified_synthetic_data.py",
+          "tests/test_tokenizer_release.py"
+        ],
+        "evidence": [
+          "Arduino CLI 1.5.1 with Arduino AVR 1.8.6, megaAVR 1.8.8, Renesas UNO 1.6.0, Espressif 3.3.11, and Arduino-Pico 6.0.0 profiles",
+          "Exact FQBN coverage for UNO R3, Mega 2560, Nano classic, Nano Every, UNO R4 WiFi, Leonardo, Micro, ESP32 DevKitC, ESP32-S3 DevKitC, Pico, and Pico 2",
+          "Toolchain manifest records package/source licenses, archive and installed-file SHA-256 values, Arduino-Pico commit/submodule revisions, exact FQBN ownership, and offline-after-install policy",
+          "No pretrained model, hosted AI model, external inference provider, or third-party tokenizer was added"
+        ],
+        "verification": [
+          "Fresh compiler write: 88 receipts, 66 successful compiles, 22 expected failures",
+          "Fresh no-write recompile: all 88 retained receipts reproduced exactly",
+          "Synthetic release: 251 candidates, 250 accepted, 1 exact duplicate rejected, 0 held-out collisions, 11 of 11 boards covered",
+          "Verified synthetic focused regression: 7 passed",
+          "Data governance write/check: pass with complete catalog coverage",
+          "Owned tokenizer v1.1.0 write/check: pass, 3,072 vocabulary entries, 2,800 merges, 74.9% token reduction",
+          "Tokenizer regression: 13 passed",
+          "Affected Gen1 lineage regression: 20 passed",
+          "Full AI regression: 449 passed, 5 skipped, 5 subtests passed",
+          "Cross-repository fast lane: 27 passed, 0 failed"
+        ],
+        "deferredReview": [
+          "VFAI-FU-013 train and evaluate a new Gen1 artifact against tokenizer v1.1.0 and the expanded corpus",
+          "VFAI-FU-014 harden clean-host compiler provisioning and reusable CI caches",
+          "VFAI-FU-015 preserve immutable versioned synthetic releases and repair historical lineage retention"
+        ]
+      }
+    },
+    {
+      "id": "VFAI-FU-003",
+      "sourceMasterItem": "VFAI-011",
+      "status": "proposed",
+      "priority": "P1",
+      "title": "Review the pinned Windows PyTorch runtime after the native DLL regression is resolved",
+      "reasonDeferred": "The benchmark workstation cannot safely load newer official Windows CPU wheels: Torch 2.12.1 under isolated CPython 3.12 and the pre-existing Torch 2.13.0 under CPython 3.14 both fail while initializing c10.dll. PyTorch 2.8.0+cpu under isolated CPython 3.12 is stable and passes every VFAI-011 and AI regression, so changing framework versions again during the Gen1 architecture item would add risk without model value.",
+      "blockingEvidence": [
+        "Official PyTorch issue https://github.com/pytorch/pytorch/issues/166628 tracks WinError 1114 failures in newer Windows binaries and records 2.8.0 downgrade as a working mitigation.",
+        "On this host, torch==2.12.1+cpu under CPython 3.12.13 raised WinError 1114 loading torch/lib/c10.dll before any VoltForge code executed.",
+        "The global torch==2.13.0 under CPython 3.14.4 raised the same DLL error and emitted a native access-violation trace during pytest collection.",
+        "The isolated torch==2.8.0+cpu runtime imported cleanly and completed 14 focused Gen1 tests plus the 182-test AI suite."
+      ],
+      "proposedWork": [
+        "After the upstream Windows issue is resolved, test the latest maintained CPU wheel in a fresh isolated environment without altering the verified Gen1 toolchain.",
+        "Run repeated clean-process import checks, the focused Gen1 suite, the full AI suite, checkpoint compatibility tests, and VFAI-004 latency/memory benchmarks.",
+        "Review security and maintenance notes, then update the Python/Torch pin and architecture manifest together only when all gates pass."
+      ],
+      "reviewGate": "Review after the master backlog is complete, or earlier only if a PyTorch security advisory makes 2.8.0 unacceptable; promotion requires a clean upstream Windows fix and full local regression evidence.",
+      "acceptanceCriteria": [
+        "The replacement runtime imports in at least 20 fresh Windows processes without WinError 1114, access violations, or DLL load-order workarounds.",
+        "Exact parameter accounting, deterministic initialization, causal masking, KV-cache equivalence, tiny overfit, and strict save/load tests remain green.",
+        "Measured CPU latency and peak memory do not materially regress without a documented quality or maintenance benefit.",
+        "The upgrade introduces no pretrained model/tokenizer asset, hosted inference provider, or external generation API."
+      ]
+    },
+    {
+      "id": "VFAI-FU-004",
+      "sourceMasterItem": "VFAI-012",
+      "status": "proposed",
+      "priority": "P1",
+      "title": "Validate Gen1 mixed-precision resume on supported CUDA hardware",
+      "reasonDeferred": "The VFAI-004 benchmark host exposes no CUDA accelerator and its AVX2 CPU has no native AVX-512 BF16 support. VFAI-012 implements fail-closed CUDA BF16/FP16 selection, autocast, GradScaler state capture, overflow rejection, and runtime-contract resume, but this hardware cannot execute the enabled-scaler branches honestly.",
+      "blockingEvidence": [
+        "torch.cuda.is_available() is false in the pinned Python 3.12/PyTorch 2.8.0+cpu environment.",
+        "torch.backends.cpu.get_cpu_capability() reports AVX2 and torch.cpu._is_avx512_bf16_supported() is false.",
+        "CPU auto precision correctly selects float32 and explicit unsupported BF16/FP16 requests are covered by fail-closed tests; no accelerator result has been claimed."
+      ],
+      "proposedWork": [
+        "Run controlled FP32, BF16, and FP16+GradScaler experiments on a supported local CUDA device using identical configs, packed batches, and seeds.",
+        "Force or safely synthesize a scaler-overflow case, checkpoint after recovery, and prove exact safe-point continuation including scaler growth/backoff state.",
+        "Measure throughput, peak memory, numerical stability, validation deltas, and checkpoint portability before changing the auto-precision release policy."
+      ],
+      "reviewGate": "Review after the master backlog or when owned CUDA hardware is available; do not rent an external model service or send governed training data to a hosted provider for this validation.",
+      "acceptanceCriteria": [
+        "BF16/FP16 are enabled only on hardware that explicitly reports support and all training losses/gradients remain finite under the selected policy.",
+        "Interrupted/resumed mixed-precision runs match uninterrupted safe-point state for model, optimizer, scheduler, scaler, data cursor, and all RNGs.",
+        "A measured scorecard records speed, memory, stability, and validation impact against FP32.",
+        "No governed dataset, checkpoint, tokenizer, or project context leaves owner-controlled infrastructure."
+      ]
+    },
+    {
+      "id": "VFAI-FU-005",
+      "sourceMasterItem": "VFAI-013",
+      "status": "proposed",
+      "priority": "P1",
+      "title": "Run a jointly governed tokenizer-vocabulary and model-efficiency sweep",
+      "reasonDeferred": "VFAI-010 approved exactly one project-owned 3,072-ID tokenizer and bound every training shard and split to its immutable checksum. Creating a nominal 2,048- or 4,096-ID model vocabulary without first training and approving the corresponding project-owned tokenizer would either invent unreachable IDs or change tokenization, packing, and dataset lineage, so it cannot be an honest controlled VFAI-013 candidate.",
+      "blockingEvidence": [
+        "gen1_sweep/plan.v1.json records vocabulary-4096-control as rejected-before-training because the only approved tokenizer has exactly 3,072 IDs.",
+        "The four approved VFAI-009 task manifests, the VFAI-010 train/validation split, and every VFAI-012 run manifest are checksum-bound to the 3,072-ID tokenizer artifact; a vocabulary change requires a new governed artifact and retokenized data release.",
+        "The currently approved 71,377 training tokens are only 0.071377% of the 100M edge-data target, too little evidence to justify retraining multiple tokenizers or drawing durable vocabulary-efficiency conclusions."
+      ],
+      "proposedWork": [
+        "After materially expanding the approved owned corpus, train multiple byte-level BPE vocabulary candidates from random vocabulary state using the same normalized records, deterministic trainer, special-token contract, and no external tokenizer assets.",
+        "Freeze and independently approve each tokenizer's round-trip, engineering-symbol, code/JSON, Unicode, compression, fragmentation, governance, leakage, and checksum evidence before model training.",
+        "Retokenize identical record splits and define a fair raw-byte/record exposure protocol, then jointly sweep embedding vocabulary cost and decoder capacity while reporting quality, throughput, memory, artifact size, and runtime cost.",
+        "Promote a new tokenizer/model contract only when its measured frontier materially improves on the VFAI-010/VFAI-013 baseline without weakening deterministic safety or lineage gates."
+      ],
+      "reviewGate": "Review after the master backlog is complete and the approved owned corpus is large and diverse enough for tokenizer comparison; do not import pretrained vocabularies, third-party model assets, or hosted training/inference services.",
+      "acceptanceCriteria": [
+        "Every vocabulary candidate is trained entirely from approved VoltForge-owned text with deterministic configuration, immutable artifacts, fixed special IDs, and complete source/checksum lineage.",
+        "Comparisons hold normalized records and raw content exposure constant and explicitly account for changed token counts, context occupancy, embedding parameters, and compute rather than pretending token budgets are equivalent.",
+        "The selected tokenizer/model pair lies on a measured quality/cost frontier and passes all VFAI-010 round-trip/compression plus VFAI-013 runtime/reproducibility gates.",
+        "No pretrained model, pretrained tokenizer, hosted AI model, or external inference provider enters training or generation."
+      ]
+    },
+    {
+      "id": "VFAI-FU-006",
+      "sourceMasterItem": "VFAI-015",
+      "status": "proposed",
+      "priority": "P0",
+      "title": "Expand the governed VoltForge-owned corpus to edge training readiness",
+      "reasonDeferred": "VFAI-015 identifies approved-data scarcity as the primary Gen1 bottleneck, but the current master item cannot safely manufacture 99,928,589 missing edge-target tokens. High-volume data must be produced only after the remaining deterministic tools, curated retrieval, citation/uncertainty rules, runtime failure capture, and explicit feedback governance can verify diverse labels without copying third-party model corpora or private user projects by default.",
+      "blockingEvidence": [
+        "Only 71,377 approved quality-controlled training tokens exist, equal to 0.071377% of the 100M edge minimum, 0.0142754% of the 500M core minimum, and 0.0059481% of the 1.2B server minimum.",
+        "The VFAI-014 bootstrap consumed 129,800 target exposures from only 71,377 unique training transitions; its final checkpoint remains experimental, so further repetition would increase memorization risk without adding domain coverage.",
+        "The approved corpus currently contains 138 training records and 16 model-validation records across nine synthetic strata, while global release coverage also requires simulation, search grounding, memory isolation, malformed-input handling, adversarial safety, exact hardware variants, compiler breadth, and runtime generation behavior.",
+        "VFAI-FU-001, VFAI-FU-002, and later master items own prerequisite exact hardware, compiler, deterministic-tool, retrieval, runtime, and feedback capabilities needed to generate or curate broader labels safely."
+      ],
+      "proposedWork": [
+        "Define staged 1M, 10M, and 100M unique-token corpus releases with task/source/license/board/component/toolchain balance targets, explicit quality sampling, and stop gates; do not count duplicated or mechanically paraphrased records as unique coverage.",
+        "Generate labels from versioned deterministic circuit, compiler, firmware, simulation, retrieval, and safety tools; require exact verification receipts and source/revision evidence before admission.",
+        "Curate project-owned instructional and conversational material under explicit ownership/license records. Admit private project or feedback content only through opt-in review, redaction, user/project authorization, retention, and deletion contracts.",
+        "Create larger independent held-out and adversarial suites before each new training release, then enforce exact/semantic deduplication and leakage exclusion against all training candidates.",
+        "Publish immutable shard manifests, tokenizer bindings, task/variant coverage, rejection reasons, token counts, quality audits, and staged edge learning curves with at least three seeds before changing the VFAI-015 scale decision."
+      ],
+      "reviewGate": "Review after the master backlog supplies the authoritative tools, retrieval, runtime, and governed feedback sources needed for safe breadth. Promotion requires an owner-approved data acquisition/creation plan, storage/compute budget, and staged quality gates; no hosted AI model or unapproved external corpus may fill the target.",
+      "acceptanceCriteria": [
+        "At least 100M genuinely unique, approved, quality-controlled VoltForge-owned training tokens are available for edge, with complete source, license, generator/tool, tokenizer, split, and checksum lineage.",
+        "Task, exact hardware variant, component, firmware target, diagnostic, simulation, refusal, uncertainty, structured-output, grounding, and safety coverage meet predeclared balance thresholds without evaluation leakage.",
+        "Every deterministic or compiler-verifiable label has a reproducible receipt; unsupported or conflicting evidence is represented as uncertainty rather than an invented answer.",
+        "Three-seed staged edge runs demonstrate reproducible held-out and global generation improvement without critical regressions before any core/server reconsideration.",
+        "No pretrained model, third-party model-generated corpus, hosted inference provider, unlicensed text, secret, or non-consensual private project data enters the release."
+      ]
+    },
+    {
+      "id": "VFAI-FU-007",
+      "sourceMasterItem": "VFAI-018",
+      "status": "proposed",
+      "priority": "P1",
+      "title": "Benchmark Gen1 inference profiles on owned CUDA and Apple Silicon hardware",
+      "reasonDeferred": "The VFAI-018 reference host has a CPU-only PyTorch 2.8.0 build, torch.cuda.is_available() is false, and MPS is unavailable on Windows. CPU measurements can select a portable FP32 profile but cannot honestly claim accelerator latency, memory, attention-kernel, precision, or portability results.",
+      "blockingEvidence": [
+        "The committed VFAI-018 report records CPU as measured and CUDA/MPS as conditional-unmeasured tiers.",
+        "The pinned reference environment reports torch 2.8.0+cpu, cudaAvailable=false, and mpsAvailable=false.",
+        "Int8/int4 probes are deliberately CPU-only and rejected as released formats; no accelerator or reduced-precision result is inferred from CPU measurements."
+      ],
+      "proposedWork": [
+        "Run the checksum-bound VFAI-018 reference, KV-cache, SDPA, memory-map, batching, thread, and supported precision matrix on owner-controlled CUDA and Apple Silicon systems.",
+        "Compare complete frozen-validation loss/top-1 accuracy and exact greedy outputs before recording latency, first-token time, throughput, peak memory, load behavior, thermal stability, and repeated-run variance.",
+        "Package a new immutable optimization policy only if a device-specific profile clears quality, portability, fallback, and rollback gates; retain FP32 manual/KV fallback."
+      ],
+      "reviewGate": "Review after the master backlog or when owned supported accelerator hardware is available; governed artifacts and project data must remain local and no hosted inference or rented third-party model service may be used.",
+      "acceptanceCriteria": [
+        "Every accelerator result identifies exact hardware, OS, Python, Torch build, driver/runtime, profile, artifact checksum, and repeated measurement protocol.",
+        "Selected device profiles preserve the complete frozen quality metrics and deterministic generation boundary within predeclared tolerances.",
+        "Unavailable kernels, out-of-memory conditions, and incompatible formats fall back safely, and signed artifact rollback restores the previous profile.",
+        "No unmeasured device or precision capability is represented as supported."
+      ]
+    },
+    {
+      "id": "VFAI-FU-008",
+      "sourceMasterItem": "VFAI-020",
+      "status": "proposed",
+      "priority": "P0",
+      "title": "Train and evaluate a context-capable Gen1 model revision",
+      "reasonDeferred": "VFAI-020 can compile and exactly budget a stable project prompt, but every immutable Gen1 artifact declares only 128 context tokens. The compiler policy requires at least 768 tokens for the smallest supported request and realistic project prompts require materially more capacity. Existing weights and signed manifests cannot be relabeled or stretched safely; a larger context requires a new governed training and evaluation revision after the owned corpus is ready.",
+      "blockingEvidence": [
+        "All three signed registry artifacts declare contextLength 128, are inactive, and fail the VFAI-020 compiler with CONTEXT_WINDOW_TOO_SMALL.",
+        "The former minimal typed runtime prompt measures 459 tokens with the exact owned tokenizer before reserving any output tokens.",
+        "The committed synthetic VFAI-020 project snapshot uses 3,070 prompt tokens in a 3,400-token window with a 256-token output reserve while preserving mandatory task, safety, selection, net, and active-source boundaries.",
+        "The current experimental checkpoint remains blocked by governed data volume and generation-quality release gates, so increasing its positional configuration without retraining would not create an approved model."
+      ],
+      "proposedWork": [
+        "After governed corpus expansion, define controlled 1,024, 2,048, 4,096, and 8,192 context candidates using the same approved owned tokenizer, data lineage, architecture controls, and comparable raw-record exposure.",
+        "Select context length, sequence packing, training schedule, and decoder capacity from measured quality, runtime memory, first-token latency, throughput, and artifact-size frontiers rather than a label or assumed 1B target.",
+        "Train a new immutable local artifact from project-owned random initialization and verify long-context learning, position behavior, exact context-compiler compatibility, cancellation, memory ceilings, and complete generation-quality gates.",
+        "Keep all training, evaluation, and inference owner-controlled; do not add a pretrained model, hosted model, external generation API, or third-party tokenizer."
+      ],
+      "reviewGate": "Review after VFAI-FU-006 reaches a governed data stage suitable for context-length experiments and the owner approves the required local compute budget. The existing 128-token artifacts remain immutable and inactive meanwhile.",
+      "acceptanceCriteria": [
+        "The new artifact declares a measured context at or above the policy minimum and fits the supported realistic project-fixture envelope without mandatory-section overflow.",
+        "Held-out and global generation quality, safety, grounding, and structured-action gates pass with exact tokenizer, task-schema, and context-compiler compatibility.",
+        "Signed runtime evidence covers peak memory, latency, throughput, deadlines, cancellation, restart, and safe fallback at the selected maximum context.",
+        "No pretrained model, hosted AI model, external inference provider, third-party tokenizer, or relabeled old checkpoint is used."
+      ]
+    },
+    {
+      "id": "VFAI-FU-009",
+      "sourceMasterItem": "VFAI-035",
+      "status": "proposed",
+      "priority": "P0",
+      "title": "Implement a governed feedback-candidate training executor",
+      "reasonDeferred": "VFAI-035 provides a safe operator runbook and VFAI-034 produces verified candidate inputs, but the current Gen1 trainer consumes the approved static corpus and has no model-specific adapter for feedback manifests. Merging candidate JSONL by hand would bypass lineage, held-out protection, and artifact provenance.",
+      "blockingEvidence": [
+        "tools/manage_feedback.py schedule writes candidate JSONL and a reproducibility manifest only; it deliberately does not run training, load weights, or change the registry.",
+        "tools/train_gen1.py loads the approved VFAI-009 corpus and tokenizer from its governed data contract and does not accept a feedback-run manifest as a training source.",
+        "The VFAI-035 runbook explicitly marks feedback-driven model execution as not implemented and requires every candidate to repeat all VFAI-032 and VFAI-033 gates."
+      ],
+      "proposedWork": [
+        "Add a model-specific executor that accepts only a verified vfai034-retraining-run-v1 manifest, checks base artifact/revision, dependency hashes, training shard, held-out leakage, and data consent before allocation.",
+        "Bind the candidate input to an isolated resumable training run without modifying approved source shards, frozen evaluation data, live memory, feedback records, or the active registry.",
+        "Produce a new immutable artifact and content-free provenance receipt, then require the complete cross-repository model lane, release scorecard, signed candidate/stable records, canary, and operator activation before serving."
+      ],
+      "reviewGate": "Review after the master backlog is complete and a measured context-capable model/data revision exists; promotion requires a local integration test proving failed validation leaves all source, registry, and live runtime state unchanged.",
+      "acceptanceCriteria": [
+        "No candidate run can consume unverified, held-out-colliding, private, web-derived, or non-consented records.",
+        "Interrupted/resumed execution is checksum-bound and reproducible, and its artifact lineage includes the exact verified feedback-run manifest.",
+        "A failed model or release gate produces no activation and leaves the prior stable artifact, registry, and user memory unchanged.",
+        "No hosted model, pretrained weight, third-party tokenizer, or external generation provider is introduced."
+      ]
+    },
+    {
+      "id": "VFAI-FU-010",
+      "sourceMasterItem": "VFAI-035",
+      "status": "proposed",
+      "priority": "P1",
+      "title": "Automate deployment backup restore-tests and secret rotation",
+      "reasonDeferred": "The runbook defines operator-owned backup, retention, incident, ACL, firewall, and key/token procedures, but deployment-specific service managers, encrypted backup stores, restore-test environments, and secret-manager APIs are outside the Python application and are not present in the repository.",
+      "blockingEvidence": [
+        "The Python service can verify signed registry history but cannot enforce host firewalling, encrypted backup storage, platform log retention, or secret-manager custody.",
+        "The VFAI-033 release policy requires retained stable history and explicit operator rollback, while the current workspace has no deployment-independent backup/restore scheduler.",
+        "The VFAI-035 runbook assigns OS account/ACL, firewall, secret, backup, and incident responsibilities to Operations rather than claiming application-level control."
+      ],
+      "proposedWork": [
+        "Select the deployment target and implement least-privilege service definitions, private networking, health probes, bounded resource limits, and restart policy without exposing the Python port publicly.",
+        "Create encrypted backup manifests and scheduled restore tests for registry, trust, stable artifacts, release evidence, and separately governed memory/feedback databases.",
+        "Integrate secret-manager token/key rotation with a tested rollback and incident procedure; record only content-free hashes and operator events."
+      ],
+      "reviewGate": "Review when a target deployment environment is selected and an Operations/data owner approves its retention, encryption, ACL, availability, and recovery objectives.",
+      "acceptanceCriteria": [
+        "A clean deployment can be restored from an encrypted backup and independently verifies every registry, artifact, and release checksum.",
+        "Rotation of the service token and signing trust is tested without printing secrets or silently invalidating a trusted release history.",
+        "Incident containment, rollback, deletion, and recovery timings are measured against an owner-approved service objective."
+      ]
+    },
+    {
+      "id": "VFAI-FU-011",
+      "sourceMasterItem": "VFAI-008",
+      "originFollowup": "VFAI-FU-001",
+      "status": "proposed",
+      "priority": "P1",
+      "title": "Curate exact component coverage for the UI component catalog",
+      "reasonDeferred": "The board coverage audit exposed a separate component boundary: the UI offers many generic sensors, displays, drivers, motors, and modules, while the AI corpus only has one exact OLED revision plus explicitly variant-required LED and relay records.",
+      "blockingEvidence": [
+        "VFAI-FU-001 verifies board catalog parity but does not promote UI component labels into electrical facts.",
+        "A component label alone does not identify voltage, current, polarity, pull-ups, protocol, isolation, or connector pinout.",
+        "Adding component ratings from generic names would violate the existing unknown-result and evidence-binding gates."
+      ],
+      "proposedWork": [
+        "Inventory UI component types and group aliases by manufacturer, part number, package, module revision, and connector variant.",
+        "Promote only components with primary manufacturer or maintained technical documentation into exact board-aware records.",
+        "Expose component coverage beside board coverage and keep generic components variant-required until the exact electrical boundary is selected."
+      ],
+      "reviewGate": "Review after real project usage identifies the highest-value components and each candidate has a stable primary-source identifier.",
+      "acceptanceCriteria": [
+        "Every promoted component resolves an exact evidenced part or module revision with bounded electrical claims.",
+        "Generic component labels never silently select ratings, pinouts, or protocol behavior.",
+        "Corpus, retrieval, UI coverage, safety, and deterministic generation gates remain green."
+      ]
+    },
+    {
+      "id": "VFAI-FU-012",
+      "sourceMasterItem": "VFAI-008",
+      "originFollowup": "VFAI-FU-001",
+      "status": "proposed",
+      "priority": "P1",
+      "title": "Reconcile exact board pin maps with canvas footprint geometry",
+      "reasonDeferred": "The current UI reuses generic footprint artwork for several newly verified variants, including UNO-style artwork for Leonardo and Nano-style artwork for Micro. AI pin-map truth and canvas connector geometry therefore need a dedicated reconciliation review before visual routing can claim physical header accuracy.",
+      "blockingEvidence": [
+        "ProjectSettingsModal now reports AI electrical support independently from canvas artwork selection.",
+        "boardCatalog.ts maps Arduino Leonardo to the generic uno footprint and Arduino Micro to the generic nano footprint.",
+        "A verified electrical pin map does not prove that the current canvas coordinates, labels, connector side, or header spacing are physically accurate."
+      ],
+      "proposedWork": [
+        "Compare each verified board's manufacturer pinout and mechanical drawing with the canvas footprint dimensions, connector order, labels, and selectable terminals.",
+        "Add explicit geometry revisions and visual regression fixtures where the generic footprint is not physically faithful.",
+        "Keep electrical AI verification and artwork availability as separate statuses until geometry evidence is complete."
+      ],
+      "reviewGate": "Review alongside the next canvas hardware-accuracy milestone and prioritize boards used in saved projects; do not alter simulator net semantics without regression evidence.",
+      "acceptanceCriteria": [
+        "Verified boards have a geometry revision or an explicit documented artwork limitation.",
+        "Canvas pin labels and physical ordering agree with the exact manufacturer pinout fixtures.",
+        "Existing saved projects, simulation semantics, and AI coverage status remain backward compatible."
+      ]
+    },
+    {
+      "id": "VFAI-FU-013",
+      "sourceMasterItem": "VFAI-014",
+      "originFollowup": "VFAI-FU-002",
+      "status": "proposed",
+      "priority": "P0",
+      "title": "Train and evaluate a Gen1 revision on tokenizer v1.1.0 and the expanded compiler corpus",
+      "reasonDeferred": "VFAI-FU-002 produced a new owned tokenizer and a materially larger exact-board training split, but every retained Gen1 checkpoint and packaged runtime artifact is checksum-bound to tokenizer v1.0.0 and its earlier corpus. Relabeling or switching those artifacts would falsely claim that their weights learned the new firmware records.",
+      "blockingEvidence": [
+        "Tokenizer v1.1.0 is approved against 250 records with a 227-record training split, 23-record validation split, and 155,690 unique packed training predictions at context 128.",
+        "The historical bootstrap plan declares 71,377 unique training predictions and 16 validation records, so the bootstrap executor now rejects it against the current corpus.",
+        "Existing Gen1 artifacts remain inactive and bind tokenizer v1.0.0 files; FU-002 made no weight, registry activation, or release-quality claim."
+      ],
+      "proposedWork": [
+        "Create a new immutable training plan, run ID, split/lineage binding, exposure budget, and checkpoint namespace for tokenizer v1.1.0 without modifying historical runs.",
+        "Train only on owner-controlled hardware from the approved project-owned corpus and random/project-owned initialization, then repeat held-out, global generation, grounding, safety, runtime, cancellation, and reproducibility gates.",
+        "Package and activate nothing unless the new artifact materially improves the complete release scorecard and passes rollback/canary requirements."
+      ],
+      "reviewGate": "Review with the governed corpus-expansion backlog and an owner-approved compute budget. The current data remains far below release-scale targets, so this revision may be experimental and inactive even if training completes.",
+      "acceptanceCriteria": [
+        "The new artifact binds tokenizer v1.1.0, all current shard/checksum lineage, the exact training plan, and independently reproducible checkpoints.",
+        "Quality, safety, grounding, structured-output, latency, memory, deadline, cancellation, and full cross-repository release gates pass without regression.",
+        "Historical v1.0.0 artifacts remain immutable and rollback-capable.",
+        "No pretrained model, hosted AI model, third-party tokenizer, external inference provider, or unapproved corpus is used."
+      ]
+    },
+    {
+      "id": "VFAI-FU-014",
+      "sourceMasterItem": "VFAI-009",
+      "originFollowup": "VFAI-FU-002",
+      "status": "proposed",
+      "priority": "P1",
+      "title": "Harden clean-host compiler provisioning and reusable offline verification caches",
+      "reasonDeferred": "The exact compiler release is reproducible on this workstation, but a clean-host installation and CI cache lifecycle need a dedicated provisioning workflow. The Arduino-Pico package archive extraction stalled and required a pinned source-checkout fallback, while cold Espressif builds are materially expensive.",
+      "blockingEvidence": [
+        "Arduino-Pico 6.0.0 package extraction stalled twice; the accepted profile uses commit 0bcd162ad6c9173544cc37c6a1b63de19239e359 plus pinned recursive submodules.",
+        "The measured ESP32 probe required 353.61 seconds for a cold source and 125.66 seconds for the next source before installed caches were warm.",
+        "The current toolchain directories are local workstation state; package/source hashes are recorded, but a clean isolated host has not yet reproduced all 88 receipts."
+      ],
+      "proposedWork": [
+        "Create a fail-closed provisioning script for all five profiles with checksum/license verification, resumable downloads, the documented Pico source fallback, disk budgets, and post-install identity checks.",
+        "Define content-addressed compiler/core cache exports whose keys include the complete profile, FQBN, host, CLI command, and dependency hashes; reject partial or stale caches.",
+        "Run clean-host and cache-restore verification that reproduces all 88 receipts with compilation network access disabled and records time/disk evidence."
+      ],
+      "reviewGate": "Review before moving compiler verification to CI or another workstation; approve explicit storage, bandwidth, clean-host, and cache-retention budgets.",
+      "acceptanceCriteria": [
+        "A clean supported Windows host provisions every profile from checksummed inputs and reproduces all exact receipts.",
+        "Offline compilation succeeds after provisioning, and missing, corrupt, partial, or mismatched caches fail closed.",
+        "Warm verification time and disk use meet declared budgets without weakening per-source or per-FQBN evidence.",
+        "Provisioning adds compiler dependencies only and no external AI model or inference service."
+      ]
+    },
+    {
+      "id": "VFAI-FU-015",
+      "sourceMasterItem": "VFAI-010",
+      "originFollowup": "VFAI-FU-002",
+      "status": "proposed",
+      "priority": "P0",
+      "title": "Preserve immutable versioned synthetic releases and repair historical tokenizer lineage retention",
+      "reasonDeferred": "FU-002 exposed that generated shard paths under synthetic_data/shards/v1 were overwritten across grammar revisions. Tokenizer v1.0.0 still declares exact earlier shard hashes, but those bytes are no longer present at the declared paths, so its historical training input cannot be reloaded even though the tokenizer/model artifacts themselves remain intact.",
+      "blockingEvidence": [
+        "The v1.0.0 tokenizer manifest declares four 154-record shard hashes that differ from the current 250-record release at the same paths.",
+        "A workspace search found no retained JSONL files with the four historical SHA-256 values, and Git HEAD versions do not match them.",
+        "Current training is safely moved to tokenizer v1.1.0, while historical bootstrap execution fails closed rather than substituting current data."
+      ],
+      "proposedWork": [
+        "Publish future synthetic releases under immutable revision/content-addressed directories and make every tokenizer/model manifest reference those paths rather than a mutable current alias.",
+        "Search trusted owner backups for the exact v1.0.0 shard bytes; if recovered, verify all declared hashes and archive them without changing the historical tokenizer manifest.",
+        "If recovery is impossible, retain an explicit reproducibility limitation on historical artifacts and prevent any release process from claiming full data reconstruction."
+      ],
+      "reviewGate": "Review before the next tokenizer or model training revision; immutable release retention and backup policy must be approved before new training starts.",
+      "acceptanceCriteria": [
+        "Every new tokenizer/model lineage resolves to immutable retained shard bytes and manifests whose checksums remain valid after later releases.",
+        "Current aliases may move, but immutable version paths cannot be overwritten and deletion impact is fail-closed.",
+        "Historical v1.0.0 lineage is either exactly restored from trusted bytes or clearly classified as non-reconstructable without rewriting evidence.",
+        "Backup/restore and source-removal checks cover all retained release revisions."
+      ]
+    }
+  ]
+}

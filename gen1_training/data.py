@@ -18,13 +18,16 @@ from data_governance.governance import (
 )
 from evaluation.leakage import exclude_held_out_records
 from model.gen1.config import Gen1Config
-from model.tokenizer import DEFAULT_TOKENIZER_RELEASE_PATH, VoltForgeTokenizer
+from model.tokenizer import VoltForgeTokenizer
 from task_schema.compiler import compile_task_record
 from task_schema.io import read_task_shard
 
 
 AI_ROOT = Path(__file__).resolve().parents[1]
 APPROVED_CORPUS_ID = "vfai009-approved-packed-v1"
+CURRENT_TRAINING_TOKENIZER_RELEASE_PATH = (
+    AI_ROOT / "model" / "tokenizers" / "vfdlm-byte-bpe-v1.1.0"
+)
 
 
 class TrainingDataContractError(RuntimeError):
@@ -222,7 +225,7 @@ def _resolve_approved_path(relative_path: Any) -> Path:
 def load_approved_corpus(
     model_config: Gen1Config,
     *,
-    tokenizer_directory: str | Path = DEFAULT_TOKENIZER_RELEASE_PATH,
+    tokenizer_directory: str | Path = CURRENT_TRAINING_TOKENIZER_RELEASE_PATH,
     packing_block_size: int | None = None,
 ) -> PackedCorpus:
     """Load only checksum-approved VFAI-009 records using the frozen VFAI-010 split."""

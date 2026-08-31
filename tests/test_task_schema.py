@@ -236,13 +236,21 @@ def test_runtime_grounding_uses_typed_prompt_and_revision_locked_proposals(monke
     revision = record["input"]["projectContext"]["sourceProjectRevision"]
     assert revision == "client:42"
     assert parse_compiled_sections(grounded.prompt_context)[3]["sectionType"] == "project-context"
-    assert grounded.proposal is not None
-    assert grounded.proposal["applicationMode"] == "proposal-only"
-    assert grounded.proposal["requiresUserConfirmation"] is True
+    assert grounded.proposal is None
+    assert grounded.engineering_report["sourceProjectRevision"] == revision
+    assert grounded.engineering_report["summary"]["status"] == "blocked"
+    findings = [
+        finding
+        for run in grounded.engineering_report["toolRuns"]
+        for finding in run["findings"]
+    ]
+    assert findings
+    assert all(finding["affectedProjectIds"] for finding in findings)
+    assert all(finding["evidenceRefs"] and finding["fix"] for finding in findings)
     assert all(
-        action["sourceProjectRevision"] == revision
-        and action["applicationMode"] == "proposal-only"
-        for action in grounded.proposal["structuredActions"]
+        finding["modelOverridePolicy"] == "prohibited"
+        for finding in findings
+        if finding["blocking"]
     )
     response = runtime_response_to_task_record(
         record,

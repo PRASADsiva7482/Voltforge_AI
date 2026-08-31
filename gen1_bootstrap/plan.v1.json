@@ -38,14 +38,14 @@
     "deterministicAlgorithms": true,
     "torchNumThreads": 4,
     "torchNumInteropThreads": 1,
-    "expectedTrainingPredictedTokens": 129866,
-    "approvedUniqueTrainingPredictedTokens": 71410,
+    "expectedTrainingPredictedTokens": 129800,
+    "approvedUniqueTrainingPredictedTokens": 71377,
     "maximumExposureMultiple": 1.83
   },
   "heldoutPolicy": {
     "splitId": "vf-tokenizer-split-v1",
     "recordCount": 16,
-    "packedPredictedTokens": 9027,
+    "packedPredictedTokens": 9109,
     "expectedTasks": [
       "circuit_validation",
       "compiler_repair",
@@ -82,7 +82,7 @@
     "deteriorationPatienceIntervals": 3,
     "relativeLossRegressionPercent": 2.0,
     "hardStop": "Stop at maxSteps because another complete interval would exceed the approved repeated-data exposure ceiling; non-finite optimization fails immediately.",
-    "scalingInterpretation": "The bootstrap is data-limited after at most 1.83 exposures of 71,410 unique training transitions. Additional repetitions cannot be presented as added data or release-scale training."
+    "scalingInterpretation": "The bootstrap is data-limited after at most 1.83 exposures of 71,377 unique training transitions. Additional repetitions cannot be presented as added data or release-scale training."
   },
   "globalReleasePolicy": {
     "metricsPath": "evaluation/metrics.v1.json",

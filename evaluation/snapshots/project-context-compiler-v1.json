@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "snapshotId": "vfai020-project-context-snapshot-v1",
+  "fixtureId": "vfai020-synthetic-selected-led-v1",
+  "policyId": "vfai020-project-context-policy-v1",
+  "policySha256": "51760ccc3f5407a02bface5456ffaa069df2ffd05203ec0c8da3bb9397786aba",
+  "compilerVersion": "1.0.0",
+  "tokenizerId": "vfdlm-byte-bpe",
+  "tokenizerVersion": "1.0.0",
+  "contextWindowTokens": 3400,
+  "reservedOutputTokens": 256,
+  "promptTokenLimit": 3144,
+  "promptTokens": 3024,
+  "promptSha256": "46c110494d220741fc2c092dcb78a24ba85d745daf3121ad10618aa5e5902b35",
+  "selectedSectionSetSha256": "357872d25ae3fa8b915b3dac873ac773e51248fc4361d44f7db59228bc469c46",
+  "selectedSectionCount": 6,
+  "omittedSectionCount": 82,
+  "selectedCategoryCounts": {
+    "active-firmware": 2,
+    "active-selection": 1,
+    "diagnostic": 1,
+    "project-metadata": 1,
+    "relevant-net": 1
+  },
+  "omittedCategoryCounts": {
+    "component": 23,
+    "conversation": 10,
+    "memory": 6,
+    "netlist": 17,
+    "relevant-component": 1,
+    "relevant-wire": 1,
+    "retrieved-evidence": 6,
+    "simulation": 1,
+    "wire": 17
+  },
+  "selectedToolEvidenceCount": 1,
+  "sourceProjectRevision": "snapshot-sha256:8c4c0f4961108f554122ef8104c95e427a4cb997ccc6a8ce78ec4a10df1bed7a",
+  "compiledSectionTypes": [
+    "record-header",
+    "system",
+    "user",
+    "project-context",
+    "tool-evidence",
+    "assistant-request"
+  ],
+  "rawPromptStored": false,
+  "rawProjectContextStored": false,
+  "snapshotSha256": "55985dcf9de0da318c80f394a6d65b54acb94691216f0c14b8352e57deeaf471"
+}

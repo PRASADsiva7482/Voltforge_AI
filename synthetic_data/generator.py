@@ -200,6 +200,13 @@ def _knowledge_input(receipt: Mapping[str, Any], summary: str) -> list[dict[str,
     ]
 
 
+def _compiler_tool_version(receipt: Mapping[str, Any]) -> str:
+    toolchain = receipt.get("toolchain", {})
+    profile_id = str(toolchain.get("profileId", "unknown"))
+    core_version = str(toolchain.get("coreVersion", "unknown"))
+    return f"{profile_id}+core-{core_version}"
+
+
 def _board_records() -> list[dict[str, Any]]:
     records = []
     for board in SUPPORTED_BOARDS:
@@ -412,7 +419,7 @@ def _firmware_records(receipts: Mapping[str, Mapping[str, Any]]) -> list[dict[st
                     {
                         "evidenceId": evidence_id,
                         "toolName": "tool:arduino-cli-compiler",
-                        "toolVersion": "1.5.1+arduino-avr-1.8.6",
+                        "toolVersion": _compiler_tool_version(receipt),
                         "summary": "The exact emitted sketch compiled successfully for the pinned target FQBN.",
                         "payload": receipt,
                     }
@@ -455,14 +462,14 @@ def _repair_records(receipts: Mapping[str, Mapping[str, Any]]) -> list[dict[str,
                     {
                         "evidenceId": broken_evidence_id,
                         "toolName": "tool:arduino-cli-compiler",
-                        "toolVersion": "1.5.1+arduino-avr-1.8.6",
+                        "toolVersion": _compiler_tool_version(broken_receipt),
                         "summary": "The original source failed in the pinned target compiler.",
                         "payload": broken_receipt,
                     },
                     {
                         "evidenceId": fixed_evidence_id,
                         "toolName": "tool:arduino-cli-compiler",
-                        "toolVersion": "1.5.1+arduino-avr-1.8.6",
+                        "toolVersion": _compiler_tool_version(fixed_receipt),
                         "summary": "The proposed corrected source compiled in the pinned target compiler.",
                         "payload": fixed_receipt,
                     },

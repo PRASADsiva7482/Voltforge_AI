@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai029-ai-proposal-transaction-v1",
+  "generatedOn": "2026-08-31",
+  "contractVersion": "1.0.0",
+  "checkCount": 13,
+  "passedCheckCount": 13,
+  "checks": {
+    "typedDiffsCarrySourceRevisions": true,
+    "editorRevisionIgnoresSolverNoise": true,
+    "previewRequiresExplicitSelection": true,
+    "chatUsesAtomicPlanner": true,
+    "validatorUsesSameAtomicPlanner": true,
+    "plannerRejectsBeforeStoreMutation": true,
+    "canvasCommitIsOneUndoBoundary": true,
+    "undoRequiresUnchangedRevision": true,
+    "generatedCodeHasNoDirectMutationButton": true,
+    "persistedSavesUseOptimisticRevision": true,
+    "backendRejectsStaleRevision": true,
+    "revisionRegressionCoveragePresent": true,
+    "noThirdPartyGenerationPathAdded": true
+  },
+  "networkAccessed": false,
+  "rawPromptStored": false,
+  "rawProjectContextStored": false,
+  "rawModelOutputStored": false,
+  "thirdPartyGenerationProvider": false,
+  "evaluatorSha256": "137a9c49e57cba0ef4cf30e5ab7b5c843347b4136bc1b31ab1c178df4a721f3f",
+  "reportSha256": "14058c2c5a093666f225b73bd00ae7118d88c9a7d7046474ce7fbd4529062fa6"
+}

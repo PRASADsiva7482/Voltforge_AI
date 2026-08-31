@@ -1,5 +1,6 @@
 import json
 import logging
+import json
 import time
 import uuid
 from contextlib import contextmanager
@@ -8,6 +9,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import pymysql
 import pymysql.cursors
 import config
+from api.security import redact_sensitive_text
 
 logger = logging.getLogger("voltforge-ai.database")
 
@@ -39,7 +41,10 @@ class DatabaseManager:
                 autocommit=False,
             )
         except Exception as exc:
-            logger.warning(f"Failed to connect to Voltforge_AI database ({self.host}:{self.port}): {exc}")
+            logger.warning(
+                "Failed to connect to Voltforge_AI database (errorType=%s)",
+                type(exc).__name__,
+            )
             return None
 
     @contextmanager
@@ -54,7 +59,9 @@ class DatabaseManager:
             conn.commit()
         except Exception as exc:
             conn.rollback()
-            logger.error(f"DB Transaction error, rolled back: {exc}", exc_info=True)
+            logger.error(
+                "DB transaction rolled back (errorType=%s)", type(exc).__name__
+            )
             raise
         finally:
             try:
@@ -80,8 +87,8 @@ class DatabaseManager:
                         "tableCount": len(tables),
                         "tables": tables,
                     }
-        except Exception as exc:
-            return {"connected": False, "error": str(exc)}
+        except Exception:
+            return {"connected": False, "error": "Database health check failed."}
 
     # -------------------------------------------------------------------------
     # 1. Chat Sessions & Messages
@@ -161,7 +168,9 @@ class DatabaseManager:
                     )
             return session_id
         except Exception as exc:
-            logger.warning(f"Error persisting chat turn: {exc}")
+            logger.warning(
+                "Error persisting chat turn (errorType=%s)", type(exc).__name__
+            )
             return None
 
     # -------------------------------------------------------------------------
@@ -205,7 +214,9 @@ class DatabaseManager:
                     )
             return snapshot_id
         except Exception as exc:
-            logger.warning(f"Error saving canvas snapshot: {exc}")
+            logger.warning(
+                "Error saving canvas snapshot (errorType=%s)", type(exc).__name__
+            )
             return None
 
     # -------------------------------------------------------------------------
@@ -284,7 +295,9 @@ class DatabaseManager:
                         )
             return validation_id
         except Exception as exc:
-            logger.warning(f"Error saving circuit validation: {exc}")
+            logger.warning(
+                "Error saving circuit validation (errorType=%s)", type(exc).__name__
+            )
             return None
 
     # -------------------------------------------------------------------------
@@ -332,7 +345,7 @@ class DatabaseManager:
                     )
             return gen_id
         except Exception as exc:
-            logger.warning(f"Error saving code generation: {exc}")
+            logger.warning("Error saving code generation: %s", type(exc).__name__)
             return None
 
     # -------------------------------------------------------------------------
@@ -366,7 +379,9 @@ class DatabaseManager:
                             "cached": True,
                         }
         except Exception as exc:
-            logger.warning(f"Error fetching SPICE cache: {exc}")
+            logger.warning(
+                "Error fetching SPICE cache (errorType=%s)", type(exc).__name__
+            )
         return None
 
     def save_spice_simulation(
@@ -414,7 +429,9 @@ class DatabaseManager:
                     )
             return True
         except Exception as exc:
-            logger.warning(f"Error caching SPICE simulation: {exc}")
+            logger.warning(
+                "Error caching SPICE simulation (errorType=%s)", type(exc).__name__
+            )
             return False
 
     # -------------------------------------------------------------------------
@@ -438,7 +455,9 @@ class DatabaseManager:
                     )
                     return cur.fetchall()
         except Exception as exc:
-            logger.warning(f"Error fetching active rules from DB: {exc}")
+            logger.warning(
+                "Error fetching active rules from DB (errorType=%s)", type(exc).__name__
+            )
             return []
 
     # -------------------------------------------------------------------------
@@ -469,10 +488,21 @@ class DatabaseManager:
                         (id, endpoint, client_ip, http_status, tokens_consumed, total_duration_ms, inference_engine_used, error_trace)
                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                         """,
-                        (log_id, endpoint, client_ip, http_status, tokens_consumed, duration_ms, engine, error_trace),
+                        (
+                            log_id,
+                            endpoint,
+                            client_ip,
+                            http_status,
+                            tokens_consumed,
+                            duration_ms,
+                            engine,
+                            redact_sensitive_text(error_trace, 500) if error_trace else None,
+                        ),
                     )
         except Exception as exc:
-            logger.debug(f"Telemetry logging silently skipped: {exc}")
+            logger.debug(
+                "Telemetry logging skipped (errorType=%s)", type(exc).__name__
+            )
 
 
 # Global database manager singleton instance

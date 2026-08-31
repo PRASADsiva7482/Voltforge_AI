@@ -26,7 +26,7 @@ def test_checked_schema_and_every_generated_fact_are_valid_and_evidence_bound() 
         build_knowledge_json_schema()
     )
     records = build_records()
-    assert len(records) == 49
+    assert len(records) == 61
     assert {item["recordType"] for item in records} == {
         "board",
         "pin-map",
@@ -39,8 +39,8 @@ def test_checked_schema_and_every_generated_fact_are_valid_and_evidence_bound() 
     }
     for record in records:
         assert validate_knowledge_record(record) == record
-        assert record["effectiveRevision"]["revision"] == "revision:1.0.0"
-        assert record["effectiveRevision"]["validFrom"] == "2026-08-28"
+        assert record["effectiveRevision"]["revision"] == "revision:1.1.0"
+        assert record["effectiveRevision"]["validFrom"] == "2026-08-31"
         evidence_ids = {
             item["evidenceId"] for item in record["provenance"]["evidence"]
         }
@@ -63,9 +63,9 @@ def test_missing_or_unresolved_evidence_fails_closed() -> None:
 
 def test_catalog_binds_all_pack_schema_and_builder_checksums() -> None:
     summary = check_outputs()
-    assert summary["recordCount"] == 49
+    assert summary["recordCount"] == 61
     corpus = ElectronicsCorpus()
-    assert len(corpus.records) == 49
+    assert len(corpus.records) == 61
     assert corpus.catalog["recordSchema"]["sha256"]
     assert corpus.catalog["builder"]["sha256"]
     assert all(pack["sha256"] for pack in corpus.catalog["packs"])
@@ -111,6 +111,13 @@ def test_exact_variants_conflicts_and_unknowns_are_distinct() -> None:
     assert unsupported.status == "unknown"
     assert unsupported.records == ()
 
+    assert corpus.lookup("board", "ARDUINO_NANO_EVERY").status == "found"
+    assert corpus.lookup("board", "ARDUINO_LEONARDO").status == "found"
+    assert corpus.lookup("board", "ARDUINO_MICRO").status == "found"
+    assert corpus.lookup("board", "ARDUINO_NANO").reasonCode == "variant-required"
+    assert corpus.lookup("board", "ESP32").reasonCode == "variant-required"
+    assert corpus.lookup("board", "ESP32_DEVKITC_V4_WROOM32E_N4").status == "found"
+
 
 def test_conflicting_hardware_revisions_remain_separate_in_report() -> None:
     report = json.loads(
@@ -121,6 +128,7 @@ def test_conflicting_hardware_revisions_remain_separate_in_report() -> None:
     groups = {item["conflictGroup"]: item["recordIds"] for item in report["conflictGroups"]}
     assert len(groups["conflict.board.arduino-uno"]) == 2
     assert len(groups["conflict.board.esp32-devkit"]) == 2
+    assert len(groups["conflict.board.arduino-nano"]) == 2
     assert len(groups["conflict.board.raspberry-pi-pico"]) == 2
     assert len(groups["conflict.component.ssd1306-breakout"]) == 2
 
@@ -129,7 +137,7 @@ def test_pin_router_uses_only_exact_curated_recipes() -> None:
     pinout = PinRouter.get_board_pinout("ARDUINO_UNO")
     assert pinout["status"] == "found"
     assert pinout["i2c_sda"] == "A4"
-    assert pinout["effectiveRevision"] == "revision:1.0.0"
+    assert pinout["effectiveRevision"] == "revision:1.1.0"
 
     recipe = PinRouter.resolve_connections_result(
         "ADAFRUIT_SSD1306_STEMMA_128X64", "ARDUINO_UNO"
@@ -141,6 +149,9 @@ def test_pin_router_uses_only_exact_curated_recipes() -> None:
     mega = PinRouter.get_board_pinout("ARDUINO_MEGA")
     assert mega["status"] == "found"
     assert mega["i2c_sda"] == "D20"
+    assert PinRouter.get_board_pinout("ARDUINO_NANO_EVERY")["i2c_sda"] == "A4"
+    assert PinRouter.get_board_pinout("ARDUINO_LEONARDO")["i2c_sda"] == "D2"
+    assert PinRouter.get_board_pinout("ARDUINO_MICRO")["i2c_sda"] == "D2"
 
     unknown_board = PinRouter.get_board_pinout("NOT_A_BOARD")
     assert unknown_board == {
@@ -179,5 +190,5 @@ def test_curated_source_is_approved_for_runtime_generation_and_training_lineage(
         source = require_approved_source(
             "vf-src-curated-electronics-corpus-v1", usage
         )
-        assert source["revision"] == "1.0.0"
+        assert source["revision"] == "1.1.0"
         assert source["privacy"]["containsPrivateUserData"] is False

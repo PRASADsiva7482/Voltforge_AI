@@ -12,7 +12,12 @@ AI_ROOT = Path(__file__).resolve().parents[1]
 if str(AI_ROOT) not in sys.path:
     sys.path.insert(0, str(AI_ROOT))
 
-from synthetic_data.pipeline import check_release, write_pipeline_lock, write_release
+from synthetic_data.pipeline import (
+    check_release,
+    refresh_release,
+    write_pipeline_lock,
+    write_release,
+)
 
 
 def main() -> int:
@@ -20,6 +25,11 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--write-lock", action="store_true", help="Refresh only the reviewed pipeline lock")
     mode.add_argument("--write", action="store_true", help="Compile firmware and write all release outputs")
+    mode.add_argument(
+        "--refresh",
+        action="store_true",
+        help="Rewrite governed outputs only after all retained receipts validate against the current lock",
+    )
     mode.add_argument("--check", action="store_true", help="No-write deterministic release verification")
     mode.add_argument(
         "--recompile",
@@ -30,7 +40,12 @@ def main() -> int:
     if args.write_lock:
         print(write_pipeline_lock())
         return 0
-    report = write_release() if args.write else check_release(recompile=args.recompile)
+    if args.write:
+        report = write_release()
+    elif args.refresh:
+        report = refresh_release()
+    else:
+        report = check_release(recompile=args.recompile)
     print(json.dumps(report["summary"], indent=2))
     return 0
 

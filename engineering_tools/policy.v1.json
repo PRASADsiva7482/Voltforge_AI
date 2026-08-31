@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai021-authoritative-engineering-tools-v1",
+  "contractVersion": "1.0.0",
+  "tools": [
+    {
+      "toolId": "circuit-netlist-validator",
+      "version": "1.0.0",
+      "category": "circuit-netlist"
+    },
+    {
+      "toolId": "board-pin-capability-checker",
+      "version": "1.0.0",
+      "category": "board-pin"
+    },
+    {
+      "toolId": "firmware-static-analyzer",
+      "version": "1.0.0",
+      "category": "firmware-static"
+    },
+    {
+      "toolId": "compiler-diagnostic-interpreter",
+      "version": "1.0.0",
+      "category": "compiler-feedback"
+    },
+    {
+      "toolId": "simulation-state-interpreter",
+      "version": "1.0.0",
+      "category": "simulation"
+    },
+    {
+      "toolId": "units-calculation-checker",
+      "version": "1.0.0",
+      "category": "units-calculation"
+    },
+    {
+      "toolId": "supported-component-checker",
+      "version": "1.0.0",
+      "category": "component-support"
+    }
+  ],
+  "authority": {
+    "deterministicToolsOwnCriticalDecisions": true,
+    "criticalFindingsBlockContradictoryModelOutput": true,
+    "criticalFindingsRequireVisibleSafetyWarning": true,
+    "modelMayExplainFindings": true,
+    "modelMayOverrideFindings": false,
+    "unknownEvidenceProducesUnknownDecision": true,
+    "actionsAreProposalOnly": true,
+    "actionsRequireUserConfirmation": true
+  },
+  "limits": {
+    "maximumComponents": 500,
+    "maximumWires": 1000,
+    "maximumNets": 300,
+    "maximumFirmwareFiles": 10,
+    "maximumFirmwareCharactersPerFile": 40000,
+    "maximumDiagnostics": 50,
+    "maximumSimulationValuesPerKind": 100,
+    "maximumFindingsPerTool": 50,
+    "maximumEvidencePerTool": 100,
+    "maximumCalculationsPerTool": 100
+  },
+  "numeric": {
+    "ohmsLawRelativeTolerance": "0.02",
+    "powerRelativeTolerance": "0.02",
+    "minimumAbsoluteTolerance": "0.000000001",
+    "decimalPrecision": 28
+  },
+  "sourcePolicy": {
+    "curatedCorpusId": "vf-electronics-curated-v1",
+    "curatedCorpusVersion": "1.0.0",
+    "exactVariantRequiredForRatings": true,
+    "familyDefaultsForbidden": true,
+    "clientSimulationIsReportedNotRerun": true,
+    "staticFirmwareReviewIsNotCompilation": true
+  },
+  "privacy": {
+    "rawFirmwareStored": false,
+    "rawCompilerDiagnosticStored": false,
+    "rawSimulationStateStored": false,
+    "contentHashesUsedForEvidence": true
+  },
+  "policySha256": "4399610d474c0ad9e106f5e73c4d09123ec3e1325b41e30ab31b1121a7835033"
+}

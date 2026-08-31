@@ -1,28 +1,28 @@
 {
   "schemaVersion": 1,
   "corpusId": "voltforge-curated-electronics-corpus",
-  "version": "1.0.0",
-  "effectiveFrom": "2026-08-28",
+  "version": "1.1.0",
+  "effectiveFrom": "2026-08-31",
   "source": {
     "sourceId": "vf-src-curated-electronics-corpus-v1",
-    "sourceRevision": "1.0.0"
+    "sourceRevision": "1.1.0"
   },
   "recordSchema": {
     "path": "knowledge-record.schema.json",
-    "sha256": "f31318dbd5bec05eabe51556728e47157199c688be5586b3f79ca10ca02ee656"
+    "sha256": "2b3a63a94be20c85ea801a0b1eac64de5c9c53052fb4e362f2ff0c43d5863503"
   },
   "builder": {
     "id": "vf-curated-electronics-corpus-builder",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "path": "builder.py",
-    "sha256": "cf97ddb1066c6b5461d61be1532aade1baa0cde70008a682605a253c227a33c2"
+    "sha256": "5a3080d1f22b927942492a19296405553a050b8daf5458234eac603be1343089"
   },
-  "recordCount": 49,
+  "recordCount": 61,
   "recordTypeCounts": {
-    "board": 10,
-    "pin-map": 8,
+    "board": 16,
+    "pin-map": 11,
     "component": 4,
-    "wiring-recipe": 8,
+    "wiring-recipe": 11,
     "firmware-api": 4,
     "compiler-diagnostic": 4,
     "simulation-behavior": 4,
@@ -33,17 +33,17 @@
       "packId": "vf-pack-board-v1",
       "recordType": "board",
       "path": "packs/v1/board.jsonl",
-      "recordCount": 10,
-      "sizeBytes": 25970,
-      "sha256": "2f878c68259e319838b5e407e5a1be7b2ff41a08340b449337fb5d02659cfb52"
+      "recordCount": 16,
+      "sizeBytes": 40231,
+      "sha256": "aba1e7fd07bec70f6166e523ca4dab466d74d6e5cd037e9136fccf20d61bbcd4"
     },
     {
       "packId": "vf-pack-pin-map-v1",
       "recordType": "pin-map",
       "path": "packs/v1/pin-map.jsonl",
-      "recordCount": 8,
-      "sizeBytes": 17891,
-      "sha256": "e0a506fa347fb77b330353a8d4e8dc6e54282fda18ede8943f7dde5a6325b29a"
+      "recordCount": 11,
+      "sizeBytes": 24362,
+      "sha256": "a33803a512b507638c87974ddfde9a367a51212977f6a6f6d802491aa7e8e1e2"
     },
     {
       "packId": "vf-pack-component-v1",
@@ -51,23 +51,23 @@
       "path": "packs/v1/component.jsonl",
       "recordCount": 4,
       "sizeBytes": 8988,
-      "sha256": "ccbc21945cefe7409b1de2e1f7d68aa9f23afeac9fa497228a867a1a92e4ac28"
+      "sha256": "8a6b3752a6af4eafa8448d5ec8334b6f87b170018ce677f15650993874b0bfae"
     },
     {
       "packId": "vf-pack-wiring-recipe-v1",
       "recordType": "wiring-recipe",
       "path": "packs/v1/wiring-recipe.jsonl",
-      "recordCount": 8,
-      "sizeBytes": 26196,
-      "sha256": "b71e78dd0a64a38252ffafef854b787cd7dc47fa4ceeb965e046433bff513a40"
+      "recordCount": 11,
+      "sizeBytes": 36063,
+      "sha256": "80275c4ccd564d250876c7203551719cda6fc9ae98788f3f5e0e7dbf81b5ca33"
     },
     {
       "packId": "vf-pack-firmware-api-v1",
       "recordType": "firmware-api",
       "path": "packs/v1/firmware-api.jsonl",
       "recordCount": 4,
-      "sizeBytes": 11130,
-      "sha256": "c165df798734a5f020e8d324923d45400742c36565177105b7ef3e3f439a0be3"
+      "sizeBytes": 12483,
+      "sha256": "823811120d80a9293589ab3c10d4e959c11a262e501bcddbc4237690aaa83a7e"
     },
     {
       "packId": "vf-pack-compiler-diagnostic-v1",
@@ -75,7 +75,7 @@
       "path": "packs/v1/compiler-diagnostic.jsonl",
       "recordCount": 4,
       "sizeBytes": 8215,
-      "sha256": "a5f133ca7806519edf272822e16a699b697f318b002084517eb5d804a5e19baa"
+      "sha256": "c4346f56665aadc2bbd8a58d5d866a64de2dc9782438a92fb006b9d631198f24"
     },
     {
       "packId": "vf-pack-simulation-behavior-v1",
@@ -83,7 +83,7 @@
       "path": "packs/v1/simulation-behavior.jsonl",
       "recordCount": 4,
       "sizeBytes": 7468,
-      "sha256": "51a663929f0db3175bb3e213cd4b9e3f57b593d189dc2897bc3f0c832546d2d1"
+      "sha256": "5b256a8f061e5ee21754cc311dd48404c0e56cb4f83c2219bea9b9e4c5498ef1"
     },
     {
       "packId": "vf-pack-safety-constraint-v1",
@@ -91,7 +91,7 @@
       "path": "packs/v1/safety-constraint.jsonl",
       "recordCount": 7,
       "sizeBytes": 13018,
-      "sha256": "e8f7ad75aa22234cafb0538bc5ae9d49df5d725e1490e3429e0a8daaaeb94d18"
+      "sha256": "f73978bc082b3a78f250d0b1768b736910fdf84c7dc6aa318639aa990b4ea993"
     }
   ],
   "supportPolicy": {

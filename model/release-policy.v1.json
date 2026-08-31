@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai033-model-release-lifecycle-v1",
+  "lifecycle": {
+    "states": ["experimental", "candidate", "stable", "rejected"],
+    "transitions": {
+      "experimental": ["candidate", "rejected"],
+      "candidate": ["stable", "rejected"],
+      "stable": [],
+      "rejected": []
+    },
+    "packageReadinessCompatibility": {
+      "legacyArtifactStatus": "approved",
+      "meaning": "The immutable package has passed artifact-level serving checks; it is not an operational stable-release decision."
+    }
+  },
+  "scorecard": {
+    "requiredDecision": "pass",
+    "requiredHashFields": ["reportSha256", "scorecardSha256", "artifactManifestSha256"],
+    "requiredEmptyFailureLists": ["criticalCaseFailures", "failedMetricIds"],
+    "approvalIsSignedWithReleaseRecord": true,
+    "rawPromptsOrOutputsAllowed": false
+  },
+  "canary": {
+    "requiredForStable": true,
+    "minimumObservations": 100,
+    "maximumErrorRate": 0.02,
+    "maximumContractFailureRate": 0.0,
+    "maximumSafetyFailureCount": 0,
+    "maximumP95LatencyMs": 5000,
+    "rollbackOnAnySafetyFailure": true,
+    "rollbackOnCompatibilityFailure": true
+  },
+  "compatibility": {
+    "runtime": "exact runtime interface, Python ABI, framework version, architecture, and checkpoint format",
+    "api": "API major versions must match and the request/response schema version must be exact; a changed major requires an explicit migration release",
+    "data": "Task-record schema and contract are exact; a changed data schema requires a versioned migration before activation",
+    "tokenizer": "Tokenizer ID and contract are exact and the tokenizer remains an immutable artifact dependency of the model",
+    "retrievalIndex": "Index ID and major version must match and the index digest is exact; model and index changes require one atomic bundle",
+    "migrationPolicyId": "vfai033-migrations-v1"
+  },
+  "rollout": {
+    "strategy": "offline-gates-then-canary-then-atomic-pointer-switch",
+    "servingRequiresStableRecord": true,
+    "previousStableArtifactRetained": true,
+    "automaticWeightMutation": false,
+    "automaticRollback": false,
+    "operatorRollbackRequiresExpectedRegistryRevision": true
+  },
+  "retention": {
+    "minimumStableHistoryEntries": 1,
+    "historyIsImmutable": true,
+    "releaseRecordsAreImmutable": true,
+    "artifactDeletionDuringRollback": false
+  },
+  "rollbackTriggers": [
+    "safetyFailureCount > 0",
+    "contractFailureRate > maximumContractFailureRate",
+    "errorRate > maximumErrorRate",
+    "p95LatencyMs > maximumP95LatencyMs",
+    "artifact_or_tokenizer_checksum_mismatch",
+    "runtime_or_api_or_data_compatibility_mismatch"
+  ]
+}

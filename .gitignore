@@ -5,3 +5,6 @@ __pycache__/
 datasheet_cache.json
 .toolchains/
 training_runs/
+model/registry/artifacts/
+model/registry/history/
+runtime/

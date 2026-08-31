@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai020-project-context-policy-v1",
+  "compilerVersion": "1.0.0",
+  "tokenizer": {
+    "tokenizerId": "vfdlm-byte-bpe",
+    "version": "1.0.0",
+    "exactAccountingRequired": true,
+    "bosIncluded": true
+  },
+  "budget": {
+    "defaultContextWindowTokens": 4096,
+    "defaultReservedOutputTokens": 512,
+    "minimumSupportedContextWindowTokens": 768,
+    "minimumReservedOutputTokens": 64,
+    "maximumContextWindowTokens": 65536
+  },
+  "mandatoryWhenPresent": [
+    "user-task",
+    "system-policy",
+    "board-and-project-revision",
+    "safety-tool-evidence",
+    "active-selection",
+    "relevant-net",
+    "active-firmware-first-chunk"
+  ],
+  "priorityOrder": [
+    "project-metadata",
+    "active-selection",
+    "relevant-net",
+    "diagnostic",
+    "tool-evidence",
+    "active-firmware",
+    "relevant-component",
+    "relevant-wire",
+    "component",
+    "wire",
+    "netlist",
+    "firmware",
+    "simulation",
+    "conversation",
+    "memory",
+    "retrieved-evidence"
+  ],
+  "normalizationLimits": {
+    "maximumToolEvents": 8,
+    "maximumIssuesPerTool": 8,
+    "maximumApprovedActionsPerTool": 8,
+    "maximumComponentCandidates": 200,
+    "maximumWireCandidates": 400,
+    "maximumNetCandidates": 200,
+    "maximumFirmwareFiles": 20,
+    "maximumFirmwareChunksPerFile": 8,
+    "firmwareChunkCharacters": 1200,
+    "maximumHistoryTurns": 20,
+    "maximumMemoryItems": 50,
+    "maximumRetrievedEvidenceItems": 50,
+    "maximumStringCharacters": 2000,
+    "maximumCollectionItems": 64,
+    "maximumObjectDepth": 4
+  },
+  "sourceBoundary": {
+    "taskRecordFraming": "vf-task-record-length-sha256-v1",
+    "projectSectionsAreUntrustedData": true,
+    "clientMemoryIsAuthoritative": false,
+    "clientRetrievedEvidenceIsAuthoritative": false
+  },
+  "truncation": {
+    "greedyByDeclaredPriority": true,
+    "stableTieBreak": "category-section-id-payload-sha256",
+    "partialJsonObjectsAllowed": false,
+    "partialSourceChunksAllowed": false,
+    "failIfMandatoryContentCannotFit": true
+  },
+  "privacy": {
+    "rawPromptLogged": false,
+    "rawProjectContextLogged": false,
+    "publicMetadataUsesCountsAndHashesOnly": true,
+    "productionSnapshotPersistenceAllowed": false
+  },
+  "policySha256": "51760ccc3f5407a02bface5456ffaa069df2ffd05203ec0c8da3bb9397786aba"
+}

@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from electronics_corpus.schema import (
+    CORPUS_SOURCE_REVISION,
     CORPUS_CONTRACT_VERSION,
     CORPUS_ROOT,
     KNOWLEDGE_SCHEMA_PATH,
@@ -18,10 +19,11 @@ from electronics_corpus.schema import (
 
 
 BUILDER_ID = "vf-curated-electronics-corpus-builder"
-BUILDER_VERSION = "1.0.0"
+BUILDER_VERSION = "1.1.0"
 SOURCE_ID = "vf-src-curated-electronics-corpus-v1"
-EFFECTIVE_FROM = "2026-08-28"
-VERIFIED_AT = "2026-08-28"
+EFFECTIVE_FROM = "2026-08-31"
+VERIFIED_AT = "2026-08-31"
+CORPUS_RELEASE_VERSION = CORPUS_SOURCE_REVISION
 PACK_ORDER = (
     "board",
     "pin-map",
@@ -38,6 +40,9 @@ UNO_R3_ID = "vf-knowledge-v1-board.arduino.uno-r3"
 UNO_R4_ID = "vf-knowledge-v1-board.arduino.uno-r4-wifi"
 MEGA_ID = "vf-knowledge-v1-board.arduino.mega-2560-r3"
 NANO_ID = "vf-knowledge-v1-board.arduino.nano-classic-atmega328p"
+NANO_EVERY_ID = "vf-knowledge-v1-board.arduino.nano-every-atmega4809"
+LEONARDO_ID = "vf-knowledge-v1-board.arduino.leonardo-atmega32u4"
+MICRO_ID = "vf-knowledge-v1-board.arduino.micro-atmega32u4"
 ESP32_ID = "vf-knowledge-v1-board.espressif.esp32-devkitc-v4-wroom32e-n4"
 ESP32_S3_ID = "vf-knowledge-v1-board.espressif.esp32-s3-devkitc1-n8"
 PICO_ID = "vf-knowledge-v1-board.raspberry-pi.pico-rp2040"
@@ -148,14 +153,14 @@ def record(
             "aliases": list(aliases),
         },
         "effectiveRevision": {
-            "revision": "revision:1.0.0",
+            "revision": f"revision:{CORPUS_SOURCE_REVISION}",
             "validFrom": EFFECTIVE_FROM,
             "validTo": None,
             "supersedes": None,
         },
         "provenance": {
             "sourceId": SOURCE_ID,
-            "sourceRevision": CORPUS_CONTRACT_VERSION,
+            "sourceRevision": CORPUS_SOURCE_REVISION,
             "curator": "VoltForge",
             "evidence": evidence_items,
         },
@@ -204,6 +209,33 @@ def _board_records() -> list[dict[str, Any]]:
         revision="A000005-current-at-2026-08-28",
         locator="Tech Specs and pinout",
         uri="https://docs.arduino.cc/hardware/nano/",
+    )
+    nano_every = evidence(
+        "evidence.arduino.nano-every",
+        kind="manufacturer-documentation",
+        publisher="Arduino",
+        title="Arduino Nano Every hardware documentation and datasheet",
+        revision="ABX00028-current-at-2026-08-31",
+        locator="ATmega4809 processor, memory, clock, and full pinout",
+        uri="https://docs.arduino.cc/hardware/nano-every",
+    )
+    leonardo = evidence(
+        "evidence.arduino.leonardo",
+        kind="manufacturer-documentation",
+        publisher="Arduino",
+        title="Arduino Leonardo hardware documentation and full pinout",
+        revision="A000057-current-at-2026-08-31",
+        locator="ATmega32U4 board specifications and header pinout",
+        uri="https://docs.arduino.cc/hardware/leonardo",
+    )
+    micro = evidence(
+        "evidence.arduino.micro",
+        kind="manufacturer-documentation",
+        publisher="Arduino",
+        title="Arduino Micro hardware documentation and schematic",
+        revision="A000053-current-at-2026-08-31",
+        locator="ATmega32U4 board specifications and header connections",
+        uri="https://docs.arduino.cc/hardware/micro",
     )
     esp32 = evidence(
         "evidence.espressif.esp32-devkitc-v4",
@@ -302,8 +334,8 @@ def _board_records() -> list[dict[str, Any]]:
             "board-family:arduino:nano",
             "Arduino Nano classic",
             "A000005 / ATmega328P",
-            ["ARDUINO_NANO", "ARDUINO_NANO_CLASSIC", "A000005"],
-            None,
+            ["ARDUINO_NANO_CLASSIC", "NANO_CLASSIC", "A000005"],
+            "conflict.board.arduino-nano",
             nano,
             {
                 "manufacturer": "Arduino",
@@ -318,12 +350,75 @@ def _board_records() -> list[dict[str, Any]]:
             },
         ),
         (
+            "board.arduino.nano-every-atmega4809",
+            "board:arduino:nano-every-atmega4809",
+            "board-family:arduino:nano",
+            "Arduino Nano Every",
+            "ABX00028 / ATmega4809",
+            ["ARDUINO_NANO_EVERY", "NANO_EVERY", "ABX00028"],
+            "conflict.board.arduino-nano",
+            nano_every,
+            {
+                "manufacturer": "Arduino",
+                "mcu": "ATmega4809",
+                "architecture": "8-bit AVR",
+                "logic-voltage-v": 5.0,
+                "flash-bytes": 49152,
+                "sram-bytes": 6144,
+                "clock-hz": 20000000,
+                "digital-io-count": 20,
+                "analog-input-count": 8,
+            },
+        ),
+        (
+            "board.arduino.leonardo-atmega32u4",
+            "board:arduino:leonardo-atmega32u4",
+            "board-family:arduino:leonardo",
+            "Arduino Leonardo",
+            "A000057 / ATmega32U4",
+            ["ARDUINO_LEONARDO", "LEONARDO", "A000057"],
+            None,
+            leonardo,
+            {
+                "manufacturer": "Arduino",
+                "mcu": "ATmega32U4",
+                "architecture": "8-bit AVR",
+                "logic-voltage-v": 5.0,
+                "flash-bytes": 32768,
+                "sram-bytes": 2560,
+                "clock-hz": 16000000,
+                "digital-io-count": 20,
+                "analog-input-count": 12,
+            },
+        ),
+        (
+            "board.arduino.micro-atmega32u4",
+            "board:arduino:micro-atmega32u4",
+            "board-family:arduino:micro",
+            "Arduino Micro",
+            "A000053 / ATmega32U4",
+            ["ARDUINO_MICRO", "MICRO", "A000053"],
+            None,
+            micro,
+            {
+                "manufacturer": "Arduino",
+                "mcu": "ATmega32U4",
+                "architecture": "8-bit AVR",
+                "logic-voltage-v": 5.0,
+                "flash-bytes": 32768,
+                "sram-bytes": 2560,
+                "clock-hz": 16000000,
+                "digital-io-count": 20,
+                "analog-input-count": 12,
+            },
+        ),
+        (
             "board.espressif.esp32-devkitc-v4-wroom32e-n4",
             "board:espressif:esp32-devkitc-v4-wroom32e-n4",
             "board-family:espressif:esp32-devkitc",
             "ESP32-DevKitC V4 with ESP32-WROOM-32E-N4",
             "V4 / ESP32-WROOM-32E-N4",
-            ["ESP32", "ESP32_DEVKITC_V4_WROOM32E_N4", "ESP32_WROOM_32E_N4"],
+            ["ESP32_DEVKITC_V4_WROOM32E_N4", "ESP32_WROOM_32E_N4"],
             "conflict.board.esp32-devkit",
             esp32,
             {
@@ -343,7 +438,7 @@ def _board_records() -> list[dict[str, Any]]:
             "board-family:espressif:esp32-devkitc",
             "ESP32-S3-DevKitC-1 with ESP32-S3-WROOM-1-N8",
             "DevKitC-1 / ESP32-S3-WROOM-1-N8",
-            ["ESP32_S3", "ESP32_S3_DEVKITC_1_N8"],
+            ["ESP32_S3_DEVKITC_1_N8"],
             "conflict.board.esp32-devkit",
             esp32_s3,
             {
@@ -438,12 +533,36 @@ def _board_records() -> list[dict[str, Any]]:
             ("STM32_BLUE_PILL", "BLUE_PILL"),
         ),
         (
+            "board.generic.arduino-nano",
+            "board:generic:arduino-nano",
+            "board-family:arduino:nano",
+            "Generic Arduino Nano selection",
+            "classic, Every, 33 IoT, and carrier/revision not selected",
+            ("ARDUINO_NANO", "NANO"),
+        ),
+        (
             "board.generic.esp8266-development-board",
             "board:generic:esp8266-development-board",
             "board-family:generic:esp8266-development-board",
             "Generic ESP8266 development board",
             "module and carrier-board revision not selected",
             ("ESP8266", "ESP8266_DEV_BOARD"),
+        ),
+        (
+            "board.generic.esp32-development-board",
+            "board:generic:esp32-development-board",
+            "board-family:generic:esp32-development-board",
+            "Generic ESP32 development board",
+            "module, flash density, carrier, and board revision not selected",
+            ("ESP32", "ESP32_DEVKIT_V1"),
+        ),
+        (
+            "board.generic.esp32-s3-development-board",
+            "board:generic:esp32-s3-development-board",
+            "board-family:generic:esp32-s3-development-board",
+            "Generic ESP32-S3 development board",
+            "module, flash density, carrier, and board revision not selected",
+            ("ESP32_S3",),
         ),
     ]
     for slug, subject_id, family_id, name, variant, aliases in unresolved_rows:
@@ -517,12 +636,48 @@ def _pin_map_records() -> list[dict[str, Any]]:
             "pin-map:arduino:nano-classic-atmega328p",
             "Arduino Nano classic pin map",
             "A000005 / ATmega328P headers",
-            ["ARDUINO_NANO", "ARDUINO_NANO_CLASSIC"],
+            ["ARDUINO_NANO_CLASSIC", "NANO_CLASSIC"],
             "evidence.pinout.nano-classic",
             "Arduino Nano classic full pinout",
             "https://docs.arduino.cc/resources/pinouts/A000005-full-pinout.pdf",
             {"i2c": {"sda": "A4", "scl": "A5"}, "spi": {"copi": "D11", "cipo": "D12", "sck": "D13", "cs": "D10"}, "uart0": {"tx": "TX1", "rx": "RX0"}},
             {"5V": ["power-5v"], "3V3": ["power-3v3"], "GND": ["ground"], "A0-A7": ["adc"], "D3,D5,D6,D9,D10,D11": ["pwm"]},
+        ),
+        NANO_EVERY_ID: (
+            "pin-map.arduino.nano-every-atmega4809",
+            "pin-map:arduino:nano-every-atmega4809",
+            "Arduino Nano Every pin map",
+            "ABX00028 / ATmega4809 headers",
+            ["ARDUINO_NANO_EVERY", "NANO_EVERY"],
+            "evidence.pinout.nano-every",
+            "Arduino Nano Every full pinout",
+            "https://docs.arduino.cc/resources/pinouts/ABX00028-full-pinout.pdf",
+            {"i2c": {"sda": "A4", "scl": "A5"}, "spi": {"copi": "D11", "cipo": "D12", "sck": "D13", "cs": "D10"}, "uart0": {"tx": "D1", "rx": "D0"}},
+            {"5V": ["power-5v"], "3V3": ["power-3v3"], "GND": ["ground"], "A0-A7": ["adc"], "D3,D5,D6,D9,D10,D11": ["pwm"]},
+        ),
+        LEONARDO_ID: (
+            "pin-map.arduino.leonardo-atmega32u4",
+            "pin-map:arduino:leonardo-atmega32u4",
+            "Arduino Leonardo pin map",
+            "A000057 / ATmega32U4 headers",
+            ["ARDUINO_LEONARDO", "LEONARDO"],
+            "evidence.pinout.leonardo",
+            "Arduino Leonardo full pinout",
+            "https://docs.arduino.cc/resources/pinouts/A000057-full-pinout.pdf",
+            {"i2c": {"sda": "D2", "scl": "D3"}, "spi": {"copi": "ICSP-4", "cipo": "ICSP-1", "sck": "ICSP-3", "cs": "D10"}, "uart0": {"tx": "D1", "rx": "D0"}},
+            {"5V": ["power-5v"], "3V3": ["power-3v3"], "GND": ["ground"], "A0-A11": ["adc"], "D3,D5,D6,D9,D10,D11,D13": ["pwm"]},
+        ),
+        MICRO_ID: (
+            "pin-map.arduino.micro-atmega32u4",
+            "pin-map:arduino:micro-atmega32u4",
+            "Arduino Micro pin map",
+            "A000053 / ATmega32U4 headers",
+            ["ARDUINO_MICRO", "MICRO"],
+            "evidence.pinout.micro",
+            "Arduino Micro hardware pin map",
+            "https://docs.arduino.cc/hardware/micro",
+            {"i2c": {"sda": "D2", "scl": "D3"}, "spi": {"copi": "ICSP-4", "cipo": "ICSP-1", "sck": "ICSP-3", "cs": "D10"}, "uart0": {"tx": "D1", "rx": "D0"}},
+            {"5V": ["power-5v"], "3V3": ["power-3v3"], "GND": ["ground"], "A0-A11": ["adc"], "D3,D5,D6,D9,D10,D11,D13": ["pwm"]},
         ),
         ESP32_ID: (
             "pin-map.espressif.esp32-devkitc-v4-wroom32e-n4",
@@ -728,9 +883,12 @@ def _wiring_records() -> list[dict[str, Any]]:
         (UNO_R3_ID, "arduino.uno-r3", "Arduino UNO R3 to Adafruit SSD1306 STEMMA QT", ["ARDUINO_UNO+ADAFRUIT_SSD1306_STEMMA_128X64"], {"VIN": "3V3", "GND": "GND", "DATA/SDA": "A4", "CLK/SCL": "A5"}),
         (UNO_R4_ID, "arduino.uno-r4-wifi", "Arduino UNO R4 WiFi to Adafruit SSD1306 STEMMA QT", ["ARDUINO_UNO_R4+ADAFRUIT_SSD1306_STEMMA_128X64"], {"VIN": "QWIIC_3V3", "GND": "QWIIC_GND", "DATA/SDA": "QWIIC_SDA", "CLK/SCL": "QWIIC_SCL"}),
         (MEGA_ID, "arduino.mega-2560-r3", "Arduino Mega 2560 Rev3 to Adafruit SSD1306 STEMMA QT", ["ARDUINO_MEGA+ADAFRUIT_SSD1306_STEMMA_128X64"], {"VIN": "3V3", "GND": "GND", "DATA/SDA": "D20", "CLK/SCL": "D21"}),
-        (NANO_ID, "arduino.nano-classic", "Arduino Nano classic to Adafruit SSD1306 STEMMA QT", ["ARDUINO_NANO+ADAFRUIT_SSD1306_STEMMA_128X64"], {"VIN": "3V3", "GND": "GND", "DATA/SDA": "A4", "CLK/SCL": "A5"}),
+        (NANO_ID, "arduino.nano-classic", "Arduino Nano classic to Adafruit SSD1306 STEMMA QT", ["ARDUINO_NANO_CLASSIC+ADAFRUIT_SSD1306_STEMMA_128X64"], {"VIN": "3V3", "GND": "GND", "DATA/SDA": "A4", "CLK/SCL": "A5"}),
+        (NANO_EVERY_ID, "arduino.nano-every-atmega4809", "Arduino Nano Every to Adafruit SSD1306 STEMMA QT", ["ARDUINO_NANO_EVERY+ADAFRUIT_SSD1306_STEMMA_128X64"], {"VIN": "3V3", "GND": "GND", "DATA/SDA": "A4", "CLK/SCL": "A5"}),
+        (LEONARDO_ID, "arduino.leonardo-atmega32u4", "Arduino Leonardo to Adafruit SSD1306 STEMMA QT", ["ARDUINO_LEONARDO+ADAFRUIT_SSD1306_STEMMA_128X64"], {"VIN": "3V3", "GND": "GND", "DATA/SDA": "D2", "CLK/SCL": "D3"}),
+        (MICRO_ID, "arduino.micro-atmega32u4", "Arduino Micro to Adafruit SSD1306 STEMMA QT", ["ARDUINO_MICRO+ADAFRUIT_SSD1306_STEMMA_128X64"], {"VIN": "3V3", "GND": "GND", "DATA/SDA": "D2", "CLK/SCL": "D3"}),
         (ESP32_ID, "espressif.esp32-devkitc-v4", "ESP32-DevKitC V4 to Adafruit SSD1306 STEMMA QT", ["ESP32_DEVKITC_V4_WROOM32E_N4+ADAFRUIT_SSD1306_STEMMA_128X64"], {"VIN": "3V3", "GND": "GND", "DATA/SDA": "GPIO21", "CLK/SCL": "GPIO22"}),
-        (ESP32_S3_ID, "espressif.esp32-s3-devkitc1", "ESP32-S3-DevKitC-1 to Adafruit SSD1306 STEMMA QT", ["ESP32_S3+ADAFRUIT_SSD1306_STEMMA_128X64"], {"VIN": "3V3", "GND": "GND", "DATA/SDA": "GPIO8", "CLK/SCL": "GPIO9"}),
+        (ESP32_S3_ID, "espressif.esp32-s3-devkitc1", "ESP32-S3-DevKitC-1 to Adafruit SSD1306 STEMMA QT", ["ESP32_S3_DEVKITC_1_N8+ADAFRUIT_SSD1306_STEMMA_128X64"], {"VIN": "3V3", "GND": "GND", "DATA/SDA": "GPIO8", "CLK/SCL": "GPIO9"}),
         (PICO_ID, "raspberry-pi.pico", "Raspberry Pi Pico to Adafruit SSD1306 STEMMA QT", ["RASPBERRY_PI_PICO+ADAFRUIT_SSD1306_STEMMA_128X64"], {"VIN": "3V3_OUT", "GND": "GND", "DATA/SDA": "GP4", "CLK/SCL": "GP5"}),
         (PICO2_ID, "raspberry-pi.pico2", "Raspberry Pi Pico 2 to Adafruit SSD1306 STEMMA QT", ["RASPBERRY_PI_PICO_2+ADAFRUIT_SSD1306_STEMMA_128X64"], {"VIN": "3V3_OUT", "GND": "GND", "DATA/SDA": "GP4", "CLK/SCL": "GP5"}),
     ]
@@ -789,7 +947,7 @@ def _firmware_records() -> list[dict[str, Any]]:
         locator="hardware_gpio and hardware_i2c APIs",
         uri="https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-c-sdk.pdf",
     )
-    arduino_boards = [UNO_R3_ID, UNO_R4_ID, MEGA_ID, NANO_ID, ESP32_ID, ESP32_S3_ID]
+    arduino_boards = [UNO_R3_ID, UNO_R4_ID, MEGA_ID, NANO_ID, NANO_EVERY_ID, LEONARDO_ID, MICRO_ID, ESP32_ID, ESP32_S3_ID]
     pico_boards = [PICO_ID, PICO2_ID]
     rows = [
         ("firmware.arduino.gpio", "firmware-api:arduino:gpio", "Arduino digital I/O API", "Arduino core selected by exact board package", ["ARDUINO_GPIO_API"], arduino, "Arduino", "board-package-version-must-be-recorded", "Arduino.h", ["pinMode", "digitalRead", "digitalWrite"], arduino_boards),
@@ -994,9 +1152,9 @@ def expected_outputs() -> dict[Path, bytes]:
     catalog = {
         "schemaVersion": 1,
         "corpusId": "voltforge-curated-electronics-corpus",
-        "version": CORPUS_CONTRACT_VERSION,
+        "version": CORPUS_RELEASE_VERSION,
         "effectiveFrom": EFFECTIVE_FROM,
-        "source": {"sourceId": SOURCE_ID, "sourceRevision": CORPUS_CONTRACT_VERSION},
+        "source": {"sourceId": SOURCE_ID, "sourceRevision": CORPUS_SOURCE_REVISION},
         "recordSchema": {
             "path": "knowledge-record.schema.json",
             "sha256": _sha256_bytes(schema_bytes),
@@ -1020,8 +1178,8 @@ def expected_outputs() -> dict[Path, bytes]:
     outputs[CORPUS_ROOT / "catalog.v1.json"] = _canonical_json(catalog, pretty=True)
     report = {
         "schemaVersion": 1,
-        "reportId": "vfai-008-current-curated-corpus",
-        "corpusVersion": CORPUS_CONTRACT_VERSION,
+        "reportId": "vfai-fu-001-current-curated-corpus",
+        "corpusVersion": CORPUS_RELEASE_VERSION,
         "asOfDate": EFFECTIVE_FROM,
         "recordCount": len(records),
         "recordTypeCounts": counts,

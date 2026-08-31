@@ -53,11 +53,11 @@
     "pretrainedMergesLoaded": false,
     "trainingRecordCount": 138,
     "evaluationRecordCount": 16,
-    "trainingCorpusSha256": "3abd4cd7f003ac0c7946157e9edd52cea62ea793b97a6a3572f3297f8e743c65",
+    "trainingCorpusSha256": "365861bc14b145d387778bd76f5285fd646d016e5258efdee2ebaeb91284ee6e",
     "splitSeed": "vfai-010-split-20260828",
     "minimumPairFrequency": 2
   },
-  "vocabSha256": "fdaeaba167223060739e685e775c4adf160fa40f13159a0290b4d2f79b16a3b2",
-  "mergesSha256": "3921d8cdf957f2218160c6fdb7e00da6c4cbd47a0d99fc4f18065fd2225b95a4",
+  "vocabSha256": "7162d099a5a63e6516a799cf2bc283ec55f593911914ccf4b345797b0a4bbd55",
+  "mergesSha256": "4692a24b00364efbd7928c53a13de8b15a2b64716f7aa7ae299bed7b4a2b16a3",
   "specialTokenContractSha256": "a81bdccd5350b64f2e9063d35c20f09ea66c97721cb21457561efa084f6f0200"
 }

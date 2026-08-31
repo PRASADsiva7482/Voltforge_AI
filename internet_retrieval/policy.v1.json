@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai023-secure-internet-evidence-v1",
+  "contractVersion": "1.0.0",
+  "policySha256": "3a7a34e0610fafc361ff4fb979e0bd49d3cfbd362413adb408ddf4ddd380c37c",
+  "purpose": "Optional citation-safe internet evidence retrieval for VoltForge electronics questions; never a generation model or an engineering authority.",
+  "triggerPolicy": {
+    "explicitRequest": [
+      "search the internet",
+      "search the web",
+      "look online",
+      "web search",
+      "internet search",
+      "latest online",
+      "current online"
+    ],
+    "localEvidenceFallbackRequiresEvidenceIntent": true,
+    "localEvidenceInsufficientStatuses": [
+      "no-results",
+      "unavailable"
+    ],
+    "evidenceIntentTerms": [
+      "datasheet",
+      "documentation",
+      "pinout",
+      "specification",
+      "specifications",
+      "release notes",
+      "current version",
+      "latest version",
+      "part number",
+      "library api"
+    ]
+  },
+  "providers": [
+    {
+      "providerId": "duckduckgo-instant-answer-v1",
+      "displayName": "DuckDuckGo Instant Answer JSON API",
+      "method": "GET",
+      "endpoint": "https://api.duckduckgo.com/",
+      "allowedDomains": [
+        "api.duckduckgo.com"
+      ],
+      "allowedPaths": [
+        "/"
+      ],
+      "allowedQueryParameters": [
+        "format",
+        "no_html",
+        "no_redirect",
+        "q",
+        "skip_disambig"
+      ],
+      "acceptedContentTypes": [
+        "application/json",
+        "application/x-javascript",
+        "text/javascript"
+      ],
+      "resultUrlsAreCitationsOnly": true,
+      "resultUrlFetchingAllowed": false
+    }
+  ],
+  "network": {
+    "httpsOnly": true,
+    "allowedPort": 443,
+    "redirectPolicy": "reject-all",
+    "maximumRedirects": 0,
+    "environmentProxyUseAllowed": false,
+    "privateOrReservedAddressUseAllowed": false,
+    "validateEveryResolvedAddress": true,
+    "retryCount": 0
+  },
+  "limits": {
+    "maximumQueryCharacters": 1000,
+    "maximumResults": 4,
+    "maximumProviderItemsExamined": 32,
+    "maximumTitleCharacters": 300,
+    "maximumSnippetCharacters": 800,
+    "maximumSourceUrlCharacters": 2000,
+    "maximumResponseBytes": 262144,
+    "minimumTimeoutSeconds": 1,
+    "maximumTimeoutSeconds": 10
+  },
+  "cache": {
+    "defaultTtlSeconds": 900,
+    "minimumTtlSeconds": 60,
+    "maximumTtlSeconds": 86400,
+    "maximumEntries": 256,
+    "rawProviderPayloadStored": false,
+    "sanitizedEvidenceOnly": true
+  },
+  "sanitization": {
+    "stripMarkup": true,
+    "stripControlCharacters": true,
+    "normalizeWhitespace": true,
+    "rejectPromptInjectionResult": true,
+    "maximumInjectionScanCharacters": 4096
+  },
+  "trust": {
+    "authority": "retrieved",
+    "contentIsUntrusted": true,
+    "generationDependency": false,
+    "deterministicEngineeringAuthority": false,
+    "inventFallbackFactsOnFailure": false
+  },
+  "privacy": {
+    "rawQueryStored": false,
+    "rawProjectContextSent": false,
+    "queryLogged": false,
+    "providerReceivesOnlyBoundedSearchText": true
+  },
+  "training": {
+    "webContentTrainingAllowed": false,
+    "corpusAdmissionRequiresSeparateProvenanceReview": true,
+    "corpusAdmissionRequiresSeparateLicenseApproval": true,
+    "automaticCorpusAdmission": false
+  }
+}

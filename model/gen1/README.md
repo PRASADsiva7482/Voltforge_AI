@@ -51,3 +51,30 @@ uv pip install --python .toolchains/gen1/Scripts/python.exe `
 ```
 
 `.toolchains/` is ignored and must never be committed as a model artifact.
+
+## Local inference runtime
+
+VFAI-017 adds the signed local-only runtime, bounded greedy/sampling generation,
+KV-cached streaming, cancellation, deadlines, unload/restart, and process-level
+lifecycle supervision. See [RUNTIME.md](RUNTIME.md) for the operating boundary
+and offline smoke command. The current checkpoint remains experimental and is
+not connected to user-serving chat.
+
+VFAI-018 retains an explicit FP32/manual/no-cache reference and measures KV
+caching, SDPA, dynamic batching, thread counts, memory mapping, and local
+weight-only int8/int4 probes. The signed selected profile is FP32 SDPA plus KV
+caching; manual FP32 plus KV caching is its fallback. Quantized formats and
+dynamic batching are not released. See `gen1_optimization/README.md`.
+
+VFAI-019 treats every future decoder completion as untrusted input. Only the
+strictly gated typed envelope may cross into an API response or structured
+action; all failures use an explicit deterministic fallback. The experimental
+Gen1 checkpoint remains disconnected from serving. See
+[`../GENERATION_QUALITY.md`](../GENERATION_QUALITY.md).
+
+VFAI-020 adds the input-side project context boundary. It uses exact owned
+tokenizer counts and deterministic priority selection over typed, untrusted
+project sources. All current 128-token experimental artifacts are too small for
+the 768-token minimum and remain inactive; a context-capable model requires a
+new governed training revision. See
+[`../../context_compiler/README.md`](../../context_compiler/README.md).

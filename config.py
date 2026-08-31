@@ -36,17 +36,37 @@ def _bounded_int(name: str, default: int, minimum: int, maximum: int) -> int:
     return value
 
 
+def _choice(name: str, default: str, allowed: set[str]) -> str:
+    value = os.environ.get(name, default).strip().lower()
+    if value not in allowed:
+        raise ValueError(f"{name} must be one of: {', '.join(sorted(allowed))}.")
+    return value
+
+
 @dataclass(frozen=True)
 class AiSettings:
+    environment: str
     host: str
     port: int
     allowed_origins: tuple[str, ...]
     max_request_bytes: int
     max_context_characters: int
+    chat_request_timeout_seconds: int
     internet_retrieval_enabled: bool
     internet_retrieval_timeout_seconds: int
+    internet_retrieval_provider: str
+    internet_retrieval_max_response_bytes: int
+    internet_retrieval_cache_ttl_seconds: int
     store_conversations: bool
+    bounded_memory_enabled: bool
+    memory_database_path: str
     api_token: str
+    local_model_device: str
+    runtime_directory: str
+
+    @property
+    def service_authentication_required(self) -> bool:
+        return self.environment == "production"
 
     @classmethod
     def from_environment(cls) -> "AiSettings":
@@ -54,15 +74,69 @@ class AiSettings:
             "VOLTFORGE_AI_ALLOWED_ORIGINS",
             os.environ.get("CORS_ALLOWED_ORIGINS", "http://localhost:3000"),
         )
+        environment = _choice(
+            "VOLTFORGE_AI_ENVIRONMENT",
+            "development",
+            {"development", "test", "production"},
+        )
+        runtime_value = os.path.expanduser(
+            os.environ.get(
+                "VOLTFORGE_AI_RUNTIME_DIRECTORY",
+                os.path.join(BASE_DIR, "runtime"),
+            ).strip()
+        )
+        runtime_directory = os.path.abspath(
+            runtime_value
+            if os.path.isabs(runtime_value)
+            else os.path.join(BASE_DIR, runtime_value)
+        )
+        api_token = os.environ.get("VOLTFORGE_AI_API_TOKEN", "").strip()
+        if environment == "production" and len(api_token) < 32:
+            raise ValueError(
+                "VOLTFORGE_AI_API_TOKEN must contain at least 32 characters in production."
+            )
+        allowed_origins = tuple(origin.strip() for origin in origins.split(",") if origin.strip())
+        if environment == "production" and (
+            not allowed_origins or "*" in allowed_origins
+        ):
+            raise ValueError(
+                "VOLTFORGE_AI_ALLOWED_ORIGINS must contain explicit origins in production."
+            )
+        memory_value = os.path.expanduser(
+            os.environ.get(
+                "VOLTFORGE_AI_MEMORY_DATABASE_PATH",
+                os.path.join(runtime_directory, "bounded-memory-v1.sqlite3"),
+            ).strip()
+        )
+        memory_database_path = os.path.abspath(
+            memory_value
+            if os.path.isabs(memory_value)
+            else os.path.join(runtime_directory, memory_value)
+        )
+        if environment == "production":
+            try:
+                common_path = os.path.commonpath([runtime_directory, memory_database_path])
+            except ValueError as error:
+                raise ValueError(
+                    "VOLTFORGE_AI_MEMORY_DATABASE_PATH must be inside VOLTFORGE_AI_RUNTIME_DIRECTORY in production."
+                ) from error
+            if common_path != runtime_directory:
+                raise ValueError(
+                    "VOLTFORGE_AI_MEMORY_DATABASE_PATH must be inside VOLTFORGE_AI_RUNTIME_DIRECTORY in production."
+                )
         return cls(
+            environment=environment,
             host=os.environ.get("VOLTFORGE_AI_HOST", "127.0.0.1").strip() or "127.0.0.1",
             port=_bounded_int("VOLTFORGE_AI_PORT", 2002, 1, 65_535),
-            allowed_origins=tuple(origin.strip() for origin in origins.split(",") if origin.strip()),
+            allowed_origins=allowed_origins,
             max_request_bytes=_bounded_int(
-                "VOLTFORGE_AI_MAX_REQUEST_BYTES", 2_000_000, 1_024, 10_000_000
+                "VOLTFORGE_AI_MAX_REQUEST_BYTES", 2_000_000, 1_024, 2_000_000
             ),
             max_context_characters=_bounded_int(
                 "VOLTFORGE_AI_MAX_CONTEXT_CHARACTERS", 48_000, 4_000, 200_000
+            ),
+            chat_request_timeout_seconds=_bounded_int(
+                "VOLTFORGE_AI_CHAT_REQUEST_TIMEOUT_SECONDS", 15, 1, 120
             ),
             internet_retrieval_enabled=_enabled(
                 os.environ.get("VOLTFORGE_AI_INTERNET_RETRIEVAL_ENABLED"), default=False
@@ -70,8 +144,37 @@ class AiSettings:
             internet_retrieval_timeout_seconds=_bounded_int(
                 "VOLTFORGE_AI_INTERNET_RETRIEVAL_TIMEOUT_SECONDS", 2, 1, 10
             ),
-            store_conversations=_enabled(os.environ.get("VOLTFORGE_AI_STORE_CONVERSATIONS")),
-            api_token=os.environ.get("VOLTFORGE_AI_API_TOKEN", "").strip(),
+            internet_retrieval_provider=_choice(
+                "VOLTFORGE_AI_INTERNET_RETRIEVAL_PROVIDER",
+                "duckduckgo-instant-answer-v1",
+                {"duckduckgo-instant-answer-v1"},
+            ),
+            internet_retrieval_max_response_bytes=_bounded_int(
+                "VOLTFORGE_AI_INTERNET_RETRIEVAL_MAX_RESPONSE_BYTES",
+                262_144,
+                4_096,
+                262_144,
+            ),
+            internet_retrieval_cache_ttl_seconds=_bounded_int(
+                "VOLTFORGE_AI_INTERNET_RETRIEVAL_CACHE_TTL_SECONDS",
+                900,
+                60,
+                86_400,
+            ),
+            # Legacy raw chat persistence is permanently disabled. VFAI-025
+            # stores only governed, redacted, user-controlled memory records.
+            store_conversations=False,
+            bounded_memory_enabled=_enabled(
+                os.environ.get("VOLTFORGE_AI_BOUNDED_MEMORY_ENABLED"), default=True
+            ),
+            memory_database_path=memory_database_path,
+            api_token=api_token,
+            local_model_device=_choice(
+                "VOLTFORGE_AI_MODEL_DEVICE",
+                "auto",
+                {"auto", "cpu", "cuda", "mps"},
+            ),
+            runtime_directory=runtime_directory,
         )
 
 
@@ -106,9 +209,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger("voltforge-ai")
 logger.info(
-    "VoltForge AI configuration loaded (host=%s, port=%s, databaseEnabled=%s, localGeneration=true, internetRetrievalEnabled=%s)",
+    "VoltForge AI configuration loaded (host=%s, port=%s, databaseEnabled=%s, localGeneration=true, modelDevice=%s, internetRetrievalEnabled=%s)",
     HOST,
     PORT,
     DB_ENABLED,
+    _settings.local_model_device,
     _settings.internet_retrieval_enabled,
 )

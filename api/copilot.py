@@ -5,16 +5,31 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 import hashlib
 import json
-import re
-import uuid
-from typing import Any
+from typing import Any, Callable
 
 from api.schemas import ChatRequest
-from circuit_verifier import ElectricalVerifier
-from config import AiSettings, get_settings
-from engine.firmware_analyzer import FirmwareAnalyzer
+from config import AiSettings
+from context_compiler import ContextCompilerError, compile_project_context
+from engineering_tools import (
+    EngineeringContractError,
+    engineering_tools_health,
+    run_authoritative_engineering_checks,
+    tool_events_from_report,
+)
+from local_retrieval import (
+    citations_from_response,
+    response_metadata as retrieval_response_metadata,
+    retrieval_tool_event,
+    search_for_request,
+)
+from internet_retrieval import (
+    citations_from_response as internet_citations_from_response,
+    internet_tool_event,
+    response_metadata as internet_response_metadata,
+    search_for_request as search_internet_for_request,
+)
+from grounding import public_citation_catalog
 from task_schema.adapters import runtime_request_to_task_record
-from task_schema.compiler import compile_task_record
 
 
 @dataclass(frozen=True)
@@ -24,16 +39,153 @@ class GroundedContext:
     task_record: dict[str, object]
     response_metadata: dict[str, object] = field(default_factory=dict)
     proposal: dict[str, object] | None = None
+    context_metadata: dict[str, object] = field(default_factory=dict)
+    engineering_report: dict[str, object] = field(default_factory=dict)
+    retrieval_report: dict[str, object] = field(default_factory=dict)
+    internet_retrieval_report: dict[str, object] = field(default_factory=dict)
 
 
 def prepare_grounded_context(
     request: ChatRequest,
     settings: AiSettings | None = None,
+    check_cancelled: Callable[[], None] | None = None,
 ) -> GroundedContext:
     """Run allow-listed checks and construct model context from untrusted project data."""
-    configured = settings or get_settings()
-    tool_events: list[dict[str, object]] = []
-    context: list[str] = ["<voltforge_project_data>"]
+    check = check_cancelled or (lambda: None)
+    check()
+    retrieval_response = search_for_request(request)
+    check()
+    retrieval_report = retrieval_response.model_dump(mode="json")
+    local_retrieval_event = retrieval_tool_event(retrieval_response)
+    internet_response = search_internet_for_request(request, retrieval_response, settings)
+    check()
+    internet_report = internet_response.model_dump(mode="json")
+    internet_event = (
+        internet_tool_event(internet_response)
+        if internet_response.status != "not-requested"
+        else None
+    )
+    engineering_events: list[dict[str, object]] = []
+    try:
+        check()
+        report_model = run_authoritative_engineering_checks(request)
+        check()
+        engineering_report = report_model.model_dump(mode="json")
+        engineering_events = tool_events_from_report(report_model)
+    except (EngineeringContractError, ContextCompilerError) as error:
+        health = engineering_tools_health()
+        engineering_report = {
+            "policyId": health["policyId"],
+            "status": "unavailable",
+            "code": getattr(error, "code", "ENGINEERING_TOOLS_UNAVAILABLE"),
+            "criticalModelOverrideAllowed": False,
+            "rawProjectContentStored": False,
+        }
+        engineering_events.append(
+            {
+                "name": "engineering-authority",
+                "version": "1.0.0",
+                "status": "unavailable",
+                "authority": "deterministic",
+                "summary": "Authoritative engineering checks were unavailable for this request.",
+                "evidence": {
+                    "policyId": health["policyId"],
+                    "code": engineering_report["code"],
+                    "blockingFindingIds": ["engineering-tools-unavailable"],
+                    "modelOverrideAllowed": False,
+                    "rawContentStored": False,
+                },
+            }
+        )
+    if engineering_events and engineering_events[0].get("name") == "engineering-authority-index":
+        optional_retrieval_events = [local_retrieval_event]
+        if internet_event is not None:
+            optional_retrieval_events.append(internet_event)
+        remaining = max(0, 8 - 1 - len(optional_retrieval_events))
+        tool_events = [
+            engineering_events[0],
+            *optional_retrieval_events,
+            *engineering_events[1 : 1 + remaining],
+        ]
+    else:
+        tool_events = [*engineering_events, local_retrieval_event]
+        if internet_event is not None:
+            tool_events.append(internet_event)
+        tool_events = tool_events[:8]
+
+    try:
+        check()
+        compilation = compile_project_context(request, tool_events=tool_events)
+        check()
+        task_record = compilation.task_record
+        prompt_context = compilation.prompt
+        selected_tool_events = list(compilation.selected_tool_events)
+        context_metadata = compilation.public_metadata
+    except ContextCompilerError as error:
+        # Deterministic tools remain available even when neural context cannot
+        # be represented. This unbounded record is never passed to a model.
+        task_record = runtime_request_to_task_record(
+            request,
+            tool_events=tool_events,
+            project_payload={"contextCompilerUnavailable": True},
+        )
+        prompt_context = ""
+        selected_tool_events = tool_events
+        context_metadata = {
+            "policyId": "vfai020-project-context-policy-v1",
+            "status": "unavailable",
+            "code": error.code,
+            **error.details,
+            "rawPromptStored": False,
+            "rawProjectContextStored": False,
+        }
+    metadata = _engineering_response_metadata(
+        engineering_report,
+        {str(item.get("name")) for item in selected_tool_events},
+    )
+    metadata["localRetrieval"] = {
+        **retrieval_response_metadata(retrieval_response),
+        "selectedForModelContext": any(
+            item.get("name") == "curated-local-retrieval"
+            for item in selected_tool_events
+        ),
+    }
+    metadata["internetRetrieval"] = {
+        **internet_response_metadata(internet_response),
+        "selectedForModelContext": any(
+            item.get("name") == "secure-internet-evidence"
+            for item in selected_tool_events
+        ),
+    }
+    source_citations = [
+        *citations_from_response(retrieval_response),
+        *internet_citations_from_response(internet_response),
+    ]
+    metadata["citations"] = public_citation_catalog(task_record, source_citations)
+    revision = str(task_record["input"]["projectContext"]["sourceProjectRevision"])
+    evidence_refs = [
+        str(item["evidenceId"])
+        for item in task_record["input"]["toolEvidence"]
+        if str(item.get("toolName", "")).startswith("tool:engineering")
+    ]
+    proposal = _proposal(metadata, revision, evidence_refs)
+    check()
+    return GroundedContext(
+        prompt_context=prompt_context,
+        tool_events=selected_tool_events,
+        task_record=task_record,
+        response_metadata=metadata,
+        proposal=proposal,
+        context_metadata=context_metadata,
+        engineering_report=engineering_report,
+        retrieval_report=retrieval_report,
+        internet_retrieval_report=internet_report,
+    )
+
+
+def _engineering_response_metadata(
+    report: dict[str, object], selected_tool_names: set[str]
+) -> dict[str, object]:
     metadata: dict[str, object] = {
         "wireSuggestions": [],
         "additions": [],
@@ -41,238 +193,63 @@ def prepare_grounded_context(
         "valueChanges": [],
         "codeFixes": [],
         "citations": [],
+        "engineeringAuthorityActive": True,
     }
-
-    board_type = request.boardType or "ARDUINO_UNO"
-    context.append(f"Board selected by the project: {_clean(board_type, 80)}")
-    project_metadata = _project_metadata(request.context or request.canvasContext or "")
-    if project_metadata:
-        context.append("Project metadata: " + _json(project_metadata, 2_000))
-
-    if request.components or request.wires:
-        circuit_summary = _circuit_summary(request.components, request.wires)
-        context.append("Circuit canvas summary: " + _json(circuit_summary, 18_000))
-        try:
-            validation = ElectricalVerifier.verify_circuit(
-                board_type=board_type,
-                components=request.components,
-                wires=request.wires,
-                code=request.code or "",
-            )
-            issues = list(validation.get("issues") or [])[:25]
-            safety_score = int(validation.get("safetyScore", 0))
-            blocking = any(str(issue.get("severity", "")).upper() == "CRITICAL" for issue in issues)
-            evidence = {
-                "safetyScore": safety_score,
-                "blockingIssues": blocking,
-                "issueCount": len(validation.get("issues") or []),
-                "issues": issues,
-            }
-            tool_events.append(
-                {
-                    "name": "validate_circuit",
-                    "status": "complete",
-                    "summary": (
-                        f"Circuit validation found {len(validation.get('issues') or [])} issue(s); "
-                        f"safety score {safety_score}/100."
-                    ),
-                    "evidence": evidence,
-                }
-            )
-            for key in ("wireSuggestions", "additions", "removals", "valueChanges", "codeFixes"):
-                metadata[key] = list(validation.get(key) or [])[:25]
-        except Exception as error:
-            tool_events.append(
-                {
-                    "name": "validate_circuit",
-                    "status": "failed",
-                    "summary": "Circuit validation could not complete for the supplied canvas.",
-                    "evidence": {"errorType": type(error).__name__},
-                }
-            )
-    else:
-        context.append("No circuit canvas was supplied. Do not claim to have checked project wiring.")
-
-    firmware_sources = list(request.files)
-    if not firmware_sources and request.code:
-        # Backward-compatible current-editor payload.
-        from api.schemas import FirmwareSource
-
-        firmware_sources = [
-            FirmwareSource(filename="active-source.ino", language="cpp", content=request.code)
-        ]
-    if firmware_sources:
-        firmware_issues: list[dict[str, object]] = []
-        firmware_fixes: list[dict[str, object]] = []
-        file_summaries: list[dict[str, object]] = []
-        for source in firmware_sources[:10]:
-            analysis = FirmwareAnalyzer.analyze(
-                source.content[:40_000], request.components, board_type
-            )
-            firmware_issues.extend(list(analysis.get("issues") or [])[:15])
-            firmware_fixes.extend(list(analysis.get("codeFixes") or [])[:10])
-            file_summaries.append(
-                {
-                    "filename": _clean(source.filename, 255),
-                    "language": _clean(source.language, 32),
-                    "score": analysis.get("score"),
-                    "charactersReviewed": min(len(source.content), 40_000),
-                }
-            )
-        firmware_evidence = {
-            "compiled": False,
-            "files": file_summaries,
-            "issues": firmware_issues[:30],
-        }
-        tool_events.append(
-            {
-                "name": "review_firmware",
-                "status": "complete",
-                "summary": (
-                    f"Static review checked {len(file_summaries)} firmware file(s) and found "
-                    f"{len(firmware_issues)} issue(s); code was not compiled."
-                ),
-                "evidence": firmware_evidence,
-            }
+    if report.get("status") == "unavailable":
+        metadata["engineeringAuthority"] = dict(report)
+        metadata["engineeringFindings"] = []
+        return metadata
+    summary = report.get("summary") if isinstance(report.get("summary"), dict) else {}
+    metadata["engineeringAuthority"] = {
+        "policyId": report.get("policyId"),
+        "policySha256": report.get("policySha256"),
+        "reportId": report.get("reportId"),
+        "sourceProjectRevision": report.get("sourceProjectRevision"),
+        "status": summary.get("status"),
+        "toolRuns": summary.get("toolRuns"),
+        "applicableToolRuns": summary.get("applicableToolRuns"),
+        "findings": summary.get("findings"),
+        "blockingFindings": summary.get("blockingFindings"),
+        "criticalFindings": summary.get("criticalFindings"),
+        "calculations": summary.get("calculations"),
+        "criticalModelOverrideAllowed": False,
+        "rawProjectContentStored": False,
+    }
+    findings: list[dict[str, object]] = []
+    action_keys = {
+        "wire-suggestion": "wireSuggestions",
+        "component-addition": "additions",
+        "component-removal": "removals",
+        "value-change": "valueChanges",
+        "code-fix": "codeFixes",
+    }
+    for run in report.get("toolRuns") or []:  # type: ignore[union-attr]
+        if not isinstance(run, dict):
+            continue
+        findings.extend(
+            item for item in run.get("findings") or [] if isinstance(item, dict)
         )
-        if firmware_fixes:
-            metadata["codeFixes"] = [
-                *list(metadata.get("codeFixes") or []),
-                *firmware_fixes,
-            ][:25]
-
-    if request.simulationState:
-        simulation_evidence = _simulation_summary(request.simulationState)
-        tool_events.append(
-            {
-                "name": "inspect_simulation_state",
-                "status": "reported",
-                "summary": (
-                    "Inspected the browser-reported simulation snapshot; the AI service did not rerun the solver."
-                ),
-                "evidence": simulation_evidence,
-            }
+        if str(run.get("toolId")) not in selected_tool_names:
+            continue
+        for action in run.get("approvedActions") or []:
+            if not isinstance(action, dict):
+                continue
+            target = action_keys.get(str(action.get("actionKind")))
+            if target:
+                values = list(metadata[target])  # type: ignore[arg-type]
+                values.append(action.get("payload") or {})
+                metadata[target] = values[:25]
+    findings.sort(
+        key=lambda item: (
+            {"CRITICAL": 0, "HIGH": 1, "WARNING": 2, "UNKNOWN": 3, "INFO": 4}.get(
+                str(item.get("severity")), 9
+            ),
+            str(item.get("findingId")),
         )
-
-    if request.netlist:
-        context.append("Client-reported netlist: " + _json(request.netlist, 8_000))
-
-    context.append("</voltforge_project_data>")
-    bounded_summary = "\n".join(context)[: max(1_000, configured.max_context_characters // 2)]
-    task_record = runtime_request_to_task_record(
-        request,
-        tool_events=tool_events,
-        project_payload={"boundedProjectSummary": bounded_summary},
     )
-    prompt_context = compile_task_record(task_record)
-    if len(prompt_context) > configured.max_context_characters:
-        compact_events = [
-            {
-                **event,
-                "evidence": {
-                    "truncated": True,
-                    "sha256": hashlib.sha256(
-                        _json(event.get("evidence"), 100_000).encode("utf-8")
-                    ).hexdigest(),
-                },
-            }
-            for event in tool_events
-        ]
-        task_record = runtime_request_to_task_record(
-            request,
-            tool_events=compact_events,
-            project_payload={
-                "boundedProjectSummary": bounded_summary[: max(500, configured.max_context_characters // 4)],
-                "contextTruncated": True,
-            },
-        )
-        prompt_context = compile_task_record(task_record)
-    revision = str(task_record["input"]["projectContext"]["sourceProjectRevision"])
-    evidence_refs = [
-        str(item["evidenceId"]) for item in task_record["input"]["toolEvidence"]
-    ]
-    proposal = _proposal(metadata, revision, evidence_refs)
-    return GroundedContext(
-        prompt_context=prompt_context,
-        tool_events=tool_events,
-        task_record=task_record,
-        response_metadata=metadata,
-        proposal=proposal,
-    )
-
-
-def _circuit_summary(
-    components: list[dict[str, Any]], wires: list[dict[str, Any]]
-) -> dict[str, object]:
-    component_rows = []
-    for component in components[:150]:
-        pins = component.get("pins")
-        component_rows.append(
-            {
-                "id": _clean(component.get("id") or component.get("componentId"), 80),
-                "type": _clean(component.get("type"), 80),
-                "name": _clean(component.get("name"), 120),
-                "properties": component.get("properties") or {},
-                "pins": [
-                    _clean(pin.get("id") or pin.get("name"), 40)
-                    for pin in pins[:40]
-                    if isinstance(pin, dict)
-                ]
-                if isinstance(pins, list)
-                else [],
-            }
-        )
-    wire_rows = []
-    for wire in wires[:300]:
-        wire_rows.append(
-            {
-                "id": _clean(wire.get("id"), 80),
-                "fromComponent": _clean(
-                    wire.get("fromComponent") or wire.get("fromNodeId"), 80
-                ),
-                "fromPin": _clean(wire.get("fromPin") or wire.get("fromPinId"), 40),
-                "toComponent": _clean(
-                    wire.get("toComponent") or wire.get("toNodeId"), 80
-                ),
-                "toPin": _clean(wire.get("toPin") or wire.get("toPinId"), 40),
-            }
-        )
-    return {
-        "componentCount": len(components),
-        "wireCount": len(wires),
-        "components": component_rows,
-        "wires": wire_rows,
-        "truncated": len(components) > len(component_rows) or len(wires) > len(wire_rows),
-    }
-
-
-def _project_metadata(raw_context: str) -> dict[str, object]:
-    if not raw_context or len(raw_context) > 100_000:
-        return {}
-    try:
-        value = json.loads(raw_context)
-    except json.JSONDecodeError:
-        return {"description": _clean(raw_context, 1_000)} if raw_context.strip() else {}
-    if not isinstance(value, dict):
-        return {}
-    allowed = ("projectName", "boardType", "selectedNodeId", "selectedWireId", "activeFile")
-    return {key: value[key] for key in allowed if key in value}
-
-
-def _simulation_summary(state: dict[str, Any]) -> dict[str, object]:
-    summary: dict[str, object] = {
-        "source": "client-reported",
-        "isSimulating": bool(state.get("isSimulating")),
-        "solverConverged": bool(state.get("solverConverged")),
-    }
-    for key in ("nodeVoltages", "branchCurrents", "componentPower", "pinStates"):
-        value = state.get(key)
-        if isinstance(value, dict):
-            summary[key] = dict(list(value.items())[:80])
-    logs = state.get("serialBuffer")
-    if isinstance(logs, list):
-        summary["serialBuffer"] = logs[-10:]
-    return summary
+    metadata["engineeringFindings"] = findings[:50]
+    metadata["omittedEngineeringFindingCount"] = max(0, len(findings) - 50)
+    return metadata
 
 
 def _proposal(
@@ -294,10 +271,21 @@ def _proposal(
     structured_actions = []
     for key, action_kind in action_kinds.items():
         for item in metadata.get(key) or []:  # type: ignore[union-attr]
+            identity = json.dumps(
+                {
+                    "revision": source_project_revision,
+                    "kind": action_kind,
+                    "payload": item,
+                    "evidenceRefs": sorted(evidence_refs),
+                },
+                sort_keys=True,
+                separators=(",", ":"),
+                default=str,
+            ).encode("utf-8")
             structured_actions.append(
                 {
                     "type": "structured-action",
-                    "actionId": f"action:{uuid.uuid4()}",
+                    "actionId": f"action:engineering:{hashlib.sha256(identity).hexdigest()[:20]}",
                     "actionKind": action_kind,
                     "sourceProjectRevision": source_project_revision,
                     "applicationMode": "proposal-only",
@@ -306,8 +294,11 @@ def _proposal(
                     "payload": item if isinstance(item, dict) else {"value": item},
                 }
             )
+    proposal_identity = json.dumps(
+        structured_actions, sort_keys=True, separators=(",", ":"), default=str
+    ).encode("utf-8")
     return {
-        "id": str(uuid.uuid4()),
+        "id": f"proposal:engineering:{hashlib.sha256(proposal_identity).hexdigest()[:20]}",
         "source": "deterministic-validation",
         "summary": f"{count} reviewable project action(s) are available; none have been applied.",
         "sourceProjectRevision": source_project_revision,
@@ -316,11 +307,3 @@ def _proposal(
         "structuredActions": structured_actions,
         **{key: metadata.get(key) or [] for key in action_keys},
     }
-
-
-def _clean(value: object, maximum: int) -> str:
-    return re.sub(r"[\x00-\x1f\x7f]+", " ", str(value or "")).strip()[:maximum]
-
-
-def _json(value: object, maximum: int) -> str:
-    return json.dumps(value, separators=(",", ":"), ensure_ascii=True, default=str)[:maximum]

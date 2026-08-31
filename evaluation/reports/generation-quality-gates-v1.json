@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai019-generation-quality-gates-v1",
+  "generatedAtUtc": "2026-08-31T08:07:35.870942Z",
+  "policyId": "vfai019-generation-quality-policy-v1",
+  "policySha256": "da7a4b29a65ef51e1483a6323309a6908b2b5444ee46affe5b906dcf6b8e00ed",
+  "serviceRegistryRevision": 3,
+  "activeNeuralArtifactId": null,
+  "caseResults": [
+    {
+      "caseId": "accepted-grounded-action",
+      "expectedCode": "QG_ACCEPTED",
+      "actualCode": "QG_ACCEPTED",
+      "accepted": true,
+      "typedResponseCreated": true,
+      "typedActionCount": 1,
+      "passed": true
+    },
+    {
+      "caseId": "plain-text",
+      "expectedCode": "QG_SCHEMA_INVALID",
+      "actualCode": "QG_SCHEMA_INVALID",
+      "accepted": false,
+      "typedResponseCreated": false,
+      "typedActionCount": 0,
+      "passed": true
+    },
+    {
+      "caseId": "wrong-domain",
+      "expectedCode": "QG_OUT_OF_DOMAIN",
+      "actualCode": "QG_OUT_OF_DOMAIN",
+      "accepted": false,
+      "typedResponseCreated": false,
+      "typedActionCount": 0,
+      "passed": true
+    },
+    {
+      "caseId": "truncated-finish",
+      "expectedCode": "QG_TRUNCATED",
+      "actualCode": "QG_TRUNCATED",
+      "accepted": false,
+      "typedResponseCreated": false,
+      "typedActionCount": 0,
+      "passed": true
+    },
+    {
+      "caseId": "missing-claim-evidence",
+      "expectedCode": "QG_UNSUPPORTED_CLAIM",
+      "actualCode": "QG_UNSUPPORTED_CLAIM",
+      "accepted": false,
+      "typedResponseCreated": false,
+      "typedActionCount": 0,
+      "passed": true
+    },
+    {
+      "caseId": "unknown-citation",
+      "expectedCode": "QG_CITATION_INVALID",
+      "actualCode": "QG_CITATION_INVALID",
+      "accepted": false,
+      "typedResponseCreated": false,
+      "typedActionCount": 0,
+      "passed": true
+    },
+    {
+      "caseId": "unsupported-electronics-claim",
+      "expectedCode": "QG_UNSUPPORTED_CLAIM",
+      "actualCode": "QG_UNSUPPORTED_CLAIM",
+      "accepted": false,
+      "typedResponseCreated": false,
+      "typedActionCount": 0,
+      "passed": true
+    },
+    {
+      "caseId": "irrelevant-claim",
+      "expectedCode": "QG_OUT_OF_DOMAIN",
+      "actualCode": "QG_OUT_OF_DOMAIN",
+      "accepted": false,
+      "typedResponseCreated": false,
+      "typedActionCount": 0,
+      "passed": true
+    },
+    {
+      "caseId": "dangerous-instruction",
+      "expectedCode": "QG_DANGEROUS_INSTRUCTION",
+      "actualCode": "QG_DANGEROUS_INSTRUCTION",
+      "accepted": false,
+      "typedResponseCreated": false,
+      "typedActionCount": 0,
+      "passed": true
+    },
+    {
+      "caseId": "repeated-segment",
+      "expectedCode": "QG_REPETITION",
+      "actualCode": "QG_REPETITION",
+      "accepted": false,
+      "typedResponseCreated": false,
+      "typedActionCount": 0,
+      "passed": true
+    },
+    {
+      "caseId": "stale-action-revision",
+      "expectedCode": "QG_ACTION_UNSAFE",
+      "actualCode": "QG_ACTION_UNSAFE",
+      "accepted": false,
+      "typedResponseCreated": false,
+      "typedActionCount": 0,
+      "passed": true
+    },
+    {
+      "caseId": "hidden-auto-apply",
+      "expectedCode": "QG_ACTION_SCHEMA_INVALID",
+      "actualCode": "QG_ACTION_SCHEMA_INVALID",
+      "accepted": false,
+      "typedResponseCreated": false,
+      "typedActionCount": 0,
+      "passed": true
+    },
+    {
+      "caseId": "malformed-action-evidence",
+      "expectedCode": "QG_ACTION_SCHEMA_INVALID",
+      "actualCode": "QG_ACTION_SCHEMA_INVALID",
+      "accepted": false,
+      "typedResponseCreated": false,
+      "typedActionCount": 0,
+      "passed": true
+    },
+    {
+      "caseId": "unapproved-action-payload",
+      "expectedCode": "QG_ACTION_UNSUPPORTED",
+      "actualCode": "QG_ACTION_UNSUPPORTED",
+      "accepted": false,
+      "typedResponseCreated": false,
+      "typedActionCount": 0,
+      "passed": true
+    },
+    {
+      "caseId": "client-evidence-overconfidence",
+      "expectedCode": "QG_CONFIDENCE_UNSUPPORTED",
+      "actualCode": "QG_CONFIDENCE_UNSUPPORTED",
+      "accepted": false,
+      "typedResponseCreated": false,
+      "typedActionCount": 0,
+      "passed": true
+    }
+  ],
+  "fallbackEvaluation": {
+    "rejectedCandidate": {
+      "mode": "deterministic-fallback",
+      "fallbackUsed": true,
+      "fallbackReasonCode": "QG_SCHEMA_INVALID",
+      "neuralAttempted": true,
+      "qualityGateStatus": "rejected",
+      "neuralTextReturned": false,
+      "neuralTypedResponseCreated": false,
+      "deterministicReplySha256": "bff8c217d991fd5e418ddf07bb42614fab01c7477665a44a971ae0c8d5d46f38"
+    },
+    "unavailableModel": {
+      "mode": "deterministic-fallback",
+      "fallbackUsed": true,
+      "fallbackReasonCode": "NO_APPROVED_MODEL_ARTIFACT",
+      "neuralAttempted": false,
+      "neuralArtifactId": null,
+      "qualityGateStatus": "not-run",
+      "deterministicReplySha256": "bff8c217d991fd5e418ddf07bb42614fab01c7477665a44a971ae0c8d5d46f38"
+    },
+    "generationNetworkAccess": false,
+    "rawCandidateStored": false,
+    "rawDeterministicReplyStored": false
+  },
+  "observabilitySnapshot": {
+    "policyId": "vfai019-generation-quality-policy-v1",
+    "evaluatedCandidates": 1,
+    "acceptedCandidates": 0,
+    "rejectedCandidates": 1,
+    "deterministicFallbacks": 2,
+    "neuralAttempts": 1,
+    "rejectionCodes": {
+      "QG_SCHEMA_INVALID": 1
+    },
+    "fallbackReasons": {
+      "NO_APPROVED_MODEL_ARTIFACT": 1,
+      "QG_SCHEMA_INVALID": 1
+    },
+    "rawPromptStored": false,
+    "rawOutputStored": false
+  },
+  "checks": {
+    "allGateCasesPassed": true,
+    "invalidCandidatesCreatedNoTypedResponse": true,
+    "invalidCandidatesCreatedNoTypedAction": true,
+    "rejectionUsesVisibleFallback": true,
+    "rejectedNeuralTextNeverReturned": true,
+    "unavailableModelNeverClaimsNeuralAttempt": true,
+    "deterministicFallbacksObserved": true,
+    "rawContentNotStored": true,
+    "noActiveNeuralArtifact": true,
+    "experimentalArtifactRemainsUnserved": true
+  },
+  "neuralServingApproved": false,
+  "blockingReason": "VFAI-019 validates the boundary only; the experimental checkpoint remains below release quality and VFAI-020 project-context compilation is not complete.",
+  "reportSha256": "c1210d63419cdc141670c8c33cd1b9f2e3d5cd99873f1db0f105f7f4f9d0a94d"
+}

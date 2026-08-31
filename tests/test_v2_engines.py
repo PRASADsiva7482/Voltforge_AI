@@ -91,7 +91,9 @@ class TestDeepFirmwareAnalyzer(unittest.TestCase):
         self.assertGreater(res["issueCount"], 0)
 
     def test_deep_sleep_config(self):
-        res = DeepFirmwareAnalyzer.generate_deep_sleep_config("ESP32", "timer", 60)
+        res = DeepFirmwareAnalyzer.generate_deep_sleep_config(
+            "ESP32_DEVKITC_V4_WROOM32E_N4", "timer", 60
+        )
         self.assertIn("esp_deep_sleep_start", res["generatedCode"])
 
 

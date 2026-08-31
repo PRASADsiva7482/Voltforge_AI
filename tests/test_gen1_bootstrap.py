@@ -15,8 +15,6 @@ if installed_torch.partition("+")[0] != "2.8.0":
         allow_module_level=True,
     )
 
-import torch
-
 from gen1_bootstrap import (  # noqa: E402
     BootstrapContractError,
     check_bootstrap_scorecard,
@@ -30,7 +28,7 @@ from gen1_bootstrap.bootstrap import (  # noqa: E402
     DEFAULT_REPORT_PATH,
     prepare_output_heldout,
 )
-from gen1_training import PackedBatchStream, load_approved_corpus  # noqa: E402
+from gen1_training import load_approved_corpus  # noqa: E402
 from model.gen1 import Gen1Config  # noqa: E402
 
 
@@ -75,37 +73,28 @@ def test_plan_binds_selected_architecture_and_frozen_multi_metric_policy() -> No
     assert plan["releaseBoundary"]["releaseApproved"] is False
 
 
-def test_training_token_ceiling_matches_deterministic_data_cursor() -> None:
+def test_historical_training_token_ceiling_is_rejected_for_current_corpus() -> None:
     plan = load_bootstrap_plan()
     config = Gen1Config.from_dict(plan["selectedModelConfig"])
     corpus = load_approved_corpus(config, packing_block_size=128)
-    stream = PackedBatchStream(
-        corpus.train,
-        plan["controls"]["microBatchSize"],
-        plan["controls"]["seed"] + 1,
+    assert corpus.manifest["tokenizer"]["version"] == "1.1.0"
+    assert corpus.train.predicted_token_count == 155_690
+    assert plan["controls"]["approvedUniqueTrainingPredictedTokens"] == 71_377
+    assert (
+        corpus.train.predicted_token_count
+        != plan["controls"]["approvedUniqueTrainingPredictedTokens"]
     )
-    predicted_tokens = 0
-    for _ in range(plan["controls"]["maxSteps"]):
-        _, labels, _ = stream.next_batch(torch.device("cpu"))
-        predicted_tokens += int((labels[:, 1:] != -100).sum().item())
-    assert corpus.train.predicted_token_count == 71_410
-    assert predicted_tokens == plan["controls"]["expectedTrainingPredictedTokens"]
-    assert predicted_tokens / corpus.train.predicted_token_count < 1.83
+    assert plan["releaseBoundary"]["releaseApproved"] is False
 
 
-def test_output_heldout_is_exactly_bounded_and_task_stratified() -> None:
+def test_historical_heldout_policy_is_rejected_for_current_split() -> None:
     plan = load_bootstrap_plan()
     config = Gen1Config.from_dict(plan["selectedModelConfig"])
     corpus = load_approved_corpus(config, packing_block_size=128)
-    prepared = prepare_output_heldout(corpus, config, plan["heldoutPolicy"])
-    assert len(prepared.chunks) == 41
-    assert prepared.predicted_tokens == 3_355
-    assert sum(prepared.record_count_by_task.values()) == 16
-    assert set(prepared.record_count_by_task) == set(
-        plan["heldoutPolicy"]["expectedTasks"]
-    )
-    assert all(chunk.predicted_tokens > 0 for chunk in prepared.chunks)
-    assert sum(chunk.predicted_tokens for chunk in prepared.chunks) == 3_355
+    assert corpus.manifest["validationRecordCount"] == 23
+    assert plan["heldoutPolicy"]["recordCount"] == 16
+    with pytest.raises(BootstrapContractError, match="held-out validation IDs changed"):
+        prepare_output_heldout(corpus, config, plan["heldoutPolicy"])
 
 
 def test_pareto_selection_ignores_training_loss_and_removes_dominated_steps() -> None:

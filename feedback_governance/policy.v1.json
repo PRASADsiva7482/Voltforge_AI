@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai034-feedback-governance-v1",
+  "contractVersion": "1.0.0",
+  "feedbackKinds": ["useful", "incorrect", "unsafe"],
+  "states": ["pending-review", "rejected", "held-out", "training-approved"],
+  "limits": {
+    "maximumEvidenceCharacters": 1200,
+    "maximumExpectedBehaviorCharacters": 1200,
+    "maximumTrainingExampleCharacters": 1600,
+    "maximumReviewNoteCharacters": 800,
+    "maximumFeedbackPerRun": 32,
+    "maximumTrainingExamplesPerFeedback": 1
+  },
+  "admission": {
+    "projectAccessHeadersRequired": ["X-Voltforge-User-Id", "X-Voltforge-Project-Id"],
+    "projectIdMustMatchGatewayHeader": true,
+    "requestAndResponseIdentityRequired": true,
+    "evidenceApprovalRequired": true,
+    "rawPromptStored": false,
+    "rawModelResponseStored": false,
+    "rawProjectSnapshotStored": false,
+    "secretsOrInstructionLikeEvidenceRejected": true
+  },
+  "review": {
+    "initialState": "pending-review",
+    "incorrectAndUnsafeRequireExpectedBehavior": true,
+    "heldOutAdmissionPrecedesTrainingApproval": true,
+    "trainingRequiresExplicitUserConsent": true,
+    "trainingRequiresReviewerApproval": true,
+    "reviewerNotesAreOperationalMetadataOnly": true
+  },
+  "leakage": {
+    "frozenSuiteRemainsProtected": true,
+    "admittedFeedbackCasesBecomeProtectedImmediately": true,
+    "exactAndSemanticChecksRequiredBeforeTraining": true,
+    "trainingExampleMustBeDistinctFromHeldOutCase": true
+  },
+  "retraining": {
+    "liveChatWeightMutation": false,
+    "schedulerWritesCandidateInputsOnly": true,
+    "deterministicSeedRequired": true,
+    "baseArtifactAndRegistryRevisionRequired": true,
+    "requiredReleaseGates": [
+      "held-out-leakage",
+      "model-quality-scorecard",
+      "artifact-integrity",
+      "candidate-release",
+      "stable-canary",
+      "signed-activation"
+    ]
+  }
+}

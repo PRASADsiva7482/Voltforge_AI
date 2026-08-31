@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai026-fastapi-sse-contract-v1",
+  "contractVersion": "1.0.0",
+  "apiBasePath": "/voltForge-ai/api/v1/model",
+  "compatibility": {
+    "acceptedRequestSchemaVersions": [1],
+    "emittedResponseSchemaVersion": 1,
+    "unknownFieldsRejected": true,
+    "unknownSchemaVersionsRejected": true,
+    "eventNamesAreStableWithinMajorVersion": true
+  },
+  "events": {
+    "requiredOrder": ["start", "tool", "citation", "delta", "proposal", "complete"],
+    "terminalEvents": ["complete", "error"],
+    "optionalEvents": ["tool", "citation", "uncertainty", "delta", "proposal"],
+    "allEventsCarry": [
+      "schemaVersion",
+      "contractVersion",
+      "eventId",
+      "sequence",
+      "requestId",
+      "sessionId",
+      "projectRevision",
+      "model",
+      "mode",
+      "artifact"
+    ]
+  },
+  "limits": {
+    "maximumRequestBytes": 2000000,
+    "maximumMessageCharacters": 6000,
+    "maximumReplyCharacters": 24000,
+    "maximumDeltaCharacters": 96,
+    "maximumEventBytes": 262144,
+    "maximumStreamBytes": 1048576,
+    "maximumStreamEvents": 384,
+    "maximumToolEvents": 8,
+    "maximumCitationEvents": 25,
+    "maximumProposalActions": 25,
+    "defaultRequestTimeoutSeconds": 15,
+    "maximumRequestTimeoutSeconds": 120
+  },
+  "cancellation": {
+    "disconnectStopsEmission": true,
+    "explicitCancellationEndpoint": "/chat/requests/{request_id}",
+    "cooperativeChecksBetweenDownstreamStages": true,
+    "cancelledTurnsPersistedToMemory": false,
+    "terminalCode": "REQUEST_CANCELLED"
+  },
+  "readiness": {
+    "healthReportsEveryRoute": true,
+    "neuralModelIsOptionalWhenFallbackReady": true,
+    "deterministicFallbackDeclared": true,
+    "retrievalStatesAreIndependent": true,
+    "toolStatesAreIndependent": true,
+    "generationNetworkRequired": false
+  },
+  "privacy": {
+    "rawPromptStoredInContractTelemetry": false,
+    "rawProjectContextStoredInContractTelemetry": false,
+    "rawModelOutputStoredInContractTelemetry": false,
+    "hiddenReasoningEventAllowed": false
+  }
+}
