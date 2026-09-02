@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai-fu-010-deployment-continuity-v1",
+  "status": "application-verifier-ready-deployment-unselected",
+  "sourceFollowup": "VFAI-FU-010",
+  "deployment": {
+    "targetId": null,
+    "serviceManager": null,
+    "serviceDefinitionPath": null,
+    "privateNetworkPolicyPath": null,
+    "resourceLimitPolicyPath": null,
+    "healthProbePolicyPath": null,
+    "leastPrivilegeAccountApproved": false
+  },
+  "ownerObjectives": {
+    "approvalReceiptPath": null,
+    "recoveryPointObjectiveSeconds": null,
+    "recoveryTimeObjectiveSeconds": null,
+    "availabilityObjectivePercent": null,
+    "retentionDays": null,
+    "dataOwnerApproved": false,
+    "operationsOwnerApproved": false
+  },
+  "backup": {
+    "sourceInventoryPath": "evaluation/reports/continuity-source-inventory-v1.json",
+    "encryptedBackupProvider": null,
+    "encryptedDestinationId": null,
+    "schedulerDefinitionPath": null,
+    "backupReceiptPath": null,
+    "encryptionRequired": true,
+    "destinationOutsideSourceWorktreeRequired": true,
+    "publicRegistryTrustAndArtifactsRequired": true,
+    "stableReleaseEvidenceRequiredWhenPresent": true,
+    "memoryDatabaseIncluded": false,
+    "feedbackDatabaseIncluded": false,
+    "governedDatabaseOwnerApprovalRequired": true,
+    "environmentFileIncluded": false,
+    "privateSigningKeyIncluded": false
+  },
+  "restore": {
+    "disposableRestoreTargetId": null,
+    "restoreSchedulerDefinitionPath": null,
+    "restoreReceiptPath": null,
+    "cleanTargetRequired": true,
+    "allInventoryChecksumsRequired": true,
+    "signedRegistryVerificationRequired": true,
+    "signedArtifactVerificationRequired": true,
+    "signedReleaseVerificationRequiredWhenPresent": true,
+    "measuredRecoveryTimeRequired": true,
+    "sourceWorktreeMayBeRestoreTarget": false
+  },
+  "secretRotation": {
+    "secretManagerProvider": null,
+    "serviceTokenRotationDefinitionPath": null,
+    "signingTrustRotationDefinitionPath": null,
+    "serviceTokenRotationReceiptPath": null,
+    "signingTrustRotationReceiptPath": null,
+    "rawSecretMayBeStoredInReceipt": false,
+    "oldCredentialRejectedRequired": true,
+    "newCredentialAcceptedRequired": true,
+    "rollbackTestRequired": true,
+    "trustedReleaseHistoryMustRemainValid": true,
+    "silentPrivateKeyRegenerationAllowed": false
+  },
+  "applicationBoundary": {
+    "inventoryToolPath": "operations/continuity.py",
+    "operatorCliPath": "tools/manage_continuity.py",
+    "readinessEvaluatorPath": "tools/evaluate_deployment_continuity_readiness.py",
+    "copiesBackupData": false,
+    "providesEncryption": false,
+    "schedulesHostTasks": false,
+    "accessesSecretManager": false,
+    "contentFreeEvidenceOnly": true
+  },
+  "receiptContracts": {
+    "sourceInventoryKind": "vfai-fu-010-continuity-source-inventory-v1",
+    "ownerObjectivesKind": "vfai-fu-010-owner-objectives-v1",
+    "encryptedBackupKind": "vfai-fu-010-encrypted-backup-v1",
+    "cleanRestoreKind": "vfai-fu-010-clean-restore-v1",
+    "secretRotationKind": "vfai-fu-010-secret-rotation-v1",
+    "checksumAlgorithm": "sha256-canonical-json-without-declared-digest",
+    "configurationBindingsRequired": [
+      "provider-id",
+      "destination-or-target-id",
+      "scheduler-or-rotation-definition-sha256"
+    ],
+    "externalReceiptMayContainRawSecret": false
+  },
+  "forbidden": [
+    "backup-destination-inside-source-worktree",
+    "unencrypted-governed-backup",
+    "environment-file-in-source-backup",
+    "raw-secret-in-manifest-log-or-receipt",
+    "private-signing-key-in-source-backup",
+    "restore-over-live-worktree",
+    "unverified-registry-or-artifact-restore",
+    "silent-private-key-regeneration",
+    "rotation-without-old-rejection-new-acceptance-and-rollback",
+    "deployment-ready-claim-without-target-and-owner-objectives"
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai-fu-007-owned-accelerator-inference-v1",
+  "status": "readiness-contract-only",
+  "sourceFollowup": "VFAI-FU-007",
+  "sourceEvidence": {
+    "optimizedArtifactId": "vfdlm-g1-edge-v0.1.2-optimized",
+    "artifactManifestPath": "model/registry/manifests/vfdlm-g1-edge-v0.1.2-optimized.json",
+    "artifactPackageReportPath": "model/registry/reports/vfdlm-g1-edge-v0.1.2-optimized-package.json",
+    "cpuBenchmarkPath": "benchmarks/reports/gen1-inference-optimization-v1.json",
+    "optimizationPolicyPath": "model/gen1/optimization-policy.v1.json",
+    "acceleratorBenchmarkHarnessPath": null,
+    "weightsMayChangeForBenchmark": false,
+    "tokenizerMayChangeForBenchmark": false,
+    "releaseOrActivationApproved": false
+  },
+  "targetTiers": [
+    {
+      "tierId": "cuda",
+      "ownership": "owner-controlled-local-hardware",
+      "resultReportPath": null,
+      "requiredProfiles": [
+        "reference-fp32-manual-no-kv",
+        "fallback-fp32-manual-kv",
+        "selected-fp32-sdpa-kv"
+      ],
+      "conditionalPrecisionProfiles": [
+        "bf16-sdpa-kv-if-hardware-supported",
+        "fp16-sdpa-kv-if-hardware-supported"
+      ]
+    },
+    {
+      "tierId": "mps",
+      "ownership": "owner-controlled-apple-silicon-hardware",
+      "resultReportPath": null,
+      "requiredProfiles": [
+        "reference-fp32-manual-no-kv",
+        "fallback-fp32-manual-kv",
+        "selected-fp32-sdpa-kv"
+      ],
+      "conditionalPrecisionProfiles": [
+        "fp16-sdpa-kv-if-hardware-supported",
+        "bf16-sdpa-kv-if-runtime-supported"
+      ]
+    }
+  ],
+  "identityContract": {
+    "requiredFields": [
+      "hardware-name",
+      "hardware-architecture-or-compute-capability",
+      "physical-memory",
+      "os-and-version",
+      "python-version",
+      "torch-version",
+      "driver-or-mps-runtime",
+      "device-index",
+      "source-artifact-id",
+      "source-artifact-manifest-sha256",
+      "benchmark-harness-sha256",
+      "profile-and-precision"
+    ],
+    "serialNumbersStored": false,
+    "userOrHostNamesStored": false
+  },
+  "measurementProtocol": {
+    "networkAllowed": false,
+    "governedDataMayLeaveDevice": false,
+    "validationSplitId": "vf-tokenizer-split-v1",
+    "validationPredictedTokens": 9027,
+    "generationPromptCount": 4,
+    "generatedTokensPerPrompt": 8,
+    "rawPromptsStored": false,
+    "rawOutputsStored": false,
+    "warmupRepeats": 3,
+    "measuredRepeats": 10,
+    "thermalCycles": 3,
+    "minimumTotalMeasuredGenerationsPerProfile": 30,
+    "synchronizeBeforeAndAfterTiming": true,
+    "freshProcessPerProfile": true,
+    "sameValidationAndGenerationInputsAcrossProfiles": true
+  },
+  "qualityGates": {
+    "fp32MaximumLossDeltaPercent": 0.01,
+    "fp32MinimumTop1AccuracyDeltaPoints": -0.01,
+    "reducedPrecisionMaximumLossDeltaPercent": 1.0,
+    "reducedPrecisionMinimumTop1AccuracyDeltaPoints": -0.5,
+    "exactGreedyOutputMatchRequired": true,
+    "finiteLogitsAndLossRequired": true,
+    "completeFrozenValidationRequired": true
+  },
+  "performanceEvidence": {
+    "requiredMetrics": [
+      "load-latency",
+      "median-and-p95-generation-latency",
+      "median-and-p95-first-token-latency",
+      "decode-throughput",
+      "peak-device-memory",
+      "resident-model-tensor-bytes",
+      "repeated-run-coefficient-of-variation",
+      "thermal-cycle-drift",
+      "out-of-memory-events",
+      "fallback-events"
+    ],
+    "maximumLatencyCoefficientOfVariationPercent": 10.0,
+    "maximumThermalThroughputDriftPercent": 10.0,
+    "outOfMemoryEventsAllowedForSelectedProfile": 0
+  },
+  "fallbackAndRollback": {
+    "requiredFallbackProfile": "vfai017-safe-fp32-manual-kv",
+    "unavailableSdpaFallsBack": true,
+    "unsupportedPrecisionFallsBack": true,
+    "outOfMemoryFallsBackOrRejects": true,
+    "signedArtifactRollbackRequired": true,
+    "previousPortableFp32ProfileRetained": true,
+    "automaticActivationAllowed": false
+  },
+  "forbidden": [
+    "hosted-inference-provider",
+    "rented-third-party-model-service",
+    "governed-data-export",
+    "unmeasured-device-support-claim",
+    "unmeasured-precision-support-claim",
+    "unsigned-profile-override",
+    "automatic-artifact-activation"
+  ]
+}

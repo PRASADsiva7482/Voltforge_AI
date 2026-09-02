@@ -26,6 +26,18 @@ class TestFastAPIEndpoints(unittest.TestCase):
         self.assertEqual(entries["ARDUINO_NANO_EVERY"]["status"], "verified")
         self.assertEqual(entries["ARDUINO_NANO"]["status"], "variant-required")
 
+    def test_component_coverage_endpoint(self):
+        response = self.client.get("/voltForge-ai/api/v1/model/component-coverage")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["reportId"], "vfai-fu-011-ui-component-coverage")
+        self.assertEqual(data["entryCount"], 60)
+        self.assertEqual(data["summary"]["verified"], 0)
+        self.assertEqual(data["summary"]["variantRequired"], 51)
+        entries = {entry["componentType"]: entry for entry in data["entries"]}
+        self.assertEqual(entries["OLED_DISPLAY"]["status"], "variant-required")
+        self.assertEqual(entries["OSCILLOSCOPE"]["status"], "simulation-only")
+
     def test_chat_endpoint(self):
         payload = {
             "message": "Is my ESP32 circuit safe?",
@@ -206,7 +218,6 @@ class TestFastAPIEndpoints(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
 
 
 

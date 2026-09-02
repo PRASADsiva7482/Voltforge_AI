@@ -58,7 +58,9 @@
       "cwd": "Voltforge_AI",
       "command": [
         "__AI_PYTHON__", "tools/verify_hardware_coverage.py",
-        "--ui-catalog", "../Voltforge_UI/src/features/canvas/boardCatalog.ts"
+        "--ui-catalog", "../Voltforge_UI/src/features/canvas/boardCatalog.ts",
+        "--ui-component-catalog", "../Voltforge_UI/src/features/canvas/componentCatalog.ts",
+        "--ui-board-geometry-fixtures", "../Voltforge_UI/src/features/canvas/boardGeometryFixtures.v1.json"
       ],
       "timeoutSeconds": 120
     },
@@ -79,6 +81,11 @@
         "tests/test_feedback_governance.py",
         "tests/test_generation_quality.py",
         "tests/test_hardware_coverage.py",
+        "tests/test_board_geometry_readiness.py",
+        "tests/test_gen1_v1_1_revision_readiness.py",
+        "tests/test_compiler_provisioning_readiness.py",
+        "tests/test_immutable_synthetic_release.py",
+        "tests/test_immutable_release_retention_readiness.py",
         "tests/test_grounding.py",
         "tests/test_internet_retrieval.py",
         "tests/test_local_retrieval.py",

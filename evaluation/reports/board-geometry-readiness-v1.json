@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai-fu-012-board-geometry-readiness-v1",
+  "generatedOn": "2026-09-01",
+  "followup": {
+    "id": "VFAI-FU-012",
+    "recordedStatus": "accepted_for_later"
+  },
+  "policy": {
+    "policyId": "vfai-fu-012-board-geometry-policy-v1",
+    "status": "accepted-for-later"
+  },
+  "electricalCoverage": {
+    "reportId": "vfai-fu-001-ui-hardware-coverage",
+    "reportSha256": "9d5a1f9e4e9543dfc0b7a8ebac6387a3db1d3305f40e34ea232cb70b1853dae8",
+    "verifiedBoardCount": 8
+  },
+  "geometry": {
+    "fixtureCount": 8,
+    "manufacturerVerifiedPinoutCount": 8,
+    "mechanicallyVerifiedArtworkCount": 0,
+    "documentedArtworkLimitationCount": 8,
+    "pinCount": 328,
+    "sourceHosts": [
+      "datasheets.raspberrypi.com",
+      "docs.arduino.cc"
+    ]
+  },
+  "integration": {
+    "checks": {
+      "boardTypeSelectsPinoutFixture": true,
+      "electricalAndGeometryStatusesSeparate": true,
+      "artworkLimitationsPresented": true,
+      "legacySavedPinsFailSafe": true,
+      "deterministicGeometryTestRegistered": true
+    },
+    "ready": true
+  },
+  "gates": {
+    "masterBacklogComplete": true,
+    "exactElectricalBoardsCovered": true,
+    "manufacturerPinoutFixturesValid": true,
+    "artworkLimitationsFailClosed": true,
+    "integrationAndCompatibilityReady": true,
+    "browserGeometryReviewAssigned": false
+  },
+  "decision": "await-browser-geometry-review",
+  "completionClaimed": false,
+  "savedProjectsRewrittenByEvaluator": false,
+  "simulatorNetSemanticsModifiedByEvaluator": false,
+  "aiElectricalCoverageModifiedByEvaluator": false,
+  "corpusFilesModifiedByEvaluator": false,
+  "networkAccessed": false,
+  "liveStateMutated": false,
+  "sourceSha256": {
+    "Voltforge_AI/AI_MASTER_BACKLOG.json": "7b0befd8d631a3bbc64300da195484e91d6e87cfdeddf511048aa0007905a99b",
+    "Voltforge_AI/AI_FOLLOWUP_BACKLOG.json": "f723a4b37ff7ad18b77130b9a8c1ad4132ef5af4a8781ee3fd47630fdaa649b3",
+    "Voltforge_AI/hardware_coverage/board-geometry-policy.v1.json": "f7a8614615209bc5155c14d9647a9d7629a5f615a77b286622fd1115e5a43658",
+    "Voltforge_AI/hardware_coverage/service.py": "9582fcf26d3b4f53deafb8e82dabecfa31aa036a8d11c24709ede599b5cbd92a",
+    "Voltforge_AI/tools/verify_hardware_coverage.py": "f3e0053038c1d4cc2c30389841298d7e06a20c35a9a91f5ebc2c266be685ebff",
+    "Voltforge_UI/src/features/canvas/boardCatalog.ts": "b04f528480cb8bf777ee2ab34e2cbb0a379fe34315fe1829ee4174ecbac3db55",
+    "Voltforge_UI/src/features/canvas/componentCatalog.ts": "c9ac038567403f71bcc69108ac58c275d1319b7b76b4e0e20e61aba4ef6325d6",
+    "Voltforge_UI/src/features/canvas/boardGeometryFixtures.v1.json": "d1c76b79820a2e02e480a0fa7616239dd75a0313ad29ddfe9d46cc3f11365055",
+    "Voltforge_UI/src/features/canvas/boardGeometry.ts": "88b806f9805a505af30134337b312625702dace2a3dd2e04fef1f6172aaecef0",
+    "Voltforge_UI/src/features/canvas/pinRegistry.ts": "e42cd7e1bae4e42d96394c8bfa57e113a85a32b8fb5bffdb0703f133767a5434",
+    "Voltforge_UI/src/features/canvas/componentFactory.ts": "44f4f8df180dcbbc22f746b5bc39b11201ec95c7a73b964f787223ac1c313456",
+    "Voltforge_UI/src/features/editor/ProjectSettingsModal.tsx": "eed4e807d89d67bc951147f6abd08bdd6f7b3da33ae3d09cd79c6e97c746944a",
+    "Voltforge_UI/src/styles/editor.css": "2c705d883a2983e34f25ea152c61d345a4d785ad9820cd098c7e100c03e30854",
+    "Voltforge_UI/scripts/run-board-geometry-tests.mjs": "e80478bb2debb333296c159c211f82544aab6e5eb0b00baf62106d0d2c8de729",
+    "Voltforge_UI/package.json": "438b3c2eb85ead0866e95fce67ca8188a737b47580e9b8973952db2101ac0e12",
+    "Voltforge_AI/tools/evaluate_board_geometry_readiness.py": "a45502597ed3230d276a0dbbc2ee55312ef4f6db28141326d561119da548193f"
+  },
+  "reportSha256": "b99819b67ed6ba4fd967772e4a34f9c31dfaf16691c20fe06dd3d38cdbbdc0d3"
+}

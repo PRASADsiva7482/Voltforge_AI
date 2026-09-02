@@ -1,0 +1,357 @@
+{
+  "schemaVersion": 1,
+  "registryId": "voltforge-source-registry",
+  "version": "1.2.0",
+  "policy": "data_governance/policy.v1.json",
+  "sources": [
+    {
+      "sourceId": "vf-src-project-domain-generator-v1",
+      "name": "Project-authored electronics domain templates and generators",
+      "kind": "project-authored-synthetic-source",
+      "origin": {
+        "type": "repository",
+        "path": "model/generate_domain_corpus.py",
+        "owner": "VoltForge",
+        "evidence": "The templates and generation logic are maintained in this repository and do not ingest web or user-project content."
+      },
+      "revision": "2.0.0",
+      "license": {
+        "status": "approved",
+        "identifier": "VoltForge-Proprietary",
+        "copyrightHolder": "VoltForge",
+        "evidence": "Project-authored repository source."
+      },
+      "privacy": {
+        "classification": "project-authored-non-user-data",
+        "containsPrivateUserData": false,
+        "trainingAllowed": true,
+        "consentRequired": false
+      },
+      "allowedUses": ["synthetic-generation", "training"],
+      "prohibitedUses": ["external-redistribution"],
+      "approval": {
+        "status": "approved",
+        "approvedUses": ["synthetic-generation", "training"],
+        "basis": "VoltForge-owned deterministic source with no external or private inputs"
+      },
+      "preprocessing": {
+        "id": "vf-held-out-exclusion",
+        "version": "1.0.0",
+        "path": "evaluation/leakage.py"
+      },
+      "checksum": "233e8157019ec3bafdc4e130470c7c38369582ce20834526e4157e5e828a1293",
+      "retention": {
+        "class": "project-source",
+        "duration": "while referenced by an approved shard or artifact",
+        "reviewTrigger": "source revision or policy change"
+      },
+      "deletionProcedure": "Run tools/source_removal_impact.py for this source, deactivate affected approved artifacts, delete affected shards and manifests, then retrain and repeat release gates."
+    },
+    {
+      "sourceId": "vf-src-project-multitask-generator-v1",
+      "name": "Project-authored multi-task synthetic generator",
+      "kind": "project-authored-synthetic-source",
+      "origin": {
+        "type": "repository",
+        "path": "model/generate_dataset.py",
+        "owner": "VoltForge",
+        "evidence": "Generation logic is maintained in this repository; its chat task additionally depends on the separately governed legacy seed file."
+      },
+      "revision": "2.0.0",
+      "license": {
+        "status": "approved",
+        "identifier": "VoltForge-Proprietary",
+        "copyrightHolder": "VoltForge",
+        "evidence": "Project-authored repository source."
+      },
+      "privacy": {
+        "classification": "project-authored-non-user-data",
+        "containsPrivateUserData": false,
+        "trainingAllowed": true,
+        "consentRequired": false
+      },
+      "allowedUses": ["synthetic-generation", "training"],
+      "prohibitedUses": ["external-redistribution"],
+      "approval": {
+        "status": "approved",
+        "approvedUses": ["synthetic-generation", "training"],
+        "basis": "The generator code is VoltForge-owned; every input remains independently fail-closed"
+      },
+      "preprocessing": {
+        "id": "vf-held-out-exclusion",
+        "version": "1.0.0",
+        "path": "evaluation/leakage.py"
+      },
+      "checksum": "abbee153e1ee8408da91c6f7f92ed833c3534a88c93114c06ea1e9933063f24a",
+      "retention": {
+        "class": "project-source",
+        "duration": "while referenced by an approved shard or artifact",
+        "reviewTrigger": "source revision or policy change"
+      },
+      "deletionProcedure": "Run tools/source_removal_impact.py for this source, remove generated shards and manifests, and retrain all identified dependent artifacts."
+    },
+    {
+      "sourceId": "vf-src-curated-electronics-corpus-v1",
+      "name": "VoltForge curated electronics facts and deterministic pack builder",
+      "kind": "project-authored-curated-facts",
+      "origin": {
+        "type": "repository",
+        "path": "electronics_corpus/builder.py",
+        "owner": "VoltForge",
+        "evidence": "The repository-owned builder contains normalized factual claims and bounded source references only; it retains no copied source prose, live web responses, model output, or private project data."
+      },
+      "revision": "1.1.0",
+      "license": {
+        "status": "approved",
+        "identifier": "VoltForge-Proprietary",
+        "copyrightHolder": "VoltForge",
+        "evidence": "The normalized schema, curation, conflict policy, records, and generated packs are authored and maintained by VoltForge. External references identify factual evidence without importing document prose."
+      },
+      "privacy": {
+        "classification": "project-authored-non-user-data",
+        "containsPrivateUserData": false,
+        "trainingAllowed": true,
+        "consentRequired": false
+      },
+      "allowedUses": ["runtime-retrieval", "synthetic-generation", "training"],
+      "prohibitedUses": ["external-redistribution-of-referenced-documents", "silent-variant-substitution"],
+      "approval": {
+        "status": "approved",
+        "approvedUses": ["runtime-retrieval", "synthetic-generation", "training"],
+        "basis": "VoltForge-owned normalized facts with per-record effective revisions, evidence references, exact variant identity, deterministic generation, and checksum-bound packs"
+      },
+      "preprocessing": {
+        "id": "vf-electronics-knowledge-contract",
+        "version": "1.0.0",
+        "path": "electronics_corpus/schema.py"
+      },
+      "checksum": "5a3080d1f22b927942492a19296405553a050b8daf5458234eac603be1343089",
+      "retention": {
+        "class": "project-curated-source",
+        "duration": "while referenced by an approved shard, runtime index, or model artifact",
+        "reviewTrigger": "manufacturer revision, evidence conflict, corpus contract change, or source removal request"
+      },
+      "deletionProcedure": "Run tools/source_removal_impact.py for this source, remove or deactivate dependent task shards, retrieval indexes, and model artifacts, delete generated packs/catalog/report, then rebuild and repeat release gates."
+    },
+    {
+      "sourceId": "vf-src-verified-synthetic-pipeline-v1",
+      "name": "VoltForge verified synthetic task pipeline v1",
+      "kind": "project-authored-verified-synthetic-source",
+      "origin": {
+        "type": "repository-pipeline-lock",
+        "path": "synthetic_data/pipeline-lock.v1.json",
+        "owner": "VoltForge",
+        "evidence": "The immutable lock binds VoltForge-owned grammars, deterministic corpus/netlist verifiers, task and leakage contracts, and a version-pinned compiler toolchain. No third-party model, web result, private project, or quarantined corpus is an input."
+      },
+      "revision": "1.2.0",
+      "license": {
+        "status": "approved",
+        "identifier": "VoltForge-Proprietary",
+        "copyrightHolder": "VoltForge",
+        "evidence": "VoltForge authors the task grammar, normalized outputs, generators, verifier contracts, and release pipeline."
+      },
+      "privacy": {
+        "classification": "project-authored-non-user-data",
+        "containsPrivateUserData": false,
+        "trainingAllowed": true,
+        "consentRequired": false
+      },
+      "allowedUses": ["synthetic-generation", "training"],
+      "prohibitedUses": [
+        "third-party-model-generation",
+        "live-web-content-ingestion",
+        "private-project-ingestion",
+        "unverified-label-inclusion"
+      ],
+      "approval": {
+        "status": "approved",
+        "approvedUses": ["synthetic-generation", "training"],
+        "basis": "Project-owned deterministic generation with exact corpus/netlist gates, source-bound compiler receipts, duplicate rejection, and held-out leakage exclusion"
+      },
+      "preprocessing": {
+        "id": "vf-held-out-exclusion",
+        "version": "1.0.0",
+        "path": "evaluation/leakage.py"
+      },
+      "checksum": "b8eb81773137fec88eb42cd2c5351d951e8589c193af0560fb91a370215a1a3c",
+      "retention": {
+        "class": "project-verified-training-source",
+        "duration": "while referenced by an approved shard or model artifact",
+        "reviewTrigger": "grammar, verifier, compiler, corpus, task schema, leakage gate, or source-policy revision"
+      },
+      "deletionProcedure": "Run tools/source_removal_impact.py for this source, deactivate and remove dependent shards and model artifacts, remove compile receipts and reports, then regenerate, retrain, and repeat release gates."
+    },
+    {
+      "sourceId": "vf-src-legacy-dataset-txt-v0",
+      "name": "Legacy local Q/A seed file",
+      "kind": "legacy-origin-unverified",
+      "origin": {
+        "type": "repository-retained-file",
+        "path": "dataset.txt",
+        "owner": "unknown",
+        "evidence": "No immutable creation run, source citations, or ownership record predates VFAI-006."
+      },
+      "revision": "legacy-snapshot-2026-08-13",
+      "license": {
+        "status": "unverified",
+        "identifier": null,
+        "copyrightHolder": "unknown",
+        "evidence": "No license evidence is retained."
+      },
+      "privacy": {
+        "classification": "unknown-origin-no-observed-user-identifiers",
+        "containsPrivateUserData": false,
+        "trainingAllowed": false,
+        "consentRequired": false
+      },
+      "allowedUses": ["audit-evidence"],
+      "prohibitedUses": ["training", "runtime-retrieval", "redistribution"],
+      "approval": {
+        "status": "quarantined",
+        "approvedUses": ["audit-evidence"],
+        "basis": "Origin and license cannot be proven"
+      },
+      "preprocessing": {
+        "id": "unknown-legacy-process",
+        "version": "unknown",
+        "path": null
+      },
+      "checksum": "db5b42f71e3fc74b7ba2514997865b2f653eb9c8623eb5ddb0bd8222577d1802",
+      "retention": {
+        "class": "quarantined-audit-evidence",
+        "duration": "until owner review or deletion",
+        "reviewTrigger": "license and origin evidence becomes available"
+      },
+      "deletionProcedure": "Run tools/source_removal_impact.py for this source, delete dataset.txt and every listed dependent shard/manifest, retain the impact report, and retrain any affected approved artifact."
+    },
+    {
+      "sourceId": "vf-src-retired-scale-generator-v0",
+      "name": "Retired scale-experiment dataset generator",
+      "kind": "legacy-origin-unverified",
+      "origin": {
+        "type": "repository-retired-code",
+        "path": "model/legacy/retired_scale_experiment/dataset_generator.py",
+        "owner": "VoltForge",
+        "evidence": "Retained only as VFAI-001 audit evidence; no immutable generation run exists."
+      },
+      "revision": "retired-v0",
+      "license": {
+        "status": "unverified",
+        "identifier": null,
+        "copyrightHolder": "VoltForge",
+        "evidence": "The retained output does not have complete input and run provenance."
+      },
+      "privacy": {
+        "classification": "legacy-synthetic-unknown-lineage",
+        "containsPrivateUserData": false,
+        "trainingAllowed": false,
+        "consentRequired": false
+      },
+      "allowedUses": ["audit-evidence"],
+      "prohibitedUses": ["training", "runtime-retrieval", "production-generation"],
+      "approval": {
+        "status": "retired",
+        "approvedUses": ["audit-evidence"],
+        "basis": "Retired by the canonical VFDLM identity and artifact quarantine"
+      },
+      "preprocessing": {
+        "id": "unknown-legacy-process",
+        "version": "unknown",
+        "path": null
+      },
+      "checksum": "a48eb1605a9da458dad5306063dcea259fd7f5fee6bfc1dcef4d2452e47a9a0e",
+      "retention": {
+        "class": "retired-audit-evidence",
+        "duration": "until explicit cleanup approval",
+        "reviewTrigger": "legacy artifact cleanup"
+      },
+      "deletionProcedure": "Run the source impact analyzer, delete dataset_1b.jsonl and its manifest, and keep the retired label record or deletion audit."
+    },
+    {
+      "sourceId": "vf-src-unknown-circuit-corpus-v0",
+      "name": "Unknown legacy circuit shard source",
+      "kind": "legacy-origin-unverified",
+      "origin": {
+        "type": "unknown",
+        "path": null,
+        "owner": "unknown",
+        "evidence": "chunk3_circuits.jsonl has no matching retained producer or source record."
+      },
+      "revision": "unknown",
+      "license": {
+        "status": "unverified",
+        "identifier": null,
+        "copyrightHolder": "unknown",
+        "evidence": "No license record exists."
+      },
+      "privacy": {
+        "classification": "unknown",
+        "containsPrivateUserData": false,
+        "trainingAllowed": false,
+        "consentRequired": false
+      },
+      "allowedUses": ["audit-evidence"],
+      "prohibitedUses": ["training", "runtime-retrieval", "redistribution"],
+      "approval": {
+        "status": "quarantined",
+        "approvedUses": ["audit-evidence"],
+        "basis": "Unknown source and producer"
+      },
+      "preprocessing": {
+        "id": "unknown-legacy-process",
+        "version": "unknown",
+        "path": null
+      },
+      "checksum": null,
+      "retention": {
+        "class": "quarantined-audit-evidence",
+        "duration": "until deletion",
+        "reviewTrigger": "source evidence becomes available"
+      },
+      "deletionProcedure": "Delete chunk3_circuits.jsonl and its manifest after running and retaining a source-removal impact report."
+    },
+    {
+      "sourceId": "vf-src-live-web-results-v1",
+      "name": "Ephemeral live web search results",
+      "kind": "live-web-retrieval",
+      "origin": {
+        "type": "dynamic-network-response",
+        "path": null,
+        "owner": "external publishers",
+        "evidence": "Results vary by request and publisher and are not a training corpus."
+      },
+      "revision": "per-request",
+      "license": {
+        "status": "not-cleared-for-training",
+        "identifier": null,
+        "copyrightHolder": "external publishers",
+        "evidence": "Runtime retrieval does not establish training rights."
+      },
+      "privacy": {
+        "classification": "external-public-web-unknown",
+        "containsPrivateUserData": false,
+        "trainingAllowed": false,
+        "consentRequired": false
+      },
+      "allowedUses": [],
+      "prohibitedUses": ["training", "persistent-corpus", "model-evaluation-judging"],
+      "approval": {
+        "status": "restricted",
+        "approvedUses": [],
+        "basis": "VFAI-006 permits no web result to enter persistent datasets"
+      },
+      "preprocessing": {
+        "id": "runtime-only",
+        "version": "1.0.0",
+        "path": null
+      },
+      "checksum": null,
+      "retention": {
+        "class": "ephemeral",
+        "duration": "request scope only",
+        "reviewTrigger": "future VFAI-022 retrieval policy"
+      },
+      "deletionProcedure": "Do not persist raw results; discard request-scoped content and remove any accidental cache before it can be indexed or used for training."
+    }
+  ]
+}

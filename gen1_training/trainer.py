@@ -29,6 +29,7 @@ from .data import PackedBatchStream, PackedCorpus, TrainingDataContractError
 
 AI_ROOT = Path(__file__).resolve().parents[1]
 RUN_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$")
+MAXIMUM_OVERFLOW_RETRIES_PER_STEP = 8
 SOURCE_PATHS = (
     "evaluation/frozen-manifest.v1.json",
     "evaluation/metrics.v1.json",
@@ -476,36 +477,60 @@ class Gen1Trainer:
         return batches
 
     def _train_one_step(self) -> dict[str, Any]:
-        self.model.train()
-        self.optimizer.zero_grad(set_to_none=True)
-        batches = self._next_accumulated_batches()
-        total_targets = sum(batch[3] for batch in batches)
-        weighted_loss = 0.0
         started = time.perf_counter()
-        for input_ids, labels, attention_mask, target_count in batches:
-            with self._autocast():
-                output = self.model(
-                    input_ids,
-                    labels=labels,
-                    attention_mask=attention_mask,
-                )
-                if output.loss is None or not torch.isfinite(output.loss):
-                    raise TrainingRunError("training produced a missing or non-finite real loss")
-                contribution = output.loss * (target_count / total_targets)
-            weighted_loss += float(output.loss.detach().item()) * target_count
-            self.scaler.scale(contribution).backward()
+        overflow_retries = 0
+        while True:
+            stream_state = self.stream.state_dict()
+            rng_state = _capture_rng_state()
+            self.model.train()
+            self.optimizer.zero_grad(set_to_none=True)
+            batches = self._next_accumulated_batches()
+            total_targets = sum(batch[3] for batch in batches)
+            weighted_loss = 0.0
+            for input_ids, labels, attention_mask, target_count in batches:
+                with self._autocast():
+                    output = self.model(
+                        input_ids,
+                        labels=labels,
+                        attention_mask=attention_mask,
+                    )
+                    if output.loss is None or not torch.isfinite(output.loss):
+                        raise TrainingRunError(
+                            "training produced a missing or non-finite real loss"
+                        )
+                    contribution = output.loss * (target_count / total_targets)
+                weighted_loss += float(output.loss.detach().item()) * target_count
+                self.scaler.scale(contribution).backward()
 
-        self.scaler.unscale_(self.optimizer)
-        gradient_norm = torch.nn.utils.clip_grad_norm_(
-            self.model.parameters(), self.config.max_gradient_norm, error_if_nonfinite=True
-        )
-        learning_rate = self.scheduler.current_lr
-        previous_scale = self.scaler.get_scale()
-        self.scaler.step(self.optimizer)
-        self.scaler.update()
-        optimizer_updated = not self.scaler.is_enabled() or self.scaler.get_scale() >= previous_scale
-        if not optimizer_updated:
-            raise TrainingRunError("mixed-precision overflow skipped an optimizer update")
+            self.scaler.unscale_(self.optimizer)
+            gradient_norm = torch.nn.utils.clip_grad_norm_(
+                self.model.parameters(),
+                self.config.max_gradient_norm,
+                error_if_nonfinite=not self.scaler.is_enabled(),
+            )
+            learning_rate = self.scheduler.current_lr
+            previous_scale = self.scaler.get_scale()
+            self.scaler.step(self.optimizer)
+            self.scaler.update()
+            current_scale = self.scaler.get_scale()
+            optimizer_updated = not self.scaler.is_enabled() or current_scale >= previous_scale
+            if optimizer_updated:
+                break
+
+            overflow_retries += 1
+            self.optimizer.zero_grad(set_to_none=True)
+            try:
+                self.stream.load_state_dict(stream_state)
+                _restore_rng_state(rng_state)
+            except (TrainingDataContractError, TrainingCheckpointError) as exc:
+                raise TrainingRunError(
+                    "mixed-precision overflow could not restore the safe-point state"
+                ) from exc
+            if overflow_retries >= MAXIMUM_OVERFLOW_RETRIES_PER_STEP:
+                raise TrainingRunError(
+                    "mixed-precision overflow retry limit reached before an optimizer update"
+                )
+
         self.global_step += 1
         self.tokens_seen += total_targets
         self.scheduler.step()
@@ -518,6 +543,9 @@ class Gen1Trainer:
             "predictedTokens": total_targets,
             "stepSeconds": duration,
             "tokensPerSecond": total_targets / max(duration, 1e-12),
+            "mixedPrecisionOverflowRetries": overflow_retries,
+            "gradientScaleBefore": previous_scale if self.scaler.is_enabled() else None,
+            "gradientScaleAfter": current_scale if self.scaler.is_enabled() else None,
         }
 
     @torch.no_grad()

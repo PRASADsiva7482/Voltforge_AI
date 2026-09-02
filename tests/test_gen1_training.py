@@ -94,6 +94,51 @@ def assert_nested_equal(first, second) -> None:
         assert first == second
 
 
+class OverflowOnceGradScaler:
+    """CPU-safe GradScaler double that skips exactly one optimizer update."""
+
+    def __init__(self, *args, **kwargs) -> None:
+        self._scale = 65_536.0
+        self._overflow_remaining = 1
+        self._skipped = False
+
+    def is_enabled(self) -> bool:
+        return True
+
+    def scale(self, value):
+        return value
+
+    def unscale_(self, optimizer) -> None:
+        return None
+
+    def step(self, optimizer) -> None:
+        if self._overflow_remaining:
+            self._overflow_remaining -= 1
+            self._skipped = True
+            return None
+        self._skipped = False
+        optimizer.step()
+        return None
+
+    def update(self) -> None:
+        if self._skipped:
+            self._scale *= 0.5
+
+    def get_scale(self) -> float:
+        return self._scale
+
+    def state_dict(self) -> dict[str, object]:
+        return {
+            "scale": self._scale,
+            "overflowRemaining": self._overflow_remaining,
+        }
+
+    def load_state_dict(self, state) -> None:
+        self._scale = float(state["scale"])
+        self._overflow_remaining = int(state["overflowRemaining"])
+        self._skipped = False
+
+
 def test_packing_preserves_every_next_token_transition_exactly_once() -> None:
     sequences = [[2, 4, 5, 3], [2, 6, 3]]
     packed = pack_token_sequences(sequences, block_size=4, pad_token_id=0)
@@ -248,6 +293,78 @@ def test_interrupted_resume_matches_uninterrupted_model_optimizer_cursor_and_rng
             assert expected[key] == actual[key]
         if "validationLoss" in expected:
             assert expected["validationLoss"] == actual["validationLoss"]
+
+
+def test_synthetic_scaler_overflow_retries_exact_batch_and_resumes_safely(
+    tmp_path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(torch.amp, "GradScaler", OverflowOnceGradScaler)
+    config = training_config(max_steps=4, dropout=0.1)
+    corpus = toy_corpus()
+
+    uninterrupted = Gen1Trainer.create(
+        config,
+        corpus,
+        tmp_path / "overflow-uninterrupted",
+        run_id="overflow-uninterrupted",
+        allow_test_corpus=True,
+    )
+    uninterrupted.train()
+
+    interrupted = Gen1Trainer.create(
+        config,
+        corpus,
+        tmp_path / "overflow-resumed",
+        run_id="overflow-resumed",
+        allow_test_corpus=True,
+    )
+    interrupted.train(until_step=2)
+    resumed = Gen1Trainer.resume_latest(
+        tmp_path / "overflow-resumed", corpus, allow_test_corpus=True
+    )
+    resumed.train()
+
+    assert uninterrupted.metrics[0]["mixedPrecisionOverflowRetries"] == 1
+    assert resumed.metrics[0]["mixedPrecisionOverflowRetries"] == 1
+    assert uninterrupted.metrics[0]["gradientScaleBefore"] == 32_768.0
+    assert resumed.metrics[0]["gradientScaleAfter"] == 32_768.0
+    for name, expected in uninterrupted.model.state_dict().items():
+        torch.testing.assert_close(expected, resumed.model.state_dict()[name], rtol=0, atol=0)
+    assert_nested_equal(uninterrupted.optimizer.state_dict(), resumed.optimizer.state_dict())
+    assert uninterrupted.scheduler.state_dict() == resumed.scheduler.state_dict()
+    assert_nested_equal(uninterrupted.stream.state_dict(), resumed.stream.state_dict())
+    assert uninterrupted.scaler.state_dict() == resumed.scaler.state_dict()
+    uninterrupted_state = torch.load(
+        tmp_path
+        / "overflow-uninterrupted"
+        / "checkpoints"
+        / "step-00000004"
+        / "training-state.pt",
+        map_location="cpu",
+        weights_only=True,
+    )
+    resumed_state = torch.load(
+        tmp_path
+        / "overflow-resumed"
+        / "checkpoints"
+        / "step-00000004"
+        / "training-state.pt",
+        map_location="cpu",
+        weights_only=True,
+    )
+    for key in ("rng", "scaler", "dataCursor"):
+        assert_nested_equal(uninterrupted_state[key], resumed_state[key])
+    for expected, actual in zip(uninterrupted.metrics, resumed.metrics, strict=True):
+        for key in (
+            "step",
+            "trainingLoss",
+            "learningRate",
+            "gradientNormBeforeClip",
+            "mixedPrecisionOverflowRetries",
+            "gradientScaleBefore",
+            "gradientScaleAfter",
+        ):
+            assert expected[key] == actual[key]
 
 
 def test_checkpoint_tampering_and_unapproved_production_corpus_fail_closed(tmp_path) -> None:

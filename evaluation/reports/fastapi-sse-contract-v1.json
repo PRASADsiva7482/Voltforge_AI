@@ -64,7 +64,7 @@
     "noThirdPartyModelProviderAdded": true
   },
   "metrics": {
-    "routeCount": 35,
+    "routeCount": 36,
     "fixtureEventCount": 30,
     "maximumEventBytes": 262144,
     "maximumStreamBytes": 1048576,
@@ -82,5 +82,5 @@
   "requestSchemaSha256": "4106702db283465b1ff3e7733340514533f00f86d4803f2552497efc30399004",
   "responseSchemaSha256": "c273444248d41419c757bbf88d3682d2668a7a98e41ef59c734502cd36d4dc0e",
   "eventSchemaSha256": "ebffe8096fb75d973f5f3b15ae11b57ec239f9525c400eb5f181bad7a44d70e6",
-  "reportSha256": "da5c9479cf79f8ec8f2b417afa96cb49f2c3b38200ef5ad9971b4420fa10e333"
+  "reportSha256": "30499cebea8b54978422613b3fd02747ce0dd3d0e34de626321c42de2e8e64fe"
 }

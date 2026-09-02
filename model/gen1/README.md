@@ -52,6 +52,39 @@ uv pip install --python .toolchains/gen1/Scripts/python.exe `
 
 `.toolchains/` is ignored and must never be committed as a model artifact.
 
+VFAI-FU-003 last reviewed the latest official Windows CPU candidate on
+2026-08-31. PyTorch 2.13.0 failed all 20 fresh-process imports with the same
+`c10.dll` WinError 1114, while the pinned 2.8.0 runtime passed all 20. The
+minimum security-patched release, 2.10.0, also failed all 20 imports. Because
+2.8.0 is affected by GHSA-63cw-57p8-fm3p, it is restricted to trusted local
+training/tests and `ModelRuntimeService` blocks checkpoint-backed neural serving
+before importing the native model. The pin and serving block must remain
+unchanged until a patched candidate passes every downstream gate. The receipt is
+`evaluation/reports/pytorch-windows-runtime-review-v1.json`; reproduce the
+first gate without modifying the verified environment with:
+
+```powershell
+uv venv .toolchains/vfai-fu-003-torch-2.13.0 `
+  --python .toolchains/gen1/Scripts/python.exe
+uv pip install `
+  --python .toolchains/vfai-fu-003-torch-2.13.0/Scripts/python.exe `
+  --index-url https://download.pytorch.org/whl/cpu `
+  torch==2.13.0
+uv venv .toolchains/vfai-fu-003-torch-2.10.0 `
+  --python .toolchains/gen1/Scripts/python.exe
+uv pip install `
+  --python .toolchains/vfai-fu-003-torch-2.10.0/Scripts/python.exe `
+  --index-url https://download.pytorch.org/whl/cpu `
+  torch==2.10.0
+.toolchains/gen1/Scripts/python.exe tools/evaluate_pytorch_runtime_review.py `
+  evaluate `
+  --baseline-python .toolchains/gen1/Scripts/python.exe `
+  --candidate-python .toolchains/vfai-fu-003-torch-2.13.0/Scripts/python.exe `
+  --minimum-patched-python .toolchains/vfai-fu-003-torch-2.10.0/Scripts/python.exe `
+  --upstream-issue-status open `
+  --generated-on 2026-08-31
+```
+
 ## Local inference runtime
 
 VFAI-017 adds the signed local-only runtime, bounded greedy/sampling generation,

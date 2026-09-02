@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "reportId": "vfai019-generation-quality-gates-v1",
-  "generatedAtUtc": "2026-08-31T08:07:35.870942Z",
+  "generatedAtUtc": "2026-09-02T01:25:39.582864Z",
   "policyId": "vfai019-generation-quality-policy-v1",
   "policySha256": "da7a4b29a65ef51e1483a6323309a6908b2b5444ee46affe5b906dcf6b8e00ed",
   "serviceRegistryRevision": 3,
@@ -198,5 +198,5 @@
   },
   "neuralServingApproved": false,
   "blockingReason": "VFAI-019 validates the boundary only; the experimental checkpoint remains below release quality and VFAI-020 project-context compilation is not complete.",
-  "reportSha256": "c1210d63419cdc141670c8c33cd1b9f2e3d5cd99873f1db0f105f7f4f9d0a94d"
+  "reportSha256": "d5db2f7f35739ebd3f08ed84008d1223879cc5524ee7ee1b6d2b12fe9f5cc8df"
 }

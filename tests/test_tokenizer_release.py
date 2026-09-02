@@ -18,8 +18,8 @@ from tokenizer_training.pipeline import (
     ARTIFACT_ROOT,
     PROBES,
     TARGET_VOCAB_SIZE,
-    check_tokenizer_release,
 )
+from tools.build_tokenizer import _check_retained_tokenizer_release
 
 
 def released_tokenizer() -> VoltForgeTokenizer:
@@ -88,7 +88,7 @@ def test_training_is_deterministic_and_does_not_seed_domain_vocabulary() -> None
 
 
 def test_release_retrains_exactly_and_beats_legacy_with_lower_vocab_cost() -> None:
-    report = check_tokenizer_release()
+    report = _check_retained_tokenizer_release()
     assert report["decision"] == "pass"
     assert report["tokenizer"]["algorithm"] == TOKENIZER_ALGORITHM
     assert report["tokenizer"]["vocabSize"] == TARGET_VOCAB_SIZE

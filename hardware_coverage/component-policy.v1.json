@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai-fu-011-component-coverage-v1",
+  "status": "coverage-ready-exact-selection-unassigned",
+  "sourceFollowup": "VFAI-FU-011",
+  "uiCatalog": {
+    "path": "Voltforge_UI/src/features/canvas/componentCatalog.ts",
+    "expectedNonBoardTypeCount": 60,
+    "genericLabelsMaySelectExactVariant": false,
+    "simulationPrimitivesArePhysicalParts": false
+  },
+  "currentCorpus": {
+    "sourceId": "vf-src-curated-electronics-corpus-v1",
+    "revision": "1.1.0",
+    "catalogPath": "Voltforge_AI/electronics_corpus/catalog.v1.json",
+    "mayBeRelabeledForNewComponentCoverage": false
+  },
+  "exactPromotionInputs": {
+    "ownerPriorityReceiptPath": null,
+    "exactCandidateSelectionPath": null,
+    "approvedComponentTypes": [],
+    "immutableCorpusReleaseReady": false,
+    "requiredFollowupBeforeNewCorpusRelease": "VFAI-FU-015"
+  },
+  "requiredExactIdentity": [
+    "manufacturer",
+    "orderable-part-number",
+    "package-or-module-revision",
+    "terminal-or-connector-pinout",
+    "electrical-ratings-and-polarity"
+  ],
+  "forbidden": [
+    "ui-label-treated-as-manufacturer-part",
+    "generic-oled-defaulted-to-adafruit-candidate",
+    "generic-family-ratings-or-pinout",
+    "simulation-primitive-treated-as-physical-part",
+    "mutable-corpus-overwrite",
+    "exact-promotion-without-owner-priority-and-primary-evidence"
+  ]
+}

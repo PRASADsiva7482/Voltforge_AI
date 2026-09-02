@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "policyId": "voltforge-data-governance",
+  "version": "1.0.0",
+  "defaultDecision": "deny",
+  "trainingDeniedByDefaultKinds": [
+    "web-scrape",
+    "live-web-retrieval",
+    "private-user-project",
+    "user-chat",
+    "external-corpus",
+    "legacy-origin-unverified"
+  ],
+  "requiredForTraining": [
+    "registered-source",
+    "approved-license",
+    "non-private-or-explicitly-consented",
+    "approved-source-revision",
+    "immutable-source-checksum",
+    "immutable-shard-checksum",
+    "generator-version-and-checksum",
+    "preprocessing-version-and-checksum",
+    "retention-and-deletion-procedure"
+  ],
+  "privateConsentWorkflowImplemented": false,
+  "liveWebRetention": "request-scope-only",
+  "unknownLineageAction": "quarantine",
+  "sourceRemovalAction": "deactivate-affected-artifacts-delete-affected-shards-and-retrain"
+}

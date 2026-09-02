@@ -12,7 +12,6 @@ import torch
 from torch import Tensor
 
 from data_governance.governance import (
-    default_manifest_path,
     require_approved_shard,
     sha256_file,
 )
@@ -21,6 +20,10 @@ from model.gen1.config import Gen1Config
 from model.tokenizer import VoltForgeTokenizer
 from task_schema.compiler import compile_task_record
 from task_schema.io import read_task_shard
+from synthetic_data.immutable_release import (
+    ImmutableReleaseError,
+    resolve_tokenizer_shard,
+)
 
 
 AI_ROOT = Path(__file__).resolve().parents[1]
@@ -260,10 +263,22 @@ def load_approved_corpus(
     for descriptor in shards:
         if not isinstance(descriptor, Mapping):
             raise TrainingDataContractError("tokenizer shard descriptor is invalid")
-        shard_path = _resolve_approved_path(descriptor.get("path"))
-        manifest_path = _resolve_approved_path(descriptor.get("manifestPath"))
+        try:
+            retained = resolve_tokenizer_shard(descriptor)
+        except ImmutableReleaseError as exc:
+            raise TrainingDataContractError(
+                "tokenizer lineage is not retained by an immutable synthetic release"
+            ) from exc
+        shard_path = Path(retained["shardPath"])
+        manifest_path = Path(retained["manifestPath"])
         governed = require_approved_shard(
-            shard_path, "training", manifest_path=manifest_path
+            shard_path,
+            "training",
+            manifest_path=manifest_path,
+            registry_path=retained["sourceRegistryPath"],
+            policy_path=retained["dataPolicyPath"],
+            dependency_root=retained["contentRoot"],
+            source_root=retained["contentRoot"],
         )
         expected = {
             "shardId": descriptor.get("shardId"),
@@ -282,12 +297,16 @@ def load_approved_corpus(
         shard_lineage.append(
             {
                 "shardId": governed["shardId"],
-                "path": descriptor["path"],
+                "path": shard_path.relative_to(AI_ROOT).as_posix(),
                 "sha256": governed["sha256"],
                 "recordCount": governed["recordCount"],
-                "manifestPath": descriptor["manifestPath"],
+                "manifestPath": manifest_path.relative_to(AI_ROOT).as_posix(),
                 "manifestSha256": descriptor["manifestSha256"],
                 "sourceIds": descriptor["sourceIds"],
+                "immutableReleaseId": retained["releaseId"],
+                "immutableReleaseManifestSha256": retained[
+                    "releaseManifestSha256"
+                ],
             }
         )
 

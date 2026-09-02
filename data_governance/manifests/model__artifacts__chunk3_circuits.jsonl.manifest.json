@@ -9,11 +9,11 @@
   "status": "quarantined",
   "eligibleUses": [],
   "reason": "No retained producer, origin, revision, or license record exists.",
-  "createdAtUtc": "2026-08-31T07:34:04.864923+00:00",
+  "createdAtUtc": "2026-09-01T11:41:37.772619+00:00",
   "sourceRegistry": {
     "registryId": "voltforge-source-registry",
     "version": "1.2.0",
-    "sha256": "66d939d62f0909ae7a21aaecd6a84078ea597e69e0ef8183c40d4b35ec902786"
+    "sha256": "d775e5c2c633fee61ed4553058ad356a83f9298388bb8b5b48cd4880fcadb506"
   },
   "sources": [
     {
@@ -64,5 +64,5 @@
       }
     ]
   },
-  "manifestSha256": "dd8e8efb62c9fd27e3341b68d480a8d05989c5ee818aedf407225fe55c6351a0"
+  "manifestSha256": "5aaac99670036a94246be5342ecdb3ff2ecb212d3f775f925e4bedda87f1f20c"
 }

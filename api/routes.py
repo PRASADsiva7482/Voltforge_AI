@@ -84,7 +84,7 @@ from feedback_governance import (
     feedback_health,
     get_feedback_store,
 )
-from hardware_coverage import get_hardware_coverage
+from hardware_coverage import get_component_coverage, get_hardware_coverage
 
 logger = logging.getLogger("voltforge-ai.routes")
 
@@ -102,6 +102,13 @@ def hardware_coverage() -> Dict[str, Any]:
     """Expose exact UI-board coverage without silently widening AI support."""
 
     return get_hardware_coverage()
+
+
+@router.get("/component-coverage")
+def component_coverage() -> Dict[str, Any]:
+    """Expose UI component coverage without inventing exact electrical variants."""
+
+    return get_component_coverage()
 
 
 def _memory_health() -> Dict[str, Any]:

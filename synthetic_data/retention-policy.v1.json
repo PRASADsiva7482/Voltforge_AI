@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai-fu-015-immutable-synthetic-retention-v1",
+  "sourceFollowup": "VFAI-FU-015",
+  "status": "accepted-for-later",
+  "asOfDate": "2026-09-01",
+  "immutableReleaseContract": {
+    "manifestKind": "vfai-fu-015-immutable-synthetic-release-v1",
+    "currentPointerPath": "synthetic_data/releases/CURRENT.json",
+    "minimumRetainedReleaseCount": 1,
+    "exactFileSetRequired": true,
+    "contentKeyIncludesEveryRetainedFile": true,
+    "existingReleaseMayBeOverwrittenOrRepaired": false,
+    "mutableAliasesMayMoveOnlyAfterPriorReleaseRetention": true,
+    "pipelineVersion": "1.3.0"
+  },
+  "currentTokenizerBinding": {
+    "tokenizerManifestPath": "model/tokenizers/vfdlm-byte-bpe-v1.1.0/tokenizer_manifest.json",
+    "tokenizerVersion": "1.1.0",
+    "expectedShardCount": 4,
+    "approvedTokenizerManifestMayBeRewritten": false,
+    "trainingMustResolveImmutableReleaseBytes": true
+  },
+  "historicalLineage": {
+    "tokenizerManifestPath": "model/tokenizers/vfdlm-byte-bpe-v1.0.0/tokenizer_manifest.json",
+    "tokenizerVersion": "1.0.0",
+    "expectedShardCount": 4,
+    "expectedRecordCount": 154,
+    "trustedRecoveryReceiptPath": null,
+    "unavailableExactBytesClassification": "non-reconstructable-from-retained-trusted-bytes",
+    "currentDataMaySubstituteForHistoricalBytes": false,
+    "historicalManifestMayBeRewritten": false,
+    "inactiveHistoricalArtifactsMayBeRelabeled": false
+  },
+  "sourceRemovalContract": {
+    "requiredSourceIds": [
+      "vf-src-curated-electronics-corpus-v1",
+      "vf-src-verified-synthetic-pipeline-v1"
+    ],
+    "immutableReleasePathsMustBeReported": true,
+    "removalImpactIsDeletionAuthorization": false
+  },
+  "ownerBackupPolicy": {
+    "approvalReceiptPath": null,
+    "requiredPositiveFields": [
+      "retentionDays",
+      "minimumIndependentCopies",
+      "maximumBackupBytes",
+      "maximumRestoreMinutes"
+    ],
+    "requiredTrueFields": [
+      "encryptionAtRestRequired",
+      "accessControlRequired",
+      "checksumVerificationRequired"
+    ]
+  },
+  "externalBackup": {
+    "backupReceiptPath": null,
+    "restoreReceiptPath": null,
+    "allRetainedReleaseIdsRequired": true,
+    "exactFileInventoryRestoreRequired": true,
+    "sourceRemovalImpactAfterRestoreRequired": true
+  },
+  "mutationBoundary": {
+    "readinessEvaluatorMayCopyRawShardBytes": false,
+    "readinessEvaluatorMayCreateExternalBackup": false,
+    "readinessEvaluatorMayDeleteOrRewriteRelease": false,
+    "readinessEvaluatorMayRewriteTokenizerOrModelManifest": false,
+    "readinessEvaluatorMayClaimOwnerApproval": false
+  },
+  "forbidden": [
+    "overwrite-content-addressed-release",
+    "repair-release-in-place",
+    "train-from-mutable-shard-alias",
+    "substitute-current-bytes-for-unavailable-history",
+    "rewrite-historical-tokenizer-lineage",
+    "claim-external-backup-without-owner-policy-and-restore-receipts",
+    "treat-source-removal-report-as-deletion-authorization"
+  ]
+}

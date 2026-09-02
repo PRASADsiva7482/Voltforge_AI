@@ -1,0 +1,358 @@
+{
+  "schemaVersion": 1,
+  "manifestKind": "vfai-fu-015-immutable-synthetic-release-v1",
+  "releaseId": "vf-synthetic-1.2.0-1594f89c93854f971d3a",
+  "releaseVersion": "1.2.0",
+  "contentKey": "1594f89c93854f971d3af6cb2275f558ee46015c4ca5b752a80a18461dd5167d",
+  "releasePath": "synthetic_data/releases/1.2.0/1594f89c93854f971d3af6cb2275f558ee46015c4ca5b752a80a18461dd5167d",
+  "keyInputs": {
+    "generatorVersion": "1.2.0",
+    "pipelineLockSha256": "091ebf66f62b1b7b056335bed2725581bec29f90f562d1b8e658dcd86860c8c8",
+    "generationReportSha256": "b27fe0ba8e36199c3693deb0194e26283db7afaf51ca7bd3d6865ec6c04a4949",
+    "compileReceiptsSha256": "d682fcd72ee1a863cee7514e9a5047445108dbaa651b5680ff368ea6c2c4ed59",
+    "files": [
+      {
+        "path": "content/data_governance/manifests/synthetic_data__shards__v1__circuit-safety.jsonl.manifest.json",
+        "bytes": 3654,
+        "sha256": "01659314fd8fa5b1ffd80eb50f1f0f31f3307d6d0b0d819fb6d61d8ca2bff1b6"
+      },
+      {
+        "path": "content/data_governance/manifests/synthetic_data__shards__v1__compiler-repair.jsonl.manifest.json",
+        "bytes": 3655,
+        "sha256": "374f06bc9d1fd88f024e6ab5d7a1b5672445e7b1e5ee0f7ebd43f2e6a597a5ba"
+      },
+      {
+        "path": "content/data_governance/manifests/synthetic_data__shards__v1__firmware.jsonl.manifest.json",
+        "bytes": 3648,
+        "sha256": "204eb66f4378b1c746a5afcfcae6b1af4d5c7d8bf962cae2e985be002d9be5d8"
+      },
+      {
+        "path": "content/data_governance/manifests/synthetic_data__shards__v1__grounded-electronics.jsonl.manifest.json",
+        "bytes": 3661,
+        "sha256": "85cfef4683df8ebe15c6b5f3935a91370f64522c0cea2c915ddec335708de41c"
+      },
+      {
+        "path": "content/data_governance/policy.v1.json",
+        "bytes": 866,
+        "sha256": "55a5dc48db247648f60780cec27fb20132a4eec0720052b0e940e0ab07b30e84"
+      },
+      {
+        "path": "content/data_governance/source-registry.v1.json",
+        "bytes": 15196,
+        "sha256": "66d939d62f0909ae7a21aaecd6a84078ea597e69e0ef8183c40d4b35ec902786"
+      },
+      {
+        "path": "content/electronics_corpus/builder.py",
+        "bytes": 60226,
+        "sha256": "5a3080d1f22b927942492a19296405553a050b8daf5458234eac603be1343089"
+      },
+      {
+        "path": "content/electronics_corpus/catalog.v1.json",
+        "bytes": 3235,
+        "sha256": "db6c299f7b26ed50c42478a47ef5f163f1cb838db37ac131058f8fcc311d0c9b"
+      },
+      {
+        "path": "content/electronics_corpus/knowledge-record.schema.json",
+        "bytes": 9498,
+        "sha256": "2b3a63a94be20c85ea801a0b1eac64de5c9c53052fb4e362f2ff0c43d5863503"
+      },
+      {
+        "path": "content/engine/pin_router.py",
+        "bytes": 4190,
+        "sha256": "05fa5d6e9e5ad0392452429080a07c537bf3f57e98c68f00fca252c551012aeb"
+      },
+      {
+        "path": "content/evaluation/leakage.py",
+        "bytes": 14564,
+        "sha256": "09615b4bdd79f0da39253a3db4f03f650e15195686bd3c73ec03ede8b1ae7754"
+      },
+      {
+        "path": "content/synthetic_data/generator.py",
+        "bytes": 25049,
+        "sha256": "b4739ebfc9d6507c4a98fbf2100510c27b32e31fbb590d1a13e5c5e121cc132e"
+      },
+      {
+        "path": "content/synthetic_data/grammar.py",
+        "bytes": 8699,
+        "sha256": "ed33d4bf2a0e7f89df45e021820576e436d615a1bb5cd14af500ef8cdbb2bd9a"
+      },
+      {
+        "path": "content/synthetic_data/pipeline-lock.v1.json",
+        "bytes": 12601,
+        "sha256": "b8eb81773137fec88eb42cd2c5351d951e8589c193af0560fb91a370215a1a3c"
+      },
+      {
+        "path": "content/synthetic_data/pipeline.py",
+        "bytes": 17158,
+        "sha256": "74506162ddc77ca3e0493c244cabe93f37d409576448a9bf114c445bd41a4867"
+      },
+      {
+        "path": "content/synthetic_data/receipts/v1/compile-receipts.jsonl",
+        "bytes": 215491,
+        "sha256": "d682fcd72ee1a863cee7514e9a5047445108dbaa651b5680ff368ea6c2c4ed59"
+      },
+      {
+        "path": "content/synthetic_data/reports/current-generation-report.json",
+        "bytes": 16370,
+        "sha256": "e8241a28f2e7a696427298e90e36613a33f9ea3cffdcd9971dfe1c85696d45e7"
+      },
+      {
+        "path": "content/synthetic_data/shards/v1/circuit-safety.jsonl",
+        "bytes": 252122,
+        "sha256": "4c809d3d579a478ec62258801ddd9f1cef750d79b4850ac7dcd33fe853207a31"
+      },
+      {
+        "path": "content/synthetic_data/shards/v1/compiler-repair.jsonl",
+        "bytes": 180422,
+        "sha256": "efb854df4a1168b43fded3addf67589146183a2eebd1869b475b19ff6d1be6f5"
+      },
+      {
+        "path": "content/synthetic_data/shards/v1/firmware.jsonl",
+        "bytes": 207010,
+        "sha256": "2bc59ebc4ff1490018f0fae34eea230ab47deb6c1ed382f5b005fea3419e488c"
+      },
+      {
+        "path": "content/synthetic_data/shards/v1/grounded-electronics.jsonl",
+        "bytes": 305885,
+        "sha256": "7fef589dc3b393001d9a5f2221551eb9cb607a4e4ba392bf7edfcd6666e78c04"
+      },
+      {
+        "path": "content/synthetic_data/toolchains.v1.json",
+        "bytes": 9319,
+        "sha256": "43d8b9fc31a2b10d39bb91e2588bc0569c1afd5c79c1f14f854f4d9cc255421a"
+      },
+      {
+        "path": "content/synthetic_data/verifiers.py",
+        "bytes": 21453,
+        "sha256": "a58b371fb26cd5649af5d81ab1518ed05d82da4877f108ee1c47cb7e4c6c9531"
+      },
+      {
+        "path": "content/task_schema/task-record.schema.json",
+        "bytes": 15544,
+        "sha256": "a22d38d4bdd83d6bacee896d62c46547032daa9381c0c420646988f5dc2fd0fd"
+      },
+      {
+        "path": "content/tools/build_verified_synthetic_data.py",
+        "bytes": 1647,
+        "sha256": "d45cd0f0aa994b88eadde5253ee4230a9d5b9d38c1c78704afc020eceaf084ea"
+      }
+    ]
+  },
+  "source": {
+    "generationReportPath": "synthetic_data/reports/current-generation-report.json",
+    "generationReportSha256": "b27fe0ba8e36199c3693deb0194e26283db7afaf51ca7bd3d6865ec6c04a4949",
+    "pipelineLockSha256": "091ebf66f62b1b7b056335bed2725581bec29f90f562d1b8e658dcd86860c8c8",
+    "compileReceiptsSha256": "d682fcd72ee1a863cee7514e9a5047445108dbaa651b5680ff368ea6c2c4ed59",
+    "acceptedRecordCount": 250
+  },
+  "sourceIds": [
+    "vf-src-curated-electronics-corpus-v1",
+    "vf-src-verified-synthetic-pipeline-v1"
+  ],
+  "shards": [
+    {
+      "shardId": "vf-shard-7fef589dc3b393001d9a",
+      "sourcePath": "synthetic_data/shards/v1/grounded-electronics.jsonl",
+      "sha256": "7fef589dc3b393001d9a5f2221551eb9cb607a4e4ba392bf7edfcd6666e78c04",
+      "recordCount": 110,
+      "manifestSourcePath": "data_governance/manifests/synthetic_data__shards__v1__grounded-electronics.jsonl.manifest.json",
+      "manifestSha256": "85cfef4683df8ebe15c6b5f3935a91370f64522c0cea2c915ddec335708de41c",
+      "sourceIds": [
+        "vf-src-curated-electronics-corpus-v1",
+        "vf-src-verified-synthetic-pipeline-v1"
+      ]
+    },
+    {
+      "shardId": "vf-shard-4c809d3d579a478ec622",
+      "sourcePath": "synthetic_data/shards/v1/circuit-safety.jsonl",
+      "sha256": "4c809d3d579a478ec62258801ddd9f1cef750d79b4850ac7dcd33fe853207a31",
+      "recordCount": 74,
+      "manifestSourcePath": "data_governance/manifests/synthetic_data__shards__v1__circuit-safety.jsonl.manifest.json",
+      "manifestSha256": "01659314fd8fa5b1ffd80eb50f1f0f31f3307d6d0b0d819fb6d61d8ca2bff1b6",
+      "sourceIds": [
+        "vf-src-curated-electronics-corpus-v1",
+        "vf-src-verified-synthetic-pipeline-v1"
+      ]
+    },
+    {
+      "shardId": "vf-shard-2bc59ebc4ff1490018f0",
+      "sourcePath": "synthetic_data/shards/v1/firmware.jsonl",
+      "sha256": "2bc59ebc4ff1490018f0fae34eea230ab47deb6c1ed382f5b005fea3419e488c",
+      "recordCount": 44,
+      "manifestSourcePath": "data_governance/manifests/synthetic_data__shards__v1__firmware.jsonl.manifest.json",
+      "manifestSha256": "204eb66f4378b1c746a5afcfcae6b1af4d5c7d8bf962cae2e985be002d9be5d8",
+      "sourceIds": [
+        "vf-src-curated-electronics-corpus-v1",
+        "vf-src-verified-synthetic-pipeline-v1"
+      ]
+    },
+    {
+      "shardId": "vf-shard-efb854df4a1168b43fde",
+      "sourcePath": "synthetic_data/shards/v1/compiler-repair.jsonl",
+      "sha256": "efb854df4a1168b43fded3addf67589146183a2eebd1869b475b19ff6d1be6f5",
+      "recordCount": 22,
+      "manifestSourcePath": "data_governance/manifests/synthetic_data__shards__v1__compiler-repair.jsonl.manifest.json",
+      "manifestSha256": "374f06bc9d1fd88f024e6ab5d7a1b5672445e7b1e5ee0f7ebd43f2e6a597a5ba",
+      "sourceIds": [
+        "vf-src-curated-electronics-corpus-v1",
+        "vf-src-verified-synthetic-pipeline-v1"
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "content/data_governance/manifests/synthetic_data__shards__v1__circuit-safety.jsonl.manifest.json",
+      "sourcePath": "data_governance/manifests/synthetic_data__shards__v1__circuit-safety.jsonl.manifest.json",
+      "bytes": 3654,
+      "sha256": "01659314fd8fa5b1ffd80eb50f1f0f31f3307d6d0b0d819fb6d61d8ca2bff1b6"
+    },
+    {
+      "path": "content/data_governance/manifests/synthetic_data__shards__v1__compiler-repair.jsonl.manifest.json",
+      "sourcePath": "data_governance/manifests/synthetic_data__shards__v1__compiler-repair.jsonl.manifest.json",
+      "bytes": 3655,
+      "sha256": "374f06bc9d1fd88f024e6ab5d7a1b5672445e7b1e5ee0f7ebd43f2e6a597a5ba"
+    },
+    {
+      "path": "content/data_governance/manifests/synthetic_data__shards__v1__firmware.jsonl.manifest.json",
+      "sourcePath": "data_governance/manifests/synthetic_data__shards__v1__firmware.jsonl.manifest.json",
+      "bytes": 3648,
+      "sha256": "204eb66f4378b1c746a5afcfcae6b1af4d5c7d8bf962cae2e985be002d9be5d8"
+    },
+    {
+      "path": "content/data_governance/manifests/synthetic_data__shards__v1__grounded-electronics.jsonl.manifest.json",
+      "sourcePath": "data_governance/manifests/synthetic_data__shards__v1__grounded-electronics.jsonl.manifest.json",
+      "bytes": 3661,
+      "sha256": "85cfef4683df8ebe15c6b5f3935a91370f64522c0cea2c915ddec335708de41c"
+    },
+    {
+      "path": "content/data_governance/policy.v1.json",
+      "sourcePath": "data_governance/policy.v1.json",
+      "bytes": 866,
+      "sha256": "55a5dc48db247648f60780cec27fb20132a4eec0720052b0e940e0ab07b30e84"
+    },
+    {
+      "path": "content/data_governance/source-registry.v1.json",
+      "sourcePath": "data_governance/source-registry.v1.json",
+      "bytes": 15196,
+      "sha256": "66d939d62f0909ae7a21aaecd6a84078ea597e69e0ef8183c40d4b35ec902786"
+    },
+    {
+      "path": "content/electronics_corpus/builder.py",
+      "sourcePath": "electronics_corpus/builder.py",
+      "bytes": 60226,
+      "sha256": "5a3080d1f22b927942492a19296405553a050b8daf5458234eac603be1343089"
+    },
+    {
+      "path": "content/electronics_corpus/catalog.v1.json",
+      "sourcePath": "electronics_corpus/catalog.v1.json",
+      "bytes": 3235,
+      "sha256": "db6c299f7b26ed50c42478a47ef5f163f1cb838db37ac131058f8fcc311d0c9b"
+    },
+    {
+      "path": "content/electronics_corpus/knowledge-record.schema.json",
+      "sourcePath": "electronics_corpus/knowledge-record.schema.json",
+      "bytes": 9498,
+      "sha256": "2b3a63a94be20c85ea801a0b1eac64de5c9c53052fb4e362f2ff0c43d5863503"
+    },
+    {
+      "path": "content/engine/pin_router.py",
+      "sourcePath": "engine/pin_router.py",
+      "bytes": 4190,
+      "sha256": "05fa5d6e9e5ad0392452429080a07c537bf3f57e98c68f00fca252c551012aeb"
+    },
+    {
+      "path": "content/evaluation/leakage.py",
+      "sourcePath": "evaluation/leakage.py",
+      "bytes": 14564,
+      "sha256": "09615b4bdd79f0da39253a3db4f03f650e15195686bd3c73ec03ede8b1ae7754"
+    },
+    {
+      "path": "content/synthetic_data/generator.py",
+      "sourcePath": "synthetic_data/generator.py",
+      "bytes": 25049,
+      "sha256": "b4739ebfc9d6507c4a98fbf2100510c27b32e31fbb590d1a13e5c5e121cc132e"
+    },
+    {
+      "path": "content/synthetic_data/grammar.py",
+      "sourcePath": "synthetic_data/grammar.py",
+      "bytes": 8699,
+      "sha256": "ed33d4bf2a0e7f89df45e021820576e436d615a1bb5cd14af500ef8cdbb2bd9a"
+    },
+    {
+      "path": "content/synthetic_data/pipeline-lock.v1.json",
+      "sourcePath": "synthetic_data/pipeline-lock.v1.json",
+      "bytes": 12601,
+      "sha256": "b8eb81773137fec88eb42cd2c5351d951e8589c193af0560fb91a370215a1a3c"
+    },
+    {
+      "path": "content/synthetic_data/pipeline.py",
+      "sourcePath": "synthetic_data/pipeline.py",
+      "bytes": 17158,
+      "sha256": "74506162ddc77ca3e0493c244cabe93f37d409576448a9bf114c445bd41a4867"
+    },
+    {
+      "path": "content/synthetic_data/receipts/v1/compile-receipts.jsonl",
+      "sourcePath": "synthetic_data/receipts/v1/compile-receipts.jsonl",
+      "bytes": 215491,
+      "sha256": "d682fcd72ee1a863cee7514e9a5047445108dbaa651b5680ff368ea6c2c4ed59"
+    },
+    {
+      "path": "content/synthetic_data/reports/current-generation-report.json",
+      "sourcePath": "synthetic_data/reports/current-generation-report.json",
+      "bytes": 16370,
+      "sha256": "e8241a28f2e7a696427298e90e36613a33f9ea3cffdcd9971dfe1c85696d45e7"
+    },
+    {
+      "path": "content/synthetic_data/shards/v1/circuit-safety.jsonl",
+      "sourcePath": "synthetic_data/shards/v1/circuit-safety.jsonl",
+      "bytes": 252122,
+      "sha256": "4c809d3d579a478ec62258801ddd9f1cef750d79b4850ac7dcd33fe853207a31"
+    },
+    {
+      "path": "content/synthetic_data/shards/v1/compiler-repair.jsonl",
+      "sourcePath": "synthetic_data/shards/v1/compiler-repair.jsonl",
+      "bytes": 180422,
+      "sha256": "efb854df4a1168b43fded3addf67589146183a2eebd1869b475b19ff6d1be6f5"
+    },
+    {
+      "path": "content/synthetic_data/shards/v1/firmware.jsonl",
+      "sourcePath": "synthetic_data/shards/v1/firmware.jsonl",
+      "bytes": 207010,
+      "sha256": "2bc59ebc4ff1490018f0fae34eea230ab47deb6c1ed382f5b005fea3419e488c"
+    },
+    {
+      "path": "content/synthetic_data/shards/v1/grounded-electronics.jsonl",
+      "sourcePath": "synthetic_data/shards/v1/grounded-electronics.jsonl",
+      "bytes": 305885,
+      "sha256": "7fef589dc3b393001d9a5f2221551eb9cb607a4e4ba392bf7edfcd6666e78c04"
+    },
+    {
+      "path": "content/synthetic_data/toolchains.v1.json",
+      "sourcePath": "synthetic_data/toolchains.v1.json",
+      "bytes": 9319,
+      "sha256": "43d8b9fc31a2b10d39bb91e2588bc0569c1afd5c79c1f14f854f4d9cc255421a"
+    },
+    {
+      "path": "content/synthetic_data/verifiers.py",
+      "sourcePath": "synthetic_data/verifiers.py",
+      "bytes": 21453,
+      "sha256": "a58b371fb26cd5649af5d81ab1518ed05d82da4877f108ee1c47cb7e4c6c9531"
+    },
+    {
+      "path": "content/task_schema/task-record.schema.json",
+      "sourcePath": "task_schema/task-record.schema.json",
+      "bytes": 15544,
+      "sha256": "a22d38d4bdd83d6bacee896d62c46547032daa9381c0c420646988f5dc2fd0fd"
+    },
+    {
+      "path": "content/tools/build_verified_synthetic_data.py",
+      "sourcePath": "tools/build_verified_synthetic_data.py",
+      "bytes": 1647,
+      "sha256": "d45cd0f0aa994b88eadde5253ee4230a9d5b9d38c1c78704afc020eceaf084ea"
+    }
+  ],
+  "exactFileSetRequired": true,
+  "overwriteAllowed": false,
+  "externalBackupVerified": false,
+  "releaseManifestSha256": "388bb51774d45085f44ef8c95d12d041a038ed7696511a130ec177795adbe0f1"
+}

@@ -14,7 +14,7 @@ from model.registry_manager import (
     sha256_bytes,
     sign_document,
 )
-from model.runtime_service import ModelRuntimeService
+from model.runtime_service import ModelRuntimeService, checkpoint_runtime_security_block
 
 
 class _FakeRuntime:
@@ -149,6 +149,8 @@ class TestModelRuntimeService(unittest.TestCase):
         fake_module = SimpleNamespace(LocalGen1Runtime=_FakeRuntime)
 
         with mock.patch(
+            "model.runtime_service.checkpoint_runtime_security_block", return_value=None
+        ), mock.patch(
             "model.runtime_service.importlib.import_module", return_value=fake_module
         ) as native_import:
             first = service.start()
@@ -174,6 +176,8 @@ class TestModelRuntimeService(unittest.TestCase):
             trust_store_path=self.trust_store,
         )
         with mock.patch(
+            "model.runtime_service.checkpoint_runtime_security_block", return_value=None
+        ), mock.patch(
             "model.runtime_service.importlib.import_module",
             return_value=SimpleNamespace(LocalGen1Runtime=_FakeRuntime),
         ):
@@ -211,6 +215,9 @@ class TestModelRuntimeService(unittest.TestCase):
             results.append(service.start())
 
         with mock.patch(
+            "model.runtime_service.checkpoint_runtime_security_block",
+            return_value=None,
+        ), mock.patch(
             "model.runtime_service.importlib.import_module",
             return_value=SimpleNamespace(LocalGen1Runtime=_FakeRuntime),
         ) as native_import, mock.patch.object(_FakeRuntime, "load", delayed_load):
@@ -229,6 +236,36 @@ class TestModelRuntimeService(unittest.TestCase):
         self.assertTrue(all(item["ready"] for item in results))
         self.assertEqual(len(_FakeRuntime.instances), 1)
         native_import.assert_called_once_with("model.gen1.runtime")
+
+    def test_vulnerable_torch_blocks_active_checkpoint_before_native_import(self):
+        self._registry(active=True)
+        service = ModelRuntimeService(
+            registry_path=self.registry_path,
+            trust_store_path=self.trust_store,
+        )
+
+        with mock.patch(
+            "model.runtime_service.package_version", return_value="2.8.0+cpu"
+        ), mock.patch(
+            "model.runtime_service.importlib.import_module",
+            side_effect=AssertionError("blocked runtime must not import"),
+        ) as native_import:
+            health = service.start()
+
+        native_import.assert_not_called()
+        self.assertFalse(health["ready"])
+        self.assertEqual(health["runtimeState"], "failed")
+        self.assertEqual(health["code"], "MODEL_RUNTIME_CHECKPOINT_SECURITY_BLOCKED")
+        with self.assertRaisesRegex(
+            RuntimeError, "MODEL_RUNTIME_CHECKPOINT_SECURITY_BLOCKED"
+        ):
+            service.runtime_for_generation()
+
+    def test_patched_torch_clears_checkpoint_security_advisory_gate(self):
+        with mock.patch(
+            "model.runtime_service.package_version", return_value="2.10.0+cpu"
+        ):
+            self.assertIsNone(checkpoint_runtime_security_block())
 
     def test_invalid_registry_reports_failed_without_native_import(self):
         self.registry_path.parent.mkdir(parents=True, exist_ok=True)

@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai-fu-014-compiler-provisioning-readiness-v1",
+  "generatedOn": "2026-09-01",
+  "followup": {
+    "id": "VFAI-FU-014",
+    "recordedStatus": "accepted_for_later"
+  },
+  "policy": {
+    "policyId": "vfai-fu-014-compiler-provisioning-readiness-v1",
+    "status": "accepted-for-later"
+  },
+  "toolchainSource": {
+    "ready": true,
+    "manifestId": "vf-compiler-toolchain-manifest-v1",
+    "manifestVersion": "1.0.0",
+    "host": "windows-i686-mingw32",
+    "networkPolicy": "offline-after-install",
+    "profileCount": 5,
+    "exactFqbnCount": 11,
+    "profileIds": [
+      "arduino-avr-1.8.6",
+      "arduino-megaavr-1.8.8",
+      "arduino-renesas-uno-1.6.0",
+      "esp32-3.3.11",
+      "pico-6.0.0"
+    ],
+    "pipelineLockSha256": "1b48db12e577eebfe46c8110bb59e7a828fa8021668028777fefd157e3e57e4c"
+  },
+  "installedIdentity": {
+    "ready": true,
+    "verifiedProfileCount": 5,
+    "verifiedProfileIds": [
+      "arduino-avr-1.8.6",
+      "arduino-megaavr-1.8.8",
+      "arduino-renesas-uno-1.6.0",
+      "esp32-3.3.11",
+      "pico-6.0.0"
+    ],
+    "failedProfiles": [],
+    "arduinoCliVersion": "1.5.1",
+    "arduinoCliExecutableSha256": "1017de89179c3167e6b8a38ca6cc4091fa69a3cf97aafa7810f01423003f5571"
+  },
+  "retainedReceipts": {
+    "ready": true,
+    "releaseDecision": "pass",
+    "receiptCount": 88,
+    "acceptedCompileCount": 66,
+    "expectedFailureCount": 22,
+    "freshCompilationPerformed": false
+  },
+  "localCacheObservation": {
+    "downloadFileCount": 47,
+    "downloadBytes": 2665518001,
+    "declaredArchiveCount": 10,
+    "matchingDeclaredArchiveCount": 9,
+    "missingDeclaredArchives": [
+      "xtensa-esp-elf-14.2.0_20260121-i686-w64-mingw32.zip"
+    ],
+    "mismatchedDeclaredArchives": [],
+    "arduinoCliArchivePresent": true,
+    "arduinoCliArchiveBoundByToolchainManifest": false,
+    "arduinoCliArchiveExecutableMatchesInstalledIdentity": true,
+    "packageIndexes": [
+      {
+        "path": ".toolchains/arduino-data/package_index.json",
+        "bytes": 1676681,
+        "sha256": "e8bcd57f1ce1cd036ede76aa30b3d31d6a87fca91815b897fc5115dd20769197",
+        "boundByToolchainManifest": false
+      },
+      {
+        "path": ".toolchains/arduino-data/package_rp2040_index.json",
+        "bytes": 1247962,
+        "sha256": "f2abd42c84596200c7bea7073a4bafe33efcf0d45b60febf0216100e4b0d3423",
+        "boundByToolchainManifest": false
+      }
+    ],
+    "packageIndexesBoundByToolchainManifest": false,
+    "picoDeclaredPackageArchiveCount": 0,
+    "picoSourceFallbackBundleBound": false,
+    "provisioningInputManifestConfigured": false,
+    "currentDownloadsArePortableCacheExport": false,
+    "draftProfileCacheKeys": {
+      "arduino-avr-1.8.6": "35f4a7d1f614036d145278e24c2af51a8253dae5987be538071e3bce9ed9d34e",
+      "arduino-megaavr-1.8.8": "e58d12eccac74c48fd1e0a9c61ffde54066014a0f3ea75c76b69ac8849743967",
+      "arduino-renesas-uno-1.6.0": "f854d453f8f8218c71016292ed19c7f4af790cac882bff3185fe455ffb82d452",
+      "esp32-3.3.11": "0fd6ae19c2d5a0a56d3fd54d876d5044bfd108759578fc7039ba9bc7da69701d",
+      "pico-6.0.0": "f6ac7b319b8b5436c1db42ffda28a31a189a2630e0f7b81bd756c657cc309567"
+    },
+    "draftKeysAuthorizeExport": false
+  },
+  "completionInputs": {
+    "provisioningInputClosureReady": false,
+    "ownerBudgetReady": false,
+    "cacheExportReady": false,
+    "cacheVerification": [],
+    "cleanHostProvisioningReady": false,
+    "offlineCacheRestoreReady": false,
+    "configuredPaths": {
+      "provisioningInputManifest": null,
+      "ownerBudgetReceipt": null,
+      "cacheExportManifests": [],
+      "cleanHostProvisioningReceipt": null,
+      "offlineCacheRestoreReceipt": null
+    }
+  },
+  "gates": {
+    "masterBacklogComplete": true,
+    "sourceEvidenceReady": true,
+    "installedIdentityReady": true,
+    "retainedReceiptsReady": true,
+    "provisioningInputClosureReady": false,
+    "ownerBudgetReady": false,
+    "cacheExportReady": false,
+    "cleanHostProvisioningReady": false,
+    "offlineCacheRestoreReady": false
+  },
+  "decision": "complete-checksummed-provisioning-input-closure",
+  "completionClaimed": false,
+  "networkAccessed": false,
+  "archivesDownloadedByEvaluator": 0,
+  "cacheExportsCreatedByEvaluator": 0,
+  "hostsProvisionedByEvaluator": 0,
+  "compilerRunsExecutedByEvaluator": 0,
+  "compileReceiptsRewrittenByEvaluator": false,
+  "syntheticDataModifiedByEvaluator": false,
+  "existingToolchainsModifiedByEvaluator": false,
+  "sourceSha256": {
+    "AI_MASTER_BACKLOG.json": "7b0befd8d631a3bbc64300da195484e91d6e87cfdeddf511048aa0007905a99b",
+    "AI_FOLLOWUP_BACKLOG.json": "f723a4b37ff7ad18b77130b9a8c1ad4132ef5af4a8781ee3fd47630fdaa649b3",
+    "compiler_provisioning/policy.v1.json": "bccea0861d5aa8bc693076f102b0fdca6cf78b3895a8616205fb3c5e93503ca1",
+    "synthetic_data/toolchains.v1.json": "43d8b9fc31a2b10d39bb91e2588bc0569c1afd5c79c1f14f854f4d9cc255421a",
+    "synthetic_data/pipeline-lock.v1.json": "b25c61e7c5210af35e86df3b9d9c0519b18a583aacdea91a763b1d3ae2c15abd",
+    "synthetic_data/reports/current-generation-report.json": "66c20e3b14ba5a94455a0e6c3d18e90940ec01336d99b9846837c694855d6d1c",
+    "synthetic_data/receipts/v1/compile-receipts.jsonl": "d682fcd72ee1a863cee7514e9a5047445108dbaa651b5680ff368ea6c2c4ed59",
+    ".toolchains/arduino-cli.yaml": "72cf5512f69d52f785657a72a0267b3d4c700bcd5b4114ed6c506d99e205529d",
+    ".toolchains/arduino-data/package_index.json": "e8bcd57f1ce1cd036ede76aa30b3d31d6a87fca91815b897fc5115dd20769197",
+    ".toolchains/arduino-data/package_rp2040_index.json": "f2abd42c84596200c7bea7073a4bafe33efcf0d45b60febf0216100e4b0d3423",
+    "compiler_provisioning/cache_contract.py": "348d71c15f689103dfbc3e2799aff0d669a963fb222ce22feb96769c633ee33f",
+    "tools/evaluate_compiler_provisioning_readiness.py": "db892aad757522059bbc53eb50b72414f3540605acb90fbf08660424d9b09c19"
+  },
+  "reportSha256": "b2d1cdf9ba71feb32f963ab0971f4978843377b1791aeeb1081a3c4b554938f5"
+}

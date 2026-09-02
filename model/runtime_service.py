@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import importlib
+from importlib.metadata import PackageNotFoundError, version as package_version
 import logging
 import os
 from pathlib import Path
+import re
 import threading
 from typing import Any
 
@@ -21,6 +23,35 @@ from observability import observability
 
 
 logger = logging.getLogger("voltforge-ai.model-runtime")
+
+CHECKPOINT_RCE_ADVISORY = "GHSA-63cw-57p8-fm3p"
+CHECKPOINT_RCE_FIXED_VERSION = (2, 10, 0)
+
+
+def checkpoint_runtime_security_block() -> tuple[str, str] | None:
+    """Fail closed when the installed Torch can execute a malicious checkpoint."""
+
+    try:
+        installed = package_version("torch").partition("+")[0]
+    except PackageNotFoundError:
+        return (
+            "MODEL_RUNTIME_DEPENDENCY_MISSING",
+            "The PyTorch model runtime dependency is unavailable.",
+        )
+    match = re.fullmatch(r"(\d+)\.(\d+)\.(\d+)", installed)
+    if match is None:
+        return (
+            "MODEL_RUNTIME_SECURITY_VERSION_UNKNOWN",
+            "The PyTorch runtime version cannot be validated for checkpoint safety.",
+        )
+    parsed = tuple(int(value) for value in match.groups())
+    if parsed < CHECKPOINT_RCE_FIXED_VERSION:
+        return (
+            "MODEL_RUNTIME_CHECKPOINT_SECURITY_BLOCKED",
+            "The pinned PyTorch runtime is blocked from checkpoint-backed serving "
+            f"by {CHECKPOINT_RCE_ADVISORY}.",
+        )
+    return None
 
 
 class ModelRuntimeService:
@@ -81,6 +112,18 @@ class ModelRuntimeService:
             logger.info(
                 "Model runtime unavailable registryRevision=%s activeArtifactId=None",
                 registry["revision"],
+            )
+            return self.health()
+
+        security_block = checkpoint_runtime_security_block()
+        if security_block is not None:
+            code, message = security_block
+            observability.record_model_load_failure(code)
+            self._set_failure(code, message)
+            logger.error(
+                "Model runtime security block artifactId=%s code=%s",
+                active_id,
+                code,
             )
             return self.health()
 

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai-fu-012-board-geometry-policy-v1",
+  "sourceFollowup": "VFAI-FU-012",
+  "status": "accepted-for-later",
+  "asOfDate": "2026-09-01",
+  "scope": {
+    "electricallyVerifiedBoardCount": 8,
+    "manufacturerPinoutFixtureRequired": true,
+    "genericFootprintMayImplyMechanicalAccuracy": false,
+    "pinoutAndArtworkStatusesIndependent": true
+  },
+  "compatibility": {
+    "preserveExistingComponentTypes": true,
+    "preserveExistingWirePinIdsWherePhysical": true,
+    "retainSavedLegacyPinArraysWhenExactFixtureDropsNonphysicalIds": true,
+    "rewriteSavedProjects": false,
+    "changeSimulatorNetSemantics": false,
+    "changeAiElectricalCoverage": false
+  },
+  "completionInputs": {
+    "browserGeometryReviewReceiptPath": null,
+    "requiredThemes": ["light", "dark"],
+    "requiredResponsiveWidths": [1280, 768, 390],
+    "requiredBoards": [
+      "ARDUINO_UNO",
+      "ARDUINO_UNO_R4",
+      "ARDUINO_MEGA",
+      "ARDUINO_NANO_EVERY",
+      "ARDUINO_LEONARDO",
+      "ARDUINO_MICRO",
+      "RASPBERRY_PI_PICO",
+      "RASPBERRY_PI_PICO_2"
+    ]
+  },
+  "mechanicalBoundary": {
+    "generatedArtworkMechanicallyVerified": false,
+    "allowedCompletionState": "documented-limitation",
+    "prohibitedClaims": [
+      "scale-accurate board outline",
+      "scale-accurate connector pitch",
+      "verified mounting-hole geometry",
+      "complete auxiliary-connector routing"
+    ]
+  }
+}

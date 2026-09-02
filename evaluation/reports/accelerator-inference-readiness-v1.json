@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai-fu-007-owned-accelerator-readiness-v1",
+  "generatedOn": "2026-09-01",
+  "followup": {
+    "id": "VFAI-FU-007",
+    "recordedStatus": "accepted_for_later"
+  },
+  "policy": {
+    "policyId": "vfai-fu-007-owned-accelerator-inference-v1",
+    "status": "readiness-contract-only",
+    "networkAllowed": false,
+    "governedDataMayLeaveDevice": false
+  },
+  "capabilities": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "Intel64 Family 6 Model 142 Stepping 12, GenuineIntel",
+    "pythonVersion": "3.12.13",
+    "torchVersion": "2.8.0+cpu",
+    "torchCudaBuild": null,
+    "cudaAvailable": false,
+    "cudaDeviceCount": 0,
+    "cudaDevices": [],
+    "mpsBuilt": false,
+    "mpsAvailable": false,
+    "appleSiliconHost": false,
+    "nvidiaSmi": {
+      "available": false,
+      "querySucceeded": false,
+      "devices": []
+    },
+    "serialNumbersStored": false,
+    "userOrHostNamesStored": false
+  },
+  "historicalHarness": {
+    "path": "gen1_optimization/benchmark.py",
+    "classification": "historical-cpu-only-evidence",
+    "cpuBoundMarkers": {
+      "checkpointLoadsOnCpu": true,
+      "optimizationAppliesToCpu": true,
+      "validationTensorsLackDevice": true,
+      "generationTensorsLackDevice": true
+    },
+    "deviceAware": false,
+    "mayBeRewrittenInPlace": false
+  },
+  "acceleratorHarness": {
+    "path": null,
+    "assigned": false,
+    "exists": false,
+    "deviceAwareContractVerified": false,
+    "sha256": null
+  },
+  "artifactEvidence": {
+    "artifactId": "vfdlm-g1-edge-v0.1.2-optimized",
+    "manifestSha256": "fc97eae9340d725d0e6511524e8e2c81b199eef01d35d774ecf185df39288c77",
+    "cpuBenchmarkReportSha256": "5dcd29ce8b46f7a48c3e56d00cb02d5a2b4dc814fe0cd3737be198494bc8286d",
+    "optimizationPolicySha256": "3e43ca747fb5c2a6ad5dbb6aa6d56b499a6a12d4ba91a31db74efb6a7cac4f11",
+    "gates": {
+      "optimizedArtifactIdentityMatches": true,
+      "artifactIsImmutable": true,
+      "packageBindsManifest": true,
+      "cpuBenchmarkChecksumValid": true,
+      "optimizationPolicyChecksumValid": true,
+      "optimizationPolicyBindsCpuBenchmark": true,
+      "cpuReportKeepsAcceleratorsUnmeasured": true,
+      "localArtifactDirectoryPresent": true,
+      "weightsUnchangedForAcceleratorBenchmark": true,
+      "tokenizerUnchangedForAcceleratorBenchmark": true
+    },
+    "ready": true
+  },
+  "tiers": [
+    {
+      "tierId": "cuda",
+      "requiredProfiles": [
+        "reference-fp32-manual-no-kv",
+        "fallback-fp32-manual-kv",
+        "selected-fp32-sdpa-kv"
+      ],
+      "conditionalPrecisionProfiles": [
+        "bf16-sdpa-kv-if-hardware-supported",
+        "fp16-sdpa-kv-if-hardware-supported"
+      ],
+      "gates": {
+        "ownedHardwareVisible": false,
+        "immutableArtifactEvidenceReady": true,
+        "deviceAwareBenchmarkHarnessReady": false,
+        "resultReportAssigned": false,
+        "resultReportValid": false,
+        "allAcceptanceGatesPassed": false
+      },
+      "accepted": false,
+      "result": {
+        "tierId": "cuda",
+        "path": null,
+        "assigned": false,
+        "valid": false,
+        "allAcceptanceGatesPassed": false,
+        "reportSha256": null
+      }
+    },
+    {
+      "tierId": "mps",
+      "requiredProfiles": [
+        "reference-fp32-manual-no-kv",
+        "fallback-fp32-manual-kv",
+        "selected-fp32-sdpa-kv"
+      ],
+      "conditionalPrecisionProfiles": [
+        "fp16-sdpa-kv-if-hardware-supported",
+        "bf16-sdpa-kv-if-runtime-supported"
+      ],
+      "gates": {
+        "ownedHardwareVisible": false,
+        "immutableArtifactEvidenceReady": true,
+        "deviceAwareBenchmarkHarnessReady": false,
+        "resultReportAssigned": false,
+        "resultReportValid": false,
+        "allAcceptanceGatesPassed": false
+      },
+      "accepted": false,
+      "result": {
+        "tierId": "mps",
+        "path": null,
+        "assigned": false,
+        "valid": false,
+        "allAcceptanceGatesPassed": false,
+        "reportSha256": null
+      }
+    }
+  ],
+  "gates": {
+    "masterBacklogComplete": true,
+    "anyOwnedAcceleratorVisible": false,
+    "cudaVisible": false,
+    "mpsVisible": false,
+    "immutableArtifactEvidenceReady": true,
+    "deviceAwareAcceleratorHarnessReady": false,
+    "acceptedAcceleratorTiers": [],
+    "bothAcceleratorTiersAccepted": false
+  },
+  "decision": "await-owned-accelerator-hardware",
+  "completionClaimed": false,
+  "modelWeightsLoaded": false,
+  "governedCorpusLoaded": false,
+  "benchmarkMeasurementsExecuted": 0,
+  "governedDataExported": false,
+  "networkAccessed": false,
+  "releaseOrActivationApproved": false,
+  "sourceSha256": {
+    "AI_MASTER_BACKLOG.json": "7b0befd8d631a3bbc64300da195484e91d6e87cfdeddf511048aa0007905a99b",
+    "AI_FOLLOWUP_BACKLOG.json": "f723a4b37ff7ad18b77130b9a8c1ad4132ef5af4a8781ee3fd47630fdaa649b3",
+    "gen1_optimization/accelerator-policy.v1.json": "11d548e18f67c5b1d07cb7d65d058b1fe018dd181a4a1a6f1e87aa9111d946cf",
+    "benchmarks/reports/gen1-inference-optimization-v1.json": "e639d96a05096ec5658ad72e8fe43df41824d58de41881a6b7cd42ccc14ae247",
+    "model/gen1/optimization-policy.v1.json": "6be912e609c94a51deaf41c70269333624b076e46e14054e63ef8ae9f19e20c7",
+    "model/registry/manifests/vfdlm-g1-edge-v0.1.2-optimized.json": "8856829cdaaab3799f468529c65b131498f7fc81a14b7b19c8ae3cdd2fec5e19",
+    "model/registry/reports/vfdlm-g1-edge-v0.1.2-optimized-package.json": "d51ec6f65122fa83a130058a2e10043c5e26b66e81600940d8523ac26b6d5ac8",
+    "gen1_optimization/benchmark.py": "3980bd738bf9177fb2a2a1eea53c72f1be56f682daafd9b5b1252d2d44b65d6a",
+    "tools/evaluate_accelerator_inference_readiness.py": "1438e8e13202cb443b4c3dc2157f09fe6ca1ba29ad551890904b01eb86fbb57d"
+  },
+  "reportSha256": "7f788e6d9eec2b991ae260cc81823a1bf4a050c70a476c3b510e349c6fb6b323"
+}

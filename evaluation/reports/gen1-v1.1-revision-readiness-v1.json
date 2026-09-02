@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai-fu-013-gen1-v1.1-revision-readiness-v1",
+  "generatedOn": "2026-09-01",
+  "followup": {
+    "id": "VFAI-FU-013",
+    "recordedStatus": "accepted_for_later"
+  },
+  "immutableReleaseFollowup": {
+    "id": "VFAI-FU-015",
+    "recordedStatus": "accepted_for_later"
+  },
+  "policy": {
+    "policyId": "vfai-fu-013-tokenizer-v1.1-gen1-revision-readiness-v1",
+    "status": "accepted-for-later",
+    "requiredCorpusStage": "edge-stage-1-1m",
+    "minimumIndependentSeeds": 3
+  },
+  "corpus": {
+    "receiptValid": true,
+    "reportSha256": "c0a09aee0109b552c4997560c898a50e7d386992109e01eb98ecf7aedb56464a",
+    "decision": "await-immutable-retention-and-owner-budget",
+    "currentApprovedStage": null,
+    "requiredStage": "edge-stage-1-1m",
+    "stageReady": false,
+    "currentUniqueTrainingPredictedTokens": 155690,
+    "immutableReleaseRetentionReady": false,
+    "ownerStorageAndComputeBudgetApproved": false
+  },
+  "approvedTrainingTokenizer": {
+    "ready": true,
+    "tokenizerId": "vfdlm-byte-bpe",
+    "version": "1.1.0",
+    "artifactSha256": "1858abfc83a469a48f9b2bfef65d484fe24bd4a553a3cc05030cfcfd2cdc76c4",
+    "trainingRecordCount": 227,
+    "validationRecordCount": 23,
+    "allTokenizerFilesMatch": true,
+    "allCurrentShardBytesMatch": true,
+    "currentShardPaths": [
+      "synthetic_data/shards/v1/grounded-electronics.jsonl",
+      "synthetic_data/shards/v1/circuit-safety.jsonl",
+      "synthetic_data/shards/v1/firmware.jsonl",
+      "synthetic_data/shards/v1/compiler-repair.jsonl"
+    ]
+  },
+  "historicalArtifacts": {
+    "ready": true,
+    "registryRevision": 3,
+    "activeArtifactId": null,
+    "artifactIds": [
+      "vfdlm-g1-edge-v0.1.0-bootstrap",
+      "vfdlm-g1-edge-v0.1.1-runtime",
+      "vfdlm-g1-edge-v0.1.2-optimized"
+    ],
+    "allExistingArtifactsExperimentalAndIneligible": true,
+    "allExistingArtifactPackagesBindTokenizerV1": true,
+    "historicalPlanRunId": "vfai014-gen1-bootstrap-v1",
+    "historicalUniqueTrainingPredictedTokens": 71377,
+    "historicalValidationRecordCount": 16
+  },
+  "completionInputs": {
+    "ownerComputeBudgetReceiptReady": false,
+    "ownerComputeBudgetReceiptPath": null,
+    "immutableCorpusReleaseReceiptReady": false,
+    "immutableCorpusReleaseReceiptPath": null,
+    "immutableTrainingPlanReady": false,
+    "immutableTrainingPlanPath": null,
+    "trainingRunReceiptCount": 0,
+    "expectedTrainingRunReceiptCount": 0,
+    "allTrainingRunReceiptsReady": false,
+    "evaluationScorecardReady": false,
+    "rollbackAndCanaryReceiptReady": false
+  },
+  "gates": {
+    "masterBacklogComplete": true,
+    "sourceEvidenceReady": true,
+    "immutableReleaseRetentionReady": false,
+    "ownerComputeBudgetApproved": false,
+    "governedCorpusStageReady": false,
+    "immutableTrainingPlanReady": false,
+    "trainingRunReceiptsReady": false,
+    "completeEvaluationScorecardReady": false
+  },
+  "decision": "await-immutable-retention-and-owner-budget",
+  "completionClaimed": false,
+  "trainingExamplesParsedByEvaluator": false,
+  "modelWeightsLoadedByEvaluator": false,
+  "trainingRunsAllocatedByEvaluator": 0,
+  "optimizerStepsExecutedByEvaluator": 0,
+  "candidateArtifactsCreatedByEvaluator": 0,
+  "historicalArtifactsModifiedByEvaluator": false,
+  "registryModifiedByEvaluator": false,
+  "networkAccessed": false,
+  "releaseOrActivationApproved": false,
+  "sourceSha256": {
+    "AI_MASTER_BACKLOG.json": "7b0befd8d631a3bbc64300da195484e91d6e87cfdeddf511048aa0007905a99b",
+    "AI_FOLLOWUP_BACKLOG.json": "f723a4b37ff7ad18b77130b9a8c1ad4132ef5af4a8781ee3fd47630fdaa649b3",
+    "gen1_training/tokenizer-v1.1-revision-policy.v1.json": "a9eebe360d25f014f0673b8697018bf7dc09e86703bec4b395d4c24669a134c4",
+    "evaluation/reports/corpus-expansion-readiness-v1.json": "7bcfe4dfafc5d50a185b2bf842650049020658bd114dc009ecb531c5a425ea40",
+    "model/tokenizers/vfdlm-byte-bpe-v1.1.0/tokenizer_manifest.json": "8af7baf2412a0f93be4cec70583a4a2386ec3ba41dab8554c05722a201d3d400",
+    "gen1_bootstrap/plan.v1.json": "0b3f3ef045c5eaa20bc494021c5681ab520c2096f72d013c69bb9de76057a393",
+    "model/registry/active_model.json": "9ae71d3d13a5b05c90b45e2ad9ef9150abac4a70715840b2d08e9b9db75c897b",
+    "model/registry/manifests/vfdlm-g1-edge-v0.1.0-bootstrap.json": "f0a546ada7beffe2ce9e7ae6262c99a9b0073ed0fa02362508283e1c678d4b75",
+    "model/registry/manifests/vfdlm-g1-edge-v0.1.1-runtime.json": "66fb6e8c6a2993c73855e4044f7e2410c017996faec2d7deb3c632b88d690432",
+    "model/registry/manifests/vfdlm-g1-edge-v0.1.2-optimized.json": "8856829cdaaab3799f468529c65b131498f7fc81a14b7b19c8ae3cdd2fec5e19",
+    "gen1_training/data.py": "59a359f5bd73185a8c15581f65c1d8b78bbe66f208621e8c870911a24655ea4d",
+    "gen1_training/trainer.py": "a817c0ec31bb0853d88836baa2854a5756e6b19b9ce661bb0166e48f1d9cfd7f",
+    "tools/train_gen1.py": "a4e665eed553a4bb55a8261953fcefece029cbea887436412bb0d576913416b1",
+    "tools/evaluate_gen1_v1_1_revision_readiness.py": "39eea8d146a8382283db75e3b6cb40a4cec01e5c53a4b45f649692c01f18736f"
+  },
+  "reportSha256": "33b4360c13ef8138bec3227ff3c4e0fccf12d1a531ea325a473a353827bc67e8"
+}

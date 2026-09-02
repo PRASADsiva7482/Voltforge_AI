@@ -98,14 +98,19 @@ def test_feedback_and_diagnostics_never_echo_secret_material(monkeypatch) -> Non
     assert secret not in response.text
 
 
-def test_artifact_loading_is_checksum_bound_and_non_executable() -> None:
+def test_artifact_loading_is_checksum_bound_and_vulnerable_runtime_is_blocked() -> None:
     artifact_source = inspect.getsource(artifact_registry._validate_weights)
     checkpoint_source = (
         Path(__file__).resolve().parents[1] / "model" / "gen1" / "model.py"
     ).read_text(encoding="utf-8")
+    runtime_source = (
+        Path(__file__).resolve().parents[1] / "model" / "runtime_service.py"
+    ).read_text(encoding="utf-8")
     assert "allow_pickle=False" in artifact_source
     assert "weights_only=True" in checkpoint_source
     assert "pytorch-weights-only-state-dict-v1" in checkpoint_source
+    assert "GHSA-63cw-57p8-fm3p" in runtime_source
+    assert "MODEL_RUNTIME_CHECKPOINT_SECURITY_BLOCKED" in runtime_source
 
 
 def test_security_limits_are_explicit_at_the_request_and_stream_boundaries() -> None:

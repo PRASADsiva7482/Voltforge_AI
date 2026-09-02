@@ -39,6 +39,7 @@ def build_report() -> dict[str, Any]:
     sse = _read(AI_ROOT / "api" / "sse.py")
     artifact = _read(AI_ROOT / "model" / "artifact_registry.py")
     checkpoint = _read(AI_ROOT / "model" / "gen1" / "model.py")
+    runtime_service = _read(AI_ROOT / "model" / "runtime_service.py")
     retrieval_policy = _read(AI_ROOT / "internet_retrieval" / "policy.v1.json")
     retrieval_security = _read(AI_ROOT / "internet_retrieval" / "security.py")
     feedback_policy = _read(AI_ROOT / "feedback_governance" / "policy.v1.json")
@@ -72,7 +73,9 @@ def build_report() -> dict[str, Any]:
         and "environment != \"production\"" in main,
         "artifactIntegrityAndSafeLoading": "allow_pickle=False" in artifact
         and "weights_only=True" in checkpoint
-        and "verify_registry" in artifact,
+        and "verify_registry" in artifact
+        and "GHSA-63cw-57p8-fm3p" in runtime_service
+        and "MODEL_RUNTIME_CHECKPOINT_SECURITY_BLOCKED" in runtime_service,
         "retrievalBoundaryIsFixedAndUntrusted": '"resultUrlFetchingAllowed": false' in retrieval_policy
         and '"redirectPolicy": "reject-all"' in retrieval_policy
         and "not parsed.is_global" in retrieval_security
@@ -113,6 +116,7 @@ def build_report() -> dict[str, Any]:
                 "test_service_token_is_constant_time",
                 "test_feedback_and_diagnostics_never_echo_secret_material",
                 "test_artifact_loading_is_checksum_bound",
+                "MODEL_RUNTIME_CHECKPOINT_SECURITY_BLOCKED",
                 "test_security_limits_are_explicit",
             )
         ),
@@ -146,7 +150,7 @@ def build_report() -> dict[str, Any]:
         "checks": checks,
         "controls": {
             "serviceAuthentication": "production-token-required",
-            "artifactLoading": "signed-checksum-verified-safe-formats",
+            "artifactLoading": "signed-checksum-verified-safe-formats-and-affected-torch-serving-block",
             "memory": "authenticated-bounded-redacted-project-session-scope",
             "retrieval": "fixed-provider-no-ssrf-no-redirect-no-training",
             "proposalMutation": "revision-guarded-explicit-review-only",

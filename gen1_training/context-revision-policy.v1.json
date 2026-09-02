@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai-fu-008-context-capable-gen1-revision-v1",
+  "status": "readiness-contract-only",
+  "sourceFollowup": "VFAI-FU-008",
+  "dependencies": {
+    "corpusFollowup": "VFAI-FU-006",
+    "corpusReadinessReportPath": "evaluation/reports/corpus-expansion-readiness-v1.json",
+    "minimumPilotCorpusStage": "edge-stage-1-1m",
+    "minimumSelectionCorpusStage": "edge-stage-2-10m",
+    "minimumReleaseCorpusStage": "edge-stage-3-100m",
+    "historicalContextPolicyPath": "context_compiler/policy.v1.json",
+    "historicalContextReportPath": "evaluation/reports/project-context-compiler-v1.json",
+    "historicalContextSnapshotPath": "evaluation/snapshots/project-context-compiler-v1.json",
+    "approvedTrainingTokenizerManifestPath": "model/tokenizers/vfdlm-byte-bpe-v1.1.0/tokenizer_manifest.json",
+    "activeRegistryPath": "model/registry/active_model.json",
+    "baselineModelConfigPath": "model/gen1/configs/gen1-selected-v1.json"
+  },
+  "immutableBoundaries": {
+    "existingArtifactsMayBeRelabeled": false,
+    "existingWeightsMayBeExtendedOrInterpolated": false,
+    "historicalCompilerEvidenceMayBeRewritten": false,
+    "newFromScratchArtifactRequired": true,
+    "randomInitializationOwnedByProjectRequired": true,
+    "releaseOrActivationApproved": false
+  },
+  "compatibilityMigration": {
+    "historicalCompilerTokenizerVersion": "1.0.0",
+    "requiredTrainingTokenizerVersion": "1.1.0",
+    "candidateCompilerPolicyPath": null,
+    "candidateCompilerSnapshotPath": null,
+    "candidatePolicyMustHaveNewIdentity": true,
+    "exactCandidateTokenizerAccountingRequired": true,
+    "syntheticFixtureOnlyForCompilerSnapshot": true,
+    "rawPromptOrProjectContentMayBeStored": false
+  },
+  "ownerComputeBudget": {
+    "approvalReceiptPath": null,
+    "finiteStorageBytesRequired": true,
+    "finiteTrainingDeviceHoursRequired": true,
+    "finiteEvaluationDeviceHoursRequired": true,
+    "approvedHardwareBoundaryRequired": true,
+    "approvalBeforeAllocationRequired": true
+  },
+  "candidates": [
+    {
+      "candidateId": "context-1024",
+      "contextLength": 1024,
+      "role": "minimum-policy-feasibility-ablation",
+      "candidateManifestPath": null,
+      "packingManifestPath": null
+    },
+    {
+      "candidateId": "context-2048",
+      "contextLength": 2048,
+      "role": "mid-context-cost-ablation",
+      "candidateManifestPath": null,
+      "packingManifestPath": null
+    },
+    {
+      "candidateId": "context-4096",
+      "contextLength": 4096,
+      "role": "realistic-project-fixture-candidate",
+      "candidateManifestPath": null,
+      "packingManifestPath": null
+    },
+    {
+      "candidateId": "context-8192",
+      "contextLength": 8192,
+      "role": "high-context-quality-cost-candidate",
+      "candidateManifestPath": null,
+      "packingManifestPath": null
+    }
+  ],
+  "experimentProtocol": {
+    "networkAllowed": false,
+    "governedDataMayLeaveOwnerHardware": false,
+    "pretrainedWeightsAllowed": false,
+    "thirdPartyTokenizerAllowed": false,
+    "identicalNormalizedRecordSetAcrossCandidates": true,
+    "identicalTrainingValidationSplitAcrossCandidates": true,
+    "identicalRawRecordExposureAcrossCandidates": true,
+    "tokenBudgetEquivalenceMayBeClaimed": false,
+    "contextSpecificPackingRequired": true,
+    "longPositionOccupancyEvidenceRequired": true,
+    "minimumIndependentSeeds": 3,
+    "seedIds": [13013, 13017, 13019],
+    "candidateResultReportPath": null
+  },
+  "qualityGates": {
+    "completeModelValidationRequired": true,
+    "globalGenerationSuiteRequired": true,
+    "retrievalAndGroundingSuiteRequired": true,
+    "adversarialSafetySuiteRequired": true,
+    "structuredActionSuiteRequired": true,
+    "exactContextCompilerCompatibilityRequired": true,
+    "longPositionLearningRequired": true,
+    "criticalRegressionCountAllowed": 0,
+    "threeSeedConfidenceIntervalsRequired": true
+  },
+  "runtimeGates": {
+    "peakMemoryRequired": true,
+    "loadAndFirstTokenLatencyRequired": true,
+    "decodeThroughputRequired": true,
+    "deadlineAndCancellationRequired": true,
+    "restartAndCheckpointPortabilityRequired": true,
+    "safeFallbackRequired": true,
+    "signedRollbackRequired": true
+  },
+  "promotion": {
+    "minimumSelectableContextLength": 4096,
+    "independentReleaseReviewRequired": true,
+    "signedImmutableArtifactRequired": true,
+    "automaticRegistryActivationAllowed": false,
+    "deterministicFallbackRetained": true
+  },
+  "forbidden": [
+    "relabel-128-token-artifact",
+    "extend-existing-position-weights-without-training",
+    "train-before-governed-corpus-stage",
+    "allocate-before-owner-budget-approval",
+    "reuse-tokenizer-1.0-compiler-evidence-as-tokenizer-1.1-proof",
+    "pretrained-model-or-tokenizer",
+    "hosted-training-or-inference",
+    "private-or-governed-data-export",
+    "automatic-artifact-activation"
+  ]
+}

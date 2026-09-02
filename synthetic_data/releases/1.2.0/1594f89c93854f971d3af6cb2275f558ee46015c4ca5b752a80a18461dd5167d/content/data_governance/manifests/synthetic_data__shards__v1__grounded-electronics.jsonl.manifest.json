@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "shardId": "vf-shard-7fef589dc3b393001d9a",
+  "path": "synthetic_data/shards/v1/grounded-electronics.jsonl",
+  "recordFormat": "vf-task-record-jsonl-v1",
+  "recordCount": 110,
+  "sizeBytes": 305885,
+  "sha256": "7fef589dc3b393001d9a5f2221551eb9cb607a4e4ba392bf7edfcd6666e78c04",
+  "status": "approved",
+  "eligibleUses": [
+    "training"
+  ],
+  "reason": null,
+  "createdAtUtc": "2026-08-31T07:01:06.296504+00:00",
+  "sourceRegistry": {
+    "registryId": "voltforge-source-registry",
+    "version": "1.2.0",
+    "sha256": "66d939d62f0909ae7a21aaecd6a84078ea597e69e0ef8183c40d4b35ec902786"
+  },
+  "sources": [
+    {
+      "sourceId": "vf-src-curated-electronics-corpus-v1",
+      "revision": "1.1.0",
+      "checksum": "5a3080d1f22b927942492a19296405553a050b8daf5458234eac603be1343089",
+      "licenseStatus": "approved",
+      "privacyClass": "project-authored-non-user-data",
+      "approvalStatus": "approved"
+    },
+    {
+      "sourceId": "vf-src-verified-synthetic-pipeline-v1",
+      "revision": "1.2.0",
+      "checksum": "b8eb81773137fec88eb42cd2c5351d951e8589c193af0560fb91a370215a1a3c",
+      "licenseStatus": "approved",
+      "privacyClass": "project-authored-non-user-data",
+      "approvalStatus": "approved"
+    }
+  ],
+  "producer": {
+    "id": "vf-verified-synthetic-pipeline-v1",
+    "version": "1.2.0",
+    "path": "synthetic_data/pipeline-lock.v1.json",
+    "sha256": "b8eb81773137fec88eb42cd2c5351d951e8589c193af0560fb91a370215a1a3c"
+  },
+  "preprocessing": {
+    "id": "vf-held-out-exclusion",
+    "version": "1.0.0",
+    "path": "evaluation/leakage.py",
+    "sha256": "09615b4bdd79f0da39253a3db4f03f650e15195686bd3c73ec03ede8b1ae7754"
+  },
+  "taskSchema": {
+    "id": "voltforge-task-record",
+    "version": "1.0.0",
+    "path": "task_schema/task-record.schema.json",
+    "sha256": "a22d38d4bdd83d6bacee896d62c46547032daa9381c0c420646988f5dc2fd0fd"
+  },
+  "recordProvenance": {
+    "mode": "shard-inherited",
+    "selector": "all-records",
+    "sourceIds": [
+      "vf-src-curated-electronics-corpus-v1",
+      "vf-src-verified-synthetic-pipeline-v1"
+    ],
+    "statement": "Every non-empty record in this shard inherits this immutable source and producer snapshot."
+  },
+  "retention": {
+    "sourcePolicies": [
+      {
+        "sourceId": "vf-src-curated-electronics-corpus-v1",
+        "policy": {
+          "class": "project-curated-source",
+          "duration": "while referenced by an approved shard, runtime index, or model artifact",
+          "reviewTrigger": "manufacturer revision, evidence conflict, corpus contract change, or source removal request"
+        },
+        "deletionProcedure": "Run tools/source_removal_impact.py for this source, remove or deactivate dependent task shards, retrieval indexes, and model artifacts, delete generated packs/catalog/report, then rebuild and repeat release gates."
+      },
+      {
+        "sourceId": "vf-src-verified-synthetic-pipeline-v1",
+        "policy": {
+          "class": "project-verified-training-source",
+          "duration": "while referenced by an approved shard or model artifact",
+          "reviewTrigger": "grammar, verifier, compiler, corpus, task schema, leakage gate, or source-policy revision"
+        },
+        "deletionProcedure": "Run tools/source_removal_impact.py for this source, deactivate and remove dependent shards and model artifacts, remove compile receipts and reports, then regenerate, retrain, and repeat release gates."
+      }
+    ]
+  },
+  "manifestSha256": "ed0ff97d3de0ea8681ac1ed7e4b88b9dca87ff8bb754acaea5592155e7c62c6b"
+}

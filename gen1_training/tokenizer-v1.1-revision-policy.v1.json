@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai-fu-013-tokenizer-v1.1-gen1-revision-readiness-v1",
+  "sourceFollowup": "VFAI-FU-013",
+  "status": "accepted-for-later",
+  "asOfDate": "2026-09-01",
+  "minimumStartConditions": {
+    "requiredCorpusStage": "edge-stage-1-1m",
+    "requiredImmutableReleaseFollowup": "VFAI-FU-015",
+    "ownerComputeBudgetRequired": true,
+    "minimumIndependentSeeds": 3,
+    "projectOwnedHardwareOnly": true,
+    "projectOwnedRandomInitializationOnly": true
+  },
+  "lineageContract": {
+    "tokenizerId": "vfdlm-byte-bpe",
+    "tokenizerVersion": "1.1.0",
+    "tokenizerManifestPath": "model/tokenizers/vfdlm-byte-bpe-v1.1.0/tokenizer_manifest.json",
+    "tokenizerArtifactSha256": "1858abfc83a469a48f9b2bfef65d484fe24bd4a553a3cc05030cfcfd2cdc76c4",
+    "currentDatasetId": "vfai009-approved-packed-v1",
+    "currentTrainingRecordCount": 227,
+    "currentValidationRecordCount": 23,
+    "currentUniqueTrainingPredictedTokens": 155690,
+    "immutableContentAddressedShardPathsRequired": true,
+    "mutableCurrentAliasesAllowedAsNewTrainingLineage": false
+  },
+  "immutablePlanContract": {
+    "schemaKind": "vfai-fu-013-gen1-revision-plan-v1",
+    "newRunIdRequired": true,
+    "newCheckpointNamespaceRequired": true,
+    "historicalRunIdsForbidden": ["vfai014-gen1-bootstrap-v1"],
+    "requiredBindings": [
+      "immutable-corpus-release-receipt",
+      "corpus-stage-readiness-receipt",
+      "tokenizer-1.1.0-manifest-and-files",
+      "exact-split-and-shard-checksums",
+      "model-config-and-source-checksums",
+      "owner-compute-budget-receipt",
+      "seed-list-and-exposure-ceiling",
+      "checkpoint-and-resume-namespace"
+    ],
+    "trainingPlanPath": null,
+    "ownerComputeBudgetReceiptPath": null,
+    "immutableCorpusReleaseReceiptPath": null
+  },
+  "resultInputs": {
+    "trainingRunReceiptPaths": [],
+    "evaluationScorecardPath": null,
+    "rollbackAndCanaryReceiptPath": null
+  },
+  "requiredEvaluationGates": [
+    "held-out-next-token-quality",
+    "global-generation-quality",
+    "grounding-and-citations",
+    "safety-and-refusal",
+    "structured-output",
+    "runtime-latency-and-memory",
+    "deadline-and-cancellation",
+    "checkpoint-resume-reproducibility",
+    "rollback-and-canary",
+    "full-cross-repository-model-lane"
+  ],
+  "historicalBoundary": {
+    "tokenizerV1ArtifactsRemainImmutable": true,
+    "existingArtifactsMayBeRelabeled": false,
+    "existingRegistryMayBeActivatedByReadinessReview": false,
+    "historicalRollbackMustRemainAvailable": true
+  },
+  "releaseBoundary": {
+    "experimentalInactiveRunOnlyBeforeIndependentReview": true,
+    "automaticPackagingAllowed": false,
+    "automaticRegistryActivationAllowed": false,
+    "materialScorecardImprovementRequired": true
+  },
+  "forbidden": [
+    "train-before-owner-budget-approval",
+    "train-from-mutable-shard-aliases",
+    "reuse-or-relabel-tokenizer-1.0.0-weights",
+    "overwrite-historical-run-or-checkpoint",
+    "pretrained-model-or-third-party-tokenizer",
+    "hosted-ai-model-or-external-inference-provider",
+    "unapproved-or-private-corpus",
+    "automatic-package-or-activation"
+  ]
+}

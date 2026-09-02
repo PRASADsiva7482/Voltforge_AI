@@ -47,3 +47,26 @@ all ten candidates run in isolated processes:
 ```powershell
 .toolchains/gen1/Scripts/python.exe tools/benchmark_gen1_optimizations.py benchmark
 ```
+
+## Owned accelerator follow-up
+
+`accelerator-policy.v1.json` freezes the VFAI-FU-007 CUDA and Apple Silicon
+measurement boundary without changing the historical CPU evidence. It requires
+the same immutable artifact, complete 9,027-target validation split, exact greedy
+outputs, three FP32 reference/selected/fallback profiles, conditionally supported
+BF16/FP16 profiles, fresh processes, warmups, 30 measured generations per
+profile, thermal cycles, synchronized timing, memory evidence, and signed
+fallback/rollback.
+
+Generate and verify the content-free readiness receipt:
+
+```powershell
+.toolchains/gen1/Scripts/python.exe tools/evaluate_accelerator_inference_readiness.py evaluate --generated-on 2026-08-31
+.toolchains/gen1/Scripts/python.exe tools/evaluate_accelerator_inference_readiness.py verify
+```
+
+The historical `benchmark.py` remains checksum-bound CPU evidence and is not
+silently repurposed as an accelerator harness. The readiness evaluator records
+that its checkpoint loading and benchmark tensors are CPU-bound. A separate
+device-aware harness and real owner-controlled hardware are required before any
+CUDA or MPS result report can be assigned in the accelerator policy.

@@ -589,7 +589,12 @@ class FeedbackStore:
         dependency_paths = [
             Path("feedback_governance/policy.v1.json"),
             Path("feedback_governance/service.py"),
+            Path("feedback_training/policy.v1.json"),
+            Path("feedback_training/executor.py"),
             Path("evaluation/leakage.py"),
+            Path("gen1_training/data.py"),
+            Path("gen1_training/trainer.py"),
+            Path("model/tokenizers/vfdlm-byte-bpe-v1.1.0/tokenizer_manifest.json"),
             Path("task_schema/task-record.schema.json"),
             Path("synthetic_data/pipeline-lock.v1.json"),
             Path("model/release-policy.v1.json"),
@@ -635,6 +640,137 @@ class FeedbackStore:
                 (run_id, str(run_path), training_sha, run["createdAtUtc"]),
             )
         return {"runId": run_id, "state": "SCHEDULED", "trainingRecordCount": len(training_records), "trainingSha256": training_sha, "runSha256": run["runSha256"], "requiredGates": run["requiredGates"], "liveChatWeightMutation": False}
+
+    def verify_execution_admission(
+        self,
+        run: Mapping[str, Any],
+        *,
+        run_path: str | Path,
+    ) -> dict[str, Any]:
+        """Revalidate consent and leakage immediately before model allocation.
+
+        This method is deliberately read-only. A failed or successful admission
+        check does not change feedback records, the scheduled-run row, memory,
+        artifacts, or the model registry.
+        """
+
+        run_id = _identifier(run.get("runId"), "runId")
+        base = run.get("baseModel")
+        inputs = run.get("feedbackInputs")
+        if not isinstance(base, Mapping) or not isinstance(inputs, list) or not inputs:
+            raise FeedbackGovernanceError(
+                "FEEDBACK_EXECUTION_INPUT_INVALID",
+                "The scheduled execution inputs are incomplete.",
+            )
+        base_artifact = _artifact_id(base.get("artifactId"))
+        base_revision = base.get("registryRevision")
+        if (
+            isinstance(base_revision, bool)
+            or not isinstance(base_revision, int)
+            or base_revision < 1
+        ):
+            raise FeedbackGovernanceError(
+                "FEEDBACK_EXECUTION_BASE_INVALID",
+                "The scheduled base registry revision is invalid.",
+            )
+        manifest_path = Path(run_path).resolve()
+        selected_records: list[dict[str, Any]] = []
+        selected_hashes: list[dict[str, str]] = []
+        with self._lock, self._connect() as connection:
+            scheduled = connection.execute(
+                "SELECT * FROM retraining_runs WHERE run_id = ?", (run_id,)
+            ).fetchone()
+            if scheduled is None:
+                raise FeedbackGovernanceError(
+                    "FEEDBACK_EXECUTION_RUN_NOT_REGISTERED",
+                    "The retraining run is not registered in the feedback store.",
+                )
+            if (
+                Path(str(scheduled["run_path"])).resolve() != manifest_path
+                or scheduled["training_sha256"] != run.get("trainingSha256")
+                or scheduled["state"] != "scheduled"
+            ):
+                raise FeedbackGovernanceError(
+                    "FEEDBACK_EXECUTION_RUN_MISMATCH",
+                    "The registered retraining run does not match the supplied manifest.",
+                )
+            seen: set[str] = set()
+            for item in inputs:
+                if not isinstance(item, Mapping) or set(item) != {
+                    "feedbackId",
+                    "heldoutSha256",
+                    "trainingSha256",
+                }:
+                    raise FeedbackGovernanceError(
+                        "FEEDBACK_EXECUTION_INPUT_INVALID",
+                        "A feedback execution input is malformed.",
+                    )
+                feedback_id = _identifier(item.get("feedbackId"), "feedbackId")
+                if feedback_id in seen:
+                    raise FeedbackGovernanceError(
+                        "FEEDBACK_EXECUTION_INPUT_INVALID",
+                        "Feedback execution inputs must be unique.",
+                    )
+                seen.add(feedback_id)
+                row = self._get(connection, feedback_id)
+                if (
+                    row["state"] != "training-approved"
+                    or row["evidence_approved"] is not True
+                    or row["training_consent"] is not True
+                    or row["artifact_id"] != base_artifact
+                    or row["registry_revision"] != base_revision
+                    or row["heldout_sha256"] != item.get("heldoutSha256")
+                    or row["training_sha256"] != item.get("trainingSha256")
+                ):
+                    raise FeedbackGovernanceError(
+                        "FEEDBACK_EXECUTION_CONSENT_OR_LINEAGE_INVALID",
+                        "Current feedback consent, review state, or base lineage does not match the run.",
+                    )
+                heldout = self._load_heldout_record(row)
+                try:
+                    training = validate_task_record(json.loads(row["training_record"]))
+                except (TypeError, json.JSONDecodeError, TaskContractError) as error:
+                    raise FeedbackGovernanceError(
+                        "FEEDBACK_EXECUTION_TRAINING_RECORD_INVALID",
+                        "An execution training record is invalid.",
+                    ) from error
+                if _sha256(_canonical(training)) != row["training_sha256"]:
+                    raise FeedbackGovernanceError(
+                        "FEEDBACK_EXECUTION_TRAINING_CHECKSUM_MISMATCH",
+                        "An execution training record changed after approval.",
+                    )
+                selected_records.append(training)
+                selected_hashes.append(
+                    {
+                        "feedbackId": feedback_id,
+                        "heldoutSha256": str(row["heldout_sha256"]),
+                        "trainingSha256": str(row["training_sha256"]),
+                    }
+                )
+            heldout_rows = connection.execute(
+                "SELECT * FROM feedback_records WHERE state IN ('held-out', 'training-approved') ORDER BY feedback_id"
+            ).fetchall()
+            all_heldout_records = [
+                self._load_heldout_record(self._row(row))["record"] for row in heldout_rows
+            ]
+        registry = _heldout_registry(all_heldout_records)
+        accepted, rejected = exclude_held_out_records(selected_records, registry)
+        if rejected or len(accepted) != len(selected_records):
+            raise FeedbackGovernanceError(
+                "FEEDBACK_EXECUTION_HELDOUT_LEAKAGE",
+                "Execution inputs overlap the current frozen or admitted held-out suite.",
+            )
+        return {
+            "runId": run_id,
+            "baseArtifactId": base_artifact,
+            "baseRegistryRevision": base_revision,
+            "feedbackInputCount": len(selected_records),
+            "currentHeldoutRecordCount": len(all_heldout_records),
+            "inputSetSha256": _sha256(selected_hashes),
+            "consentAndReviewReverified": True,
+            "currentHeldoutLeakageRejected": True,
+            "stateMutated": False,
+        }
 
     def _counts(self) -> dict[str, int]:
         with self._lock, self._connect() as connection:

@@ -9,11 +9,11 @@
   "status": "quarantined",
   "eligibleUses": [],
   "reason": "The retained output predates immutable run, generator, preprocessing, and source snapshots.",
-  "createdAtUtc": "2026-08-31T07:34:04.915578+00:00",
+  "createdAtUtc": "2026-09-01T11:41:37.793947+00:00",
   "sourceRegistry": {
     "registryId": "voltforge-source-registry",
     "version": "1.2.0",
-    "sha256": "66d939d62f0909ae7a21aaecd6a84078ea597e69e0ef8183c40d4b35ec902786"
+    "sha256": "d775e5c2c633fee61ed4553058ad356a83f9298388bb8b5b48cd4880fcadb506"
   },
   "sources": [
     {
@@ -64,5 +64,5 @@
       }
     ]
   },
-  "manifestSha256": "d8c7ff850d62e5c2abb6708a54a441ac6dab9f34ccf88998b559239ade1e457b"
+  "manifestSha256": "d4b08c5dae4d5e08e47a254194c3eab8cac830cd3a69f3598d2d0810713cb5f9"
 }

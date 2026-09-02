@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "reportId": "vfai031-ai-observability-v1",
-  "generatedAtUtc": "2026-08-31T08:07:59.981173Z",
+  "generatedAtUtc": "2026-09-02T01:26:04.820940Z",
   "checks": {
     "rawContentNeverRetained": true,
     "generationPathsDistinguished": true,
@@ -133,8 +133,8 @@
     },
     "resources": {
       "sampleCount": 6,
-      "latestPythonHeapBytes": 392487,
-      "peakPythonHeapBytes": 412647,
+      "latestPythonHeapBytes": 392696,
+      "peakPythonHeapBytes": 412802,
       "measurement": "python-traced-heap"
     },
     "alerts": {
@@ -169,5 +169,5 @@
     "requestIdLogging": "safe-bounded-only",
     "latencyWindowSize": 256
   },
-  "reportSha256": "95889b6983a60f47b93bf78706905b3952f54fe05fcabda59ca2cc2b7ce920a8"
+  "reportSha256": "8049be578affb604af1e27c126f1bacbc05f90999117650070cf468b07f4537c"
 }

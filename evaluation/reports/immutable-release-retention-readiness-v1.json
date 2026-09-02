@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai-fu-015-immutable-release-retention-readiness-v1",
+  "generatedOn": "2026-09-01",
+  "followup": {
+    "id": "VFAI-FU-015",
+    "recordedStatus": "accepted_for_later"
+  },
+  "policy": {
+    "policyId": "vfai-fu-015-immutable-synthetic-retention-v1",
+    "status": "accepted-for-later"
+  },
+  "immutableReleases": {
+    "ready": true,
+    "retainedReleaseCount": 2,
+    "retainedReleaseIds": [
+      "vf-synthetic-1.2.0-1594f89c93854f971d3a",
+      "vf-synthetic-1.3.0-e90691f629808e1478d8"
+    ],
+    "retainedReleaseManifestSha256": {
+      "vf-synthetic-1.2.0-1594f89c93854f971d3a": "388bb51774d45085f44ef8c95d12d041a038ed7696511a130ec177795adbe0f1",
+      "vf-synthetic-1.3.0-e90691f629808e1478d8": "a8e9db688aea0afb9030532d147d9989c4876090a182c3198b55aa4f0363a43c"
+    },
+    "retainedFileCount": 52,
+    "retainedBytes": 2882599,
+    "currentReleaseId": "vf-synthetic-1.3.0-e90691f629808e1478d8",
+    "currentContentKey": "e90691f629808e1478d8630c9718ee0e61f785bd7386615bc96b39ece9f9c80d",
+    "externalBackupVerifiedByReleaseManifests": false
+  },
+  "currentTokenizerBinding": {
+    "ready": true,
+    "tokenizerVersion": "1.1.0",
+    "tokenizerArtifactSha256": "1858abfc83a469a48f9b2bfef65d484fe24bd4a553a3cc05030cfcfd2cdc76c4",
+    "declaredShardCount": 4,
+    "resolvedShardCount": 4,
+    "immutableReleaseIds": [
+      "vf-synthetic-1.2.0-1594f89c93854f971d3a"
+    ],
+    "failures": [],
+    "approvedManifestRewrittenByEvaluator": false
+  },
+  "historicalTokenizerLineage": {
+    "ready": true,
+    "tokenizerVersion": "1.0.0",
+    "expectedShardCount": 4,
+    "expectedRecordCount": 154,
+    "expectedShardSha256": [
+      "552700494266b48956afc583287464b89e2d5581ffe400c5c22d6c5791d669c3",
+      "714b767d2e7f90b2e9755b8e0b29aa3887c48eaed14116e8746c1fb8fc559148",
+      "af68248a3cb692c98afc42da812f27b05ccd20d727113628f14ffa9250ba558b",
+      "dfa00394be4430d7dc31c0fa69054ce3c7d7890acdd989d0a7768af36611ce64"
+    ],
+    "searchedJsonlFileCount": 26,
+    "recoveredExactShardCount": 0,
+    "recoveredPaths": {},
+    "classification": "non-reconstructable-from-retained-trusted-bytes",
+    "historicalManifestRewrittenByEvaluator": false,
+    "inactiveArtifactsRelabeledByEvaluator": false
+  },
+  "sourceRemovalImpact": {
+    "ready": true,
+    "requiredSourceIds": [
+      "vf-src-curated-electronics-corpus-v1",
+      "vf-src-verified-synthetic-pipeline-v1"
+    ],
+    "expectedRetainedAffectedShardCountPerSource": 8,
+    "retainedAffectedShardCounts": {
+      "vf-src-curated-electronics-corpus-v1": 8,
+      "vf-src-verified-synthetic-pipeline-v1": 8
+    },
+    "deletionAuthorizedByEvaluator": false
+  },
+  "backupAndRestore": {
+    "ownerBackupPolicyReady": false,
+    "externalBackupReady": false,
+    "externalRestoreReady": false,
+    "configuredPaths": {
+      "ownerBackupPolicy": null,
+      "externalBackup": null,
+      "externalRestore": null
+    }
+  },
+  "gates": {
+    "masterBacklogComplete": true,
+    "immutableReleasesReady": true,
+    "currentTokenizerBindingReady": true,
+    "pipelineNonOverwriteReady": true,
+    "sourceRemovalCoverageReady": true,
+    "historicalClassificationReady": true,
+    "ownerBackupPolicyReady": false,
+    "externalBackupReady": false,
+    "externalRestoreReady": false
+  },
+  "decision": "await-owner-backup-retention-policy",
+  "completionClaimed": false,
+  "rawShardBytesCopiedByEvaluator": 0,
+  "externalBackupsCreatedByEvaluator": 0,
+  "restoreDrillsExecutedByEvaluator": 0,
+  "releasesDeletedOrRewrittenByEvaluator": 0,
+  "tokenizerOrModelManifestsRewrittenByEvaluator": 0,
+  "historicalArtifactsRelabeledByEvaluator": 0,
+  "networkAccessed": false,
+  "sourceSha256": {
+    "AI_MASTER_BACKLOG.json": "7b0befd8d631a3bbc64300da195484e91d6e87cfdeddf511048aa0007905a99b",
+    "AI_FOLLOWUP_BACKLOG.json": "f723a4b37ff7ad18b77130b9a8c1ad4132ef5af4a8781ee3fd47630fdaa649b3",
+    "synthetic_data/retention-policy.v1.json": "93156c156e86c2588328ce60fb33da689c06123c7ca301264ba9d8f192ce530b",
+    "model/tokenizers/vfdlm-byte-bpe-v1.1.0/tokenizer_manifest.json": "8af7baf2412a0f93be4cec70583a4a2386ec3ba41dab8554c05722a201d3d400",
+    "model/tokenizers/vfdlm-byte-bpe-v1.0.0/tokenizer_manifest.json": "0753d3f475bf935783525f4ee353a9477bd5cc85790498a3796f88a8b27bca6d",
+    "synthetic_data/immutable_release.py": "f82e60233d0d60c7419c07940a537d477336eb1b1dbef38f816892ee0ebb898b",
+    "synthetic_data/pipeline.py": "4c6f01e84e76ed2ba8db81309bb218ca785587b83357be6973a7483e58672ec1",
+    "synthetic_data/pipeline-lock.v1.json": "b25c61e7c5210af35e86df3b9d9c0519b18a583aacdea91a763b1d3ae2c15abd",
+    "data_governance/governance.py": "6cc04f54db18577f82d7171e4082771bdf434a85374e6ee62f01b0807772a08e",
+    "gen1_training/data.py": "59a359f5bd73185a8c15581f65c1d8b78bbe66f208621e8c870911a24655ea4d",
+    "tools/build_tokenizer.py": "fa7af3aba14492874f984bedb1dc0505f65fd4c7e3f33db3dbf284b38a53d31d",
+    "tools/evaluate_immutable_release_retention.py": "d7724bf2f12059d75bf93e27e4e6f2744039ddd70ed92b6306a1f8f72f29674b",
+    "synthetic_data/releases/1.2.0/1594f89c93854f971d3af6cb2275f558ee46015c4ca5b752a80a18461dd5167d/release-manifest.json": "9454791196c48305177598fd453a3698905e89f43a7fff77605a86b54b936c85",
+    "synthetic_data/releases/1.3.0/e90691f629808e1478d8630c9718ee0e61f785bd7386615bc96b39ece9f9c80d/release-manifest.json": "85fff2729d7a831478beaed491151529e326870ea71210a11177e86661f2dbed"
+  },
+  "reportSha256": "9fbe6b8114741ceaa8d197f3e34f999943a1cf7ba31bbe40cc5cd6719637d209"
+}

@@ -1,4 +1,6 @@
 # VFAI-011 native model framework. On Windows install this file from the
 # official CPU index; see model/gen1/README.md.
+# Torch 2.8.0 is affected by GHSA-63cw-57p8-fm3p. It remains pinned only for
+# trusted local work; ModelRuntimeService blocks checkpoint-backed serving.
 torch==2.8.0
 cryptography==50.0.1
