@@ -447,6 +447,7 @@ async def chat_http(
         user_id=x_voltforge_user_id,
         project_id=x_voltforge_project_id,
         session_id=x_voltforge_session_id,
+        allow_dev_defaults=True,
     )
     try:
         token = cancellation_registry.register(request_id)
@@ -660,6 +661,7 @@ async def chat_stream(
         user_id=x_voltforge_user_id,
         project_id=x_voltforge_project_id,
         session_id=x_voltforge_session_id,
+        allow_dev_defaults=True,
     )
     try:
         token = cancellation_registry.register(request_id)

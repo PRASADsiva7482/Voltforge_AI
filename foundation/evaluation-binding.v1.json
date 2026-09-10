@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "bindingId": "vf-foundation-evaluation-binding-v1",
+  "taskId": "LLM-TASK-018",
+  "freezeStatus": "locked",
+  "thresholdState": "frozen-independent-suite",
+  "suiteSha256": "2fdd61cbc4cecbc20b364f7825b63bae2382ba784ca993a901839d2515985cc6",
+  "policySha256": "35c9a2ce79922beb3ec1c36e41ce61eeafcb351e6a3365851d20aa6bb4b20618",
+  "historicalDesignRewritten": false,
+  "modelReleaseApproved": false,
+  "activationAllowed": false,
+  "scope": "Satisfies task-017 pending threshold/suite reference only; every training, lineage and release gate remains required.",
+  "inputs": [
+    {
+      "path": "foundation/contract.v1.json",
+      "sha256": "8641606ed74fd4f7c8887277aa3ae533de41adce0dbbd05a994bcd961441924f"
+    },
+    {
+      "path": "foundation/release-policy.v1.json",
+      "sha256": "e4225f92557972eea373ec4264466ab4a83371d6744ee51ee766cf8ea2992046"
+    },
+    {
+      "path": "foundation/compatibility-map.v1.json",
+      "sha256": "d049c37c9920aa6a76c8c8baf10697752b90c705a397f0f243d5d558b19ef22d"
+    },
+    {
+      "path": "docs/LLM_FOUNDATION_DESIGN.v1.md",
+      "sha256": "88f8d4b9cf5fd0118a3a25b07adadcf1213067453002c51daea5cb14fa7adaec"
+    },
+    {
+      "path": "evaluation/foundation/acceptance-policy.v1.json",
+      "sha256": "35c9a2ce79922beb3ec1c36e41ce61eeafcb351e6a3365851d20aa6bb4b20618"
+    },
+    {
+      "path": "evaluation/foundation/manifest.v1.json",
+      "sha256": "105b72302a38cf14e2711525113ecc0d9f3ed31957731f742470426ab185056b"
+    }
+  ]
+}

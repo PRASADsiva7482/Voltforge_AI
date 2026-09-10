@@ -48,13 +48,19 @@ def authenticated_memory_scope(
     user_id: str | None,
     project_id: str | None,
     session_id: str | None,
+    allow_dev_defaults: bool = False,
 ) -> tuple[BoundedMemoryStore, MemoryScope]:
     if not settings.bounded_memory_enabled:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail={"code": "MEMORY_GLOBALLY_DISABLED", "message": "Bounded memory is disabled."},
         )
-    if not settings.api_token:
+    effective_user = user_id
+    effective_project = project_id
+    if allow_dev_defaults and not settings.api_token:
+        effective_user = effective_user or "dev-engineer"
+        effective_project = effective_project or "dev-project"
+    elif not settings.api_token:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail={
@@ -62,7 +68,7 @@ def authenticated_memory_scope(
                 "message": "Private gateway authentication must be configured for memory.",
             },
         )
-    if not user_id or not project_id:
+    if not effective_user or not effective_project:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={
@@ -71,7 +77,7 @@ def authenticated_memory_scope(
             },
         )
     try:
-        scope = MemoryScope.from_identifiers(user_id, project_id, session_id)
+        scope = MemoryScope.from_identifiers(effective_user, effective_project, session_id)
         store = get_memory_store(settings.memory_database_path)
     except (MemoryContractError, MemoryStoreError, OSError, sqlite3.Error) as error:
         raise HTTPException(
@@ -91,6 +97,7 @@ def prepare_chat_memory(
     user_id: str | None,
     project_id: str | None,
     session_id: str | None,
+    allow_dev_defaults: bool = False,
 ) -> tuple[ChatRequest, ChatMemoryBinding | None, dict[str, Any]]:
     unavailable = {
         "policyId": "vfai025-bounded-memory-v1",
@@ -107,22 +114,31 @@ def prepare_chat_memory(
     }
     # Caller-provided memory is never accepted as approved persisted memory.
     sanitized_request = request.model_copy(update={"memory": []})
+    effective_user = user_id
+    effective_project = project_id
+    effective_session = session_id
+    if allow_dev_defaults and not settings.api_token:
+        effective_user = effective_user or "dev-engineer"
+        effective_project = effective_project or request.projectId or "dev-project"
+        effective_session = effective_session or request.sessionId or "dev-session"
+
     if (
         not settings.bounded_memory_enabled
-        or not settings.api_token
-        or not user_id
-        or not project_id
-        or not request.projectId
+        or (not settings.api_token and not allow_dev_defaults)
+        or not effective_user
+        or not effective_project
+        or not (request.projectId or (allow_dev_defaults and effective_project))
     ):
         return sanitized_request, None, unavailable
-    if not hmac.compare_digest(project_id, request.projectId):
+    target_project_id = request.projectId or (effective_project if allow_dev_defaults else None)
+    if target_project_id and not hmac.compare_digest(effective_project, target_project_id):
         return (
             sanitized_request,
             None,
             {**unavailable, "reasonCode": "MEMORY_PROJECT_SCOPE_MISMATCH"},
         )
     if request.sessionId and (
-        not session_id or not hmac.compare_digest(session_id, request.sessionId)
+        not effective_session or not hmac.compare_digest(effective_session, request.sessionId)
     ):
         return (
             sanitized_request,
@@ -132,10 +148,16 @@ def prepare_chat_memory(
     try:
         store, scope = authenticated_memory_scope(
             settings,
-            user_id=user_id,
-            project_id=project_id,
-            session_id=session_id,
+            user_id=effective_user,
+            project_id=effective_project,
+            session_id=effective_session,
+            allow_dev_defaults=allow_dev_defaults,
         )
+        if allow_dev_defaults and not settings.api_token:
+            try:
+                store.set_enabled(scope, True)
+            except Exception:
+                pass
         entries, metadata = store.context_entries(scope, request.projectRevision)
     except HTTPException:
         return sanitized_request, None, unavailable

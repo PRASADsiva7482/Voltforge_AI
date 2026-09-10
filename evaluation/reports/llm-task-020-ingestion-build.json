@@ -1,0 +1,21 @@
+{
+  "status": "completed",
+  "releasePath": "D:\\Project\\voltforge\\Voltforge_AI\\corpus\\ingestion\\v1\\4eb23ca6950fb9d7fa9fd87bfbfcbe29aadd92d008a1d9d1e45229231078948d",
+  "verification": "passed",
+  "manifestSha256": "f242af5dca726f217e32d2c8edd379b2e52ab51493ca6b87cb7eca9edd82287b",
+  "acceptedDocuments": 227,
+  "quarantinedDocuments": 23,
+  "recomputed": false,
+  "trainingAllowed": false,
+  "newDocuments": 250,
+  "resumedDocuments": 0,
+  "performance": {
+    "elapsedSeconds": 7.073228900000686,
+    "inputBytes": 945439,
+    "documentsPerSecond": 35.344536920044504,
+    "pythonPeakAllocatedBytes": 4796437,
+    "memoryScope": "Parent Python traced allocations; excludes OS/native memory and PDF child processes.",
+    "sqliteCacheKiB": 2048,
+    "pdfInputLimitBytes": 8388608
+  }
+}

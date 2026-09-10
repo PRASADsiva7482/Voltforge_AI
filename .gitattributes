@@ -1,0 +1,23 @@
+# Preserve bytes bound by the task-018 immutable evaluation manifest.
+evaluation/foundation/** -text
+foundation/evaluation-binding.v1.json -text
+data_governance/foundation/** -text
+data_governance/ingestion/** -text
+tests/fixtures/ingestion/** -text
+corpus/** -text
+requirements-corpus.txt -text
+data_governance/splitting/** -text
+synthetic_data/foundation_domain/** -text
+data_governance/pretraining/** -text
+model/gen2_tokenizer/** -text
+context_compiler/gen2.py -text
+model/tokenizers/fixtures/gen2/** -text
+data_governance/leakage_review/** -text
+data_governance/source_expansion/** -text
+data_governance/pilot_corpus/** -text
+tools/release_pilot_corpus.py -text
+model/gen2_tokenizer_training/** -text
+model/tokenizers/gen2/** -text
+context_compiler/gen2_release.py -text
+tools/train_gen2_tokenizer.py -text
+tools/record_trained_tokenizer.py -text

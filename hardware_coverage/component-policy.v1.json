@@ -16,10 +16,16 @@
     "mayBeRelabeledForNewComponentCoverage": false
   },
   "exactPromotionInputs": {
-    "ownerPriorityReceiptPath": null,
-    "exactCandidateSelectionPath": null,
-    "approvedComponentTypes": [],
-    "immutableCorpusReleaseReady": false,
+    "ownerPriorityReceiptPath": "Voltforge_AI/evaluation/reports/component-owner-priority-v1.json",
+    "exactCandidateSelectionPath": "Voltforge_AI/hardware_coverage/exact-candidate-selections.v1.json",
+    "approvedComponentTypes": [
+      "OLED_DISPLAY",
+      "IC_555_TIMER",
+      "OPAMP_LM358",
+      "RELAY_SINGLE",
+      "LED_STANDARD"
+    ],
+    "immutableCorpusReleaseReady": true,
     "requiredFollowupBeforeNewCorpusRelease": "VFAI-FU-015"
   },
   "requiredExactIdentity": [

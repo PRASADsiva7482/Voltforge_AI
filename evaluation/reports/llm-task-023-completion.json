@@ -1,0 +1,428 @@
+{
+  "schemaVersion": 1,
+  "taskId": "LLM-TASK-023",
+  "status": "completed-all-recorded-task023-pilot-input-acceptance",
+  "recordedAtUtc": "2026-09-09T08:28:06.116788+00:00",
+  "summary": "Completed task 023's recorded pilot/input-corpus acceptance: immutable release with 66 records (42 train, 11 validation, five test, eight quarantine), 919,275 unique train and 34,462 validation proxy tokens. All four domains have independent train/validation families. Exact permissions cover 58 source records, including surviving inherited FreeRTOS/owned-domain inputs and four independently checked new references. All eight older corpus quarantines and 50 earlier domain exclusions remain excluded; the unchanged matcher checks 1,005 protected descriptors with zero included protected/cross-split collisions. The full real-input pipeline recomputes 1,697,550 normalized bytes in 38.195 seconds with 130,158,592 peak resident bytes. The provisional 900,000-1,200,000 unique-token input budget and bounded 20,000-exposure 40/30/20/10 plan pass, with at most three passes per document. All 520 regression tests passed (60 pilot-input controls), along with governance, runbook, historical preservation and 27 fast cross-repository checks. Verified consumers deny missing/revoked rights, changed shards, split violations, contaminated inputs and excessive exposure schedules before returning data. No tokenizer fitting, model training or activation occurred. Production data/mixture acceptance remains mandatory in tasks 031/032; no upcoming task was implemented.",
+  "taskCompleted": true,
+  "inputCorpusReleased": true,
+  "trainingRunApproved": false,
+  "productionTrainingAllowed": false,
+  "actualTrainingExposures": 0,
+  "modelActivated": false,
+  "upcomingTasksImplemented": [],
+  "corpusManifest": {
+    "path": "Voltforge_AI/corpus/pilot-input/v1/04830f1057093c4a71930e9f49940c6507c59496425926679e5cb789897c0f94/manifest.json",
+    "sha256": "018c85533401386a3d5f9797956911806c18e505a37abf7c37f48d3fe5481ce0",
+    "bytes": 13413
+  },
+  "scorecard": {
+    "actualTrainingExposures": 0,
+    "allCandidateAccounting": {
+      "domain": {
+        "code": {
+          "families": 3,
+          "records": 20,
+          "uniqueTokens": 811507
+        },
+        "electronics": {
+          "families": 12,
+          "records": 12,
+          "uniqueTokens": 4699
+        },
+        "language": {
+          "families": 4,
+          "records": 25,
+          "uniqueTokens": 229018
+        },
+        "math": {
+          "families": 9,
+          "records": 9,
+          "uniqueTokens": 3484
+        }
+      },
+      "language": {
+        "c": {
+          "families": 3,
+          "records": 20,
+          "uniqueTokens": 811507
+        },
+        "en": {
+          "families": 25,
+          "records": 46,
+          "uniqueTokens": 237201
+        }
+      },
+      "sourceId": {
+        "vf-freertos-kernel-dbf70559": {
+          "families": 1,
+          "records": 14,
+          "uniqueTokens": 718908
+        },
+        "vf-g2-cjson-fb16e5cf": {
+          "families": 1,
+          "records": 4,
+          "uniqueTokens": 88994
+        },
+        "vf-g2-lgwt-4675d96a": {
+          "families": 1,
+          "records": 6,
+          "uniqueTokens": 55991
+        },
+        "vf-g2-logc-f9ea3499": {
+          "families": 1,
+          "records": 2,
+          "uniqueTokens": 3605
+        },
+        "vf-g2-mkdocs-9d65447e": {
+          "families": 1,
+          "records": 6,
+          "uniqueTokens": 34053
+        },
+        "vf-g2-rust-book-1500248d": {
+          "families": 1,
+          "records": 6,
+          "uniqueTokens": 52056
+        },
+        "vf-owned-foundation-domain-recipes-v1": {
+          "families": 17,
+          "records": 17,
+          "uniqueTokens": 4818
+        },
+        "vf-owned-pilot-reference-v1": {
+          "families": 4,
+          "records": 4,
+          "uniqueTokens": 3365
+        },
+        "vf-python-devguide-9d481ef4": {
+          "families": 1,
+          "records": 7,
+          "uniqueTokens": 86918
+        }
+      },
+      "split": {
+        "quarantine": {
+          "families": 2,
+          "records": 8,
+          "uniqueTokens": 93479
+        },
+        "test": {
+          "families": 5,
+          "records": 5,
+          "uniqueTokens": 1492
+        },
+        "train": {
+          "families": 16,
+          "records": 42,
+          "uniqueTokens": 919275
+        },
+        "validation": {
+          "families": 6,
+          "records": 11,
+          "uniqueTokens": 34462
+        }
+      }
+    },
+    "candidateDocuments": 66,
+    "coverage": {
+      "code": {
+        "train": {
+          "documents": 18,
+          "families": 2,
+          "uniqueProxyTokens": 807902
+        },
+        "validation": {
+          "documents": 2,
+          "families": 1,
+          "uniqueProxyTokens": 3605
+        }
+      },
+      "electronics": {
+        "train": {
+          "documents": 7,
+          "families": 7,
+          "uniqueProxyTokens": 2031
+        },
+        "validation": {
+          "documents": 2,
+          "families": 2,
+          "uniqueProxyTokens": 1747
+        }
+      },
+      "language": {
+        "train": {
+          "documents": 12,
+          "families": 2,
+          "uniqueProxyTokens": 108047
+        },
+        "validation": {
+          "documents": 5,
+          "families": 1,
+          "uniqueProxyTokens": 27492
+        }
+      },
+      "math": {
+        "train": {
+          "documents": 5,
+          "families": 5,
+          "uniqueProxyTokens": 1295
+        },
+        "validation": {
+          "documents": 2,
+          "families": 2,
+          "uniqueProxyTokens": 1618
+        }
+      }
+    },
+    "includedAccounting": {
+      "domain": {
+        "code": {
+          "families": 3,
+          "records": 20,
+          "uniqueTokens": 811507
+        },
+        "electronics": {
+          "families": 12,
+          "records": 12,
+          "uniqueTokens": 4699
+        },
+        "language": {
+          "families": 3,
+          "records": 17,
+          "uniqueTokens": 135539
+        },
+        "math": {
+          "families": 9,
+          "records": 9,
+          "uniqueTokens": 3484
+        }
+      },
+      "language": {
+        "c": {
+          "families": 3,
+          "records": 20,
+          "uniqueTokens": 811507
+        },
+        "en": {
+          "families": 24,
+          "records": 38,
+          "uniqueTokens": 143722
+        }
+      },
+      "sourceId": {
+        "vf-freertos-kernel-dbf70559": {
+          "families": 1,
+          "records": 14,
+          "uniqueTokens": 718908
+        },
+        "vf-g2-cjson-fb16e5cf": {
+          "families": 1,
+          "records": 4,
+          "uniqueTokens": 88994
+        },
+        "vf-g2-lgwt-4675d96a": {
+          "families": 1,
+          "records": 6,
+          "uniqueTokens": 55991
+        },
+        "vf-g2-logc-f9ea3499": {
+          "families": 1,
+          "records": 2,
+          "uniqueTokens": 3605
+        },
+        "vf-g2-mkdocs-9d65447e": {
+          "families": 1,
+          "records": 5,
+          "uniqueTokens": 27492
+        },
+        "vf-g2-rust-book-1500248d": {
+          "families": 1,
+          "records": 6,
+          "uniqueTokens": 52056
+        },
+        "vf-owned-foundation-domain-recipes-v1": {
+          "families": 17,
+          "records": 17,
+          "uniqueTokens": 4818
+        },
+        "vf-owned-pilot-reference-v1": {
+          "families": 4,
+          "records": 4,
+          "uniqueTokens": 3365
+        }
+      },
+      "split": {
+        "test": {
+          "families": 5,
+          "records": 5,
+          "uniqueTokens": 1492
+        },
+        "train": {
+          "families": 16,
+          "records": 42,
+          "uniqueTokens": 919275
+        },
+        "validation": {
+          "families": 6,
+          "records": 11,
+          "uniqueTokens": 34462
+        }
+      }
+    },
+    "independentReferenceChecks": 4,
+    "inheritedCorpusQuarantinesPreserved": 8,
+    "inheritedDomainExclusionsPreserved": 50,
+    "limits": [
+      "Technical English and C; not broad conversational or general knowledge adequacy",
+      "Math/electronics are small original verified references",
+      "The 20000-exposure plan exercises input scheduling; no held-out model result is claimed",
+      "Protected matching is lexical/structural, not a semantic contamination proof",
+      "Production corpus budget and empirical mixtures remain mandatory in tasks 031/032"
+    ],
+    "normalizedInputBytes": 1697550,
+    "plannedProxyTokenExposures": 20000,
+    "productionTrainingAllowed": false,
+    "protectedDescriptors": 1005,
+    "releasedGen2TrainingTokens": 0,
+    "retainedAcquisitionBytes": 1865375,
+    "splitCounts": {
+      "quarantine": 8,
+      "test": 5,
+      "train": 42,
+      "validation": 11
+    },
+    "status": "passed-input-source-quality-split-budget-gates",
+    "tokenCountMethod": "exact owned Gen1 v1.1.0 BPE proxy on all input text; Gen2 recount belongs to task 024",
+    "trainingRunApproved": false,
+    "trainingUniqueProxyTokens": 919275,
+    "validationUniqueProxyTokens": 34462
+  },
+  "resourceMeasurement": {
+    "acquisitionMeasurementScope": "retained exact acquisition byte budgets and full source hash/license/tree verification; network latency is not remeasured",
+    "allInputProxyTokensRecounted": true,
+    "candidateDocuments": 66,
+    "contentId": "9f8da044245b900490bd789870691c9ab2da8a45b899dff38f6007230f11ca42",
+    "elapsedSeconds": 38.195163,
+    "freshProcess": true,
+    "networkAccessed": false,
+    "normalizedInputBytes": 1697550,
+    "peakResidentBytes": 130158592,
+    "planSha256": "493044e842387fd9f8570295796bc3e91197bb44fe1ee5e60ddb4c650d0c9223",
+    "platform": "win32",
+    "protectedDescriptors": 1005,
+    "pythonVersion": "3.12.13",
+    "retainedAcquisitionBytes": 1865375,
+    "schemaVersion": 1,
+    "scope": "fresh-process-full-input-normalization-proxy-tokenization-indexed-matching-and-quality-verification"
+  },
+  "tests": {
+    "passed": 520,
+    "pilotInputTests": 60,
+    "failed": 0,
+    "skipped": 0,
+    "junit": {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-023-completion-tests.xml",
+      "sha256": "e33da3d3b1c0baadfd4a4e95182fb450cdfd1a5f43e6dfcbc91d7f7ff227a8bf",
+      "bytes": 73045
+    }
+  },
+  "checks": {
+    "path": "Voltforge_AI/evaluation/reports/llm-task-023-completion-checks.json",
+    "sha256": "19e543de72e2122780da2b94dc543f6a7ef10131e2fea9218a2a56b45e43fbba",
+    "bytes": 7609
+  },
+  "crossRepositoryQuality": {
+    "path": "Voltforge_AI/evaluation/reports/llm-task-023-completion-cross-repository-quality.json",
+    "sha256": "03c7d8207cb3bcd32576990490fdb2190cb356ab21f5534e3ad700e1e1cf8599",
+    "bytes": 13611
+  },
+  "planningSnapshot": {
+    "path": "backlog_history/llm-task-023-completion-before/manifest.json",
+    "sha256": "070663008c90b237dc0d9ae3f2f340a953c1c6a73e664b5817ef0ff421ee4f2c",
+    "bytes": 2403
+  },
+  "remainingTask023Work": [],
+  "nextReadyTask": "LLM-TASK-024",
+  "stopAfterTask023": true,
+  "planningCheck": {
+    "status": "passed",
+    "active_tasks": 41,
+    "legacy_tasks": 14,
+    "milestones": 10,
+    "root_causes": 14,
+    "status_counts": {
+      "COMPLETED": 9,
+      "IN_PROGRESS": 1,
+      "TODO": 31
+    },
+    "next_task": "LLM-TASK-024",
+    "scope": "planning consistency only; no model release credit"
+  },
+  "planningAndDocumentationBindings": [
+    {
+      "path": "VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.json",
+      "sha256": "774097217185ceda764c53cdc8bf06a9b5868bc9b1defe122b6a369294d6f8aa",
+      "bytes": 136826
+    },
+    {
+      "path": "VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.md",
+      "sha256": "21a6dbeab89533f38a2011f6dcb70e15d3234921d810878c5147c25fbf8094de",
+      "bytes": 92613
+    },
+    {
+      "path": "AI_CHAT_ROOT_CAUSE_BACKLOG.json",
+      "sha256": "5ad02ad5e3973657b54b00588a2239e4eb6eff5a877616ea7fa03e5f06b69ced",
+      "bytes": 43013
+    },
+    {
+      "path": "AI_CHAT_ROOT_CAUSE_ANALYSIS.md",
+      "sha256": "b0d734ac1144a281e4e2618621db4570ecc2e9aef7dd92d62eefa07f69463c18",
+      "bytes": 32661
+    },
+    {
+      "path": "Voltforge_AI/docs/VOLTForge_AI_RUNBOOK.md",
+      "sha256": "b2a803b5c2a53b15a485fd47fe264f44299ac04b322e95e009c8c5b2f17916fa",
+      "bytes": 36916
+    },
+    {
+      "path": "Voltforge_AI/docs/runbook-contract.v1.json",
+      "sha256": "97230ad9a42ee4c01e748c33815e3b27c583b3fcc93be52282a043712cab0603",
+      "bytes": 10362
+    },
+    {
+      "path": "Voltforge_AI/.gitattributes",
+      "sha256": "9813014a7360b0aaf6d912fd057918e49d229479beab763a903387ee63d9d79b",
+      "bytes": 667
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_PRETRAINING_CORPUS_CANDIDATE.v1.md",
+      "sha256": "83d3711d5c91afe632b8a391865db7f98f66bd3656d269144e02f1952632433a",
+      "bytes": 12739
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_PILOT_INPUT_CORPUS.v1.md",
+      "sha256": "1fc3e8433d94f929e90c40945c38b1a23d97de5ef669c89fa810c4f92b80c892",
+      "bytes": 8933
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_SOURCE_EXPANSION.v1.md",
+      "sha256": "296e2825659a1bd8a47bb9cd081dc8340df66e3f4a5b0a5f62efa3bb4ff54e89",
+      "bytes": 7204
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_GEN2_TOKENIZER_PREPARATION.v1.md",
+      "sha256": "ff0bfefd2fcb8713979b7d91713b4df8600c48add3c2b3990787530cba5c0823",
+      "bytes": 6618
+    },
+    {
+      "path": "Voltforge_AI/tests/test_pilot_corpus.py",
+      "sha256": "a27ab686dc8091c1be41de6eb0399f6e80c3d8577cbf41a0de6496b20ec96ff8",
+      "bytes": 13453
+    },
+    {
+      "path": "Voltforge_AI/tools/record_pilot_corpus_completion.py",
+      "sha256": "58859c269a42ca37715bbd5c872568a344c80507d27871abe1ace6fddda767fa",
+      "bytes": 32987
+    }
+  ]
+}

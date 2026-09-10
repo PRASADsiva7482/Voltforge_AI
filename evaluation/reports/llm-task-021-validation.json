@@ -1,0 +1,252 @@
+{
+  "schemaVersion": 1,
+  "taskId": "LLM-TASK-021",
+  "status": "completed-partition-controls-current-corpus-inadequate",
+  "recordedAtUtc": "2026-09-08T04:58:33.655656+00:00",
+  "summary": "Implemented immutable source/document/recipe/circuit family partitions, pre-render reservations, exact/lexical/code duplicate checks, protected evaluation guards and separate unique-token/exposure accounting. All 227 task-020 staging records are quarantined by this additional content/family policy: 114 exact protected-content matches and 113 direct protected-family matches in two connected components. Current train/validation/test partitions and eligible training tokens are zero; this is rejection evidence, not corpus adequacy. Seven deliberate leakage fixtures are rejected, unrelated controls pass, and a separate 100-family control produces 80/10/10 populated partitions with zero cross-split collisions. Final manifests reproduce from unchanged source and protected bytes. 179 regression tests passed with 0 additional passing subtests; governance, evaluation, runbook and preservation checks passed. No corpus acquisition, new source approval, tokenizer fitting, model training/activation or serving change.",
+  "partitionVerification": {
+    "status": "passed",
+    "releasePath": "D:\\Project\\voltforge\\Voltforge_AI\\corpus\\partitions\\v1\\be29e68619449efec0348e5747944b2a1861b78b82a93642df923de2424813c6",
+    "manifestSha256": "7bd5aff6f8eb8376e2f5ef37ba2360777d343b0e41fbb16eb52eb4896ec67301",
+    "recomputed": true,
+    "scorecard": {
+      "allThreePartitionsPopulated": false,
+      "componentCount": 2,
+      "crossSplitAudit": {
+        "counts": {
+          "exactNormalized": 0,
+          "exactRaw": 0,
+          "lineage": 0,
+          "nearTextOrCode": 0,
+          "protected": 0
+        },
+        "includedDocuments": 0,
+        "nonemptySplits": [],
+        "semanticCompletenessClaimed": false,
+        "status": "passed"
+      },
+      "directProtectedMatches": 227,
+      "duplicateEdges": 20937,
+      "exposureAccounting": [
+        {
+          "gen2ReleasedTrainingTokens": 0,
+          "hypotheticalPasses": 1,
+          "hypotheticalTrainingExposures": 0,
+          "observedTrainingExposures": 0,
+          "repetitionAddsUniqueData": false,
+          "trainingAllowed": false,
+          "uniqueAcceptedDocumentProxyTokens": {
+            "test": 0,
+            "train": 0,
+            "validation": 0
+          }
+        },
+        {
+          "gen2ReleasedTrainingTokens": 0,
+          "hypotheticalPasses": 3,
+          "hypotheticalTrainingExposures": 0,
+          "observedTrainingExposures": 0,
+          "repetitionAddsUniqueData": false,
+          "trainingAllowed": false,
+          "uniqueAcceptedDocumentProxyTokens": {
+            "test": 0,
+            "train": 0,
+            "validation": 0
+          }
+        },
+        {
+          "gen2ReleasedTrainingTokens": 0,
+          "hypotheticalPasses": 10,
+          "hypotheticalTrainingExposures": 0,
+          "observedTrainingExposures": 0,
+          "repetitionAddsUniqueData": false,
+          "trainingAllowed": false,
+          "uniqueAcceptedDocumentProxyTokens": {
+            "test": 0,
+            "train": 0,
+            "validation": 0
+          }
+        }
+      ],
+      "inputDocuments": 227,
+      "inputEligibleProxyTokens": 112418,
+      "protectedComponentCount": 2,
+      "proxyTokenizerVersion": "1.1.0",
+      "reasonCounts": {
+        "exact-content": 114,
+        "protected-lineage-family": 113
+      },
+      "semanticCompletenessClaimed": false,
+      "splitCounts": {
+        "quarantine": 227,
+        "test": 0,
+        "train": 0,
+        "validation": 0
+      },
+      "trainingAllowed": false,
+      "trainingPoolAvailable": false
+    },
+    "trainingAllowed": false
+  },
+  "tests": {
+    "passed": 179,
+    "failed": 0,
+    "skipped": 0,
+    "additionalPassingSubtests": 0,
+    "junit": {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-021-tests-v2.xml",
+      "sha256": "73d52c26b36abb44654452be3ac4d5b87f53fe2245e255764d2b7434178b933f",
+      "bytes": 25708
+    }
+  },
+  "fixtureEvidence": {
+    "path": "Voltforge_AI/evaluation/reports/llm-task-021-leakage-fixtures-v3.json",
+    "sha256": "43c3aa9961e1708f51e51615cb0065335467dab36b07ddf1401e82d255b0c43b",
+    "bytes": 3213
+  },
+  "limits": [
+    "The current approved staging pool yields zero independent training records under the new policy. Task 022 must author new independent domain/problem families before variant rendering.",
+    "Near matching is lexical and structural, not a guarantee against arbitrary semantic paraphrases. Source-specific review remains necessary.",
+    "Task 023 must provide a reviewed indexed matcher with recall/resource evidence beyond the 5,000-document/2,000,000-comparison pilot bounds; checks fail closed at those limits.",
+    "Pre-render reservations bind lineage and split assignments but do not grant source approval; expanded outputs must still pass post-render contamination checks.",
+    "All partition artifacts retain trainingAllowed=false. Task 023 owns corpus release and task 024 owns the Gen2 tokenizer/token count.",
+    "Unknown historical v1.0.0 text, separate confidential evaluation custody and owner backup/restore gates remain unresolved and unchanged."
+  ],
+  "preservation": {
+    "planningFilesSnapshotted": 7,
+    "historicalContractBindingsUnchanged": 12,
+    "protectedArtifactDataFilesUnchanged": 131,
+    "task018SuiteAndPolicyUnchanged": true,
+    "task019InventoryUnchanged": true,
+    "task020IngestionRecomputedUnchanged": true,
+    "preacceptanceCandidateAndImplementationRetained": true
+  },
+  "gen2CorpusReleased": false,
+  "trainingAllowed": false,
+  "modelReleaseApproved": false,
+  "currentTrainingPoolAvailable": false,
+  "networkAccessed": false,
+  "nextTask": "LLM-TASK-022",
+  "planningCheck": {
+    "status": "passed",
+    "active_tasks": 41,
+    "legacy_tasks": 14,
+    "milestones": 10,
+    "root_causes": 14,
+    "status_counts": {
+      "COMPLETED": 7,
+      "TODO": 34
+    },
+    "next_task": "LLM-TASK-022",
+    "scope": "planning consistency only; no model release credit"
+  },
+  "sourceFingerprints": [
+    {
+      "path": "VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.json",
+      "sha256": "5cced914d50b9005652d833d10d0d7ea24c6768f245799451705932be599dac4",
+      "bytes": 117105
+    },
+    {
+      "path": "VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.md",
+      "sha256": "d8c1849291e3f2fa49b6314377fdda900211800706e1622606dce902aaaf4ec1",
+      "bytes": 79728
+    },
+    {
+      "path": "AI_CHAT_ROOT_CAUSE_BACKLOG.json",
+      "sha256": "7d33598e37758a913b05ef020bb8140343b8bb9c7d3477b4e043606997fa8e7c",
+      "bytes": 33729
+    },
+    {
+      "path": "AI_CHAT_ROOT_CAUSE_ANALYSIS.md",
+      "sha256": "bf7d31707acfc79c1849f23ff98a0aeb23a23f64bfbeef0b67127248abcdc9f1",
+      "bytes": 25517
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_CORPUS_PARTITIONS.v1.md",
+      "sha256": "3316d1dd872daff589894c0c60054731ce7022784d5683c804f4275da0763b81",
+      "bytes": 10392
+    },
+    {
+      "path": "Voltforge_AI/docs/VOLTForge_AI_RUNBOOK.md",
+      "sha256": "96878f74457fc7d252f00252066592f25a49b7ca17275b08e2b177d9efaaa98c",
+      "bytes": 33354
+    },
+    {
+      "path": "Voltforge_AI/docs/runbook-contract.v1.json",
+      "sha256": "f7a0f13bbb69c0672123794f73655d2168b2183631e6186869b51d12910ff14a",
+      "bytes": 6348
+    },
+    {
+      "path": "Voltforge_AI/.gitattributes",
+      "sha256": "9ff628fef8e216d55fffc6e1f929d396fecc46795627d028083ee16c2b01903a",
+      "bytes": 331
+    },
+    {
+      "path": "Voltforge_AI/tests/test_corpus_splitting.py",
+      "sha256": "e369576b3b2438d9b2a54012aa02e2b5cc5b12c3267c24d452a8d4a6609bf3ff",
+      "bytes": 14139
+    },
+    {
+      "path": "Voltforge_AI/tools/partition_llm_corpus.py",
+      "sha256": "8c53ef8876115563db66292fc80a5370823603170f721efaf67013b252408798",
+      "bytes": 1339
+    },
+    {
+      "path": "Voltforge_AI/tools/evaluate_corpus_splits.py",
+      "sha256": "0e27e6938bf97f60092abdc9b6f7b6952a0d316e6712952f367584ab7e35479f",
+      "bytes": 5526
+    },
+    {
+      "path": "Voltforge_AI/tools/record_corpus_partitions.py",
+      "sha256": "0511ed097ee71d79d8b1f9d3a97164801e2f567226d274b5042467af9e5bb170",
+      "bytes": 16263
+    }
+  ],
+  "evidence": [
+    {
+      "path": "Voltforge_AI/corpus/partitions/v1/be29e68619449efec0348e5747944b2a1861b78b82a93642df923de2424813c6/manifest.json",
+      "sha256": "7bd5aff6f8eb8376e2f5ef37ba2360777d343b0e41fbb16eb52eb4896ec67301",
+      "bytes": 10884
+    },
+    {
+      "path": "Voltforge_AI/corpus/partitions/v1/be29e68619449efec0348e5747944b2a1861b78b82a93642df923de2424813c6/scorecard.json",
+      "sha256": "b4022d4325db9a95fb0a3522568c68bd53acf9bac174e5b050b8118fb440525b",
+      "bytes": 1425
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_CORPUS_PARTITIONS.v1.md",
+      "sha256": "3316d1dd872daff589894c0c60054731ce7022784d5683c804f4275da0763b81",
+      "bytes": 10392
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-021-partition-build-v2.json",
+      "sha256": "1b0262ca9888f1aacc51da841235c63891b3f2d1bb5295a11a7015e4fadbc791",
+      "bytes": 2346
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-021-leakage-fixtures-v3.json",
+      "sha256": "43c3aa9961e1708f51e51615cb0065335467dab36b07ddf1401e82d255b0c43b",
+      "bytes": 3213
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-021-tests-v2.xml",
+      "sha256": "73d52c26b36abb44654452be3ac4d5b87f53fe2245e255764d2b7434178b933f",
+      "bytes": 25708
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-021-checks.json",
+      "sha256": "7074c7cc45ab13edb87a8890645bf23522e021f5e49a41c90e945420cd62d819",
+      "bytes": 9000
+    },
+    {
+      "path": "backlog_history/llm-task-021-before/manifest.json",
+      "sha256": "77ad47e5dcfac1c34b16e12e2db536078ef65688a5d3873238bc97458b1160d6",
+      "bytes": 1626
+    },
+    {
+      "path": "backlog_history/llm-task-021-draft-implementation/manifest.json",
+      "sha256": "5be12968f3ca5459c24201ee9ffe8bd9e4622ef39eacd46058a1187c3a44ec8f",
+      "bytes": 813
+    }
+  ]
+}

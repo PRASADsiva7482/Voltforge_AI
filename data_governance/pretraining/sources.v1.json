@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "catalogId": "vf-g2-bounded-corpus-sources-v1",
+  "sourceAdmissionStatus": "candidate-review-only",
+  "sources": [
+    {
+      "sourceId": "vf-python-devguide-9d481ef4",
+      "repository": "python/devguide",
+      "referenceObserved": "main",
+      "revision": "9d481ef402e0d112ae6e1c11a87c5df038e0e5f0",
+      "kind": "external-corpus",
+      "domain": "language",
+      "language": "en",
+      "scope": "English technical prose, not broad general-language coverage",
+      "licensePath": "LICENSE",
+      "licenseId": "CC0-1.0",
+      "licenseRequiredText": "CC0 1.0 Universal",
+      "licenseScope": "Repository license plus selected-file exception scan; no embedded assets, linked pages or included files acquired",
+      "paths": ["documentation/style-guide.rst", "documentation/markup.rst", "documentation/start-documenting.rst", "getting-started/fixing-issues.rst", "getting-started/git-boot-camp.rst", "getting-started/setup-building.rst", "testing/coverage.rst", "testing/run-write-tests.rst"],
+      "allowedUses": ["source-review", "corpus-candidate-review"],
+      "trainingApproved": false,
+      "redistributionApproved": false,
+      "privacy": "Public maintainer documentation only; secret-pattern scan before content persistence; no customer data",
+      "approval": {"status": "pending-source-use-admission", "basis": "Bounded source acquisition under task-023 corpus preparation; no owner or legal approval fabricated"},
+      "retention": "Immutable selected source and license bytes retained with downstream lineage; owner backup/restore policy remains open",
+      "deletionProcedure": "Generate source/file-to-shard impact report, block affected use, then use a separately reviewed removal/retention process; never silently edit release bytes"
+    },
+    {
+      "sourceId": "vf-freertos-kernel-dbf70559",
+      "repository": "FreeRTOS/FreeRTOS-Kernel",
+      "referenceObserved": "V11.1.0",
+      "revision": "dbf70559b27d39c1fdb68dfb9a32140b6a6777a0",
+      "kind": "external-corpus",
+      "domain": "code",
+      "language": "c",
+      "scope": "Selected kernel implementation/header files; no ports, submodules, external dependencies, examples or manuals",
+      "licensePath": "LICENSE.md",
+      "licenseId": "MIT",
+      "licenseRequiredText": "Permission is hereby granted, free of charge",
+      "licenseScope": "Every selected source must carry the MIT grant and copyright notice; retain complete file headers and LICENSE.md",
+      "paths": ["list.c", "queue.c", "tasks.c", "event_groups.c", "stream_buffer.c", "timers.c", "croutine.c", "include/list.h", "include/queue.h", "include/task.h", "include/event_groups.h", "include/stream_buffer.h", "include/timers.h", "include/semphr.h"],
+      "allowedUses": ["source-review", "corpus-candidate-review"],
+      "trainingApproved": false,
+      "redistributionApproved": false,
+      "privacy": "Public source-code files only; secret-pattern scan before content persistence; no customer data",
+      "approval": {"status": "pending-source-use-admission", "basis": "Bounded source acquisition under task-023 corpus preparation; file-level MIT evidence is recorded, not an inherited Gen1 approval"},
+      "retention": "Immutable selected source and license bytes retained with downstream lineage; owner backup/restore policy remains open",
+      "deletionProcedure": "Generate source/file-to-shard impact report, block affected use, then use a separately reviewed removal/retention process; never silently edit release bytes"
+    }
+  ]
+}

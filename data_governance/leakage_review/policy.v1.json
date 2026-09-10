@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vf-g2-leakage-precision-review-v1",
+  "taskId": "LLM-TASK-023",
+  "scope": "Evidence classification only; preserve the frozen matcher's every exclusion",
+  "matcherChanged": false,
+  "trainingAllowed": false,
+  "automaticReadmissionAllowed": false,
+  "maximumReviewMatches": 50000,
+  "maximumLexicalPairsPerMatch": 4096,
+  "maximumLiteralCharactersPerMatch": 1048576,
+  "maximumWordTokensPerMatch": 250000,
+  "maximumBagWordVisitsPerMatch": 2000000,
+  "maximumWindowTokenVisitsPerMatch": 2000000,
+  "fixtureAcceptance": {
+    "everyProtectedPositiveRemainsBlocked": true,
+    "noReviewDecisionAuthorizesAdmission": true,
+    "allActiveMatcherDecisionsPreserved": true,
+    "negativeControlsMustExposeUnorderedWordOverlap": true
+  },
+  "interpretation": {
+    "identity-literal-code": "Mandatory exclusion under the existing policy; semantic copying or intent is not inferred",
+    "lexical-review-required": "Unordered word overlap or high Jaccard alone is insufficient proof of copied content; existing exclusion remains",
+    "no-match": "No active matcher signal; this is not source approval or corpus admission"
+  },
+  "futureChangeGate": "Any future matcher requires a new policy, independent precision/recall evidence, protected-evaluation custody review and a new corpus; no old exclusion is automatically reversed."
+}

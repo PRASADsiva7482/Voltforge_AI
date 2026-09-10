@@ -379,6 +379,61 @@ def test_client_supplied_memory_is_discarded_without_authenticated_gateway_scope
     assert metadata["selectedEntryCount"] == 0
 
 
+def test_local_dev_memory_auto_binds_and_persists_turns(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    db_path = tmp_path / "dev-memory.sqlite3"
+    monkeypatch.setenv("VOLTFORGE_AI_MEMORY_DATABASE_PATH", str(db_path))
+    monkeypatch.delenv("VOLTFORGE_AI_API_TOKEN", raising=False)
+    get_memory_store.cache_clear()
+    settings = get_settings()
+
+    request = ChatRequest(
+        message="I prefer 220 ohm resistors for my LEDs.",
+        projectId="project-dev",
+        projectRevision="rev-1",
+        sessionId="session-dev",
+    )
+    runtime, binding, metadata = prepare_chat_memory(
+        request,
+        settings,
+        user_id=None,
+        project_id=None,
+        session_id=None,
+        allow_dev_defaults=True,
+    )
+
+    assert binding is not None
+    assert binding.scope.owner_key is not None
+    assert binding.scope.project_key is not None
+    assert binding.scope.session_key is not None
+
+    stored = binding.record_turn(
+        "I prefer 220 ohm resistors for my LEDs.",
+        "Noted, I will use 220 ohm resistors for LED circuits.",
+    )
+    assert stored is True
+
+    next_request = ChatRequest(
+        message="What resistor should I use?",
+        projectId="project-dev",
+        projectRevision="rev-1",
+        sessionId="session-dev",
+    )
+    next_runtime, next_binding, next_metadata = prepare_chat_memory(
+        next_request,
+        settings,
+        user_id=None,
+        project_id=None,
+        session_id=None,
+        allow_dev_defaults=True,
+    )
+    assert next_binding is not None
+    assert len(next_runtime.memory) > 0
+    assert next_metadata["selectedEntryCount"] > 0
+    get_memory_store.cache_clear()
+
+
 def test_authenticated_memory_enters_context_but_never_becomes_factual_evidence(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

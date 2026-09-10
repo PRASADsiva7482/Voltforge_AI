@@ -1,0 +1,317 @@
+{
+  "schemaVersion": 1,
+  "taskId": "LLM-TASK-019",
+  "status": "completed-source-inventory-no-gen2-corpus-release",
+  "recordedAtUtc": "2026-09-07T04:43:23.077115+00:00",
+  "summary": "Source inventory verified: 8 existing definitions, 4 approved for existing training-source use; 4 approved synthetic shards with 250 records, 8 curated upstream packs with 61 facts, and 12 quarantined legacy datasets with 17,814 records. After excluding 23 held-out records, 227 distinct synthetic payloads measure 112,418 tokens with the existing owned tokenizer as a Gen2 planning proxy. Eight retained shard copies and upstream facts add no independent token credit. Seven external sources remain unadmitted proposals; private chats/projects, secrets, teacher outputs and evaluation material remain excluded. 83 regression tests passed; offline recomputation, source/evaluation integrity, runbook and preservation checks passed. The pilot/base token gaps are quantified, with zero Gen2 release-ready tokens. No corpus acquisition, new source permission, training, model activation or deployment.",
+  "inventoryVerification": {
+    "status": "passed",
+    "inventorySha256": "6d87cb4ce72a226bcecbab91bd0e1b08f5453e05ff69438a760f0c8fbb9ae5b1",
+    "sourceCounts": {
+      "existing": 8,
+      "approvedForExistingTrainingUse": 4,
+      "notApprovedForTraining": 4,
+      "proposedNotAdmitted": 7,
+      "excludedClasses": 4
+    },
+    "unitCounts": {
+      "quarantined": 12,
+      "approved-existing-shard": 4,
+      "approved-upstream-facts": 8
+    },
+    "uniqueEligibleRecords": 227,
+    "existingPoolProxyTokens": 112418,
+    "gen2ReleaseReadyTokens": 0,
+    "recomputed": true,
+    "trainingAllowed": false,
+    "networkAccessed": false
+  },
+  "tests": {
+    "passed": 83,
+    "failed": 0,
+    "skipped": 0,
+    "additionalPassingSubtests": 0,
+    "junitReportedTotalIncludingSubtests": 83,
+    "junit": {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-019-tests.xml",
+      "sha256": "6c29e0334462a26579a900b9e0f36da0cbb20ec48b5cac2a646467a482a2d510",
+      "bytes": 12615
+    }
+  },
+  "existingPool": {
+    "inputRecords": 250,
+    "uniqueEligibleRecords": 227,
+    "proxyTokens": 112418,
+    "excluded": {
+      "historical-held-out": 23
+    }
+  },
+  "tokenGap": [
+    {
+      "stage": "pilot",
+      "plannedExposures": 2000000000,
+      "availableExistingPoolProxyTokens": 112418,
+      "additionalUniqueProxyTokensAtOnePass": 1999887582,
+      "passesOverExistingPoolToReachExposures": 17790.745254318703,
+      "gen2ReleasedTokens": 0,
+      "gen2ReleaseTokenGap": 2000000000,
+      "repeatSensitivity": [
+        {
+          "passes": 1,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 112418,
+          "remainingExposures": 1999887582
+        },
+        {
+          "passes": 3,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 337254,
+          "remainingExposures": 1999662746
+        },
+        {
+          "passes": 10,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 1124180,
+          "remainingExposures": 1998875820
+        }
+      ]
+    },
+    {
+      "stage": "pilot",
+      "plannedExposures": 6000000000,
+      "availableExistingPoolProxyTokens": 112418,
+      "additionalUniqueProxyTokensAtOnePass": 5999887582,
+      "passesOverExistingPoolToReachExposures": 53372.23576295611,
+      "gen2ReleasedTokens": 0,
+      "gen2ReleaseTokenGap": 6000000000,
+      "repeatSensitivity": [
+        {
+          "passes": 1,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 112418,
+          "remainingExposures": 5999887582
+        },
+        {
+          "passes": 3,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 337254,
+          "remainingExposures": 5999662746
+        },
+        {
+          "passes": 10,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 1124180,
+          "remainingExposures": 5998875820
+        }
+      ]
+    },
+    {
+      "stage": "base",
+      "plannedExposures": 20000000000,
+      "availableExistingPoolProxyTokens": 112418,
+      "additionalUniqueProxyTokensAtOnePass": 19999887582,
+      "passesOverExistingPoolToReachExposures": 177907.45254318704,
+      "gen2ReleasedTokens": 0,
+      "gen2ReleaseTokenGap": 20000000000,
+      "repeatSensitivity": [
+        {
+          "passes": 1,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 112418,
+          "remainingExposures": 19999887582
+        },
+        {
+          "passes": 3,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 337254,
+          "remainingExposures": 19999662746
+        },
+        {
+          "passes": 10,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 1124180,
+          "remainingExposures": 19998875820
+        }
+      ]
+    },
+    {
+      "stage": "base",
+      "plannedExposures": 60000000000,
+      "availableExistingPoolProxyTokens": 112418,
+      "additionalUniqueProxyTokensAtOnePass": 59999887582,
+      "passesOverExistingPoolToReachExposures": 533722.3576295611,
+      "gen2ReleasedTokens": 0,
+      "gen2ReleaseTokenGap": 60000000000,
+      "repeatSensitivity": [
+        {
+          "passes": 1,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 112418,
+          "remainingExposures": 59999887582
+        },
+        {
+          "passes": 3,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 337254,
+          "remainingExposures": 59999662746
+        },
+        {
+          "passes": 10,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 1124180,
+          "remainingExposures": 59998875820
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "External content revisions, file-level rights and any publisher permissions remain unacquired/unapproved; OpenStax explicitly requires LLM permission.",
+    "The existing pool is small structured synthetic data. Source permission does not establish a broad language/code corpus or a Gen2 release.",
+    "Tasks 020/021 must enforce document-to-source lineage, normalization, semantic deduplication and family-level splits; confidential evaluation custody is required before training.",
+    "Task 024 must measure token counts with the owned Gen2 tokenizer; repetition cannot replace unique data.",
+    "Historical v1.0.0 source bytes and external backup/restore limitations remain explicit; no historical lineage is rewritten."
+  ],
+  "network": {
+    "inventoryNetworkAccessed": false,
+    "separatePermissionMetadataFetches": 7,
+    "rawPageBodiesStored": false,
+    "externalCorpusAcquired": false
+  },
+  "preservation": {
+    "savedPlanningFiles": 7,
+    "historicalContractBindingsUnchanged": 12,
+    "protectedArtifactDataFilesUnchanged": 131,
+    "task018SuiteAndPolicyUnchanged": true
+  },
+  "gen2CorpusReleased": false,
+  "modelReleaseApproved": false,
+  "trainingAllowed": false,
+  "nextTask": "LLM-TASK-020",
+  "planningCheck": {
+    "status": "passed",
+    "active_tasks": 41,
+    "legacy_tasks": 14,
+    "milestones": 10,
+    "root_causes": 14,
+    "status_counts": {
+      "COMPLETED": 5,
+      "TODO": 36
+    },
+    "next_task": "LLM-TASK-020",
+    "scope": "planning consistency only; no model release credit"
+  },
+  "sourceFingerprints": [
+    {
+      "path": "VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.json",
+      "sha256": "43228402830b483ca1cc0d83dfafc538093afd07b5b8f16b4bcbc7cb24319654",
+      "bytes": 108110
+    },
+    {
+      "path": "VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.md",
+      "sha256": "c5ee53d21afbfc2e2206efbd0f3e5f71068a35beea96438d9b4b3d9ae079d1e9",
+      "bytes": 73598
+    },
+    {
+      "path": "AI_CHAT_ROOT_CAUSE_BACKLOG.json",
+      "sha256": "253931e9b5360e636aa659c9269fa4ee306933b3a12a8c3c44aad57583a04bf7",
+      "bytes": 30849
+    },
+    {
+      "path": "AI_CHAT_ROOT_CAUSE_ANALYSIS.md",
+      "sha256": "04fb597efcaa83fd5223b382efe1552fa10dd849cc7521a243088fc5a7ca0c11",
+      "bytes": 23096
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_TRAINING_SOURCE_INVENTORY.v1.md",
+      "sha256": "57dc787cb848dc4c20659e989eea7414520260e0f7bab32618cab639c811c3f8",
+      "bytes": 11505
+    },
+    {
+      "path": "Voltforge_AI/docs/VOLTForge_AI_RUNBOOK.md",
+      "sha256": "04f30f42794aad126bb426b753043394fd99aed8c193df35af2394add93297c7",
+      "bytes": 31864
+    },
+    {
+      "path": "Voltforge_AI/docs/runbook-contract.v1.json",
+      "sha256": "933a9b0895f3af302101d8cb3fcc06e1b150e8780f2c1f53032de3c6176a0cd5",
+      "bytes": 5034
+    },
+    {
+      "path": "Voltforge_AI/.gitattributes",
+      "sha256": "8c4ed4f52bcbb4b48fc1f357a8454ff6b854615f0b75cd032887b933f8c18eb5",
+      "bytes": 181
+    },
+    {
+      "path": "Voltforge_AI/tools/inventory_llm_sources.py",
+      "sha256": "6993900bd47129ff78f3c24c1ba1853183b55b602a0a13bb07ae5a6f740e8493",
+      "bytes": 1549
+    },
+    {
+      "path": "Voltforge_AI/tools/capture_foundation_source_evidence.py",
+      "sha256": "94aa3c42a5483f86d207c882b736fd0e8d56e2727575c90548eaf97ba5fe7ad1",
+      "bytes": 2678
+    },
+    {
+      "path": "Voltforge_AI/tools/record_llm_source_inventory.py",
+      "sha256": "bd0fefecd0a45d295336f62e1ed9c1227af86be745316bd36bf80c182b6cffd1",
+      "bytes": 14492
+    },
+    {
+      "path": "Voltforge_AI/tests/test_foundation_source_inventory.py",
+      "sha256": "7e352397d3fb1dd70a12d265fdf4111de7c259d10cc35c3f65b9cb87e5fb8e1e",
+      "bytes": 9415
+    }
+  ],
+  "evidence": [
+    {
+      "path": "Voltforge_AI/data_governance/foundation/policy.v1.json",
+      "sha256": "b39425c0289fe24d1e010369d2500319b54a70ea767d7bb75b9310b0831967ea",
+      "bytes": 3096
+    },
+    {
+      "path": "Voltforge_AI/data_governance/foundation/proposed-sources.v1.json",
+      "sha256": "97e1e21cd06f66ff182387bc012eb52c1672cdacac910bcc1c5c2c671404275e",
+      "bytes": 14962
+    },
+    {
+      "path": "Voltforge_AI/data_governance/foundation/external-evidence.v1.json",
+      "sha256": "9191213cf5df7e633236f5db1ca69b7a53b5c2052d4c7e8a0ee4ad2ad2a1ff68",
+      "bytes": 4815
+    },
+    {
+      "path": "Voltforge_AI/data_governance/foundation/inventory.v1.json",
+      "sha256": "6d87cb4ce72a226bcecbab91bd0e1b08f5453e05ff69438a760f0c8fbb9ae5b1",
+      "bytes": 145415
+    },
+    {
+      "path": "Voltforge_AI/data_governance/foundation/manifest.v1.json",
+      "sha256": "a330c5884696f415e5233c2216af594a48f589813a48c78b89e975b831e242ca",
+      "bytes": 10831
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_TRAINING_SOURCE_INVENTORY.v1.md",
+      "sha256": "57dc787cb848dc4c20659e989eea7414520260e0f7bab32618cab639c811c3f8",
+      "bytes": 11505
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-019-inventory-freeze.json",
+      "sha256": "45a5c42f2cfc35faa0d7f978ac675ad0020c354325948988c50dc851500f8c98",
+      "bytes": 601
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-019-tests.xml",
+      "sha256": "6c29e0334462a26579a900b9e0f36da0cbb20ec48b5cac2a646467a482a2d510",
+      "bytes": 12615
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-019-checks.json",
+      "sha256": "4bfdc5ad9f7f355011d65db0e0ef6819048cc84c6c62dccf951faae69257a55b",
+      "bytes": 6324
+    },
+    {
+      "path": "backlog_history/llm-task-019-before/manifest.json",
+      "sha256": "db17bd46d285f4982eb4742ba74b3308d0c5964a91456549eee39d9692f24a78",
+      "bytes": 1466
+    }
+  ]
+}

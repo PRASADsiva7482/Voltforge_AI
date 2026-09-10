@@ -385,9 +385,8 @@ def validate_compatibility(
 ) -> None:
     contract = runtime_contract or RuntimeContract.current()
     expected = contract.as_compatibility()
-    mismatches = [
-        key for key, expected_value in expected.items() if compatibility.get(key) != expected_value
-    ]
+    mismatches = [key for key, value in expected.items() if compatibility.get(key) != value]
+
     if mismatches:
         joined = ", ".join(sorted(mismatches))
         raise RegistryManagerError(

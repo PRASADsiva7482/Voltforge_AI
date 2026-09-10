@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "taskId": "LLM-TASK-017",
+  "scope": "Design/runbook/boundary and preservation checks; no model acceptance.",
+  "checks": [
+    {
+      "command": "rtk proxy .\\.toolchains\\gen1\\Scripts\\python.exe -B tools/verify_runbook.py",
+      "exitCode": 0,
+      "result": {
+        "contractId": "vfai035-runbook-v1",
+        "contractSha256": "f1fa3f001377ee52932193e141d3a94729444d951d24d05266d4626f353d1c74",
+        "forbiddenClaimCount": 0,
+        "networkAccessed": false,
+        "ok": true,
+        "rawContentStored": false,
+        "requiredCommandCount": 20,
+        "requiredSectionCount": 15,
+        "requiredSourceFileCount": 21,
+        "runbookSha256": "ff45212b1ef663fedb5634401933626ac34fb948cdf776aee887e38ec23d6a3c"
+      }
+    },
+    {
+      "command": "rtk proxy .\\.toolchains\\gen1\\Scripts\\python.exe -B tools/scan_quality_boundaries.py --check",
+      "exitCode": 0,
+      "result": {
+        "schemaVersion": 1,
+        "scanId": "vfai032-quality-boundaries-v1",
+        "passed": true,
+        "filesScanned": 230,
+        "violations": [],
+        "networkAccessed": false,
+        "rawContentStored": false,
+        "scanSha256": "b1f645e2c92a8c42ae7efa8cbdcf08e7bad7dc17d708241597dc81d937ec8f7b"
+      }
+    },
+    {
+      "command": "rtk proxy .\\.toolchains\\gen1\\Scripts\\python.exe -B tools/snapshot_llm_cleanup.py --verify ../backlog_history/llm-task-016-before-20260906T054449Z",
+      "exitCode": 0,
+      "result": {
+        "snapshot": "D:\\Project\\voltforge\\backlog_history\\llm-task-016-before-20260906T054449Z",
+        "verified_sources": 83,
+        "unchanged_protected_files": 131
+      }
+    }
+  ]
+}
+

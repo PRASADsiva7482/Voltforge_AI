@@ -1,0 +1,219 @@
+{
+  "schemaVersion": 1,
+  "taskId": "LLM-TASK-020",
+  "status": "completed-immutable-ingestion-no-training-corpus-release",
+  "recordedAtUtc": "2026-09-08T04:28:39.774759+00:00",
+  "summary": "Implemented offline resumable corpus ingestion with exact source/shard permission checks, document lineage, transactional resume, strict encoding and code/equation/SI-preserving extraction, secret/broken-text quarantine and exact normalized deduplication. Four current approved shards produce 227 immutable raw/normalized records; 23 held-out records are excluded before raw persistence. All 17 authored extraction fixtures have reviewed decisions (8 accepted, 9 quarantined), and eight actual source samples preserve their nested payloads. Both manifests reproduce byte-for-byte. Fresh-process 1,000/10,000-document measurements maintain about 2.1 MB of traced Python allocation and about 88 documents/second. 130 regression tests passed, plus 0 passing subtests; source/evaluation/runbook/preservation checks passed. No external corpus acquisition, new source rights, Gen2 corpus release, tokenizer fitting, training, activation or serving change.",
+  "verification": {
+    "source": {
+      "verification": "passed",
+      "manifestSha256": "f242af5dca726f217e32d2c8edd379b2e52ab51493ca6b87cb7eca9edd82287b",
+      "acceptedDocuments": 227,
+      "quarantinedDocuments": 23,
+      "recomputed": true,
+      "trainingAllowed": false
+    },
+    "fixtures": {
+      "verification": "passed",
+      "manifestSha256": "1519df682941c00238332e0b783bab9ee550594cb3e74a2d72d165161ce2c5c2",
+      "acceptedDocuments": 8,
+      "quarantinedDocuments": 9,
+      "recomputed": true,
+      "trainingAllowed": false
+    }
+  },
+  "tests": {
+    "passed": 130,
+    "failed": 0,
+    "skipped": 0,
+    "additionalPassingSubtests": 0,
+    "junit": {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-020-tests.xml",
+      "sha256": "1f2fa03b161d7b7bb80cdc167a7f7dc68fbc809f9c24ef174ddf603f7a2f736b",
+      "bytes": 18888
+    }
+  },
+  "extractionReview": {
+    "path": "Voltforge_AI/evaluation/reports/llm-task-020-extraction-review.json",
+    "sha256": "5612032ed90d84cabd77c1faaefd97f0fc0e21939f33c89aa5ae15ac629f84e6",
+    "bytes": 11168
+  },
+  "performance": {
+    "path": "Voltforge_AI/evaluation/reports/llm-task-020-memory.json",
+    "sha256": "7d1f3983ccb234c21a19bd38955cf495b610ea6c74f6e0a37a0740fd04f09ea8",
+    "bytes": 2320
+  },
+  "limits": [
+    "Task 021 must add semantic/near-duplicate checks, source/document/family partitions and cross-split leakage evidence before corpus release.",
+    "The existing 227 records remain small structured synthetic data; fixture and staging copies add no new independent token credit.",
+    "External source revisions and permissions remain unadmitted. A new approved inventory/adapter is required before acquisition can become a production input.",
+    "PDF extraction review covers authored digital-text fixtures; complex layouts/OCR require source-specific review, and arbitrary external PDFs need aggregate worker resource controls.",
+    "Secret patterns are heuristic; private-source exclusion and source-use/privacy review remain mandatory.",
+    "Throughput/memory measurements are local synthetic JSONL observations, not server capacity or PDF-child RSS proof.",
+    "No Gen2 corpus/training approval. Historical missing bytes, confidential evaluation custody and owner backup/restore gates remain unchanged."
+  ],
+  "preservation": {
+    "planningFilesSnapshotted": 8,
+    "historicalContractBindingsUnchanged": 12,
+    "protectedArtifactDataFilesUnchanged": 131,
+    "task018SuiteAndPolicyUnchanged": true,
+    "task019InventoryRecomputedUnchanged": true
+  },
+  "network": {
+    "ingestionNetworkAccessed": false,
+    "externalCorpusAcquired": false,
+    "separateBuildDependencyInstalled": "pypdf==6.17.0",
+    "runtimeFrameworkChanged": false
+  },
+  "gen2CorpusReleased": false,
+  "trainingAllowed": false,
+  "modelReleaseApproved": false,
+  "nextTask": "LLM-TASK-021",
+  "planningCheck": {
+    "status": "passed",
+    "active_tasks": 41,
+    "legacy_tasks": 14,
+    "milestones": 10,
+    "root_causes": 14,
+    "status_counts": {
+      "COMPLETED": 6,
+      "TODO": 35
+    },
+    "next_task": "LLM-TASK-021",
+    "scope": "planning consistency only; no model release credit"
+  },
+  "sourceFingerprints": [
+    {
+      "path": "VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.json",
+      "sha256": "7c50f1fdcb4f7d3b9d68b8b38ea2ea3be990080614001e0cc3fc264ce53b18dd",
+      "bytes": 112297
+    },
+    {
+      "path": "VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.md",
+      "sha256": "598c75c8946e125a852feb655737d7ecc7fd846c84f054505d0e92e3aed12f5a",
+      "bytes": 76195
+    },
+    {
+      "path": "AI_CHAT_ROOT_CAUSE_BACKLOG.json",
+      "sha256": "e9756f6cf70a5522edbd9437cd28b34524083dd10f3b0222086bc8c2ec06c2e6",
+      "bytes": 32480
+    },
+    {
+      "path": "AI_CHAT_ROOT_CAUSE_ANALYSIS.md",
+      "sha256": "76a7c32575c17e42a99583017301008b78ae3dbdc90ce67fd4d1524c68441189",
+      "bytes": 24261
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_CORPUS_INGESTION.v1.md",
+      "sha256": "e6f12278123b88427a0623dcd8a67841585a618010d1d6519fd447bddd44579f",
+      "bytes": 10357
+    },
+    {
+      "path": "Voltforge_AI/docs/VOLTForge_AI_RUNBOOK.md",
+      "sha256": "8a4c132d1d9139293466067710b59b43cc170344def0cdf1b1228268a9e88b33",
+      "bytes": 32646
+    },
+    {
+      "path": "Voltforge_AI/docs/runbook-contract.v1.json",
+      "sha256": "ab20d27b728e023d7434de9a42255ef35d9ffe78145f6cda5a98374c66ddf58f",
+      "bytes": 5700
+    },
+    {
+      "path": "Voltforge_AI/.gitattributes",
+      "sha256": "821c185d683cbc6aca4d2ba50e33cc7eef9c9c409228f4b7d95c71fbea6c569f",
+      "bytes": 296
+    },
+    {
+      "path": "Voltforge_AI/.gitignore",
+      "sha256": "660aec363a9c1f1cd881c397e56720f48664efdc5e17250181d35108394c86c5",
+      "bytes": 165
+    },
+    {
+      "path": "Voltforge_AI/requirements-corpus.txt",
+      "sha256": "5cbcf7eef06dca9c735e3ce6f4d5b6cfc80ffa32b3795772af275c8185e56b30",
+      "bytes": 76
+    },
+    {
+      "path": "Voltforge_AI/tests/test_corpus_ingestion.py",
+      "sha256": "d67d0afa4746d03b4d5089de5fc626f5cc43641f0d711d8a62e1ee48b5cafcb6",
+      "bytes": 13253
+    },
+    {
+      "path": "Voltforge_AI/tools/ingest_llm_corpus.py",
+      "sha256": "a365f057b859341038a45ee142af76b15834b7f7391b9fc00feb2d4429953d54",
+      "bytes": 1668
+    },
+    {
+      "path": "Voltforge_AI/tools/build_ingestion_fixtures.py",
+      "sha256": "c36c76d919947e3dc419a442062eaa217cbb27077b0fa6bed0020dce747a2e40",
+      "bytes": 5205
+    },
+    {
+      "path": "Voltforge_AI/tools/review_ingestion_samples.py",
+      "sha256": "e4a35d75e129bf47144f3a07493bad3ebc30cb6587534fe45424e712dc18b812",
+      "bytes": 6592
+    },
+    {
+      "path": "Voltforge_AI/tools/evaluate_ingestion_memory.py",
+      "sha256": "8db91fe07b393c68f4a5bc8fec0552c7570481ada0f6ab8ab222da6f2cca9add",
+      "bytes": 5153
+    },
+    {
+      "path": "Voltforge_AI/tools/record_corpus_ingestion.py",
+      "sha256": "fe2ae6ab41e6b8fb72d3debe1a60bb7e5311fdb6167d8f47661c727f8ce8f074",
+      "bytes": 15105
+    }
+  ],
+  "evidence": [
+    {
+      "path": "Voltforge_AI/corpus/ingestion/v1/4eb23ca6950fb9d7fa9fd87bfbfcbe29aadd92d008a1d9d1e45229231078948d/manifest.json",
+      "sha256": "f242af5dca726f217e32d2c8edd379b2e52ab51493ca6b87cb7eca9edd82287b",
+      "bytes": 50381
+    },
+    {
+      "path": "Voltforge_AI/corpus/extraction-fixtures/v1/34b8ea2db7081e29c315d69da02f0b2814682866a59d1f58a5ce98e2fb6833ca/manifest.json",
+      "sha256": "1519df682941c00238332e0b783bab9ee550594cb3e74a2d72d165161ce2c5c2",
+      "bytes": 8499
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_CORPUS_INGESTION.v1.md",
+      "sha256": "e6f12278123b88427a0623dcd8a67841585a618010d1d6519fd447bddd44579f",
+      "bytes": 10357
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-020-ingestion-build.json",
+      "sha256": "e606d95f7aed5be19005b50bb4848a06a0336607d240747e9ae0a41905fb79fb",
+      "bytes": 794
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-020-fixture-build.json",
+      "sha256": "03dbc5258b7bffb978843e9c6b7e88af1b7d7ec1b20b9810978a6ed576518366",
+      "bytes": 798
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-020-extraction-review.json",
+      "sha256": "5612032ed90d84cabd77c1faaefd97f0fc0e21939f33c89aa5ae15ac629f84e6",
+      "bytes": 11168
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-020-memory.json",
+      "sha256": "7d1f3983ccb234c21a19bd38955cf495b610ea6c74f6e0a37a0740fd04f09ea8",
+      "bytes": 2320
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-020-tests.xml",
+      "sha256": "1f2fa03b161d7b7bb80cdc167a7f7dc68fbc809f9c24ef174ddf603f7a2f736b",
+      "bytes": 18888
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-020-checks.json",
+      "sha256": "6c7014c5da5e3e61013b6ee118e87da50f9d30e4c2813e3e9a8ad9ae2ba6876c",
+      "bytes": 6982
+    },
+    {
+      "path": "backlog_history/llm-task-020-before/manifest.json",
+      "sha256": "9832aac412bc8551377c8b2a809a3735cd240e71eb1326870e214b92453b3b9c",
+      "bytes": 1819
+    }
+  ]
+}

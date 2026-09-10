@@ -16,7 +16,9 @@ from model.registry_manager import (
     DEFAULT_REGISTRY_PATH,
     DEFAULT_TRUST_STORE_PATH,
     RegistryManagerError,
+    SUPPORTED_RUNTIME,
     artifact_root_from_entry,
+    verify_artifact_directory,
     verify_registry,
 )
 from observability import observability
@@ -68,7 +70,7 @@ class ModelRuntimeService:
         self.trust_store_path = trust_store_path.resolve()
         self.requested_device = requested_device
         self._lock = threading.RLock()
-        self._start_stop_lock = threading.Lock()
+        self._start_stop_lock = threading.RLock()
         self._runtime: Any | None = None
         self._state = "unavailable"
         self._code = "MODEL_RUNTIME_NOT_STARTED"
@@ -76,6 +78,7 @@ class ModelRuntimeService:
         self._registry_revision: int | None = None
         self._registry_sha256: str | None = None
         self._active_artifact_id: str | None = None
+        self._loaded_identity: dict[str, Any] | None = None
 
     def start(self) -> dict[str, Any]:
         """Load only a signed active approved artifact; never train or download."""
@@ -88,6 +91,9 @@ class ModelRuntimeService:
         with self._lock:
             if self._runtime is not None:
                 return self.health()
+            self._active_artifact_id = None
+            self._registry_revision = None
+            self._registry_sha256 = None
         try:
             registry = verify_registry(
                 self.registry_path,
@@ -115,21 +121,49 @@ class ModelRuntimeService:
             )
             return self.health()
 
-        security_block = checkpoint_runtime_security_block()
-        if security_block is not None:
-            code, message = security_block
-            observability.record_model_load_failure(code)
-            self._set_failure(code, message)
-            logger.error(
-                "Model runtime security block artifactId=%s code=%s",
-                active_id,
-                code,
-            )
-            return self.health()
-
         entry = next(
             item for item in registry["artifacts"] if item.get("artifactId") == active_id
         )
+        runtime_type = entry.get("runtime")
+        try:
+            if runtime_type != SUPPORTED_RUNTIME:
+                raise RegistryManagerError(
+                    "MODEL_RUNTIME_UNSUPPORTED", "No verified loader supports the active artifact runtime."
+                )
+            artifact = verify_artifact_directory(
+                artifact_root_from_entry(self.registry_path, entry),
+                trust_store_path=self.trust_store_path,
+                require_activation=True,
+            )
+            expected = {
+                "artifactId": artifact.artifact_id,
+                "parameterCount": artifact.parameter_count,
+                "contextLength": artifact.context_length,
+            }
+            if any(entry.get(key) != value for key, value in expected.items()) or (
+                entry.get("manifestSha256") != artifact.manifest_sha256
+                or entry.get("manifestFileSha256") != artifact.manifest_file_sha256
+            ):
+                raise RegistryManagerError(
+                    "MODEL_RUNTIME_IDENTITY_MISMATCH", "The active registry entry does not match its verified package."
+                )
+        except RegistryManagerError as error:
+            observability.record_model_load_failure(error.code)
+            self._set_failure(error.code, error.message)
+            return self.health()
+        if runtime_type == SUPPORTED_RUNTIME:
+            security_block = checkpoint_runtime_security_block()
+            if security_block is not None:
+                code, message = security_block
+                observability.record_model_load_failure(code)
+                self._set_failure(code, message)
+                logger.error(
+                    "Model runtime security block artifactId=%s code=%s",
+                    active_id,
+                    code,
+                )
+                return self.health()
+
         with self._lock:
             self._state = "loading"
             self._code = "MODEL_RUNTIME_LOADING"
@@ -139,28 +173,30 @@ class ModelRuntimeService:
             active_id,
             registry["revision"],
         )
+        runtime = None
         try:
             runtime_module = importlib.import_module("model.gen1.runtime")
             runtime = runtime_module.LocalGen1Runtime(
                 trust_store_path=self.trust_store_path,
                 requested_device=self.requested_device,
             )
-            runtime.load(artifact_root_from_entry(self.registry_path, entry))
+            runtime.load(artifact.root)
+            runtime_health = runtime.health()
+            self._validate_loaded_health(runtime_health, expected)
         except Exception as error:
-            code = getattr(error, "code", "MODEL_RUNTIME_LOAD_FAILED")
+            if runtime is not None:
+                try:
+                    runtime.unload()
+                except Exception:
+                    logger.error("Failed runtime cleanup artifactId=%s", active_id)
+            code = str(getattr(error, "code", "MODEL_RUNTIME_LOAD_FAILED"))
             observability.record_model_load_failure(code)
-            self._set_failure(
-                str(code), "The signed active local model failed to load."
-            )
-            logger.error(
-                "Model runtime load failed artifactId=%s code=%s",
-                active_id,
-                code,
-            )
+            self._set_failure(code, "The signed active local model failed to load or validate.")
+            logger.error("Model runtime load failed artifactId=%s code=%s", active_id, code)
             return self.health()
         with self._lock:
             self._runtime = runtime
-            runtime_health = runtime.health()
+            self._loaded_identity = expected
             self._state = str(runtime_health["state"])
             self._code = str(runtime_health["code"])
             self._message = str(runtime_health["message"])
@@ -181,6 +217,7 @@ class ModelRuntimeService:
         with self._lock:
             runtime = self._runtime
             self._runtime = None
+            self._loaded_identity = None
         if runtime is not None:
             try:
                 runtime.unload()
@@ -206,8 +243,18 @@ class ModelRuntimeService:
             registry_revision = self._registry_revision
             registry_sha256 = self._registry_sha256
             active_artifact_id = self._active_artifact_id
+            expected = self._loaded_identity
         if runtime is not None:
-            health = runtime.health()
+            try:
+                health = dict(runtime.health())
+                self._validate_loaded_health(health, expected or {})
+            except Exception as error:
+                self.stop()
+                self._set_failure(
+                    str(getattr(error, "code", "MODEL_RUNTIME_HEALTH_FAILED")),
+                    "The loaded model no longer satisfies its verified runtime contract.",
+                )
+                return self.health()
             health.update(
                 {
                     "registryPath": str(self.registry_path),
@@ -215,20 +262,15 @@ class ModelRuntimeService:
                     "registrySha256": registry_sha256,
                     "activeArtifactId": active_artifact_id,
                     "runtimeState": health["state"],
+                    "generationSource": "neural",
                 }
             )
             return health
 
         health = get_artifact_health(self.registry_path)
-        if state in {"loading", "failed"} or code == "MODEL_RUNTIME_STOPPED":
-            health.update(
-                {
-                    "ready": False,
-                    "state": state,
-                    "code": code,
-                    "message": message,
-                }
-            )
+        health.update({"ready": False, "state": state, "code": code, "message": message,
+                       "parameterCount": None, "contextLength": None, "device": None,
+                       "generationSource": "unavailable"})
         health.update(
             {
                 "runtimeState": state,
@@ -247,6 +289,7 @@ class ModelRuntimeService:
         return health
 
     def runtime_for_generation(self):
+        self.health()
         with self._lock:
             if self._runtime is None or self._state != "ready":
                 raise RuntimeError(f"{self._code}: {self._message}")
@@ -255,9 +298,18 @@ class ModelRuntimeService:
     def _set_failure(self, code: str, message: str) -> None:
         with self._lock:
             self._runtime = None
+            self._loaded_identity = None
             self._state = "failed"
             self._code = code
             self._message = message
+
+    @staticmethod
+    def _validate_loaded_health(health: dict[str, Any], expected: dict[str, Any]) -> None:
+        if (health.get("ready") is not True or health.get("runtimeOperational") is not True
+                or health.get("state") != "ready"):
+            raise RegistryManagerError("MODEL_RUNTIME_NOT_READY", "The model loader did not establish readiness.")
+        if not expected or any(health.get(key) != value for key, value in expected.items()):
+            raise RegistryManagerError("MODEL_RUNTIME_IDENTITY_MISMATCH", "Loaded model identity differs from its verified package.")
 
 
 _PROCESS_RUNTIME = ModelRuntimeService(

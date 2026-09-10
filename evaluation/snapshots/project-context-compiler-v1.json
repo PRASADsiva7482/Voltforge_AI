@@ -10,8 +10,8 @@
   "contextWindowTokens": 3400,
   "reservedOutputTokens": 256,
   "promptTokenLimit": 3144,
-  "promptTokens": 3024,
-  "promptSha256": "46c110494d220741fc2c092dcb78a24ba85d745daf3121ad10618aa5e5902b35",
+  "promptTokens": 3028,
+  "promptSha256": "f518fa2f18044ecaa451f5079c7e695a09799aac243aa7fc5032c5edb8a72486",
   "selectedSectionSetSha256": "357872d25ae3fa8b915b3dac873ac773e51248fc4361d44f7db59228bc469c46",
   "selectedSectionCount": 6,
   "omittedSectionCount": 82,
@@ -45,5 +45,5 @@
   ],
   "rawPromptStored": false,
   "rawProjectContextStored": false,
-  "snapshotSha256": "55985dcf9de0da318c80f394a6d65b54acb94691216f0c14b8352e57deeaf471"
+  "snapshotSha256": "d090d475237c290df6ee01af8d8ccb2b0946ff5f2949841797f927877da3b113"
 }

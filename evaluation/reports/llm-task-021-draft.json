@@ -1,0 +1,88 @@
+{
+  "status": "draft",
+  "releaseId": "df29fc052d723f44b7b1334e7d5a8acc076fa10e742f8151f5a8f7da3638a04c",
+  "guards": {
+    "extraction-regression-only": 17,
+    "frozen-foundation-evaluation": 900,
+    "historical-tokenizer-heldout": 23,
+    "historical-id-denial": 39,
+    "frozen-gen1-evaluation": 26
+  },
+  "scorecard": {
+    "inputDocuments": 227,
+    "splitCounts": {
+      "train": 0,
+      "validation": 0,
+      "test": 0,
+      "quarantine": 227
+    },
+    "componentCount": 2,
+    "protectedComponentCount": 2,
+    "reasonCounts": {
+      "exact-content": 114,
+      "protected-lineage-family": 113
+    },
+    "directProtectedMatches": 227,
+    "duplicateEdges": 20937,
+    "crossSplitAudit": {
+      "status": "passed",
+      "counts": {
+        "lineage": 0,
+        "exactRaw": 0,
+        "exactNormalized": 0,
+        "nearTextOrCode": 0,
+        "protected": 0
+      },
+      "includedDocuments": 0,
+      "nonemptySplits": [],
+      "semanticCompletenessClaimed": false
+    },
+    "inputEligibleProxyTokens": 112418,
+    "proxyTokenizerVersion": "1.1.0",
+    "exposureAccounting": [
+      {
+        "uniqueAcceptedDocumentProxyTokens": {
+          "train": 0,
+          "validation": 0,
+          "test": 0
+        },
+        "hypotheticalPasses": 1,
+        "hypotheticalTrainingExposures": 0,
+        "observedTrainingExposures": 0,
+        "gen2ReleasedTrainingTokens": 0,
+        "repetitionAddsUniqueData": false,
+        "trainingAllowed": false
+      },
+      {
+        "uniqueAcceptedDocumentProxyTokens": {
+          "train": 0,
+          "validation": 0,
+          "test": 0
+        },
+        "hypotheticalPasses": 3,
+        "hypotheticalTrainingExposures": 0,
+        "observedTrainingExposures": 0,
+        "gen2ReleasedTrainingTokens": 0,
+        "repetitionAddsUniqueData": false,
+        "trainingAllowed": false
+      },
+      {
+        "uniqueAcceptedDocumentProxyTokens": {
+          "train": 0,
+          "validation": 0,
+          "test": 0
+        },
+        "hypotheticalPasses": 10,
+        "hypotheticalTrainingExposures": 0,
+        "observedTrainingExposures": 0,
+        "gen2ReleasedTrainingTokens": 0,
+        "repetitionAddsUniqueData": false,
+        "trainingAllowed": false
+      }
+    ],
+    "trainingPoolAvailable": false,
+    "allThreePartitionsPopulated": false,
+    "semanticCompletenessClaimed": false,
+    "trainingAllowed": false
+  }
+}

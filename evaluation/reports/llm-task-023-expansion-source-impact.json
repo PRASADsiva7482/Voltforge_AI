@@ -1,0 +1,50 @@
+{
+  "sourceId": "vf-g2-mkdocs-9d65447e",
+  "affectedDocuments": [
+    {
+      "documentId": "vf-g2-mkdocs-9d65447e:docs/setup/changing-the-colors.md",
+      "split": "validation",
+      "tokens": 8469,
+      "normalizedSha256": "8db261a9c0696655e8f3aef28b4d243c161849c95be7029a512178aebb822372",
+      "decisionReason": "partitioned"
+    },
+    {
+      "documentId": "vf-g2-mkdocs-9d65447e:docs/setup/changing-the-fonts.md",
+      "split": "validation",
+      "tokens": 1801,
+      "normalizedSha256": "f5ccd6b56d9a905b3a609f65239b0e419e823090898e5c5db9b9b455040f894b",
+      "decisionReason": "partitioned"
+    },
+    {
+      "documentId": "vf-g2-mkdocs-9d65447e:docs/setup/changing-the-language.md",
+      "split": "validation",
+      "tokens": 3586,
+      "normalizedSha256": "fd98deb475c3cf368f115e2652f0c2a736d8c47e68a7a8fa2774a73337ec3cae",
+      "decisionReason": "partitioned"
+    },
+    {
+      "documentId": "vf-g2-mkdocs-9d65447e:docs/setup/setting-up-navigation.md",
+      "split": "validation",
+      "tokens": 10749,
+      "normalizedSha256": "363530ae471078a92de85d8cd035781c691a01491eab24eec2b0ac72c2c97d3e",
+      "decisionReason": "partitioned"
+    },
+    {
+      "documentId": "vf-g2-mkdocs-9d65447e:docs/setup/setting-up-site-search.md",
+      "split": "validation",
+      "tokens": 2887,
+      "normalizedSha256": "04cb4776f4c9d831368f598e4926a9fb738ae6cfd3f71ca8f2cbc86ad96520ba",
+      "decisionReason": "partitioned"
+    },
+    {
+      "documentId": "vf-g2-mkdocs-9d65447e:docs/setup/setting-up-site-analytics.md",
+      "split": "quarantine",
+      "tokens": 6561,
+      "normalizedSha256": "cf7a635f45908a62296b93777c7761b3b73394d635bffb9d63dc9e3b4707472e",
+      "decisionReason": "near-duplicate"
+    }
+  ],
+  "trainingArtifactsInThisCandidateWorkflow": [],
+  "action": "report-only-no-deletion",
+  "sourceUseDecision": "data_governance\\source_expansion\\admission.v1.json"
+}

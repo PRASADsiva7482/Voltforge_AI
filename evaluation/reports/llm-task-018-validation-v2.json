@@ -1,0 +1,285 @@
+{
+  "schemaVersion": 1,
+  "taskId": "LLM-TASK-018",
+  "status": "completed-independent-harness-no-model-release",
+  "recordedAtUtc": "2026-09-07T04:21:38.272474+00:00",
+  "summary": "Frozen independent evaluation: 100 development, 100 validation, 500 core acceptance cases across 10 categories, 100 adversarial and 100 exact-board firmware cases. The core has 100 scenario families and 73 template families. 115 tests passed with no failures or skips, plus 5 passing subtests; these are harness/contract regressions, not model quality. Twelve baseline scorecards retain all 700 acceptance cases per lane/seed; actual neural forward/token counters are zero. LED/OLED confusion and repeated uncertainty remain reproduced; changed-value arithmetic passes. Frozen design, 12 historical bindings and 131 protected artifact/data files unchanged. No model training, acceptance, activation, browser verification or server performance result.",
+  "suite": {
+    "status": "passed",
+    "suiteSha256": "2fdd61cbc4cecbc20b364f7825b63bae2382ba784ca993a901839d2515985cc6",
+    "policySha256": "35c9a2ce79922beb3ec1c36e41ce61eeafcb351e6a3365851d20aa6bb4b20618",
+    "counts": {
+      "development": 100,
+      "validation": 100,
+      "acceptance": 500,
+      "adversarial": 100,
+      "compile": 100
+    },
+    "acceptanceCategories": {
+      "concepts": 50,
+      "diagnostics": 50,
+      "firmware_review": 50,
+      "numerical": 50,
+      "grounding": 50,
+      "multi_turn": 50,
+      "long_context": 50,
+      "project_actions": 50,
+      "instruction_scope": 50,
+      "uncertainty_safety": 50
+    },
+    "coreScenarioFamilies": 100,
+    "coreTemplateFamilies": 73,
+    "trainingUseAllowed": false,
+    "confidentialSealingClaimed": false
+  },
+  "tests": {
+    "passed": 115,
+    "failed": 0,
+    "skipped": 0,
+    "additionalPassingSubtests": 5,
+    "junit": {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-018-tests.xml",
+      "sha256": "93e3e8ed3fedcd4ae4b9e7095a1eeeed64e8ac63a756ba60211e7090621d58bb",
+      "bytes": 17071
+    },
+    "junitReportedTotalIncludingSubtests": 120
+  },
+  "baseline": {
+    "report": {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-018-baseline.json",
+      "sha256": "7d72b714e8f6b91f6e29e36f0a5c68fb92c6135fe905aee48b7f166dbc82e121",
+      "bytes": 7433040
+    },
+    "scorecards": 12,
+    "casesPerScorecard": 700,
+    "observedNeuralForwardCalls": 0,
+    "observedModelTokens": 0,
+    "regressions": {
+      "ledOledConfusion": {
+        "detected": true,
+        "replySha256": "774ed25b8347234d7fc30f5796de49e867bbdfa499f7a8bc27b49ebe68d6d783"
+      },
+      "repeatedUncertainty": [
+        {
+          "prompt": "Hello!",
+          "uncertaintyLines": 2,
+          "uniqueUncertaintyLines": 1
+        },
+        {
+          "prompt": "What is an LED?",
+          "uncertaintyLines": 6,
+          "uniqueUncertaintyLines": 1
+        },
+        {
+          "prompt": "What board am I using?",
+          "uncertaintyLines": 2,
+          "uniqueUncertaintyLines": 1
+        },
+        {
+          "prompt": "Explain metastability and how a two flip-flop synchronizer helps.",
+          "uncertaintyLines": 2,
+          "uniqueUncertaintyLines": 1
+        },
+        {
+          "prompt": "Compare UART framing errors with an I2C bus stuck low.",
+          "uncertaintyLines": 4,
+          "uniqueUncertaintyLines": 1
+        },
+        {
+          "prompt": "How should I measure sleep current without waking my microcontroller?",
+          "uncertaintyLines": 3,
+          "uniqueUncertaintyLines": 1
+        }
+      ],
+      "changedValues": {
+        "oneKHzOhm": 1591.5494309189535,
+        "twoKHzOhm": 795.7747154594767,
+        "inverseFrequencyRelationshipPassed": true,
+        "source": "deterministic-tools"
+      },
+      "noModel": {
+        "ready": false,
+        "code": "NO_APPROVED_MODEL_ARTIFACT",
+        "neuralCredit": false
+      }
+    }
+  },
+  "instrumentationProbe": {
+    "source": "test_actual_random_decoder_probe_has_no_release_credit",
+    "randomUntrainedModel": true,
+    "forwardCalls": 3,
+    "lastPositionLogitsElements": 96,
+    "generatedTokenIds": 3,
+    "releaseEligible": false
+  },
+  "preservation": {
+    "savedPlanningFiles": 6,
+    "task017DesignAndVerifierFilesUnchanged": 5,
+    "historicalBindingsUnchanged": 12,
+    "protectedArtifactDataFilesUnchanged": 131
+  },
+  "modelReleaseApproved": false,
+  "activationAllowed": false,
+  "nextTask": "LLM-TASK-019",
+  "limits": [
+    "Evaluation-only confidential custody before candidate training and Gen2 ingestion leakage enforcement.",
+    "Owned Gen2 tokenizer/model/trainer, attested candidate and validated native checkpoint runtime.",
+    "Actual candidate outputs, independent signed expert/compiler/claim/retrieval receipts and all three seeds.",
+    "Actual product/browser/server measurements, independent release review and governed activation."
+  ],
+  "earlierTestReports": "Draft/prefreeze receipts retain debugging history; counts overlap and must not be added.",
+  "planningCheck": {
+    "status": "passed",
+    "active_tasks": 41,
+    "legacy_tasks": 14,
+    "milestones": 10,
+    "root_causes": 14,
+    "status_counts": {
+      "COMPLETED": 4,
+      "TODO": 37
+    },
+    "next_task": "LLM-TASK-019",
+    "scope": "planning consistency only; no model release credit"
+  },
+  "sourceFingerprints": [
+    {
+      "path": "VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.json",
+      "sha256": "c20ed25800968417e2fad4e52135ecafd3f3f27862c1d2ce5a4b583a32247c36",
+      "bytes": 101082
+    },
+    {
+      "path": "VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.md",
+      "sha256": "4c6ecda67b4af9e1dbd8c3dd03430232cbd025000720c40b2dd8e666f01a6554",
+      "bytes": 71185
+    },
+    {
+      "path": "AI_CHAT_ROOT_CAUSE_BACKLOG.json",
+      "sha256": "ad1eb85dedb3c74636a8940fec9cbc85479bc6f136c5fbc154c5eccfa22c519a",
+      "bytes": 29349
+    },
+    {
+      "path": "AI_CHAT_ROOT_CAUSE_ANALYSIS.md",
+      "sha256": "40a834a8294c9fbed290ec4eedb11fd5f2e0168d3e394d852bcc40db7a587302",
+      "bytes": 21970
+    },
+    {
+      "path": "Voltforge_AI/docs/VOLTForge_AI_RUNBOOK.md",
+      "sha256": "a6db6b8152c7368fc7667bfb2f40bd5e914038ff7fa170458c4b59674af38c9a",
+      "bytes": 31183
+    },
+    {
+      "path": "Voltforge_AI/docs/runbook-contract.v1.json",
+      "sha256": "f898e0cc48e1003e5548833f1f22065285ed447051188dbffe207f8c373f0555",
+      "bytes": 4454
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_FOUNDATION_EVALUATION.v1.md",
+      "sha256": "aa9dc0fa70517b56e9f05f75045d13b33e8c2b030d0577ddfd4226925fc8752c",
+      "bytes": 13228
+    },
+    {
+      "path": "Voltforge_AI/tools/evaluate_llm_foundation.py",
+      "sha256": "75c038a1e8692adf0e6c706dc65d116bb963e3ff11a33acff5f82dc3aa61124c",
+      "bytes": 1990
+    },
+    {
+      "path": "Voltforge_AI/tools/verify_foundation_evaluation_binding.py",
+      "sha256": "1ed61b1ac3cdf5cc101bac20392f39a0a1e65014ebad88e9d900cda177c574cb",
+      "bytes": 3602
+    },
+    {
+      "path": "Voltforge_AI/tools/record_foundation_evaluation.py",
+      "sha256": "45e06990b34b4bbf25da9c757afc2f8854652ae7eae206b591d62e673860fc20",
+      "bytes": 20576
+    },
+    {
+      "path": "Voltforge_AI/tests/test_foundation_evaluation.py",
+      "sha256": "632734b96778bc1e10fd6f926a4c43307e0bdb155f4710c78c0ae28cc4e70f73",
+      "bytes": 16389
+    },
+    {
+      "path": "Voltforge_AI/tests/test_foundation_evaluation_binding.py",
+      "sha256": "19b38e2a1e8431b866cbd3caec40108f4b2dca13e0067d4caf82d4cb3ed636c2",
+      "bytes": 1302
+    },
+    {
+      "path": "Voltforge_AI/tests/test_llm_foundation_contract.py",
+      "sha256": "35e4f21c83477aac7c6ef93c59aefe3394d06cad7f7d546c9d43f51ed7588650",
+      "bytes": 5901
+    },
+    {
+      "path": "Voltforge_AI/foundation/evaluation-binding.v1.json",
+      "sha256": "255e7ef77e5bcfe136ee2cc9116bb83d571943068ff6463ca4deceaafa47d641",
+      "bytes": 1502
+    },
+    {
+      "path": "Voltforge_AI/.gitattributes",
+      "sha256": "a370f8713c71dd0bc30df2489b9528b7255de7c8fad3420cc5472d2dada12955",
+      "bytes": 145
+    }
+  ],
+  "evidence": [
+    {
+      "path": "Voltforge_AI/evaluation/foundation/manifest.v1.json",
+      "sha256": "105b72302a38cf14e2711525113ecc0d9f3ed31957731f742470426ab185056b",
+      "bytes": 102802
+    },
+    {
+      "path": "Voltforge_AI/evaluation/foundation/acceptance-policy.v1.json",
+      "sha256": "35c9a2ce79922beb3ec1c36e41ce61eeafcb351e6a3365851d20aa6bb4b20618",
+      "bytes": 6350
+    },
+    {
+      "path": "Voltforge_AI/foundation/evaluation-binding.v1.json",
+      "sha256": "255e7ef77e5bcfe136ee2cc9116bb83d571943068ff6463ca4deceaafa47d641",
+      "bytes": 1502
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_FOUNDATION_EVALUATION.v1.md",
+      "sha256": "aa9dc0fa70517b56e9f05f75045d13b33e8c2b030d0577ddfd4226925fc8752c",
+      "bytes": 13228
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-018-suite-freeze.json",
+      "sha256": "50840ac28899e6e97712459e5bc27d95d83cb1022f952d8ff7cd562c82598416",
+      "bytes": 763
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-018-baseline.json",
+      "sha256": "7d72b714e8f6b91f6e29e36f0a5c68fb92c6135fe905aee48b7f166dbc82e121",
+      "bytes": 7433040
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-018-evaluation-binding.json",
+      "sha256": "27890b6b0548b655c1659e4130d89b492762890f0cede9e08a0fbe07a387ce6a",
+      "bytes": 1232
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-018-tests.xml",
+      "sha256": "93e3e8ed3fedcd4ae4b9e7095a1eeeed64e8ac63a756ba60211e7090621d58bb",
+      "bytes": 17071
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-018-preserved-design.json",
+      "sha256": "1f404ae9d2552bea61ec71da20e85949dc2112a98ef8f77917e4e21190b56bff",
+      "bytes": 1474
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-018-checks.json",
+      "sha256": "1d210508ed132466f9161c0cf91ad115d036bd8e84e1b04b725beef83d9deb1d",
+      "bytes": 4796
+    },
+    {
+      "path": "backlog_history/llm-task-018-before/manifest.json",
+      "sha256": "c6a625ef8e3efe86a10c5c348809be4b1b2c3e4264a96f7ad5d7298aaa5a17db",
+      "bytes": 1669
+    }
+  ],
+  "receiptVersion": 2,
+  "supersedes": {
+    "path": "Voltforge_AI/evaluation/reports/llm-task-018-validation.json",
+    "sha256": "cf63f92ea79a59f8b9175c7993e9a7629dfd03f0e3f834c399d794bfb43c8374",
+    "bytes": 10132
+  },
+  "correction": "Metadata accounting only: JUnit suite tests=120 includes 115 testcase nodes plus 5 passing subtests. The original receipt counted those subtests twice in prose; no fixtures, results, thresholds or model state changed."
+}

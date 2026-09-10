@@ -17,7 +17,6 @@ from model.artifact_registry import (
     resolve_active_artifact,
 )
 from model.model import NumPyTransformer, TransformerConfig, softmax
-from model.reasoning_llm import ElectronicsReasoningEngine
 from model.tokenizer import VoltForgeTokenizer
 from task_schema.compiler import compile_task_record
 from task_schema.schema import CONTRACT_VERSION, validate_task_record
@@ -33,7 +32,6 @@ class VoltForgeInferenceEngine:
         self.tokenizer = VoltForgeTokenizer()
         self.config: Optional[TransformerConfig] = None
         self.model: Optional[NumPyTransformer] = None
-        self.reasoning_engine: Optional[ElectronicsReasoningEngine] = None
         self.is_loaded = False
         self.status_code = "MODEL_NOT_LOADED"
         self.load_error = "The local model has not been loaded."
@@ -61,7 +59,6 @@ class VoltForgeInferenceEngine:
             self.config = config
             self.tokenizer = tokenizer
             self.model = model
-            self.reasoning_engine = ElectronicsReasoningEngine(str(artifact.root))
             self.is_loaded = True
             self.status_code = "MODEL_ARTIFACT_READY"
             self.load_error = ""
@@ -116,16 +113,7 @@ class VoltForgeInferenceEngine:
         simulation_state: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         self._require_loaded()
-        if self.reasoning_engine is None:
-            raise RuntimeError("Approved model reasoning engine is unavailable.")
-        return self.reasoning_engine.reason_and_solve(
-            prompt=prompt,
-            board_type=board_type,
-            components=components,
-            wires=wires,
-            code=code,
-            simulation_state=simulation_state,
-        )
+        raise RuntimeError("MODEL_LEGACY_RULE_API_DISABLED: use typed neural generation or deterministic tools explicitly.")
 
     def generate_neural_text(
         self, prompt: str, max_tokens: int = 120, temperature: float = 0.7
@@ -192,16 +180,8 @@ class VoltForgeInferenceEngine:
         simulation_state: Optional[Dict[str, Any]] = None,
     ) -> AsyncIterator[Dict[str, Any]]:
         self._require_loaded()
-        if self.reasoning_engine is None:
-            raise RuntimeError("Approved model reasoning engine is unavailable.")
-        async for chunk in self.reasoning_engine.stream_reasoning_and_response(
-            prompt=prompt,
-            board_type=board_type,
-            components=components,
-            wires=wires,
-            code=code,
-            simulation_state=simulation_state,
-        ):
+        raise RuntimeError("MODEL_LEGACY_RULE_API_DISABLED: rule answers cannot be streamed as neural output.")
+        for chunk in ():
             yield chunk
 
 

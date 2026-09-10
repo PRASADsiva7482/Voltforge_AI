@@ -1,0 +1,222 @@
+{
+  "schemaVersion": 1,
+  "taskId": "LLM-TASK-016",
+  "status": "verified-cleanup",
+  "generatedAtUtc": "2026-09-06T10:19:28.806042+00:00",
+  "snapshot": {
+    "path": "backlog_history/llm-task-016-before-20260906T054449Z/manifest.json",
+    "bytes": 48994,
+    "sha256": "d3cf21165c94e1b6334c6d90b3a39d3c20b74da3bb283bd82830ae2e9e4b9143"
+  },
+  "verifiedSourceBackups": 83,
+  "unchangedProtectedFiles": 131,
+  "cleanupDiff": {
+    "path": "Voltforge_AI/evaluation/reports/llm-task-016-cleanup.patch",
+    "bytes": 234838,
+    "sha256": "a84a810a85c6efcdaa97388df0a9520a310ca845135e9a84f95c4b6e11c9e836"
+  },
+  "changedSources": [
+    {
+      "path": "AI_CHAT_ROOT_CAUSE_ANALYSIS.md",
+      "bytes": 20316,
+      "sha256": "ce3e01db75893bd615fdf79ef93deef70b945fd5b45c689c43ffa97dd7cd550a",
+      "beforeSha256": "49b2d3824531979fd15bbf3d07e9b2caebf597ed91fd4304fe2ebd5f5a0f9eaa"
+    },
+    {
+      "path": "AI_CHAT_ROOT_CAUSE_BACKLOG.json",
+      "bytes": 26165,
+      "sha256": "48abf4709f9cb2e29ffc51ef607b614c2ea927aaa5fd091c995ccddffbc9f003",
+      "beforeSha256": "14759409c95ee1546a399787983a807c1d3e5c24f6f973b75ab1e6cbc3528037"
+    },
+    {
+      "path": "Voltforge_AI/engine/reasoning.py",
+      "bytes": 72967,
+      "sha256": "c456d68483ede316e94c6429fd019e92ca6b961f69e1946177c7e722fb4a28bb",
+      "beforeSha256": "bb096f5784acd470ad06a9e91e0d1e874f45516d3f06bfdfcb4b346ac9520214"
+    },
+    {
+      "path": "Voltforge_AI/model/gen1/model.py",
+      "bytes": 26666,
+      "sha256": "4f36da22cfa80598ad972a809adae15135a2341b12e7e0d57ad1f695911d911f",
+      "beforeSha256": "aae0c4e1d1bef099f37191a1342a865cec3ad239ee190507765e013da139a1e2"
+    },
+    {
+      "path": "Voltforge_AI/model/generation_quality.py",
+      "bytes": 32240,
+      "sha256": "a6d876726d205574a110c891fd04fe48e8a616244d2791bb814b4a8c3a594395",
+      "beforeSha256": "88b4aeda304a6ebf1207e6c8184aee239cb8c7f3d6d646b757227b332a4dff55"
+    },
+    {
+      "path": "Voltforge_AI/model/infer.py",
+      "bytes": 7705,
+      "sha256": "7b02d32c762f15d7846080a2d07f3dce8768922bf7bc243eee430e56a0fb02be",
+      "beforeSha256": "869b9ab29dd9902cb4f3f735e87ff60d0b554ed7f8d743186c7bcdac48f3d43b"
+    },
+    {
+      "path": "Voltforge_AI/model/local_engine.py",
+      "bytes": 5044,
+      "sha256": "27e8fc83ec6edfccfae274d14fd9ec0b18f9662850ee220e839b7411c7cb19c1",
+      "beforeSha256": "f92968cfbc92215cd260a780ddd74d4f830aba73ab935445521e9ee54a1c3ebf"
+    },
+    {
+      "path": "Voltforge_AI/model/reasoning_llm.py",
+      "bytes": 400,
+      "sha256": "eddf87320fd57784ac69b719b81d3caef9730eff4ab00f15f73a091aa56a5542",
+      "beforeSha256": "de3e9a214c588e1c233956eacce3d1ecbcd84a8f859f4cbebd48058ae04f12de"
+    },
+    {
+      "path": "Voltforge_AI/model/registry_manager.py",
+      "bytes": 47897,
+      "sha256": "b21471d62671fd1b9e66b019baa274a3a0fdbe11dbc0cdcb2fc7ff1c6f4e232d",
+      "beforeSha256": "1145eeeecb19aeeceb8c0353653ce44c064acc3f26f1b5bc371a5be3d722b7aa"
+    },
+    {
+      "path": "Voltforge_AI/model/runtime_service.py",
+      "bytes": 12785,
+      "sha256": "2b9e35f8d85afebddcc0a65833f7040851181f9ffa1e442f4c9a21cda0f50e0b",
+      "beforeSha256": "0d7758c299c762369cf858178d5db8f546dff5257372dada6edc8e77d941c28f"
+    },
+    {
+      "path": "Voltforge_AI/tests/test_ai_security_threat_model.py",
+      "bytes": 4005,
+      "sha256": "73ff693e2a41d296bee071583b88ad77a869a612541df9a95f13d56e7fc924c7",
+      "beforeSha256": "2d4044f3bdeaf83eaa1efdc1d110ad7019b708c88187269a9e82ec894c16cf31"
+    },
+    {
+      "path": "Voltforge_AI/tests/test_generation_quality.py",
+      "bytes": 19502,
+      "sha256": "28551461f1d6f95ead49e9c9d915d156f27c4458bd7e4ba16009c068cb235fe1",
+      "beforeSha256": "29e68d1976e030673d1f10449a8ac1e3507130d55835e9ec635692cfc63dcdfe"
+    },
+    {
+      "path": "Voltforge_AI/tests/test_local_engine.py",
+      "bytes": 2055,
+      "sha256": "2a0db3d6673e63ee4e34bf57aad97005715e6ad1fdf70cfe4b7dfdde647c82e1",
+      "beforeSha256": "13c2670f559904a765b1d452da902ac4895fc64fc16c532dc09135dfba50d253"
+    },
+    {
+      "path": "Voltforge_AI/tests/test_local_llm_e2e.py",
+      "bytes": 2780,
+      "sha256": "f089a128baa5bccef3a728b6ddc08d6eb4b46db0113413381811450594aa12d5",
+      "beforeSha256": "cd1a0ebf04377a3f024134d8f8bdf6fb0de46ccedf56ab400309b3b520171daf"
+    },
+    {
+      "path": "Voltforge_AI/tests/test_runtime_service.py",
+      "bytes": 17062,
+      "sha256": "4b69090f92ce8a6fba272ea51c6528f0735d840b42f7570797b8fcaf801accb0",
+      "beforeSha256": "a35026b3379fb7504c52d29722663228a8e900cbedf8aabe28927500c55187cc"
+    },
+    {
+      "path": "Voltforge_AI/tests/test_v2_engines.py",
+      "bytes": 8448,
+      "sha256": "9e43525ba5f3ab44fd1d580e1edc9660be81c367d8bb5edb17b2237153c1cbb2",
+      "beforeSha256": "2882e92bd9cb9dd1cb54a11ea6a4b86f92f6b328fe4af8a33b9ec2d28c2b46ae"
+    },
+    {
+      "path": "Voltforge_AI/tools/activate_domain_artifact.py",
+      "bytes": 508,
+      "sha256": "fb07f21b2bfa12713506b14e4b03d4fe81607ea2e28504347780a09ad5b37433",
+      "beforeSha256": "cdf41019656190622e87510c0dafdf2dbf3d8bc4ba820d959f179a60f8c5bd3f"
+    },
+    {
+      "path": "Voltforge_AI/tools/audit_llm_foundation.py",
+      "bytes": 11121,
+      "sha256": "50448c1e716125af770c1d3974645c180f63e86b45753915357cc686a74e7c34",
+      "beforeSha256": "fcbafade4e29a466341a257b29753f3300c96a293ee08e5411cb5db95db3f2d3"
+    },
+    {
+      "path": "VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.json",
+      "bytes": 97494,
+      "sha256": "795b92d3fae5a3886bcfbd66fdc7f3731b14629c8140c87a6f408cfd3f070aa8",
+      "beforeSha256": "4ade5405ef5ddbb4b4ffab7e58dc607c92839ae82aa197e4244816c8b5bbb11b"
+    },
+    {
+      "path": "VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.md",
+      "bytes": 68394,
+      "sha256": "86c9f8d714cb864162279371696a9afeaaf9757b750983853d767748bf0a10cd",
+      "beforeSha256": "5bf2bd568487a711724ba6bda27c5af22ab9771c2a173bcc899c7c42914979bb"
+    },
+    {
+      "path": "Voltforge_AI/engine/deterministic_tools.py",
+      "bytes": 7678,
+      "sha256": "efc79f735aebd555092cf2b422c6b4f9472d44be7d077c966084c1a0555718b4",
+      "beforeSha256": null
+    },
+    {
+      "path": "Voltforge_AI/tests/test_llm_cleanup.py",
+      "bytes": 6002,
+      "sha256": "021feb874f5e1c23fdd73aca5ddf456c9e0d925e11a4ab7b5416f5044cf9a269",
+      "beforeSha256": null
+    },
+    {
+      "path": "Voltforge_AI/tools/record_llm_cleanup.py",
+      "bytes": 7334,
+      "sha256": "62b2b09daf9e0322def7eaa915e87336063fe33ed101cc3576456a932a833a77",
+      "beforeSha256": null
+    }
+  ],
+  "tests": [
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-016-ai-tests.xml",
+      "bytes": 86594,
+      "sha256": "f21c7b9dc10d46ebb634439b78f6c9ff59908a622814d46831c978a173ec6f2a",
+      "tests": 614,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 5,
+      "passed": 609,
+      "additionalPassedSubtests": 5,
+      "junitReportedTestsIncludingSubtests": 619,
+      "seconds": 422.26
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-016-focused-tests.xml",
+      "bytes": 22330,
+      "sha256": "30ec882f10da4c1dd6969af73a8b17640976246750822b9d8442c84ef493b4c5",
+      "tests": 156,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 156,
+      "additionalPassedSubtests": 0,
+      "junitReportedTestsIncludingSubtests": 156,
+      "seconds": 18.983
+    }
+  ],
+  "testScope": "Full suite plus focused regressions after final adapter fixes; suites overlap and counts must not be added.",
+  "crossRepositoryFastLane": {
+    "path": "Voltforge_AI/evaluation/reports/llm-task-016-cross-repository-quality.json",
+    "bytes": 13610,
+    "sha256": "d6c320030165ca0b77d55cc817edeeab4ce4a63e6780d73bfd999e09c2b0f03b",
+    "passed": 27,
+    "failed": 0,
+    "skipped": 0
+  },
+  "runtimeAudit": {
+    "path": "Voltforge_AI/evaluation/reports/llm-task-016-runtime-audit.json",
+    "bytes": 31388,
+    "sha256": "24cd7aefa2a3daec628e189b171dbfc8eca7620a2201f548370c0ffcc409317a",
+    "chatProbes": 8,
+    "deterministicFallbacks": 8,
+    "neuralAttempts": 0,
+    "activeArtifactId": null,
+    "ready": false
+  },
+  "verifiedChanges": [
+    "Signed, approved, compatible package required before loader import; loaded identity and readiness are checked.",
+    "Loader failures unload partial state and never substitute deterministic rules as neural output.",
+    "Legacy generation facade is unavailable; no hardcoded model capacity, device, streaming or readiness.",
+    "Activation shortcut is inert on import and exits nonzero without changing files.",
+    "Compatibility and pinned-runtime bypass flags are ineffective; checkpoint security block is preserved.",
+    "Plain prose cannot bypass structured generation validation; uncertainty cannot conceal unsafe instructions.",
+    "Named deterministic tools retain evidenced hardware lookups and independently checked calculations."
+  ],
+  "limits": [
+    "No model training, release approval, activation, deployment or browser verification.",
+    "No measured neural throughput or model capability acceptance; loader success tests use signed fixtures and a stub runtime.",
+    "Registry, model binaries, tokenizer releases and synthetic releases remain unchanged; broader owner backup policy remains open.",
+    "Existing routing, repeated grounding text, context/memory integration and true streaming remain in later backlog tasks.",
+    "Cross-repository fast checks are development evidence, not the model release lane or deployed end-to-end acceptance."
+  ],
+  "nextTask": "LLM-TASK-017"
+}

@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "reportId": "vfai020-project-context-compiler-v1",
-  "generatedAtUtc": "2026-09-02T01:26:00.480560Z",
+  "generatedAtUtc": "2026-09-09T14:01:57.342134Z",
   "policyId": "vfai020-project-context-policy-v1",
   "policySha256": "51760ccc3f5407a02bface5456ffaa069df2ffd05203ec0c8da3bb9397786aba",
   "snapshotPath": "evaluation/snapshots/project-context-compiler-v1.json",
-  "snapshotSha256": "55985dcf9de0da318c80f394a6d65b54acb94691216f0c14b8352e57deeaf471",
+  "snapshotSha256": "d090d475237c290df6ee01af8d8ccb2b0946ff5f2949841797f927877da3b113",
   "artifactContextWindows": {
     "vfdlm-g1-edge-v0.1.0-bootstrap": 128,
     "vfdlm-g1-edge-v0.1.1-runtime": 128,
@@ -35,5 +35,5 @@
   "rawProjectContextStored": false,
   "neuralServingApproved": false,
   "blockingReason": "The current 128-token experimental artifacts cannot hold the mandatory typed prompt. A future governed model revision needs at least the policy minimum and must independently pass training, generation-quality, and release gates.",
-  "reportSha256": "e7ea77958589fc865c81a8183e60e7ed56a94ea4c437be711cfdce3c8c08c112"
+  "reportSha256": "3eff5f228fe04ccedd57cf1822de1c4a66539a3994e08efd945dc045c490e164"
 }

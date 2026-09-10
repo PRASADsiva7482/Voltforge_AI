@@ -12,6 +12,89 @@ registry, or release record is an intentional change and requires review.
 
 ## 1. Support boundary and release truth
 
+The [owned Gen2 foundation design](LLM_FOUNDATION_DESIGN.v1.md) defines the
+`vfdlm-g2` family trained from random initialization on an owner-controlled
+private server. The Gen2 design contract does not approve model training or activation.
+Its base, instruction and integrated-assistant stages have separate evidence
+gates. Gen1 policies and history remain unchanged; task 018 owns the new frozen
+evaluation suite and thresholds. Verify the design before implementing a new
+foundation task:
+
+```powershell
+rtk proxy .\.toolchains\gen1\Scripts\python.exe tools/verify_llm_foundation.py
+```
+
+Task 018 now supplies the [independent evaluation harness](LLM_FOUNDATION_EVALUATION.v1.md),
+900 frozen cases and an additive design/policy binding. The original task-017
+design verifier retains its historical pending-threshold result; use the binding
+verifier below for the current threshold state. The evaluation baseline grants no model release or activation approval.
+Acceptance is checksum locked, with separate confidential custody still required
+before candidate training. Preserve its material outside all training inputs.
+
+```powershell
+rtk proxy .\.toolchains\gen1\Scripts\python.exe tools/evaluate_llm_foundation.py verify
+rtk proxy .\.toolchains\gen1\Scripts\python.exe tools/verify_foundation_evaluation_binding.py
+```
+
+Task 019 adds the [training-source inventory](LLM_TRAINING_SOURCE_INVENTORY.v1.md).
+Four source definitions and four existing task shards pass current permission
+checks; twelve legacy datasets remain quarantined. The 227 eligible synthetic
+records measure 112,418 tokens with the existing tokenizer as a planning proxy.
+The source inventory does not admit a Gen2 corpus or authorize training.
+Seven external sources remain proposals pending exact content and permission
+review. Preserve held-out records and distinct source, shard and release gates.
+
+```powershell
+rtk proxy .\.toolchains\gen1\Scripts\python.exe tools/inventory_llm_sources.py verify --recompute
+```
+
+Task 020 adds [reproducible corpus ingestion](LLM_CORPUS_INGESTION.v1.md).
+The offline builder stages 227 approved records, excludes 23 held-out records,
+and records immutable raw/normalized shards, extraction review and memory evidence.
+Ingestion staging does not authorize training or a Gen2 corpus release.
+Exact deduplication is implemented; task 021 still owns near-duplicates and family splits.
+The build-only dependency is pinned in `requirements-corpus.txt`; runtime serving
+does not import the ingestion or PDF parser modules.
+
+```powershell
+rtk proxy .\.toolchains\gen1\Scripts\python.exe tools/ingest_llm_corpus.py verify --release corpus/ingestion/v1/4eb23ca6950fb9d7fa9fd87bfbfcbe29aadd92d008a1d9d1e45229231078948d --recompute
+```
+
+Task 021 adds [family partitions and leakage controls](LLM_CORPUS_PARTITIONS.v1.md).
+All 227 staged records are quarantined by the stricter protected-content/family
+checks; the new train/validation/test files are empty. Positive and negative
+fixtures separately verify populated partitions and deliberate leakage rejection.
+Partition verification does not establish corpus adequacy or authorize training.
+Task 022 adds a separate owned-domain candidate release with pre-render
+reservations: 67 records across 27 families, 51 independent calculation checks,
+and 24 exact Uno/Mega compiler checks. The frozen policy admits 17 records to
+candidate partitions (12 train, 0 validation, 5 test) and quarantines 50,
+including all 12 firmware examples. Domain corpus readiness remains false.
+Owned domain candidates do not authorize corpus release or model training.
+Task 023 subsequently completed source admission, independent validation and
+pilot/input corpus release gates. See [owned domain data](LLM_OWNED_DOMAIN_DATA.v1.md).
+
+Task 023 supplies an [admitted pilot/input corpus](LLM_PILOT_INPUT_CORPUS.v1.md):
+42 train / 11 validation / five test / eight quarantine records, with 919,275
+unique train and 34,462 validation proxy tokens. Source, family, quality,
+finite-budget and real-input resource gates pass. All older exclusions remain
+excluded. Admitted pilot inputs do not approve a training run or production model release.
+Production corpus/mixture acceptance remains in tasks 031/032. The older
+[candidate artifacts](LLM_PRETRAINING_CORPUS_CANDIDATE.v1.md) remain historical.
+Pretraining corpus candidates do not authorize tokenizer fitting or model training.
+
+```powershell
+rtk proxy .\.toolchains\gen1\Scripts\python.exe -B tools/build_pretraining_corpus.py verify --release corpus/pretraining-candidates/v1/8f55313b779ffa8c8beebc19cbb3761a354a0e219fdf794865882d4728dcf852 --recompute
+```
+
+```powershell
+rtk proxy .\.toolchains\gen1\Scripts\python.exe -B tools/build_owned_domain_data.py verify --release corpus/owned-domain/v1/8ac1756fd8c8402d032ccedc94d58d44faf5ec67659754e2b6770fce3c130a25 --recompute
+```
+
+```powershell
+rtk proxy .\.toolchains\gen1\Scripts\python.exe tools/partition_llm_corpus.py verify --release corpus/partitions/v1/be29e68619449efec0348e5747944b2a1861b78b82a93642df923de2424813c6 --recompute
+```
+
 VoltForge AI is a local, project-specific system. Response generation is
 owned by the VoltForge code and approved local artifacts. There is no hosted LLM, third-party generation API, pretrained model dependency, or remote-device fallback. Internet access is an optional, bounded evidence lookup only; web
 content is untrusted, citation-only context and is never training data.
@@ -186,6 +269,28 @@ docker run --rm --publish 127.0.0.1:2002:2002 --env VOLTFORGE_AI_ENVIRONMENT=dev
 
 ## 4. Data and corpus lifecycle
 
+The task-023 admitted input release binds exact source-use decisions, retained
+notices, checked math/electronics validation references and all source/split
+gates. Use its verifier and train-only handoff; source permission alone is
+insufficient. Source-input admission does not authorize corpus fitting or model training.
+
+```powershell
+rtk proxy .toolchains\gen1\Scripts\python.exe -B tools/release_pilot_corpus.py verify --release corpus/pilot-input/v1/04830f1057093c4a71930e9f49940c6507c59496425926679e5cb789897c0f94 --recompute
+```
+
+```powershell
+.toolchains\gen1\Scripts\python.exe -B tools/expand_pretraining_sources.py verify-admission
+```
+
+The task-023 [leakage precision review](LLM_CORPUS_LEAKAGE_PRECISION.v1.md)
+distinguishes direct identity/literal/code evidence from lexical matches needing
+review. It preserves every current corpus exclusion and exports counts only.
+Leakage precision review does not authorize source use or corpus readmission.
+
+```powershell
+.toolchains\gen1\Scripts\python.exe -B tools/review_corpus_leakage.py controls
+```
+
 File presence never grants training or retrieval approval. Every accepted
 source, shard, and task record is checksum-bound to its producer, schema,
 license/privacy evidence, and allowed use.
@@ -227,6 +332,25 @@ After a source revision, inspect impact before removal:
 ```
 
 ## 5. Tokenizer lifecycle
+
+Gen2 tokenizer fixtures do not authorize corpus fitting, model training or serving.
+
+Task 024 now supplies a [corpus-trained owned tokenizer](LLM_TRAINED_GEN2_TOKENIZER.v1.md)
+with 16,384 entries, immutable 0.1.0 lineage and actual decoder/context
+version checks. The older [fixture preparation](LLM_GEN2_TOKENIZER_PREPARATION.v1.md)
+remains historical. The trained tokenizer does not approve model training, serving or external-retention acceptance.
+
+```powershell
+rtk proxy .toolchains\gen1\Scripts\python.exe -B tools/train_gen2_tokenizer.py verify --release model/tokenizers/gen2/releases/f2bf8a23c7d251252bf120ea3262875152e3dede6a4549e3ea147bc867a09d65 --recompute
+```
+
+```powershell
+.toolchains\gen1\Scripts\python.exe -B tools/build_gen2_tokenizer.py fixtures
+```
+
+This offline command fits only public implementation fixtures, verifies the
+resulting byte contracts and reports actual sizes. It grants no corpus or model
+release approval. The separate corpus-trained release uses the admitted-input verifier.
 
 The released tokenizer is the project-owned byte-level BPE contract. Its
 vocabulary, merges, split, trainer code, and evaluation report are immutable
@@ -622,6 +746,7 @@ shortcut.
 | Memory | Explicit bounded project/session storage | Enable per scope; inspect/correct/delete through authenticated APIs |
 | Feedback | Governed review and candidate scheduling | Keep held-out-first and consented; no live training |
 | Model training | Reproducible Gen1 create/resume path | Train isolated runs; evaluate and package separately |
+| Owned Gen2 foundation | Verified immutable ingestion and family/contamination checks; current 227 records yield no independent training partition | Continue with LLM-TASK-022 independent domain families and pre-render reservations; broad corpus/training remain open |
 | Feedback-driven model training executor | Not implemented | Keep scheduled inputs isolated; do not merge manually |
 | Signed release and rollback | Implemented and operator-triggered | Use release records, canary, expected revisions |
 | Automated backup/incident service | Deployment responsibility | Use encrypted external backups and this runbook |

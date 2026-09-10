@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "vf-g2-owned-domain-v1",
+  "taskId": "LLM-TASK-022",
+  "sourceId": "vf-owned-foundation-domain-recipes-v1",
+  "sourceBasis": "New repository-authored candidate recipes and reference programs under the owner's requested build; no new third-party source bodies or customer projects acquired.",
+  "authoringMethod": "Coding-assistant-authored implementation with deterministic parameter rendering and independent algorithm checks; not human review or measured hardware evidence.",
+  "permissionBoundary": "Candidate staging only. Existing source approvals are not transferred to new bytes. Task 023 must admit this versioned source with its exact provenance and corpus gates.",
+  "trainingAllowed": false,
+  "referencesAreTrainingDocuments": false,
+  "referenceUrls": [
+    "https://github.com/arduino/ArduinoCore-avr/tree/1.8.6",
+    "https://github.com/arduino/reference-en/blob/master/Language/Functions/External%20Interrupts/attachInterrupt.adoc",
+    "https://www.ti.com/lit/SLYY192"
+  ],
+  "splitPolicyPath": "data_governance/splitting/policy.v1.json",
+  "previousPartitionManifest": "corpus/partitions/v1/be29e68619449efec0348e5747944b2a1861b78b82a93642df923de2424813c6/manifest.json",
+  "requiredDomains": ["analog", "digital", "timing", "buses", "power", "adc", "control", "memory", "firmware-debug"],
+  "requiredFirmwareFamilies": 6,
+  "requiredExactTargets": ["arduino:avr:uno", "arduino:avr:mega:cpu=atmega2560"],
+  "useAllowed": ["domain-candidate-review"],
+  "hardwareExecutionVerified": false,
+  "semanticLeakageCompletenessClaimed": false
+}

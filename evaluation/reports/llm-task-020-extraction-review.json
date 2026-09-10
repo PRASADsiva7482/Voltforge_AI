@@ -1,0 +1,261 @@
+{
+  "schemaVersion": 1,
+  "taskId": "LLM-TASK-020",
+  "status": "passed",
+  "reviewer": "Codex extraction review with executable expectations",
+  "sourceManifestSha256": "f242af5dca726f217e32d2c8edd379b2e52ab51493ca6b87cb7eca9edd82287b",
+  "fixtureManifestSha256": "1519df682941c00238332e0b783bab9ee550594cb3e74a2d72d165161ce2c5c2",
+  "offlineReproductionChecks": [
+    {
+      "verification": "passed",
+      "manifestSha256": "f242af5dca726f217e32d2c8edd379b2e52ab51493ca6b87cb7eca9edd82287b",
+      "acceptedDocuments": 227,
+      "quarantinedDocuments": 23,
+      "recomputed": true,
+      "trainingAllowed": false
+    },
+    {
+      "verification": "passed",
+      "manifestSha256": "1519df682941c00238332e0b783bab9ee550594cb3e74a2d72d165161ce2c5c2",
+      "acceptedDocuments": 8,
+      "quarantinedDocuments": 9,
+      "recomputed": true,
+      "trainingAllowed": false
+    }
+  ],
+  "sourceSamples": [
+    {
+      "documentId": "7189a8b6f3452e7b480ed9d5f9d296859235c7e5fcea553f55a76d248bb99871",
+      "inputPath": "synthetic_data/shards/v1/circuit-safety.jsonl",
+      "locator": "line:1",
+      "rawSha256": "197428254436536d548261f58ba74b6fd4a542fdad81a20c9cc5b1a050bd8287",
+      "textSha256": "7b473f28525fb32a3aaab0c5fc914c37455247285d007797d0e9c7ba49663f8d",
+      "task": "structured_output",
+      "passed": true,
+      "criteria": "Exact nested task/input/output values, firmware whitespace, evidence and output constraints preserved."
+    },
+    {
+      "documentId": "91d07db05d57fe4af378ba31fc455aa73d401daa8395e583b3b4d2ad1ade70ae",
+      "inputPath": "synthetic_data/shards/v1/circuit-safety.jsonl",
+      "locator": "line:2",
+      "rawSha256": "3242d7f7c06deaae6c963669f44226e48fd5d10acdb3608c5b98ccbc7fe2f5b7",
+      "textSha256": "de125af5d5439e412ee3f6b4d27fb0817b838a3d86ff85803e382b72ae88cec4",
+      "task": "circuit_validation",
+      "passed": true,
+      "criteria": "Exact nested task/input/output values, firmware whitespace, evidence and output constraints preserved."
+    },
+    {
+      "documentId": "c32fccb028f69060c9bec323e525656139ff58f7ff607be2864f4094223d2b4d",
+      "inputPath": "synthetic_data/shards/v1/compiler-repair.jsonl",
+      "locator": "line:2",
+      "rawSha256": "56efd6541395eb3cb7cca890ec5821862ef5c7eb90b2cc1b9d7095d77f9e6019",
+      "textSha256": "4c84331149fb675da1e621f7f229917c80d2df171c7b23a9f6a3cfa2345f2d40",
+      "task": "compiler_repair",
+      "passed": true,
+      "criteria": "Exact nested task/input/output values, firmware whitespace, evidence and output constraints preserved."
+    },
+    {
+      "documentId": "bfc64ea76d9a45fcbbad141e176d8461be065b8a0d7f507abf389b5b15490999",
+      "inputPath": "synthetic_data/shards/v1/compiler-repair.jsonl",
+      "locator": "line:3",
+      "rawSha256": "9e04c0622eb49387b60effb732624bcde1aeaf77a54d5affe92c67605aa84dad",
+      "textSha256": "c01706d358c544f53928bec84455861efcfc91e04e25afe577ebdbd250fc6305",
+      "task": "compiler_repair",
+      "passed": true,
+      "criteria": "Exact nested task/input/output values, firmware whitespace, evidence and output constraints preserved."
+    },
+    {
+      "documentId": "dda1a9dd3e9ce833bf6bcad0dd1b8bb966d70c806c1922da4c0328f86db29d1c",
+      "inputPath": "synthetic_data/shards/v1/firmware.jsonl",
+      "locator": "line:1",
+      "rawSha256": "4d015cbb73571e04be871aedb98e6efc6f11765ffe8e2e75dcf1fd18041f07e6",
+      "textSha256": "f377f495ebb00a487f1b6497ec68e1581f1df1583cef50e78575586465861855",
+      "task": "firmware_generation",
+      "passed": true,
+      "criteria": "Exact nested task/input/output values, firmware whitespace, evidence and output constraints preserved."
+    },
+    {
+      "documentId": "82842a4973e77cc449280ee0a41e4200d12d3ca8491c55a41c574d6697fb34e4",
+      "inputPath": "synthetic_data/shards/v1/firmware.jsonl",
+      "locator": "line:2",
+      "rawSha256": "0027b52013acef8a9e7ac559a73ec4a36cc409ab2d0223f191f96c79d88b2b91",
+      "textSha256": "3f3c371c3c4fed895fe4e6debb532d4a6b06bd34eb6d5e2c35a53e9623597608",
+      "task": "firmware_generation",
+      "passed": true,
+      "criteria": "Exact nested task/input/output values, firmware whitespace, evidence and output constraints preserved."
+    },
+    {
+      "documentId": "c130b2094ea117e43dd5d092974fa32ebce913168a0301afd97e8d5bac647ffa",
+      "inputPath": "synthetic_data/shards/v1/grounded-electronics.jsonl",
+      "locator": "line:1",
+      "rawSha256": "f302173686b8a8428588d7254b1689313bf266b93bfbfb3049bce78282aa954b",
+      "textSha256": "712995876b07d4765c20a1f69dd308ed2ee3e094297e0b9af8f116c3e7d6a492",
+      "task": "pin_routing",
+      "passed": true,
+      "criteria": "Exact nested task/input/output values, firmware whitespace, evidence and output constraints preserved."
+    },
+    {
+      "documentId": "796ca242802c0c5b3315f97286124a76587141da6dd4b9f17e19ec18d03d84f0",
+      "inputPath": "synthetic_data/shards/v1/grounded-electronics.jsonl",
+      "locator": "line:2",
+      "rawSha256": "5d0f016c7025dcc989d5e9e5a7598934de1d452417e9182f489f8621dfd5bdee",
+      "textSha256": "93977ae5fec46341f2d5b6a857f5a25c6499d63ab218cc1c859a73c1d2388978",
+      "task": "wiring",
+      "passed": true,
+      "criteria": "Exact nested task/input/output values, firmware whitespace, evidence and output constraints preserved."
+    }
+  ],
+  "fixtureDecisions": [
+    {
+      "path": "01-si.html",
+      "inputSha256": "d579ffb679ede04010b6941e902bf15362c8219eea10145d2e49b068d0469310",
+      "passed": true,
+      "expectedOutcome": "accepted",
+      "observedOutcome": "accepted",
+      "textSha256": "1797d2a2bee026b3b52d92e50b1acf923d2ed1427ea4ac514d0a4aa42d266351",
+      "requiredFragments": 8,
+      "forbiddenFragments": 2
+    },
+    {
+      "path": "02-indent.py.txt",
+      "inputSha256": "4f1f0dcca292adb72d3cf3663f01714208c0d487ae3b197d2958a0e29c96cea6",
+      "passed": true,
+      "expectedOutcome": "accepted",
+      "observedOutcome": "accepted",
+      "textSha256": "75f0bdf4f83db182fcb41f45e8a5644539f909918908454c246ab5bf96d67100",
+      "requiredFragments": 1,
+      "forbiddenFragments": 1
+    },
+    {
+      "path": "03-unicode.txt",
+      "inputSha256": "b4435bb385061ddab1aef54cd3f91360f8aa57b0d508bb0ceedecffbb2738bf1",
+      "passed": true,
+      "expectedOutcome": "accepted",
+      "observedOutcome": "accepted",
+      "textSha256": "f89dc9be882d382d85e81b012159742ba82e1d4ada260eae2ecf7fdc0bd35307",
+      "requiredFragments": 1,
+      "forbiddenFragments": 2
+    },
+    {
+      "path": "04-unicode-duplicate.txt",
+      "inputSha256": "f89dc9be882d382d85e81b012159742ba82e1d4ada260eae2ecf7fdc0bd35307",
+      "passed": true,
+      "expectedOutcome": "exact-normalized-duplicate",
+      "observedOutcome": "exact-normalized-duplicate"
+    },
+    {
+      "path": "05-utf16.txt",
+      "inputSha256": "f9308909b289b625604b5bb7b00256ef14c41d234c594c8d3044cd38e30e6683",
+      "passed": true,
+      "expectedOutcome": "accepted",
+      "observedOutcome": "accepted",
+      "textSha256": "6e2a3b89f36ea760eae61b6e9add5423bbe1654c16beb100cca4abc4c487912a",
+      "requiredFragments": 1,
+      "forbiddenFragments": 1
+    },
+    {
+      "path": "06-cp1252.txt",
+      "inputSha256": "0156331050c16e17dfac95a57eca124aa7b38708b833fca5d3c91daed785e4b4",
+      "passed": true,
+      "expectedOutcome": "accepted",
+      "observedOutcome": "accepted",
+      "textSha256": "7f67ee7658224155b012e93e0a7c28401631cb32ba03cae8d1b8ed7bd614be47",
+      "requiredFragments": 1,
+      "forbiddenFragments": 1
+    },
+    {
+      "path": "07-code-math.pdf",
+      "inputSha256": "cf0505b65121f39bf399984766fc6b7a2df0f5dac257f29875ee357b0600a842",
+      "passed": true,
+      "expectedOutcome": "accepted",
+      "observedOutcome": "accepted",
+      "textSha256": "6335c7bb54f376a88b4709610dd1afda8f1ebbcc071c8f31277e94d604acf53e",
+      "requiredFragments": 2,
+      "forbiddenFragments": 1
+    },
+    {
+      "path": "08-empty.pdf",
+      "inputSha256": "b37a58fb510237b6b60b1e610deecd3eb013ff71836b831faf66958f83affbe3",
+      "passed": true,
+      "expectedOutcome": "pdf-ocr-or-review-required",
+      "observedOutcome": "pdf-ocr-or-review-required"
+    },
+    {
+      "path": "09-broken.pdf",
+      "inputSha256": "50b6e61bd3e0980f0f999eeb44db795d91d6b8c24f60b23a676ea3bddd7baabe",
+      "passed": true,
+      "expectedOutcome": "pdf-extraction-failed",
+      "observedOutcome": "pdf-extraction-failed"
+    },
+    {
+      "path": "10-invalid-utf8.txt",
+      "inputSha256": "da98a3ea43dda82072d15b4fbe31a7e262b9cd45987833109f3e7de29c2d0b74",
+      "passed": true,
+      "expectedOutcome": "invalid-encoding",
+      "observedOutcome": "invalid-encoding"
+    },
+    {
+      "path": "11-hidden.txt",
+      "inputSha256": "88afcc6e5936095b0bdb1f66a6fbbbfff3c1a48b603bc799760abe372a04a36f",
+      "passed": true,
+      "expectedOutcome": "broken-or-hidden-text",
+      "observedOutcome": "broken-or-hidden-text"
+    },
+    {
+      "path": "12-secret.txt",
+      "inputSha256": "2766b11d37e63166e89c96956a9725dfc8079d257339040f497ffa8d32c0e2fd",
+      "passed": true,
+      "expectedOutcome": "secret-pattern",
+      "observedOutcome": "secret-pattern"
+    },
+    {
+      "path": "13-secret-hidden.html",
+      "inputSha256": "ff4dc05e0e063b1cf647f8ec61b9de4f06c1b644ad0a9976f01f9603f0f9c7ee",
+      "passed": true,
+      "expectedOutcome": "secret-pattern",
+      "observedOutcome": "secret-pattern"
+    },
+    {
+      "path": "14-broken-code.html",
+      "inputSha256": "45776e6d76a94ea9d736d358525268d701622b35fe5818d6de847162f2b7090a",
+      "passed": true,
+      "expectedOutcome": "malformed-html",
+      "observedOutcome": "malformed-html"
+    },
+    {
+      "path": "15-boilerplate.html",
+      "inputSha256": "3b80c267712a7775c6f6673d6b18aba53de848d10380852e740cffc35aaa00d2",
+      "passed": true,
+      "expectedOutcome": "empty-extraction",
+      "observedOutcome": "empty-extraction"
+    },
+    {
+      "path": "16-fenced.md",
+      "inputSha256": "953fefbabc8527e12894f47dc731d4cb78aaca5988dc623d9265b2a3cca54edc",
+      "passed": true,
+      "expectedOutcome": "accepted",
+      "observedOutcome": "accepted",
+      "textSha256": "d746918b5467d46b60e091b73acb185c027f59087e51901ed9d98856bfdb34f6",
+      "requiredFragments": 2,
+      "forbiddenFragments": 1
+    },
+    {
+      "path": "17-margins.pdf",
+      "inputSha256": "5b2593d49fc470a730baeee56ab517c4da4239f0ebc20da8d698f88fd73504ed",
+      "passed": true,
+      "expectedOutcome": "accepted",
+      "observedOutcome": "accepted",
+      "textSha256": "aaf8d2afcc32eb678d8776cfda00a7615e1cfe64f4f16f5d57d0c8d9de435ae7",
+      "requiredFragments": 1,
+      "forbiddenFragments": 2
+    }
+  ],
+  "sourceSamplesReviewed": 8,
+  "fixtureDecisionsReviewed": 17,
+  "limits": [
+    "Extraction fidelity only; no new independent electronics correctness or model quality claim.",
+    "PDF review covers these authored digital-text fixtures; multi-column reading order, scanned text and complex visual equations need source-specific review.",
+    "No rejected document body is copied into release shards or this report. Synthetic secret sentinels remain only in the explicitly marked regression inputs."
+  ],
+  "trainingAllowed": false
+}

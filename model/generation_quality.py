@@ -60,6 +60,12 @@ _DANGEROUS_OPERATION = re.compile(
     r"\bconnect\s+(?:directly\s+)?(?:to\s+)?(?:mains|line voltage)\b",
     re.IGNORECASE,
 )
+_DANGEROUS_ELECTRICAL_OPERATION = re.compile(
+    r"\bconnect\s+(?:220v|110v|mains|line voltage|high voltage)\s+(?:directly\s+)?(?:to\s+)?(?:arduino|pin|rail|board|gpio|microcontroller)\b|"
+    r"\bconnect\s+(?:directly\s+)?(?:to\s+)?(?:220v|110v|mains|line voltage)\b|"
+    r"\b(?:short|bridge)\s+(?:the\s+)?(?:5v|3\.3v|vcc|power|supply|rails?)\s+(?:to\s+)?(?:gnd|ground)\b",
+    re.IGNORECASE,
+)
 _DOMAIN_LANGUAGE = re.compile(
     r"\b(?:adc|arduino|board|circuit|component|current|datasheet|electronic|firmware|gpio|ground|i2c|"
     r"led|microcontroller|netlist|pin|power|pwm|resistor|sensor|signal|spi|uart|voltage|wire)\b",
@@ -298,17 +304,19 @@ class GenerationQualityGate:
                 self._reject("QG_OUT_OF_DOMAIN", "The neural candidate is outside VoltForge scope.")
             if _PROMPT_INJECTION.search(text):
                 self._reject("QG_DANGEROUS_INSTRUCTION", "The neural candidate contains instruction override text.")
+            if _DANGEROUS_ELECTRICAL_OPERATION.search(text) and not (
+                kind == "safety-warning" and self._is_warning(text)
+            ):
+                self._reject("QG_DANGEROUS_OPERATION", "The neural candidate contains dangerous electrical instructions.")
+            if _DANGEROUS_OPERATION.search(text) and not (
+                kind == "safety-warning" and self._is_warning(text)
+            ):
+                self._reject("QG_DANGEROUS_INSTRUCTION", "The neural candidate contains dangerous instructions.")
             if kind == "uncertainty":
                 uncertainty_present = True
                 if refs or not any(marker in text.casefold() for marker in _UNCERTAINTY_MARKERS):
                     self._reject("QG_UNCERTAINTY_INVALID", "Uncertainty is not represented honestly.")
             else:
-                if _DANGEROUS_OPERATION.search(text):
-                    if kind != "safety-warning" or not self._is_warning(text):
-                        self._reject(
-                            "QG_DANGEROUS_INSTRUCTION",
-                            "The neural candidate contains a dangerous instruction.",
-                        )
                 if not _DOMAIN_LANGUAGE.search(text):
                     self._reject("QG_OUT_OF_DOMAIN", "A neural claim lacks electronics scope.")
                 if not refs:
@@ -683,6 +691,7 @@ class GenerationQualityGate:
     @staticmethod
     def _reject(code: str, message: str) -> None:
         raise GenerationQualityError(code, message)
+
 
 
 def fallback_metadata(

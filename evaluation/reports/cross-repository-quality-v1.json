@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "reportId": "vfai032-cross-repository-quality-v1",
-  "generatedAtUtc": "2026-09-02T01:27:15.917595Z",
+  "generatedAtUtc": "2026-09-06T04:07:01.694515Z",
   "lane": "fast",
   "release": false,
   "manifestSha256": "0eae572c99a270c2f3d9b9bd82dfec3377051cf34aaf7b72d5f4e08f6376590a",
@@ -9,14 +9,14 @@
     "manifestSha256": "0eae572c99a270c2f3d9b9bd82dfec3377051cf34aaf7b72d5f4e08f6376590a",
     "repositories": {
       "ai": {
-        "sha256": "a2315d308f0761fe9e9fa8dc9fa9e968ae6233a0e3a2f6f6e1d50f10b73e7e44",
-        "fileCount": 1173,
-        "bytes": 4627953421
+        "sha256": "b5c1778e48f755c208112db2e1276f10fda11f344976d6ed7379803fa1a5d377",
+        "fileCount": 1209,
+        "bytes": 4661695560
       },
       "backend": {
-        "sha256": "1af6eee5efb217e48f2b37abcf0f81a3a5ecaa3be17ad3f2421a70131cccf360",
+        "sha256": "15da4c800198975235f7fe2a9b5789d344c67fd218e4afd64b200611d21137d9",
         "fileCount": 117,
-        "bytes": 371362
+        "bytes": 371371
       },
       "ui": {
         "sha256": "e78f82e7185d1dc3e9bc32defca6e099b83d8de5b1e30e75d31962c3bb902681",
@@ -27,33 +27,33 @@
   },
   "git": {
     "ai": {
-      "head": "d8803c701d6b9507257852d012da2b88c7a78a44",
+      "head": "586fd809c63faaffd032ed5fe5ac53ad0dbbd598",
       "clean": false
     },
     "backend": {
-      "head": "7ca04c924df0d75e06ac074c74054a40d634274c",
+      "head": "a56dfd9f15fb2191a94fd7043dde822a2d058e21",
       "clean": false
     },
     "ui": {
-      "head": "ad2a6ae1dd9f0ecb5c856649813cdef296424f9d",
-      "clean": false
+      "head": "2c67bda37e372f21d8fa29cb43e16afab95cdb37",
+      "clean": true
     }
   },
   "releaseWorktrees": [
     {
       "repository": "Voltforge_AI",
       "clean": false,
-      "head": "d8803c701d6b9507257852d012da2b88c7a78a44"
+      "head": "586fd809c63faaffd032ed5fe5ac53ad0dbbd598"
     },
     {
       "repository": "Voltforge_BL",
       "clean": false,
-      "head": "7ca04c924df0d75e06ac074c74054a40d634274c"
+      "head": "a56dfd9f15fb2191a94fd7043dde822a2d058e21"
     },
     {
       "repository": "Voltforge_UI",
-      "clean": false,
-      "head": "ad2a6ae1dd9f0ecb5c856649813cdef296424f9d"
+      "clean": true,
+      "head": "2c67bda37e372f21d8fa29cb43e16afab95cdb37"
     }
   ],
   "toolVersions": {
@@ -69,7 +69,7 @@
       "category": "artifact-and-provider-scan",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 1608
+      "durationMs": 7427
     },
     {
       "id": "ai-runbook-contract",
@@ -77,7 +77,7 @@
       "category": "operations-contract",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 103
+      "durationMs": 408
     },
     {
       "id": "ai-hardware-coverage",
@@ -85,15 +85,15 @@
       "category": "cross-repository-catalog-boundary",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 460
+      "durationMs": 2922
     },
     {
       "id": "ai-unit-contract-tests",
       "lane": "fast",
       "category": "python-tests",
-      "status": "pass",
-      "exitCode": 0,
-      "durationMs": 157042
+      "status": "fail",
+      "exitCode": 1,
+      "durationMs": 358783
     },
     {
       "id": "ai-evaluation-leakage",
@@ -101,7 +101,7 @@
       "category": "evaluation-integrity",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 9331
+      "durationMs": 37042
     },
     {
       "id": "ai-data-governance",
@@ -109,7 +109,7 @@
       "category": "data-governance",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 207
+      "durationMs": 1860
     },
     {
       "id": "ai-task-schema",
@@ -117,7 +117,7 @@
       "category": "schema-drift",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 408
+      "durationMs": 1370
     },
     {
       "id": "ai-registry-integrity",
@@ -125,7 +125,7 @@
       "category": "artifact-integrity",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 1278
+      "durationMs": 6953
     },
     {
       "id": "ai-api-contract-evaluation",
@@ -133,7 +133,7 @@
       "category": "quality-evaluation",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 7569
+      "durationMs": 57910
     },
     {
       "id": "ai-generation-quality-evaluation",
@@ -141,7 +141,7 @@
       "category": "quality-evaluation",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 1977
+      "durationMs": 16840
     },
     {
       "id": "ai-grounding-evaluation",
@@ -149,7 +149,7 @@
       "category": "quality-evaluation",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 543
+      "durationMs": 2834
     },
     {
       "id": "ai-internet-boundary-evaluation",
@@ -157,15 +157,15 @@
       "category": "offline-security-evaluation",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 4759
+      "durationMs": 42594
     },
     {
       "id": "ai-local-retrieval-evaluation",
       "lane": "fast",
       "category": "quality-evaluation",
-      "status": "pass",
-      "exitCode": 0,
-      "durationMs": 14037
+      "status": "timeout",
+      "exitCode": null,
+      "durationMs": 300312
     },
     {
       "id": "ai-memory-evaluation",
@@ -173,7 +173,7 @@
       "category": "privacy-and-memory-evaluation",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 670
+      "durationMs": 21492
     },
     {
       "id": "ai-context-evaluation",
@@ -181,7 +181,7 @@
       "category": "context-evaluation",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 843
+      "durationMs": 19881
     },
     {
       "id": "ai-engineering-tools-evaluation",
@@ -189,7 +189,7 @@
       "category": "deterministic-tool-evaluation",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 4104
+      "durationMs": 127948
     },
     {
       "id": "ai-observability-evaluation",
@@ -197,7 +197,7 @@
       "category": "observability-evaluation",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 191
+      "durationMs": 7839
     },
     {
       "id": "ai-proposal-transaction-evaluation",
@@ -205,7 +205,7 @@
       "category": "safety-evaluation",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 117
+      "durationMs": 5172
     },
     {
       "id": "ai-security-threat-model-evaluation",
@@ -213,7 +213,7 @@
       "category": "security-evaluation",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 117
+      "durationMs": 5332
     },
     {
       "id": "spring-gateway-evaluation",
@@ -221,7 +221,7 @@
       "category": "backend-boundary-evaluation",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 163
+      "durationMs": 6569
     },
     {
       "id": "ui-ai-boundary-evaluation",
@@ -229,7 +229,7 @@
       "category": "ui-boundary-evaluation",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 117
+      "durationMs": 6803
     },
     {
       "id": "backend-tests",
@@ -237,7 +237,7 @@
       "category": "backend-tests",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 14522
+      "durationMs": 258925
     },
     {
       "id": "ui-tests",
@@ -245,7 +245,7 @@
       "category": "ui-tests",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 36489
+      "durationMs": 71008
     },
     {
       "id": "ui-production-build-and-budget",
@@ -253,7 +253,7 @@
       "category": "ui-build",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 17665
+      "durationMs": 19414
     },
     {
       "id": "ai-whitespace-check",
@@ -261,7 +261,7 @@
       "category": "repository-hygiene",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 141
+      "durationMs": 162
     },
     {
       "id": "backend-whitespace-check",
@@ -269,7 +269,7 @@
       "category": "repository-hygiene",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 49
+      "durationMs": 90
     },
     {
       "id": "ui-whitespace-check",
@@ -277,7 +277,7 @@
       "category": "repository-hygiene",
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 62
+      "durationMs": 88
     }
   ],
   "scorecard": {
@@ -288,14 +288,14 @@
     "manifestSha256": "0eae572c99a270c2f3d9b9bd82dfec3377051cf34aaf7b72d5f4e08f6376590a",
     "inputs": {
       "ai": {
-        "sha256": "a2315d308f0761fe9e9fa8dc9fa9e968ae6233a0e3a2f6f6e1d50f10b73e7e44",
-        "fileCount": 1173,
-        "bytes": 4627953421
+        "sha256": "b5c1778e48f755c208112db2e1276f10fda11f344976d6ed7379803fa1a5d377",
+        "fileCount": 1209,
+        "bytes": 4661695560
       },
       "backend": {
-        "sha256": "1af6eee5efb217e48f2b37abcf0f81a3a5ecaa3be17ad3f2421a70131cccf360",
+        "sha256": "15da4c800198975235f7fe2a9b5789d344c67fd218e4afd64b200611d21137d9",
         "fileCount": 117,
-        "bytes": 371362
+        "bytes": 371371
       },
       "ui": {
         "sha256": "e78f82e7185d1dc3e9bc32defca6e099b83d8de5b1e30e75d31962c3bb902681",
@@ -304,9 +304,9 @@
       }
     },
     "gitHeads": {
-      "ai": "d8803c701d6b9507257852d012da2b88c7a78a44",
-      "backend": "7ca04c924df0d75e06ac074c74054a40d634274c",
-      "ui": "ad2a6ae1dd9f0ecb5c856649813cdef296424f9d"
+      "ai": "586fd809c63faaffd032ed5fe5ac53ad0dbbd598",
+      "backend": "a56dfd9f15fb2191a94fd7043dde822a2d058e21",
+      "ui": "2c67bda37e372f21d8fa29cb43e16afab95cdb37"
     },
     "toolVersions": {
       "python": "Python 3.12.13",
@@ -340,8 +340,8 @@
         "id": "ai-unit-contract-tests",
         "lane": "fast",
         "category": "python-tests",
-        "status": "pass",
-        "exitCode": 0
+        "status": "fail",
+        "exitCode": 1
       },
       {
         "id": "ai-evaluation-leakage",
@@ -403,8 +403,8 @@
         "id": "ai-local-retrieval-evaluation",
         "lane": "fast",
         "category": "quality-evaluation",
-        "status": "pass",
-        "exitCode": 0
+        "status": "timeout",
+        "exitCode": null
       },
       {
         "id": "ai-memory-evaluation",
@@ -506,11 +506,11 @@
       }
     ],
     "summary": {
-      "passed": 27,
-      "failed": 0,
+      "passed": 25,
+      "failed": 2,
       "skipped": 0
     },
-    "scorecardSha256": "28f4fc27168fbe349c453667cff74f393b98acb6862de27501a420f257c3a546"
+    "scorecardSha256": "4a1fecffe7788324ea44c89a29f1f3a9001f5f45cbb71dd168b75136a2003129"
   },
   "privacy": {
     "rawStdoutStored": false,
@@ -518,5 +518,5 @@
     "rawPromptStored": false,
     "rawProjectContentStored": false
   },
-  "reportSha256": "d0e531bffe470ffe7b2b51fb9f0226a22f5c8f0d9a0987cfb19147ddfaab2d04"
+  "reportSha256": "3f40d6c3e0f7ce5a544c7e348b2a11f429a03580183a6600fd4cc5d110590836"
 }

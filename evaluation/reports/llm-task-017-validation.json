@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "taskId": "LLM-TASK-017",
+  "status": "verified-design-contract",
+  "generatedAtUtc": "2026-09-06T15:03:32.156861+00:00",
+  "contract": {
+    "path": "Voltforge_AI/evaluation/reports/llm-task-017-foundation-contract.json",
+    "sha256": "998229f9b5b779721b9fbff5f82e1e218a6b75c53810300167f1a882dd281194"
+  },
+  "tests": {
+    "path": "Voltforge_AI/evaluation/reports/llm-task-017-contract-tests.xml",
+    "sha256": "3754e2f935759645fc00e8da08b04678555f561522c0d8e58af1980fed8fb07a",
+    "passed": 51,
+    "failed": 0,
+    "skipped": 0,
+    "additionalPassedSubtests": 5
+  },
+  "checks": {
+    "path": "Voltforge_AI/evaluation/reports/llm-task-017-checks.json",
+    "sha256": "b63a4fecc2eab39319445a7d72b9739f7f734656cd8a53c951a1ccb9a665863d"
+  },
+  "sourceSnapshot": {
+    "path": "backlog_history/llm-task-017-before/manifest.json",
+    "sha256": "bc2609ef758878dd92dfcba590ef1f1baf359b7819e29383033e081741b566ab"
+  },
+  "sources": [
+    {
+      "path": "Voltforge_AI/foundation/contract.v1.json",
+      "sha256": "8641606ed74fd4f7c8887277aa3ae533de41adce0dbbd05a994bcd961441924f"
+    },
+    {
+      "path": "Voltforge_AI/foundation/release-policy.v1.json",
+      "sha256": "e4225f92557972eea373ec4264466ab4a83371d6744ee51ee766cf8ea2992046"
+    },
+    {
+      "path": "Voltforge_AI/foundation/compatibility-map.v1.json",
+      "sha256": "d049c37c9920aa6a76c8c8baf10697752b90c705a397f0f243d5d558b19ef22d"
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_FOUNDATION_DESIGN.v1.md",
+      "sha256": "88f8d4b9cf5fd0118a3a25b07adadcf1213067453002c51daea5cb14fa7adaec"
+    },
+    {
+      "path": "Voltforge_AI/docs/VOLTForge_AI_RUNBOOK.md",
+      "sha256": "ff45212b1ef663fedb5634401933626ac34fb948cdf776aee887e38ec23d6a3c"
+    },
+    {
+      "path": "Voltforge_AI/docs/runbook-contract.v1.json",
+      "sha256": "f1fa3f001377ee52932193e141d3a94729444d951d24d05266d4626f353d1c74"
+    },
+    {
+      "path": "Voltforge_AI/tools/verify_llm_foundation.py",
+      "sha256": "300bafea8f1a2b7a04dadab93e70258231d5b31b7356295b3f5cfcc3734fbe0b"
+    },
+    {
+      "path": "Voltforge_AI/tests/test_llm_foundation_contract.py",
+      "sha256": "7cd2d856a737a958851095794340fae1bdee3fa6a7c5570a89be1d2a81feb5ae"
+    }
+  ],
+  "verified": [
+    "New vfdlm-g2 namespace compatible with the canonical identity envelope",
+    "Owned random-root lineage and separate base, instruction and assistant acceptance",
+    "Nine module interfaces, thirteen Python compatibility routes and Spring chat endpoints",
+    "All fifteen existing follow-ups mapped; seven Gen1-specific policy replacements scoped to Gen2",
+    "Twelve reviewed historical files and 131 protected artifact/data files unchanged",
+    "Runbook contract, quality boundary scan and 51 contract/API/identity tests pass"
+  ],
+  "limits": [
+    "Architecture and structural release policy only; no Gen2 model, trainer, tokenizer or loader implemented",
+    "No training, activation, deployment, browser or server performance acceptance",
+    "No full AI or cross-repository lane rerun for this design-only change; task-016 receipts remain historical",
+    "Task 018 must freeze independent suite and thresholds before training/candidate evaluation",
+    "Existing follow-up statuses, checkpoint safety, runtime pin and owner backup/restore obligations remain in force"
+  ],
+  "nextTask": "LLM-TASK-018"
+}

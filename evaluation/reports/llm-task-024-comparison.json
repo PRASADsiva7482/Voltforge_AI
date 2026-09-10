@@ -1,0 +1,660 @@
+{
+  "schemaVersion": 1,
+  "taskId": "LLM-TASK-024",
+  "status": "passed-fixture-comparison-only",
+  "lineage": {
+    "kind": "authored-implementation-fixtures-only",
+    "corpusRelease": null,
+    "approvedCorpusUsed": false,
+    "pretrainedTokenizerUsed": false,
+    "validationOrAcceptanceFitting": false,
+    "documents": [
+      {
+        "id": "text-a",
+        "sha256": "2b8ab1177474589eab29c2a9b1b95b19eba02595c0341079a644b3961a3740a1",
+        "bytes": 876
+      },
+      {
+        "id": "text-b",
+        "sha256": "28a8d03492e43667ebf549dfbe7910604a16d949948a66c7ea229a31d1f0b185",
+        "bytes": 912
+      },
+      {
+        "id": "code-a",
+        "sha256": "32334e0093e187f141961289e72d9eac5238668c6ee095e0bfe5f2ade09fb285",
+        "bytes": 1024
+      },
+      {
+        "id": "code-b",
+        "sha256": "2d3dc92eeac381b890c60db9c7f532f8ad598408877ecb5980099e7c7016fd7c",
+        "bytes": 996
+      },
+      {
+        "id": "si-a",
+        "sha256": "0232328c0afe1b28f4b8150bddc7cc32d42d297b266314ce46db4a7501ff812e",
+        "bytes": 882
+      },
+      {
+        "id": "unicode-a",
+        "sha256": "b427c34a3ed3dd5c225226ca7288fa3c24b95604253b37edd6fc3280a9634bd6",
+        "bytes": 1190
+      },
+      {
+        "id": "markers-a",
+        "sha256": "c1ee8158999bedf8ff85ad55b719fc91cb55b829e327149c1ec248feecd6f692",
+        "bytes": 620
+      },
+      {
+        "id": "bytes-a",
+        "sha256": "785b0751fc2c53dc14a4ce3d800e69ef9ce1009eb327ccf458afe09c242c26c9",
+        "bytes": 1024
+      }
+    ],
+    "measurementFixtureSha256": "517f436f29ed4b709ea262e412d4e0f23b09d53af173b50787a7593a12cc4e13"
+  },
+  "sourceFingerprints": [
+    {
+      "path": "model/gen2_tokenizer/__init__.py",
+      "sha256": "9cf19363065a59e1e4fde936cbaf81abb9f2aef3a1e06770e161e1a04427d354"
+    },
+    {
+      "path": "model/gen2_tokenizer/contract.py",
+      "sha256": "25e65d897700f9bb8c5d4363c7fcc3056c81f8e46a14ef197d637c422a26253f"
+    },
+    {
+      "path": "model/gen2_tokenizer/codec.py",
+      "sha256": "64cf74e7e25b22a844e3cdeffb3c5c1b516042a0178080f04e172b15a9cd6965"
+    },
+    {
+      "path": "model/gen2_tokenizer/fixtures.py",
+      "sha256": "44a56dce30fc6e483496d3827f5029d63f10d3b46688ce2834c2969a84e9788a"
+    },
+    {
+      "path": "model/gen2_tokenizer/release.py",
+      "sha256": "ffa38e8e1907c20c3b03c3dd35bfd508904b18c205b4200114f35dac2689c854"
+    },
+    {
+      "path": "model/gen2_tokenizer/comparison.py",
+      "sha256": "379d2cf627a298329ba59874e18c84d41b49b0f93fcb5b13f3a4c7890a27d151"
+    },
+    {
+      "path": "context_compiler/gen2.py",
+      "sha256": "1b38803cd3f2ca799720d5d344794bdbd8053a2840f5212b64459f30eae72442"
+    },
+    {
+      "path": "model/tokenizer.py",
+      "sha256": "39f0a3773f044eb9934222cf9c5dbc22212a155fe886a2e195a1175761a84e35"
+    },
+    {
+      "path": "foundation/contract.v1.json",
+      "sha256": "8641606ed74fd4f7c8887277aa3ae533de41adce0dbbd05a994bcd961441924f"
+    },
+    {
+      "path": "data_governance/ingestion/pipeline.py",
+      "sha256": "c80b2ff5024a77d4dd026145f3b521e1efac4f29c6b7067bd03fed89a58674ba"
+    }
+  ],
+  "baseline": {
+    "vocabSize": 3072,
+    "manifestSha256": "8af7baf2412a0f93be4cec70583a4a2386ec3ba41dab8554c05722a201d3d400",
+    "metrics": {
+      "text": {
+        "bytes": 81,
+        "unicodeCodePoints": 81,
+        "tokens": 36,
+        "whitespaceUnits": 11,
+        "tokensPerWhitespaceUnit": 3.272727272727273,
+        "tokensPerCodePoint": 0.4444444444444444,
+        "bytesPerToken": 2.25,
+        "reductionVersusByteTokens": 0.5555555555555556,
+        "roundtrip": true,
+        "measurementIterations": 3,
+        "encodeSeconds": 0.0003548,
+        "decodeSeconds": 2.58e-05,
+        "encodeBytesPerSecond": 684892.8974069898,
+        "decodeBytesPerSecond": 9418604.65116279
+      },
+      "code": {
+        "bytes": 65,
+        "unicodeCodePoints": 65,
+        "tokens": 43,
+        "whitespaceUnits": 12,
+        "tokensPerWhitespaceUnit": 3.5833333333333335,
+        "tokensPerCodePoint": 0.6615384615384615,
+        "bytesPerToken": 1.5116279069767442,
+        "reductionVersusByteTokens": 0.3384615384615385,
+        "roundtrip": true,
+        "measurementIterations": 3,
+        "encodeSeconds": 0.0002058,
+        "decodeSeconds": 2.95e-05,
+        "encodeBytesPerSecond": 947521.8658892129,
+        "decodeBytesPerSecond": 6610169.491525424
+      },
+      "si": {
+        "bytes": 62,
+        "unicodeCodePoints": 53,
+        "tokens": 50,
+        "whitespaceUnits": 15,
+        "tokensPerWhitespaceUnit": 3.3333333333333335,
+        "tokensPerCodePoint": 0.9433962264150944,
+        "bytesPerToken": 1.24,
+        "reductionVersusByteTokens": 0.19354838709677424,
+        "roundtrip": true,
+        "measurementIterations": 3,
+        "encodeSeconds": 0.0001453,
+        "decodeSeconds": 3.07e-05,
+        "encodeBytesPerSecond": 1280110.1169993116,
+        "decodeBytesPerSecond": 6058631.921824104
+      },
+      "unicode": {
+        "bytes": 72,
+        "unicodeCodePoints": 34,
+        "tokens": 70,
+        "whitespaceUnits": 7,
+        "tokensPerWhitespaceUnit": 10.0,
+        "tokensPerCodePoint": 2.0588235294117645,
+        "bytesPerToken": 1.0285714285714285,
+        "reductionVersusByteTokens": 0.02777777777777779,
+        "roundtrip": true,
+        "measurementIterations": 3,
+        "encodeSeconds": 0.0001153,
+        "decodeSeconds": 3.98e-05,
+        "encodeBytesPerSecond": 1873373.807458803,
+        "decodeBytesPerSecond": 5427135.67839196
+      },
+      "markers": {
+        "bytes": 57,
+        "unicodeCodePoints": 57,
+        "tokens": 38,
+        "whitespaceUnits": 1,
+        "tokensPerWhitespaceUnit": 38.0,
+        "tokensPerCodePoint": 0.6666666666666666,
+        "bytesPerToken": 1.5,
+        "reductionVersusByteTokens": 0.33333333333333337,
+        "roundtrip": true,
+        "measurementIterations": 3,
+        "encodeSeconds": 0.0001682,
+        "decodeSeconds": 2.48e-05,
+        "encodeBytesPerSecond": 1016646.8489892985,
+        "decodeBytesPerSecond": 6895161.29032258
+      },
+      "long-code": {
+        "bytes": 15139,
+        "unicodeCodePoints": 15139,
+        "tokens": 7395,
+        "whitespaceUnits": 2560,
+        "tokensPerWhitespaceUnit": 2.888671875,
+        "tokensPerCodePoint": 0.4884734790937314,
+        "bytesPerToken": 2.0471940500338066,
+        "reductionVersusByteTokens": 0.5115265209062686,
+        "roundtrip": true,
+        "measurementIterations": 3,
+        "encodeSeconds": 0.0710418,
+        "decodeSeconds": 0.0038852,
+        "encodeBytesPerSecond": 639299.6799067591,
+        "decodeBytesPerSecond": 11689745.701636981
+      }
+    }
+  },
+  "candidates": [
+    {
+      "targetVocabSize": 16384,
+      "actualVocabSize": 911,
+      "targetReached": false,
+      "binding": {
+        "tokenizerId": "vfdlm-g2-byte-bpe",
+        "version": "0.1.0-fixture.1",
+        "releaseKind": "implementation-fixture-only",
+        "vocabSize": 911,
+        "padId": 0,
+        "unkId": 1,
+        "bosId": 2,
+        "eosId": 3,
+        "contractSha256": "138268367ac96ed3e9ff53e41d6a7755ecf6d4d53cee3b052b18fef68fb0227f",
+        "templateSha256": "3398e593caeaafe15e05691e8647bb39474c252dc960062b27820e99b584c2fc",
+        "mergesSha256": "f78eb6fbef1f69a53df68e4695cf1ac0f1088ed699dca9c6fba387d177c2b1d0",
+        "vocabSha256": "18e6a57b0fde968bd135338b5beb8980ebcc7820f52e29598594ded41a3bb43a"
+      },
+      "fixtureRelease": "model/tokenizers/fixtures/gen2/v1/5380e995e9768d3bcb091f6e313ad92360a503d7d5c24ebbeb8101799089cfe5",
+      "manifestSha256": "de98e73d6dc69400a2e2840746a596fb236223107c635b13cb919329235af0a1",
+      "metrics": {
+        "text": {
+          "bytes": 81,
+          "unicodeCodePoints": 81,
+          "tokens": 54,
+          "whitespaceUnits": 11,
+          "tokensPerWhitespaceUnit": 4.909090909090909,
+          "tokensPerCodePoint": 0.6666666666666666,
+          "bytesPerToken": 1.5,
+          "reductionVersusByteTokens": 0.33333333333333337,
+          "roundtrip": true,
+          "measurementIterations": 3,
+          "encodeSeconds": 0.0002469,
+          "decodeSeconds": 4.35e-05,
+          "encodeBytesPerSecond": 984204.1312272176,
+          "decodeBytesPerSecond": 5586206.8965517245,
+          "tokenCountRatioTo3072Baseline": 1.5
+        },
+        "code": {
+          "bytes": 65,
+          "unicodeCodePoints": 65,
+          "tokens": 37,
+          "whitespaceUnits": 12,
+          "tokensPerWhitespaceUnit": 3.0833333333333335,
+          "tokensPerCodePoint": 0.5692307692307692,
+          "bytesPerToken": 1.7567567567567568,
+          "reductionVersusByteTokens": 0.4307692307692308,
+          "roundtrip": true,
+          "measurementIterations": 3,
+          "encodeSeconds": 0.0002004,
+          "decodeSeconds": 2.91e-05,
+          "encodeBytesPerSecond": 973053.8922155689,
+          "decodeBytesPerSecond": 6701030.927835052,
+          "tokenCountRatioTo3072Baseline": 0.8604651162790697
+        },
+        "si": {
+          "bytes": 62,
+          "unicodeCodePoints": 53,
+          "tokens": 45,
+          "whitespaceUnits": 15,
+          "tokensPerWhitespaceUnit": 3.0,
+          "tokensPerCodePoint": 0.8490566037735849,
+          "bytesPerToken": 1.3777777777777778,
+          "reductionVersusByteTokens": 0.27419354838709675,
+          "roundtrip": true,
+          "measurementIterations": 3,
+          "encodeSeconds": 0.0001494,
+          "decodeSeconds": 3.49e-05,
+          "encodeBytesPerSecond": 1244979.9196787148,
+          "decodeBytesPerSecond": 5329512.893982808,
+          "tokenCountRatioTo3072Baseline": 0.9
+        },
+        "unicode": {
+          "bytes": 72,
+          "unicodeCodePoints": 34,
+          "tokens": 68,
+          "whitespaceUnits": 7,
+          "tokensPerWhitespaceUnit": 9.714285714285714,
+          "tokensPerCodePoint": 2.0,
+          "bytesPerToken": 1.0588235294117647,
+          "reductionVersusByteTokens": 0.05555555555555558,
+          "roundtrip": true,
+          "measurementIterations": 3,
+          "encodeSeconds": 0.0001181,
+          "decodeSeconds": 5.01e-05,
+          "encodeBytesPerSecond": 1828958.5097375107,
+          "decodeBytesPerSecond": 4311377.245508982,
+          "tokenCountRatioTo3072Baseline": 0.9714285714285714
+        },
+        "markers": {
+          "bytes": 57,
+          "unicodeCodePoints": 57,
+          "tokens": 38,
+          "whitespaceUnits": 1,
+          "tokensPerWhitespaceUnit": 38.0,
+          "tokensPerCodePoint": 0.6666666666666666,
+          "bytesPerToken": 1.5,
+          "reductionVersusByteTokens": 0.33333333333333337,
+          "roundtrip": true,
+          "measurementIterations": 3,
+          "encodeSeconds": 0.000162,
+          "decodeSeconds": 2.97e-05,
+          "encodeBytesPerSecond": 1055555.5555555555,
+          "decodeBytesPerSecond": 5757575.757575758,
+          "tokenCountRatioTo3072Baseline": 1.0
+        },
+        "long-code": {
+          "bytes": 15139,
+          "unicodeCodePoints": 15139,
+          "tokens": 9268,
+          "whitespaceUnits": 2560,
+          "tokensPerWhitespaceUnit": 3.6203125,
+          "tokensPerCodePoint": 0.6121936719730497,
+          "bytesPerToken": 1.6334700043159258,
+          "reductionVersusByteTokens": 0.38780632802695025,
+          "roundtrip": true,
+          "measurementIterations": 3,
+          "encodeSeconds": 0.0579384,
+          "decodeSeconds": 0.0068667,
+          "encodeBytesPerSecond": 783884.263286525,
+          "decodeBytesPerSecond": 6614094.10633929,
+          "tokenCountRatioTo3072Baseline": 1.2532792427315753
+        }
+      },
+      "literalMarkerCosts": [
+        {
+          "marker": "<|pad|>",
+          "literalContentTokens": 6,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 5
+        },
+        {
+          "marker": "<|unk|>",
+          "literalContentTokens": 5,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 4
+        },
+        {
+          "marker": "<|bos|>",
+          "literalContentTokens": 5,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 4
+        },
+        {
+          "marker": "<|eos|>",
+          "literalContentTokens": 4,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 3
+        },
+        {
+          "marker": "<|system|>",
+          "literalContentTokens": 8,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 7
+        },
+        {
+          "marker": "<|user|>",
+          "literalContentTokens": 4,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 3
+        },
+        {
+          "marker": "<|assistant|>",
+          "literalContentTokens": 7,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 6
+        },
+        {
+          "marker": "<|tool|>",
+          "literalContentTokens": 4,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 3
+        },
+        {
+          "marker": "<|end_message|>",
+          "literalContentTokens": 12,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 11
+        },
+        {
+          "marker": "<|tool_call|>",
+          "literalContentTokens": 8,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 7
+        },
+        {
+          "marker": "<|project_context|>",
+          "literalContentTokens": 16,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 15
+        },
+        {
+          "marker": "<|tool_evidence|>",
+          "literalContentTokens": 12,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 11
+        },
+        {
+          "marker": "<|citation|>",
+          "literalContentTokens": 7,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 6
+        },
+        {
+          "marker": "<|refusal|>",
+          "literalContentTokens": 8,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 7
+        },
+        {
+          "marker": "<|uncertainty|>",
+          "literalContentTokens": 10,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 9
+        },
+        {
+          "marker": "<|reserved_15|>",
+          "literalContentTokens": 11,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 10
+        }
+      ],
+      "chatFramingCost": "BOS + 2 per message + one assistant prefix or EOS; content costs remain exact"
+    },
+    {
+      "targetVocabSize": 32768,
+      "actualVocabSize": 911,
+      "targetReached": false,
+      "binding": {
+        "tokenizerId": "vfdlm-g2-byte-bpe",
+        "version": "0.1.0-fixture.1",
+        "releaseKind": "implementation-fixture-only",
+        "vocabSize": 911,
+        "padId": 0,
+        "unkId": 1,
+        "bosId": 2,
+        "eosId": 3,
+        "contractSha256": "138268367ac96ed3e9ff53e41d6a7755ecf6d4d53cee3b052b18fef68fb0227f",
+        "templateSha256": "3398e593caeaafe15e05691e8647bb39474c252dc960062b27820e99b584c2fc",
+        "mergesSha256": "f78eb6fbef1f69a53df68e4695cf1ac0f1088ed699dca9c6fba387d177c2b1d0",
+        "vocabSha256": "18e6a57b0fde968bd135338b5beb8980ebcc7820f52e29598594ded41a3bb43a"
+      },
+      "fixtureRelease": "model/tokenizers/fixtures/gen2/v1/810305287f68cb337295bc2949bdb61fffd030c4061a92d40f3d1af65929e535",
+      "manifestSha256": "005988abcf9f8270183314f36622e4b66e9157dc2d289220b8c017c19f988626",
+      "metrics": {
+        "text": {
+          "bytes": 81,
+          "unicodeCodePoints": 81,
+          "tokens": 54,
+          "whitespaceUnits": 11,
+          "tokensPerWhitespaceUnit": 4.909090909090909,
+          "tokensPerCodePoint": 0.6666666666666666,
+          "bytesPerToken": 1.5,
+          "reductionVersusByteTokens": 0.33333333333333337,
+          "roundtrip": true,
+          "measurementIterations": 3,
+          "encodeSeconds": 0.000246,
+          "decodeSeconds": 4.49e-05,
+          "encodeBytesPerSecond": 987804.8780487804,
+          "decodeBytesPerSecond": 5412026.726057907,
+          "tokenCountRatioTo3072Baseline": 1.5
+        },
+        "code": {
+          "bytes": 65,
+          "unicodeCodePoints": 65,
+          "tokens": 37,
+          "whitespaceUnits": 12,
+          "tokensPerWhitespaceUnit": 3.0833333333333335,
+          "tokensPerCodePoint": 0.5692307692307692,
+          "bytesPerToken": 1.7567567567567568,
+          "reductionVersusByteTokens": 0.4307692307692308,
+          "roundtrip": true,
+          "measurementIterations": 3,
+          "encodeSeconds": 0.0002078,
+          "decodeSeconds": 3.03e-05,
+          "encodeBytesPerSecond": 938402.3099133782,
+          "decodeBytesPerSecond": 6435643.564356435,
+          "tokenCountRatioTo3072Baseline": 0.8604651162790697
+        },
+        "si": {
+          "bytes": 62,
+          "unicodeCodePoints": 53,
+          "tokens": 45,
+          "whitespaceUnits": 15,
+          "tokensPerWhitespaceUnit": 3.0,
+          "tokensPerCodePoint": 0.8490566037735849,
+          "bytesPerToken": 1.3777777777777778,
+          "reductionVersusByteTokens": 0.27419354838709675,
+          "roundtrip": true,
+          "measurementIterations": 3,
+          "encodeSeconds": 0.0001537,
+          "decodeSeconds": 3.52e-05,
+          "encodeBytesPerSecond": 1210149.6421600522,
+          "decodeBytesPerSecond": 5284090.909090909,
+          "tokenCountRatioTo3072Baseline": 0.9
+        },
+        "unicode": {
+          "bytes": 72,
+          "unicodeCodePoints": 34,
+          "tokens": 68,
+          "whitespaceUnits": 7,
+          "tokensPerWhitespaceUnit": 9.714285714285714,
+          "tokensPerCodePoint": 2.0,
+          "bytesPerToken": 1.0588235294117647,
+          "reductionVersusByteTokens": 0.05555555555555558,
+          "roundtrip": true,
+          "measurementIterations": 3,
+          "encodeSeconds": 0.0001218,
+          "decodeSeconds": 5.1e-05,
+          "encodeBytesPerSecond": 1773399.014778325,
+          "decodeBytesPerSecond": 4235294.117647059,
+          "tokenCountRatioTo3072Baseline": 0.9714285714285714
+        },
+        "markers": {
+          "bytes": 57,
+          "unicodeCodePoints": 57,
+          "tokens": 38,
+          "whitespaceUnits": 1,
+          "tokensPerWhitespaceUnit": 38.0,
+          "tokensPerCodePoint": 0.6666666666666666,
+          "bytesPerToken": 1.5,
+          "reductionVersusByteTokens": 0.33333333333333337,
+          "roundtrip": true,
+          "measurementIterations": 3,
+          "encodeSeconds": 0.0001583,
+          "decodeSeconds": 3.91e-05,
+          "encodeBytesPerSecond": 1080227.416298168,
+          "decodeBytesPerSecond": 4373401.534526854,
+          "tokenCountRatioTo3072Baseline": 1.0
+        },
+        "long-code": {
+          "bytes": 15139,
+          "unicodeCodePoints": 15139,
+          "tokens": 9268,
+          "whitespaceUnits": 2560,
+          "tokensPerWhitespaceUnit": 3.6203125,
+          "tokensPerCodePoint": 0.6121936719730497,
+          "bytesPerToken": 1.6334700043159258,
+          "reductionVersusByteTokens": 0.38780632802695025,
+          "roundtrip": true,
+          "measurementIterations": 3,
+          "encodeSeconds": 0.0575101,
+          "decodeSeconds": 0.0064862,
+          "encodeBytesPerSecond": 789722.1531522289,
+          "decodeBytesPerSecond": 7002096.759273535,
+          "tokenCountRatioTo3072Baseline": 1.2532792427315753
+        }
+      },
+      "literalMarkerCosts": [
+        {
+          "marker": "<|pad|>",
+          "literalContentTokens": 6,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 5
+        },
+        {
+          "marker": "<|unk|>",
+          "literalContentTokens": 5,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 4
+        },
+        {
+          "marker": "<|bos|>",
+          "literalContentTokens": 5,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 4
+        },
+        {
+          "marker": "<|eos|>",
+          "literalContentTokens": 4,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 3
+        },
+        {
+          "marker": "<|system|>",
+          "literalContentTokens": 8,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 7
+        },
+        {
+          "marker": "<|user|>",
+          "literalContentTokens": 4,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 3
+        },
+        {
+          "marker": "<|assistant|>",
+          "literalContentTokens": 7,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 6
+        },
+        {
+          "marker": "<|tool|>",
+          "literalContentTokens": 4,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 3
+        },
+        {
+          "marker": "<|end_message|>",
+          "literalContentTokens": 12,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 11
+        },
+        {
+          "marker": "<|tool_call|>",
+          "literalContentTokens": 8,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 7
+        },
+        {
+          "marker": "<|project_context|>",
+          "literalContentTokens": 16,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 15
+        },
+        {
+          "marker": "<|tool_evidence|>",
+          "literalContentTokens": 12,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 11
+        },
+        {
+          "marker": "<|citation|>",
+          "literalContentTokens": 7,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 6
+        },
+        {
+          "marker": "<|refusal|>",
+          "literalContentTokens": 8,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 7
+        },
+        {
+          "marker": "<|uncertainty|>",
+          "literalContentTokens": 10,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 9
+        },
+        {
+          "marker": "<|reserved_15|>",
+          "literalContentTokens": 11,
+          "structuralTokens": 1,
+          "literalOverheadTokens": 10
+        }
+      ],
+      "chatFramingCost": "BOS + 2 per message + one assistant prefix or EOS; content costs remain exact"
+    }
+  ],
+  "productionVocabularySelected": null,
+  "approvedCorpusFitted": false,
+  "tokenizerReleaseAccepted": false,
+  "modelTrainingPerformed": false,
+  "limitations": [
+    "Target sizes are ceilings; these tiny fixtures do not populate 16k or 32k vocabularies.",
+    "Whitespace fertility is a proxy, not a linguistic word segmentation metric.",
+    "Fixture throughput is this host's short codec measurement, not server or large-corpus capacity.",
+    "Baseline and fixtures have different fitting data; this is a diagnostic, not a production ranking.",
+    "Real admitted-corpus comparison, release and model/runtime binding remain pending."
+  ]
+}

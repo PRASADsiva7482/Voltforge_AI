@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "policyId": "voltforge-owned-release-policy-v1",
+  "version": "1.0.0",
+  "familyNamespace": "vfdlm-g2",
+  "status": "frozen-structural-gates-thresholds-pending",
+  "thresholdContract": {
+    "ownerTask": "LLM-TASK-018",
+    "expectedPath": "evaluation/foundation/acceptance-policy.v1.json",
+    "currentlyAvailable": false,
+    "missingOrUnfrozenDecision": "blocked",
+    "mustBindBeforeTrainingAndCandidateEvaluation": true
+  },
+  "commonEvidence": [
+    "immutable-content-and-lineage",
+    "approved-source-uses",
+    "family-level-split-and-leakage",
+    "exact-tokenizer-architecture-runtime-compatibility",
+    "independent-frozen-evaluation",
+    "signed-stage-release-record"
+  ],
+  "stages": [
+    {
+      "kind": "base-model",
+      "parentKind": "random-initialization",
+      "artifactIdField": "artifactId",
+      "chatEligible": false,
+      "requiredEvidence": [
+        "random-initialization-receipt",
+        "base-pretraining-loss-and-token-exposure",
+        "resume-reproducibility",
+        "held-out-language-code-domain-quality",
+        "context-utilization",
+        "actual-weights-logit-and-token-invocation"
+      ],
+      "ownerTasks": [
+        "LLM-TASK-027",
+        "LLM-TASK-030",
+        "LLM-TASK-033",
+        "LLM-TASK-034",
+        "LLM-TASK-035"
+      ]
+    },
+    {
+      "kind": "instruction-model",
+      "parentKind": "accepted-base-model",
+      "artifactIdField": "artifactId",
+      "chatEligible": false,
+      "requiredEvidence": [
+        "owned-base-parent-checksum",
+        "governed-instruction-and-tool-data",
+        "instruction-loss-mask",
+        "instruction-held-out-quality",
+        "changed-value-and-multi-turn-tests",
+        "structured-output-and-safety",
+        "raw-neural-no-rule-substitution"
+      ],
+      "ownerTasks": [
+        "LLM-TASK-036",
+        "LLM-TASK-037",
+        "LLM-TASK-038",
+        "LLM-TASK-039",
+        "LLM-TASK-040"
+      ]
+    },
+    {
+      "kind": "integrated-assistant",
+      "parentKind": "accepted-instruction-model",
+      "artifactIdField": "modelArtifactId",
+      "chatEligible": true,
+      "requiredEvidence": [
+        "immutable-instruction-runtime-context-tools-bundle",
+        "loaded-identity-and-negative-readiness",
+        "actual-incremental-decoding-cancellation-deadlines",
+        "exact-hardware-and-compiler-evidence",
+        "authenticated-revision-bound-gateway",
+        "browser-review-apply-undo",
+        "server-performance-and-capacity",
+        "backup-restore-and-rollback",
+        "independent-final-release-review"
+      ],
+      "ownerTasks": [
+        "LLM-TASK-041",
+        "LLM-TASK-042",
+        "LLM-TASK-043",
+        "LLM-TASK-044",
+        "LLM-TASK-045",
+        "LLM-TASK-046",
+        "LLM-TASK-047",
+        "LLM-TASK-048",
+        "LLM-TASK-049",
+        "LLM-TASK-050",
+        "LLM-TASK-051",
+        "LLM-TASK-052",
+        "LLM-TASK-053",
+        "LLM-TASK-054",
+        "LLM-TASK-055"
+      ]
+    }
+  ],
+  "assistantBundleBindings": [
+    "modelArtifactId",
+    "modelManifestSha256",
+    "tokenizerManifestSha256",
+    "runtimeLockSha256",
+    "contextPolicySha256",
+    "toolPolicySha256",
+    "retrievalIndexSha256-or-explicit-disabled",
+    "memoryPolicySha256",
+    "apiContractSha256",
+    "gatewayCodeSha256",
+    "uiCodeSha256",
+    "acceptancePolicySha256",
+    "evaluationSuiteSha256",
+    "evaluationReportSha256",
+    "releaseRecordSignature"
+  ],
+  "lifecycle": {
+    "states": [
+      "experimental",
+      "candidate",
+      "accepted",
+      "rejected"
+    ],
+    "transitions": {
+      "experimental": [
+        "candidate",
+        "rejected"
+      ],
+      "candidate": [
+        "accepted",
+        "rejected"
+      ],
+      "accepted": [],
+      "rejected": []
+    },
+    "acceptedRecordIsImmutable": true,
+    "activationIsSeparateOperation": true,
+    "activationRequiresAcceptedAssistant": true,
+    "expectedRegistryRevisionRequired": true,
+    "historyRewriteAllowed": false,
+    "automaticActivationAllowed": false,
+    "rollbackRetainsPreviousBundle": true
+  },
+  "forbiddenEvidence": [
+    "keyword-template-output-as-neural",
+    "word-chunk-throughput-as-token-throughput",
+    "prompt-echo-as-answer-diversity",
+    "header-parameter-count-as-loaded-identity",
+    "helper-tests-as-browser-proof",
+    "training-loss-alone-as-assistant-quality",
+    "design-validator-as-release-approval"
+  ]
+}
+

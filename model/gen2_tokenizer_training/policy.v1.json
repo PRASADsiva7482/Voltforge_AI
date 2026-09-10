@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "taskId": "LLM-TASK-024",
+  "tokenizerId": "vfdlm-g2-byte-bpe",
+  "version": "0.1.0",
+  "corpusPath": "corpus/pilot-input/v1/04830f1057093c4a71930e9f49940c6507c59496425926679e5cb789897c0f94",
+  "corpusManifestSha256": "018c85533401386a3d5f9797956911806c18e505a37abf7c37f48d3fe5481ce0",
+  "candidateVocabularyTargets": [16384, 32768],
+  "minimumPairFrequency": 2,
+  "maximumTrainDocuments": 96,
+  "maximumTrainBytes": 2097152,
+  "maximumFitSeconds": 300,
+  "maximumPeakResidentBytes": 2147483648,
+  "maximumVocabularyBytes": 33554432,
+  "selection": {
+    "basis": "predeclared equal-domain validation token-count ratios; frozen candidates before validation access",
+    "defaultTarget": 16384,
+    "largerTargetMinimumMacroReduction": 0.08,
+    "maximumPerDomainTokenRegression": 0.1,
+    "minimumTrainTokenReductionFromBytes": 0.5,
+    "tieBreak": "smaller actual vocabulary, then smaller target"
+  },
+  "measurementIterations": 3,
+  "validationMayFitMerges": false,
+  "testMayFitOrSelect": false,
+  "servingAllowed": false,
+  "trainingRunApproved": false,
+  "retention": {
+    "scope": "immutable offline tokenizer artifact and exact input lineage",
+    "overwriteAllowed": false,
+    "oldReleaseMutationAllowed": false,
+    "externalBackupAccepted": false,
+    "deploymentRetentionOwners": ["LLM-TASK-041", "LLM-TASK-054", "LLM-TASK-055"],
+    "externalRequirement": "Preserve the existing owner-approved encrypted backup/restore requirement for deployment; this offline artifact publication does not close VFAI-FU-015 or claim external retention acceptance."
+  }
+}

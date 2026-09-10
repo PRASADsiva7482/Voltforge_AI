@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "taskId": "LLM-TASK-024",
+  "status": "in-progress-tokenizer-preparation-verified-corpus-release-pending",
+  "recordedAtUtc": "2026-09-08T15:24:38.081609+00:00",
+  "summary": "Implemented a separate owned Gen2 byte-BPE codec, fixed 16 special-token IDs, versioned chat framing, exact context/output budgeting, shared model/template descriptors, strict incremental Unicode decoding, and immutable fixture artifact verification. Independent pair-recount and exhaustive-encoder tests check the reused BPE mathematics. Eight authored implementation inputs and six separate measurement fixtures compare 16,384/32,768 vocabulary ceilings with the existing 3,072-entry baseline. Both fixture fits stop at 911 entries; neither reaches its target and no production vocabulary is selected. All 118 focused and historical-compatibility tests passed, including 58 new tokenizer controls. The current task-023 corpus is denied before shard reads; caller approval flags and fixture artifacts cannot enable fitting or serving. Task 024 remains IN_PROGRESS with dependency LLM-TASK-023: source admission, approved-corpus candidate fitting/comparison, production release and real Gen2 model/runtime integration remain open. Only authored fixture tokenizers were fitted; no approved-corpus fit, model training, activation or application routing change occurred.",
+  "tests": {
+    "passed": 118,
+    "newTokenizerControls": 58,
+    "failed": 0,
+    "skipped": 0,
+    "junit": {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-024-tests.xml",
+      "sha256": "26c0157f1fb894b355adc6965433bfa7100efb84bc107cf0e7ced2a1e2ce5831",
+      "bytes": 16711
+    }
+  },
+  "comparison": {
+    "path": "Voltforge_AI/evaluation/reports/llm-task-024-comparison.json",
+    "sha256": "1b19e3b125affbc1dc30dff1bc8c5f64e70c539c2fc6aed1a85efb77916ac52e",
+    "bytes": 22635
+  },
+  "checks": {
+    "path": "Voltforge_AI/evaluation/reports/llm-task-024-checks.json",
+    "sha256": "6b4ace758ff402e756fd852ee0ddc25bc243796bb4e4319f911e68e3a7331752",
+    "bytes": 12983
+  },
+  "fixtureManifests": [
+    {
+      "path": "Voltforge_AI/model/tokenizers/fixtures/gen2/v1/5380e995e9768d3bcb091f6e313ad92360a503d7d5c24ebbeb8101799089cfe5/manifest.json",
+      "sha256": "de98e73d6dc69400a2e2840746a596fb236223107c635b13cb919329235af0a1",
+      "bytes": 3627
+    },
+    {
+      "path": "Voltforge_AI/model/tokenizers/fixtures/gen2/v1/810305287f68cb337295bc2949bdb61fffd030c4061a92d40f3d1af65929e535/manifest.json",
+      "sha256": "005988abcf9f8270183314f36622e4b66e9157dc2d289220b8c017c19f988626",
+      "bytes": 3627
+    }
+  ],
+  "taskCompleted": false,
+  "approvedCorpusFitted": false,
+  "tokenizerReleaseAccepted": false,
+  "modelTrainingPerformed": false,
+  "runtimeChanged": false,
+  "remainingWork": [
+    "Complete LLM-TASK-023 admitted pilot/input corpus, including independent language and validation coverage and source-use rights.",
+    "Implement an evidence-verifying admitted-corpus adapter; fit only permitted training shards, with finite resource budgets and no validation/acceptance fitting.",
+    "Compare actual 16,384/32,768 candidates on representative permitted measurements, select vocabulary size and recount corpus tokens.",
+    "Publish a distinct immutable production 0.1.0 tokenizer with approved corpus lineage and complete roundtrip/marker evidence.",
+    "Validate the selected tokenizer/template descriptor in actual Gen2 model and context/inference integration; fixture binding checks are interface evidence only."
+  ],
+  "blockedBy": [
+    "LLM-TASK-023"
+  ],
+  "nextReadyTask": "LLM-TASK-023",
+  "planningSnapshot": {
+    "path": "backlog_history/llm-task-024-before/manifest.json",
+    "sha256": "4022017510b8214bc7a012c6ed0c9a38231fcbcedacf414ad434b1f4089dc8b1",
+    "bytes": 1628
+  },
+  "planningCheck": {
+    "status": "passed",
+    "active_tasks": 41,
+    "legacy_tasks": 14,
+    "milestones": 10,
+    "root_causes": 14,
+    "status_counts": {
+      "COMPLETED": 8,
+      "IN_PROGRESS": 2,
+      "TODO": 31
+    },
+    "next_task": "LLM-TASK-023",
+    "scope": "planning consistency only; no model release credit"
+  },
+  "sourceFingerprints": [
+    {
+      "path": "VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.json",
+      "sha256": "5ee0cda742047d45ed12028e5d854e9a64a30e2b98f83a524c3daa85c8c947b7",
+      "bytes": 132108
+    },
+    {
+      "path": "VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.md",
+      "sha256": "0d7c13976559ad113c2f1f3293f29712efce116af3fa7fb0cd60fd2ee48ff96b",
+      "bytes": 91525
+    },
+    {
+      "path": "AI_CHAT_ROOT_CAUSE_BACKLOG.json",
+      "sha256": "c5a6bff4328429a805c61a740fb61850b9dbe4e18fd6f31ad78f18209fd39a53",
+      "bytes": 38767
+    },
+    {
+      "path": "AI_CHAT_ROOT_CAUSE_ANALYSIS.md",
+      "sha256": "82e8b6273dc4fad7ca7a9b8242d548e962c7727e240f4ccb6e09c74c7650b6c0",
+      "bytes": 29649
+    },
+    {
+      "path": "Voltforge_AI/docs/VOLTForge_AI_RUNBOOK.md",
+      "sha256": "e5053fbd024ca4ad270aa8844baa70415efe1aa2b2c4e9ce98dcc82c38e7966e",
+      "bytes": 35789
+    },
+    {
+      "path": "Voltforge_AI/docs/runbook-contract.v1.json",
+      "sha256": "5cec8abdb7096ffbebbc352e37347757a9eaa73b65b0329db0da1fb3ab481957",
+      "bytes": 8570
+    },
+    {
+      "path": "Voltforge_AI/.gitattributes",
+      "sha256": "7622ae36af7ad7a490c7d1dfe346341a010f492a91a61581099d6ef175cbfd32",
+      "bytes": 511
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_GEN2_TOKENIZER_PREPARATION.v1.md",
+      "sha256": "1995aeb52157c7f9654611f869494c553852b15e30d271b39b9236da5a6086a4",
+      "bytes": 6557
+    },
+    {
+      "path": "Voltforge_AI/tools/build_gen2_tokenizer.py",
+      "sha256": "7e4462343eedd40eca07fc63cbce6d4d704f082a658d9670a37c3c3349ceda8b",
+      "bytes": 2597
+    },
+    {
+      "path": "Voltforge_AI/tools/record_gen2_tokenizer_progress.py",
+      "sha256": "f900738e1ddadd4e5876f430e73c5ff852581e8379e946fe53c672916210845d",
+      "bytes": 14876
+    },
+    {
+      "path": "Voltforge_AI/tests/test_gen2_tokenizer.py",
+      "sha256": "eeca80a756ff80f3bcb0916ce4ce795b9cee16eadb1148751fd6147afade9ada",
+      "bytes": 12688
+    }
+  ]
+}

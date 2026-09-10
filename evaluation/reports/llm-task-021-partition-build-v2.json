@@ -1,0 +1,82 @@
+{
+  "status": "passed",
+  "releasePath": "D:\\Project\\voltforge\\Voltforge_AI\\corpus\\partitions\\v1\\be29e68619449efec0348e5747944b2a1861b78b82a93642df923de2424813c6",
+  "manifestSha256": "7bd5aff6f8eb8376e2f5ef37ba2360777d343b0e41fbb16eb52eb4896ec67301",
+  "scorecard": {
+    "inputDocuments": 227,
+    "splitCounts": {
+      "train": 0,
+      "validation": 0,
+      "test": 0,
+      "quarantine": 227
+    },
+    "componentCount": 2,
+    "protectedComponentCount": 2,
+    "reasonCounts": {
+      "exact-content": 114,
+      "protected-lineage-family": 113
+    },
+    "directProtectedMatches": 227,
+    "duplicateEdges": 20937,
+    "crossSplitAudit": {
+      "status": "passed",
+      "counts": {
+        "lineage": 0,
+        "exactRaw": 0,
+        "exactNormalized": 0,
+        "nearTextOrCode": 0,
+        "protected": 0
+      },
+      "includedDocuments": 0,
+      "nonemptySplits": [],
+      "semanticCompletenessClaimed": false
+    },
+    "inputEligibleProxyTokens": 112418,
+    "proxyTokenizerVersion": "1.1.0",
+    "exposureAccounting": [
+      {
+        "uniqueAcceptedDocumentProxyTokens": {
+          "train": 0,
+          "validation": 0,
+          "test": 0
+        },
+        "hypotheticalPasses": 1,
+        "hypotheticalTrainingExposures": 0,
+        "observedTrainingExposures": 0,
+        "gen2ReleasedTrainingTokens": 0,
+        "repetitionAddsUniqueData": false,
+        "trainingAllowed": false
+      },
+      {
+        "uniqueAcceptedDocumentProxyTokens": {
+          "train": 0,
+          "validation": 0,
+          "test": 0
+        },
+        "hypotheticalPasses": 3,
+        "hypotheticalTrainingExposures": 0,
+        "observedTrainingExposures": 0,
+        "gen2ReleasedTrainingTokens": 0,
+        "repetitionAddsUniqueData": false,
+        "trainingAllowed": false
+      },
+      {
+        "uniqueAcceptedDocumentProxyTokens": {
+          "train": 0,
+          "validation": 0,
+          "test": 0
+        },
+        "hypotheticalPasses": 10,
+        "hypotheticalTrainingExposures": 0,
+        "observedTrainingExposures": 0,
+        "gen2ReleasedTrainingTokens": 0,
+        "repetitionAddsUniqueData": false,
+        "trainingAllowed": false
+      }
+    ],
+    "trainingPoolAvailable": false,
+    "allThreePartitionsPopulated": false,
+    "semanticCompletenessClaimed": false,
+    "trainingAllowed": false
+  }
+}

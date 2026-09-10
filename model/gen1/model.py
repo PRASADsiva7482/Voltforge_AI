@@ -18,6 +18,7 @@ except PackageNotFoundError as exc:
     raise RuntimeError(
         "VFDLM Gen1 requires the pinned PyTorch runtime; install requirements-gen1.txt"
     ) from exc
+
 if _installed_torch_version.partition("+")[0] != PINNED_TORCH_VERSION:
     raise RuntimeError(
         "VFDLM Gen1 requires PyTorch "

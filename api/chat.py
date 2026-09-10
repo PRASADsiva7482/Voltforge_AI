@@ -8,6 +8,8 @@ from functools import lru_cache
 import inspect
 import json
 import logging
+import os
+import re
 import time
 import uuid
 from typing import Awaitable, Callable
@@ -219,8 +221,44 @@ async def stream_chat_sse(
 
         def resolve_stage():
             cancellation.check()
+            candidate_text = None
+            enable_neural = (
+                os.environ.get("VOLTFORGE_AI_ENABLE_NEURAL_GENERATION", "false").lower() in ("true", "1")
+                and model_health.get("ready") is True
+                and grounded.context_metadata.get("status") == "compiled"
+            )
+            if enable_neural:
+                try:
+                    runtime = model_runtime_service.runtime_for_generation()
+                    if hasattr(runtime, "generate_task_record"):
+                        candidate_text = runtime.generate_task_record(
+                            grounded.task_record, cancellation_token=cancellation
+                        )
+                    elif hasattr(runtime, "generate_text"):
+                        loop = asyncio.new_event_loop()
+                        try:
+                            candidate_text = loop.run_until_complete(
+                                runtime.generate_text(
+                                    prompt=payload.message,
+                                    max_tokens=512,
+                                    board_type=payload.boardType,
+                                    components=payload.components,
+                                    wires=payload.wires,
+                                    code=payload.code,
+                                    simulation_state=payload.simulationState,
+                                    cancellation_token=cancellation,
+                                )
+                            )
+                        finally:
+                            loop.close()
+                    elif hasattr(runtime, "generate_neural_text"):
+                        candidate_text = runtime.generate_neural_text(payload.message)
+                except Exception as error:
+                    logger.warning("Neural generation failed, using deterministic fallback: %s", error)
+                    candidate_text = None
+
             result = resolve_generation(
-                candidate_text=None,
+                candidate_text=candidate_text,
                 request_record=grounded.task_record,
                 model_health=model_health,
                 deterministic_factory=lambda: _deterministic_response(
@@ -265,19 +303,26 @@ async def stream_chat_sse(
         generation_recorded = True
         mode = str(generation_path["mode"])
         emitter.mode = mode
-        deterministic = resolution.deterministic_value
-        if not isinstance(deterministic, ChatResponse):
-            raise ApiContractError(
-                "MALFORMED_GENERATION",
-                "The local generation result did not match the response contract.",
-            )
-        response_text = deterministic.reply.strip()
+
+        if getattr(resolution, "response_text", None):
+            response_text = resolution.response_text.strip()
+            chat_resp = ChatResponse(reply=response_text)
+            metadata = _merge_response_metadata(metadata, chat_resp)
+        else:
+            deterministic = resolution.deterministic_value
+            if not isinstance(deterministic, ChatResponse):
+                raise ApiContractError(
+                    "MALFORMED_GENERATION",
+                    "The local generation result did not match the response contract.",
+                )
+            response_text = deterministic.reply.strip()
+            metadata = _merge_response_metadata(metadata, deterministic)
+
         if not response_text or len(response_text) > 24_000:
             raise ApiContractError(
                 "MALFORMED_GENERATION",
                 "The local generation result violated the bounded reply contract.",
             )
-        metadata = _merge_response_metadata(metadata, deterministic)
         response_record = runtime_response_to_task_record(
             grounded.task_record,
             response_text=response_text,
@@ -403,6 +448,7 @@ async def stream_chat_sse(
             "Local AI chat stream failure (requestId=%s errorType=%s)",
             request_id,
             type(error).__name__,
+            exc_info=True,
         )
         if not emitter.terminal_emitted:
             yield emitter.emit(
@@ -432,6 +478,51 @@ async def stream_chat_sse(
             output_characters=len(response_text),
         )
         cancellation_registry.release(request_id)
+
+
+def _should_include_engineering_summary(
+    message: str,
+    engineering_report: dict[str, object] | None,
+) -> bool:
+    """Determine whether authoritative engineering checks should be prepended to the reply."""
+    if not engineering_report or not engineering_report.get("toolRuns"):
+        return False
+    summary = engineering_report.get("summary")
+    if not isinstance(summary, dict):
+        return False
+
+    # Always include if there are blocking findings or critical issues
+    if summary.get("blockingFindings", 0) > 0 or summary.get("criticalFindings", 0) > 0:
+        return True
+
+    lower = message.lower().strip()
+    greeting_words = {
+        "hi", "hello", "hey", "hola", "greetings", "good morning",
+        "good evening", "good afternoon", "who are you", "what can you do"
+    }
+    if lower in greeting_words or bool(re.match(r"^(hi|hello|hey|greetings|hola)\b", lower)):
+        return False
+
+    # Check if user asked for validation, safety, or diagnostics
+    validation_terms = (
+        "validate", "safety", "safe", "short", "error", "check circuit", "fix circuit",
+        "drc", "verify", "is this safe", "is it safe", "is my circuit", "check my",
+        "diagnostic", "wiring check", "inspection", "audit", "findings"
+    )
+    if any(term in lower for term in validation_terms):
+        return True
+
+    # If there are any non-critical findings and the user is asking about the schematic/circuit
+    if summary.get("findings", 0) > 0:
+        circuit_terms = (
+            "circuit", "schematic", "component", "board", "pin", "wire",
+            "connection", "power", "rail", "resistor", "led"
+        )
+        if any(term in lower for term in circuit_terms):
+            return True
+
+    # For general queries, definitions, greetings, or when findings == 0, omit summary
+    return False
 
 
 def _deterministic_response(
@@ -483,10 +574,14 @@ def _deterministic_response(
         context={
             "history": [item.model_dump() for item in payload.history],
             "canvasContext": payload.canvasContext,
+            "memory": [
+                m.model_dump() if hasattr(m, "model_dump") else m
+                for m in (payload.memory or [])
+            ],
         },
     )
     prefixes = []
-    if engineering_report and engineering_report.get("toolRuns"):
+    if _should_include_engineering_summary(payload.message, engineering_report):
         prefixes.append(render_authoritative_summary(engineering_report))
     if retrieval:
         retrieval_text = render_retrieval_summary(retrieval)

@@ -681,6 +681,9 @@ class ProjectContextCompiler:
             for key in ("projectName", "activeFile", "viewport")
             if key in metadata
         }
+        board_type = getattr(request, "boardType", None) or metadata.get("boardType")
+        if board_type:
+            project_metadata["boardType"] = _clean_text(board_type, 80)
         if project_metadata:
             units.append(
                 _ContextUnit(

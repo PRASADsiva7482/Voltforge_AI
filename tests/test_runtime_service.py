@@ -6,6 +6,7 @@ import threading
 from types import SimpleNamespace
 import unittest
 from unittest import mock
+from tests import test_registry_manager as registry_tests
 
 from model.registry_manager import (
     canonical_json_bytes,
@@ -49,6 +50,8 @@ class _FakeRuntime:
             "message": "ready",
             "device": "cpu",
             "generationNetworkAccess": False,
+            "parameterCount": 128,
+            "contextLength": 16,
         }
 
 
@@ -57,6 +60,7 @@ class TestModelRuntimeService(unittest.TestCase):
         self.temporary = tempfile.TemporaryDirectory()
         self.root = Path(self.temporary.name)
         self.registry_path = self.root / "registry" / "active_model.json"
+        self.registry_dir = self.registry_path.parent
         self.trust_store = self.root / "registry" / "trust" / "trusted-keys.json"
         self.private_key = self.root / "private.pem"
         self.key_id = "vf-runtime-service-test-v1"
@@ -72,6 +76,7 @@ class TestModelRuntimeService(unittest.TestCase):
 
     def _registry(self, *, active: bool) -> None:
         artifact_id = "vfdlm-g1-edge-v1.0.0-test"
+        artifact = registry_tests.TestSignedRegistryLifecycle._artifact(self, artifact_id)
         artifacts = [
             {
                 "artifactId": artifact_id,
@@ -80,9 +85,9 @@ class TestModelRuntimeService(unittest.TestCase):
                 "runtime": "pytorch-gen1-v1",
                 "root": f"artifacts/{artifact_id}",
                 "manifestPath": "artifact-manifest.json",
-                "manifestSha256": "1" * 64,
-                "manifestFileSha256": "2" * 64,
-                "parameterCount": 100,
+                "manifestSha256": artifact.manifest_sha256,
+                "manifestFileSha256": artifact.manifest_file_sha256,
+                "parameterCount": artifact.parameter_count,
                 "contextLength": 16,
                 "quantization": "fp32",
                 "packageBytes": 1000,
@@ -282,6 +287,66 @@ class TestModelRuntimeService(unittest.TestCase):
         self.assertFalse(health["ready"])
         self.assertEqual(health["runtimeState"], "failed")
         self.assertEqual(health["code"], "MODEL_REGISTRY_INVALID")
+
+    def test_registry_liveness_does_not_imply_loaded_model_readiness(self):
+        self._registry(active=True)
+        service = ModelRuntimeService(registry_path=self.registry_path, trust_store_path=self.trust_store)
+        health = service.health()
+        self.assertFalse(health["ready"])
+        self.assertIsNone(health["parameterCount"])
+        with self.assertRaises(RuntimeError):
+            service.runtime_for_generation()
+
+    def test_missing_or_corrupt_active_weights_fail_before_loader_import(self):
+        self._registry(active=True)
+        weights = self.registry_dir / "artifacts/vfdlm-g1-edge-v1.0.0-test/model/weights.pt"
+        for change in (lambda: weights.write_bytes(b"corrupt"), weights.unlink):
+            change()
+            service = ModelRuntimeService(registry_path=self.registry_path, trust_store_path=self.trust_store)
+            with mock.patch("model.runtime_service.importlib.import_module") as native_import:
+                health = service.start()
+            native_import.assert_not_called()
+            self.assertFalse(health["ready"])
+            self.assertEqual(health["generationSource"], "unavailable")
+
+    def test_loader_failure_does_not_substitute_a_rule_engine(self):
+        self._registry(active=True)
+        service = ModelRuntimeService(registry_path=self.registry_path, trust_store_path=self.trust_store)
+        with mock.patch("model.runtime_service.checkpoint_runtime_security_block", return_value=None), mock.patch(
+            "model.runtime_service.importlib.import_module", return_value=SimpleNamespace(LocalGen1Runtime=_FakeRuntime)
+        ) as imports, mock.patch.object(_FakeRuntime, "load", side_effect=RuntimeError("failed checkpoint")):
+            health = service.start()
+        imports.assert_called_once_with("model.gen1.runtime")
+        self.assertTrue(_FakeRuntime.instances[-1].unloaded)
+        self.assertFalse(health["ready"])
+        self.assertEqual(health["code"], "MODEL_RUNTIME_LOAD_FAILED")
+
+    def test_loaded_identity_must_match_signed_package(self):
+        self._registry(active=True)
+        original = _FakeRuntime.health
+        for field, value in (("artifactId", "vfdlm-g1-server-v9.0.0"), ("parameterCount", 7000000000), ("contextLength", 4096)):
+            service = ModelRuntimeService(registry_path=self.registry_path, trust_store_path=self.trust_store)
+            with mock.patch("model.runtime_service.checkpoint_runtime_security_block", return_value=None), mock.patch(
+                "model.runtime_service.importlib.import_module", return_value=SimpleNamespace(LocalGen1Runtime=_FakeRuntime)
+            ), mock.patch.object(_FakeRuntime, "health", lambda instance: {**original(instance), field: value}):
+                health = service.start()
+            self.assertFalse(health["ready"])
+            self.assertEqual(health["code"], "MODEL_RUNTIME_IDENTITY_MISMATCH")
+            self.assertTrue(_FakeRuntime.instances[-1].unloaded)
+
+    def test_runtime_losing_readiness_is_unloaded_and_cannot_generate(self):
+        self._registry(active=True)
+        service = ModelRuntimeService(registry_path=self.registry_path, trust_store_path=self.trust_store)
+        with mock.patch("model.runtime_service.checkpoint_runtime_security_block", return_value=None), mock.patch(
+            "model.runtime_service.importlib.import_module", return_value=SimpleNamespace(LocalGen1Runtime=_FakeRuntime)
+        ):
+            self.assertTrue(service.start()["ready"])
+        runtime = _FakeRuntime.instances[-1]
+        with mock.patch.object(runtime, "health", return_value={"ready": False}):
+            self.assertFalse(service.health()["ready"])
+        self.assertTrue(runtime.unloaded)
+        with self.assertRaises(RuntimeError):
+            service.runtime_for_generation()
 
     def test_supervisor_source_contains_no_eager_native_or_training_import(self):
         source = (

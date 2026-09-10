@@ -19,7 +19,7 @@
     "changeAiElectricalCoverage": false
   },
   "completionInputs": {
-    "browserGeometryReviewReceiptPath": null,
+    "browserGeometryReviewReceiptPath": "Voltforge_AI/evaluation/reports/board-geometry-browser-review-v1.json",
     "requiredThemes": ["light", "dark"],
     "requiredResponsiveWidths": [1280, 768, 390],
     "requiredBoards": [

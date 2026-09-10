@@ -8,3 +8,4 @@ training_runs/
 model/registry/artifacts/
 model/registry/history/
 runtime/
+corpus/.work/

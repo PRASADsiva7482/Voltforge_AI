@@ -28,7 +28,7 @@
     "simulation.not-converged"
   ],
   "contextWindowTokens": 8192,
-  "promptTokens": 6641,
+  "promptTokens": 6766,
   "promptTokenLimit": 7680,
   "checks": {
     "policyChecksumVerified": true,
@@ -58,5 +58,5 @@
   "rawCompilerDiagnosticStored": false,
   "rawSimulationStateStored": false,
   "neuralServingApproved": false,
-  "reportSha256": "9bcce558ce076768a38cbc16a45d7ed19f2eac04310a6dd98facf0974aade361"
+  "reportSha256": "c0ea1e40243e15db3fcfcab64b45032a7af41aa685908d2e5a4dfe27142026a0"
 }

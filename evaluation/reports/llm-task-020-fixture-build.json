@@ -1,0 +1,21 @@
+{
+  "status": "completed",
+  "releasePath": "D:\\Project\\voltforge\\Voltforge_AI\\corpus\\extraction-fixtures\\v1\\34b8ea2db7081e29c315d69da02f0b2814682866a59d1f58a5ce98e2fb6833ca",
+  "verification": "passed",
+  "manifestSha256": "1519df682941c00238332e0b783bab9ee550594cb3e74a2d72d165161ce2c5c2",
+  "acceptedDocuments": 8,
+  "quarantinedDocuments": 9,
+  "recomputed": false,
+  "trainingAllowed": false,
+  "newDocuments": 17,
+  "resumedDocuments": 0,
+  "performance": {
+    "elapsedSeconds": 3.4404195999959484,
+    "inputBytes": 4027,
+    "documentsPerSecond": 4.941257746589986,
+    "pythonPeakAllocatedBytes": 8437651,
+    "memoryScope": "Parent Python traced allocations; excludes OS/native memory and PDF child processes.",
+    "sqliteCacheKiB": 2048,
+    "pdfInputLimitBytes": 8388608
+  }
+}

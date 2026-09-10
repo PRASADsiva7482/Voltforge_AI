@@ -337,3 +337,28 @@ def test_context_evaluation_and_snapshot_are_reproducible(tmp_path: Path) -> Non
     assert all(generated["checks"].values())
     assert generated["currentArtifactCompatibility"] == "incompatible-context-window"
     assert generated["neuralServingApproved"] is False
+
+
+def test_board_type_and_canvas_components_in_compiled_context() -> None:
+    req = ChatRequest(
+        message="What board am I using and what components do I have?",
+        boardType="ESP32",
+        components=[
+            {"id": "led-1", "type": "LED", "name": "Status LED", "pins": [{"id": "A"}, {"id": "K"}]},
+            {"id": "res-1", "type": "RESISTOR", "name": "R1", "pins": [{"id": "1"}, {"id": "2"}], "properties": {"resistance": "220 Ohm"}},
+        ],
+        wires=[
+            {"id": "w1", "fromComponent": "led-1", "fromPin": "K", "toComponent": "res-1", "toPin": "1"},
+        ],
+    )
+    compilation = compile_project_context(req)
+    sections = project_sections(compilation)
+    metadata_sec = next((s for s in sections if s["sectionId"] == "project:metadata"), None)
+    assert metadata_sec is not None
+    assert metadata_sec["payload"]["boardType"] == "ESP32"
+
+    comp_ids = {s["source"]["sourceId"] for s in sections if s["category"] == "component"}
+    assert "led-1" in comp_ids
+    assert "res-1" in comp_ids
+    wire_ids = {s["source"]["sourceId"] for s in sections if s["category"] == "wire"}
+    assert "w1" in wire_ids
