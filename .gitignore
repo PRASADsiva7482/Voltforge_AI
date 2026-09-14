@@ -1,6 +1,8 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+.project
+.settings/
 .env
 datasheet_cache.json
 .toolchains/
