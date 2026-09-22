@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "artifactKind": "voltforge-tokenizer",
+  "tokenizerId": "vfdlm-byte-bpe",
+  "version": "1.0.0",
+  "contractVersion": "1.0.0",
+  "releaseStatus": "approved",
+  "algorithm": "voltforge-byte-bpe",
+  "vocabSize": 3072,
+  "mergeCount": 2800,
+  "specialTokenContractSha256": "a81bdccd5350b64f2e9063d35c20f09ea66c97721cb21457561efa084f6f0200",
+  "files": {
+    "vocab": {
+      "path": "vocab.json",
+      "sha256": "7162d099a5a63e6516a799cf2bc283ec55f593911914ccf4b345797b0a4bbd55"
+    },
+    "merges": {
+      "path": "merges.json",
+      "sha256": "4692a24b00364efbd7928c53a13de8b15a2b64716f7aa7ae299bed7b4a2b16a3"
+    },
+    "config": {
+      "path": "tokenizer_config.json",
+      "sha256": "e7afab498a691e2602c3ec6e5a80553bc2f1f2b8dd089ea95e59fa21465c313d"
+    },
+    "evaluationReport": {
+      "path": "evaluation-report.json",
+      "sha256": "79e3b4394d9b5bae4268572dff3069d71cf08c3db5ee96570d822ae916b452f6"
+    }
+  },
+  "lineage": {
+    "sourceIds": [
+      "vf-src-curated-electronics-corpus-v1",
+      "vf-src-verified-synthetic-pipeline-v1"
+    ],
+    "shardIds": [
+      "vf-shard-714b767d2e7f90b2e975",
+      "vf-shard-552700494266b48956af",
+      "vf-shard-dfa00394be4430d7dc31",
+      "vf-shard-af68248a3cb692c98afc"
+    ],
+    "shards": [
+      {
+        "shardId": "vf-shard-714b767d2e7f90b2e975",
+        "path": "synthetic_data/shards/v1/grounded-electronics.jsonl",
+        "sha256": "714b767d2e7f90b2e9755b8e0b29aa3887c48eaed14116e8746c1fb8fc559148",
+        "recordCount": 80,
+        "manifestPath": "data_governance/manifests/synthetic_data__shards__v1__grounded-electronics.jsonl.manifest.json",
+        "manifestSha256": "a26fe19ad8c3999ccb4960064a24a222a50652fd4ef3829f2c9c83110329f4b2",
+        "sourceIds": [
+          "vf-src-curated-electronics-corpus-v1",
+          "vf-src-verified-synthetic-pipeline-v1"
+        ]
+      },
+      {
+        "shardId": "vf-shard-552700494266b48956af",
+        "path": "synthetic_data/shards/v1/circuit-safety.jsonl",
+        "sha256": "552700494266b48956afc583287464b89e2d5581ffe400c5c22d6c5791d669c3",
+        "recordCount": 56,
+        "manifestPath": "data_governance/manifests/synthetic_data__shards__v1__circuit-safety.jsonl.manifest.json",
+        "manifestSha256": "a74032a269da3c5378c55d38b0b0163fa6008bb1ab580d8603af2d5d5b3230a1",
+        "sourceIds": [
+          "vf-src-curated-electronics-corpus-v1",
+          "vf-src-verified-synthetic-pipeline-v1"
+        ]
+      },
+      {
+        "shardId": "vf-shard-dfa00394be4430d7dc31",
+        "path": "synthetic_data/shards/v1/firmware.jsonl",
+        "sha256": "dfa00394be4430d7dc31c0fa69054ce3c7d7890acdd989d0a7768af36611ce64",
+        "recordCount": 12,
+        "manifestPath": "data_governance/manifests/synthetic_data__shards__v1__firmware.jsonl.manifest.json",
+        "manifestSha256": "0c21407399be8e6264994262fb80fa950b3b53367bf608a93256b0463797656d",
+        "sourceIds": [
+          "vf-src-curated-electronics-corpus-v1",
+          "vf-src-verified-synthetic-pipeline-v1"
+        ]
+      },
+      {
+        "shardId": "vf-shard-af68248a3cb692c98afc",
+        "path": "synthetic_data/shards/v1/compiler-repair.jsonl",
+        "sha256": "af68248a3cb692c98afc42da812f27b05ccd20d727113628f14ffa9250ba558b",
+        "recordCount": 6,
+        "manifestPath": "data_governance/manifests/synthetic_data__shards__v1__compiler-repair.jsonl.manifest.json",
+        "manifestSha256": "45d05ae48ea37b44275eea76d487678bf5c45583720ea65141303e7f89d3fd65",
+        "sourceIds": [
+          "vf-src-curated-electronics-corpus-v1",
+          "vf-src-verified-synthetic-pipeline-v1"
+        ]
+      }
+    ],
+    "split": {
+      "id": "vf-tokenizer-split-v1",
+      "seed": "vfai-010-split-20260828",
+      "method": "per-task SHA-256 rank with approximately 10 percent evaluation",
+      "trainingRecordCount": 138,
+      "evaluationRecordCount": 16,
+      "trainingRecordIdsSha256": "aaf32295022551a322dd10893905bd9ca932f350164bc6042af2afa036ec42fc",
+      "evaluationRecordIds": [
+        "vf-task-v1-299d98bb2e8c6de170ff1c4a",
+        "vf-task-v1-38f0d8dd680e9febf6c340fe",
+        "vf-task-v1-4d85eb862952495630f4ebd9",
+        "vf-task-v1-594666bd8066763fef0c09cb",
+        "vf-task-v1-75353a4a1a4b85fbfbc20cd3",
+        "vf-task-v1-798b1a1a72c4f1345a49d6d7",
+        "vf-task-v1-83335f76323ce53a3a850efd",
+        "vf-task-v1-9cfc0bb9c464834fbdadfaf1",
+        "vf-task-v1-afae22e52e5d999946bcf424",
+        "vf-task-v1-b25cd232a6d2dbef9384b491",
+        "vf-task-v1-b412a56155399926eec86854",
+        "vf-task-v1-bffe9959a5cd8791a2e4b763",
+        "vf-task-v1-c654f1c517ca031af53215a9",
+        "vf-task-v1-de14f38756dc91a611a45134",
+        "vf-task-v1-e572357a012729b027a4889b",
+        "vf-task-v1-ff1f36ef3b3d09f856c90738"
+      ],
+      "trainingCorpusSha256": "365861bc14b145d387778bd76f5285fd646d016e5258efdee2ebaeb91284ee6e",
+      "evaluationCorpusSha256": "b33c6d016fe9d1d2cbd5549e749834db9990daec6bbbc90d4ba38108386660cf",
+      "taskBalance": {
+        "circuit_validation": 2,
+        "compiler_repair": 1,
+        "domain_chat": 3,
+        "firmware_generation": 1,
+        "pin_routing": 2,
+        "refusal": 1,
+        "structured_output": 2,
+        "uncertainty": 1,
+        "wiring": 3
+      }
+    }
+  },
+  "trainer": [
+    {
+      "path": "model/tokenizer.py",
+      "sha256": "39f0a3773f044eb9934222cf9c5dbc22212a155fe886a2e195a1175761a84e35"
+    },
+    {
+      "path": "tokenizer_training/pipeline.py",
+      "sha256": "947552149f71af33eb809836deeb21f785f63a9eb9355b737fae528b5f6ca3fd"
+    },
+    {
+      "path": "tokenizer_training/legacy_baseline.py",
+      "sha256": "4ad4ea2ca5f652358db7629f9422419dc0035ac26a2fe18e26b93243de9956bb"
+    },
+    {
+      "path": "task_schema/compiler.py",
+      "sha256": "679663525f214ebab2d40ada78f6c41b0c0640ffafe77e38d4c47d12b0541236"
+    }
+  ],
+  "modelArtifactDependencyContract": {
+    "requiredRegistryFileKey": "tokenizerManifest",
+    "manifestFilename": "tokenizer_manifest.json",
+    "gate": "model.artifact_registry._validate_tokenizer"
+  },
+  "artifactSha256": "248b15409f3cc1f2f114c91b212b938db0a61d94e758f9d5985368c3d4f1d8c7"
+}

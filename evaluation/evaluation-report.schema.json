@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:voltforge-ai:evaluation-report:v1",
+  "title": "VoltForge AI release evaluation report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "reportId",
+    "generatedAt",
+    "suite",
+    "target",
+    "scoringPolicy",
+    "leakage",
+    "summary",
+    "metrics",
+    "cases"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "reportId": { "type": "string" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "suite": { "type": "object" },
+    "target": {
+      "type": "object",
+      "properties": {
+        "networkAccessAllowed": { "const": false },
+        "missingNeuralMetricsReceiveCredit": { "const": false }
+      }
+    },
+    "scoringPolicy": { "type": "object" },
+    "leakage": { "type": "object" },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "releaseDecision": { "enum": ["pass", "blocked"] }
+      }
+    },
+    "metrics": { "type": "array", "minItems": 1 },
+    "cases": { "type": "array", "minItems": 1 }
+  }
+}

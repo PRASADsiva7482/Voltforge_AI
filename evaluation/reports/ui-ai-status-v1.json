@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai028-ui-ai-status-v1",
+  "generatedOn": "2026-08-31",
+  "contractVersion": "1.0.0",
+  "checkCount": 15,
+  "passedCheckCount": 15,
+  "checks": {
+    "explicitLocalRunStates": true,
+    "localModelAndFallbackAreNamed": true,
+    "sourceTrailCoversEvidenceClasses": true,
+    "uncertaintyIsParsedAndVisible": true,
+    "cancellationUsesAbortSignal": true,
+    "projectSwitchClearsConversationScope": true,
+    "safeErrorsDoNotRenderUpstreamText": true,
+    "canonicalSsePayloadRemainsSupported": true,
+    "confidenceAndCitationsAreAccessible": true,
+    "statusLiveRegionIsAccessible": true,
+    "memoryUnavailableAndControlsAreExplicit": true,
+    "reducedMotionIsHandled": true,
+    "uiRegressionScriptIsInDefaultSuite": true,
+    "contractTypesRemainVersioned": true,
+    "noThirdPartyGenerationLabel": true
+  },
+  "networkAccessed": false,
+  "rawPromptStored": false,
+  "rawProjectContextStored": false,
+  "rawModelOutputStored": false,
+  "thirdPartyGenerationProvider": false,
+  "evaluatorSha256": "922394b9c3ad417d21c5268c3b2d3b732686e9b08294ab65c9e310b97d79eb64",
+  "reportSha256": "36c44e913abc87e7b6348e1ee03b7842d9a79293138fe10da2f5ab556201dcab"
+}

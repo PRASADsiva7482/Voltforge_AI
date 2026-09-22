@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai017-runtime-package-v1",
+  "generatedAtUtc": "2026-08-28T17:59:46.706442Z",
+  "artifactId": "vfdlm-g1-edge-v0.1.1-runtime",
+  "parentArtifactId": "vfdlm-g1-edge-v0.1.0-bootstrap",
+  "artifactRoot": "model/registry/artifacts/vfdlm-g1-edge-v0.1.1-runtime",
+  "manifestMirrorPath": "model/registry/manifests/vfdlm-g1-edge-v0.1.1-runtime.json",
+  "manifestSha256": "6e62cda425423bc64b7f12aa6c0965261c9fc9f162bc5e2f99b76531cdaa1efb",
+  "manifestFileSha256": "66fb6e8c6a2993c73855e4044f7e2410c017996faec2d7deb3c632b88d690432",
+  "packageBytes": 57292987,
+  "fileCount": 16,
+  "weightsChanged": false,
+  "tokenizerContentChanged": false,
+  "runtimeContract": {
+    "canonicalCheckpointManifest": "model/manifest.json",
+    "canonicalTokenizerManifest": "tokenizer/tokenizer_manifest.json",
+    "offlineExperimentalInferenceEnabled": true,
+    "serviceServingEnabled": false,
+    "activationEligible": false
+  },
+  "verification": {
+    "signatureVerified": true,
+    "exactFileSetVerified": true,
+    "allChecksumsVerified": true,
+    "compatibilityVerified": true,
+    "active": false
+  },
+  "registry": {
+    "revision": 2,
+    "registrySha256": "6a21728327ef2b246e8dd4e8d07fb70c0e3014e7673cd946a720424e34bba6e1",
+    "activeArtifactId": null,
+    "catalogEntry": {
+      "artifactId": "vfdlm-g1-edge-v0.1.1-runtime",
+      "releaseStatus": "experimental",
+      "activationEligible": false,
+      "runtime": "pytorch-gen1-v1",
+      "root": "artifacts/vfdlm-g1-edge-v0.1.1-runtime",
+      "manifestPath": "artifact-manifest.json",
+      "manifestSha256": "6e62cda425423bc64b7f12aa6c0965261c9fc9f162bc5e2f99b76531cdaa1efb",
+      "manifestFileSha256": "66fb6e8c6a2993c73855e4044f7e2410c017996faec2d7deb3c632b88d690432",
+      "parameterCount": 14198464,
+      "contextLength": 128,
+      "quantization": "fp32",
+      "packageBytes": 57292987
+    }
+  },
+  "reportSha256": "452f006488189ca39436a71fdc1d7f005ed6af0b3d81c68582f0d539fcd917c0"
+}

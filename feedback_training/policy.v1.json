@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai-fu-009-feedback-candidate-executor-v1",
+  "status": "admission-implemented-training-adapter-blocked",
+  "sourceFollowup": "VFAI-FU-009",
+  "dependencies": {
+    "contextRevisionReadinessPath": "evaluation/reports/context-revision-readiness-v1.json",
+    "requiredContextRevisionDecision": "context-results-ready-for-independent-release-review",
+    "registryPath": "model/registry/active_model.json",
+    "feedbackPolicyPath": "feedback_governance/policy.v1.json"
+  },
+  "scheduledRun": {
+    "manifestPath": null,
+    "feedbackDatabasePath": null,
+    "requiredFormat": "vfai034-retraining-run-v1",
+    "trainingShardMustBeSiblingOfManifest": true,
+    "requiredDependencyPaths": [
+      "feedback_governance/policy.v1.json",
+      "feedback_governance/service.py",
+      "feedback_training/policy.v1.json",
+      "feedback_training/executor.py",
+      "evaluation/leakage.py",
+      "gen1_training/data.py",
+      "gen1_training/trainer.py",
+      "model/tokenizers/vfdlm-byte-bpe-v1.1.0/tokenizer_manifest.json",
+      "task_schema/task-record.schema.json",
+      "synthetic_data/pipeline-lock.v1.json",
+      "model/release-policy.v1.json"
+    ],
+    "requiredReleaseGates": [
+      "held-out-leakage",
+      "model-quality-scorecard",
+      "artifact-integrity",
+      "candidate-release",
+      "stable-canary",
+      "signed-activation"
+    ]
+  },
+  "baseArtifact": {
+    "mustMatchScheduledArtifactAndRegistryRevision": true,
+    "mustBeCurrentActiveArtifact": true,
+    "releaseStatusRequired": "approved",
+    "activationEligibleRequired": true,
+    "minimumContextLength": 4096,
+    "tokenizerId": "vfdlm-byte-bpe",
+    "tokenizerVersion": "1.1.0",
+    "signedArtifactVerificationRequired": true
+  },
+  "executionAdmission": {
+    "currentDependencyHashesRequired": true,
+    "exactRuntimeApiDataTokenizerAndIndexCompatibilityRequired": true,
+    "currentReviewerApprovalRequired": true,
+    "currentTrainingConsentRequired": true,
+    "feedbackMustMatchBaseArtifactAndRevision": true,
+    "frozenAndAllCurrentAdmittedHeldoutLeakageCheckRequired": true,
+    "validationBeforeModelOrCorpusAllocationRequired": true,
+    "failedValidationMayMutateState": false
+  },
+  "isolation": {
+    "trainingAdapterPath": null,
+    "candidateResultReceiptPath": null,
+    "explicitEmptyRunDirectoryRequired": true,
+    "approvedSourceShardsReadOnly": true,
+    "frozenEvaluationReadOnly": true,
+    "feedbackDatabaseReadOnlyDuringAdmission": true,
+    "memoryDatabaseReadOnly": true,
+    "activeRegistryReadOnly": true,
+    "liveRuntimeWeightMutationAllowed": false
+  },
+  "candidateOutput": {
+    "newArtifactIdRequired": true,
+    "sourceRunSha256Required": true,
+    "baseArtifactAndRegistryRevisionRequired": true,
+    "trainingShardAndDependencyChecksumsRequired": true,
+    "checkpointResumeChecksumRequired": true,
+    "contentFreeProvenanceReceiptRequired": true,
+    "automaticRegistrationOrActivationAllowed": false
+  },
+  "promotion": {
+    "completeCrossRepositoryModelLaneRequired": true,
+    "passingVfai032ScorecardRequired": true,
+    "signedCandidateAndStableRecordsRequired": true,
+    "stableCanaryRequired": true,
+    "operatorActivationRequired": true,
+    "rollbackRetained": true
+  },
+  "forbidden": [
+    "unverified-feedback-run",
+    "stale-dependency",
+    "unapproved-or-revoked-consent",
+    "heldout-collision",
+    "base-artifact-or-registry-drift",
+    "source-shard-mutation",
+    "frozen-evaluation-mutation",
+    "feedback-or-memory-mutation-during-admission",
+    "live-runtime-weight-mutation",
+    "pretrained-third-party-weight-or-tokenizer",
+    "hosted-training-or-inference",
+    "automatic-registration-or-activation"
+  ]
+}

@@ -104,7 +104,7 @@ class GerberExporter:
             for pad in footprint.get("pads", []):
                 shape = str(pad.get("shape", "rect")).lower()
                 lines.append("D21*" if shape == "circle" else "D20*")
-                lines.append(cls._coord((fx + cls._float(pad.get("x"), 0), fy + cls._float(pad.get("y"), 0)), "D03"))
+                lines.append(cls._coord(cls._pad_center(footprint, pad), "D03"))
 
         lines.append("D12*")
         for via in vias:
@@ -133,7 +133,7 @@ class GerberExporter:
             for pad in footprint.get("pads", []):
                 shape = str(pad.get("shape", "rect")).lower()
                 lines.append("D21*" if shape == "circle" else "D20*")
-                lines.append(cls._coord((fx + cls._float(pad.get("x"), 0), fy + cls._float(pad.get("y"), 0)), "D03"))
+                lines.append(cls._coord(cls._pad_center(footprint, pad), "D03"))
 
         lines.append("D22*")
         for via in vias:
@@ -151,13 +151,14 @@ class GerberExporter:
             fy = cls._float(footprint.get("y"), 0)
             fw = cls._float(footprint.get("width"), 10)
             fh = cls._float(footprint.get("height"), 10)
-            corners = [
-                (fx - fw / 2, fy - fh / 2),
-                (fx + fw / 2, fy - fh / 2),
-                (fx + fw / 2, fy + fh / 2),
-                (fx - fw / 2, fy + fh / 2),
-                (fx - fw / 2, fy - fh / 2),
+            local_corners = [
+                (-fw / 2, -fh / 2),
+                (fw / 2, -fh / 2),
+                (fw / 2, fh / 2),
+                (-fw / 2, fh / 2),
+                (-fw / 2, -fh / 2),
             ]
+            corners = [cls._rotate_point((fx, fy), point, footprint.get("rotation", 0)) for point in local_corners]
             lines.append(cls._coord(corners[0], "D02"))
             for corner in corners[1:]:
                 lines.append(cls._coord(corner, "D01"))
@@ -190,10 +191,7 @@ class GerberExporter:
                 diameter = pad.get("drillDiameter")
                 if diameter is None:
                     continue
-                drill_points.setdefault(cls._float(diameter, 0.8), []).append((
-                    fx + cls._float(pad.get("x"), 0),
-                    fy + cls._float(pad.get("y"), 0),
-                ))
+                drill_points.setdefault(cls._float(diameter, 0.8), []).append(cls._pad_center(footprint, pad))
 
         lines = [
             "M48",
@@ -239,6 +237,24 @@ class GerberExporter:
             (cls._float(point.get("x"), 0), cls._float(point.get("y"), 0))
             for point in raw_points
         ]
+
+    @classmethod
+    def _pad_center(cls, footprint: Dict[str, Any], pad: Dict[str, Any]) -> Point:
+        center = (cls._float(footprint.get("x"), 0), cls._float(footprint.get("y"), 0))
+        local = (cls._float(pad.get("x"), 0), cls._float(pad.get("y"), 0))
+        return cls._rotate_point(center, local, footprint.get("rotation", 0))
+
+    @classmethod
+    def _rotate_point(cls, center: Point, local: Point, rotation: Any) -> Point:
+        import math
+
+        angle = math.radians(cls._float(rotation, 0))
+        cos_angle = math.cos(angle)
+        sin_angle = math.sin(angle)
+        return (
+            center[0] + local[0] * cos_angle - local[1] * sin_angle,
+            center[1] + local[0] * sin_angle + local[1] * cos_angle,
+        )
 
     @staticmethod
     def _coord(point: Point, operation: str) -> str:

@@ -1,0 +1,418 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "command": [
+        ".toolchains/gen1/Scripts/python.exe",
+        "-B",
+        "tools/verify_llm_foundation.py",
+        "--check-preserved-history"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "result": {
+        "status": "passed",
+        "contractId": "voltforge-owned-foundation-v1",
+        "familyNamespace": "vfdlm-g2",
+        "releaseStages": [
+          "base-model",
+          "instruction-model",
+          "integrated-assistant"
+        ],
+        "moduleCount": 9,
+        "mappedFollowups": 15,
+        "historicalBindings": 12,
+        "preservationChecked": true,
+        "preservedHistoricalFiles": 12,
+        "compatiblePythonRoutes": 13,
+        "scope": "design consistency only; no decoder, training, runtime or release acceptance",
+        "modelReleaseApproved": false,
+        "networkAccessed": false,
+        "nativeModelImported": false,
+        "inputs": [
+          {
+            "path": "foundation/contract.v1.json",
+            "sha256": "8641606ed74fd4f7c8887277aa3ae533de41adce0dbbd05a994bcd961441924f"
+          },
+          {
+            "path": "foundation/release-policy.v1.json",
+            "sha256": "e4225f92557972eea373ec4264466ab4a83371d6744ee51ee766cf8ea2992046"
+          },
+          {
+            "path": "foundation/compatibility-map.v1.json",
+            "sha256": "d049c37c9920aa6a76c8c8baf10697752b90c705a397f0f243d5d558b19ef22d"
+          },
+          {
+            "path": "docs/LLM_FOUNDATION_DESIGN.v1.md",
+            "sha256": "88f8d4b9cf5fd0118a3a25b07adadcf1213067453002c51daea5cb14fa7adaec"
+          },
+          {
+            "path": "tools/verify_llm_foundation.py",
+            "sha256": "300bafea8f1a2b7a04dadab93e70258231d5b31b7356295b3f5cfcc3734fbe0b"
+          }
+        ],
+        "thresholds": "pending LLM-TASK-018",
+        "nextTask": "LLM-TASK-018"
+      }
+    },
+    {
+      "command": [
+        ".toolchains/gen1/Scripts/python.exe",
+        "-B",
+        "tools/verify_foundation_evaluation_binding.py"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "result": {
+        "status": "passed",
+        "thresholdState": "frozen-independent-suite",
+        "bindingSha256": "7ef69cb85d9b57691cb56eeec819e6a34b5cc1cf8f8d7f335b94a97c9a47ee47",
+        "suite": {
+          "status": "passed",
+          "suiteSha256": "2fdd61cbc4cecbc20b364f7825b63bae2382ba784ca993a901839d2515985cc6",
+          "policySha256": "35c9a2ce79922beb3ec1c36e41ce61eeafcb351e6a3365851d20aa6bb4b20618",
+          "counts": {
+            "development": 100,
+            "validation": 100,
+            "acceptance": 500,
+            "adversarial": 100,
+            "compile": 100
+          },
+          "acceptanceCategories": {
+            "concepts": 50,
+            "diagnostics": 50,
+            "firmware_review": 50,
+            "numerical": 50,
+            "grounding": 50,
+            "multi_turn": 50,
+            "long_context": 50,
+            "project_actions": 50,
+            "instruction_scope": 50,
+            "uncertainty_safety": 50
+          },
+          "coreScenarioFamilies": 100,
+          "coreTemplateFamilies": 73,
+          "trainingUseAllowed": false,
+          "confidentialSealingClaimed": false
+        },
+        "historicalDesignFilesPreserved": 4,
+        "modelReleaseApproved": false,
+        "activationAllowed": false,
+        "scope": "Satisfies task-017 pending threshold/suite reference only; every training, lineage and release gate remains required."
+      }
+    },
+    {
+      "command": [
+        ".toolchains/gen1/Scripts/python.exe",
+        "-B",
+        "tools/inventory_llm_sources.py",
+        "verify",
+        "--recompute"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "result": {
+        "status": "passed",
+        "sourceCounts": {
+          "existing": 8,
+          "approvedForExistingTrainingUse": 4,
+          "notApprovedForTraining": 4,
+          "proposedNotAdmitted": 7,
+          "excludedClasses": 4
+        },
+        "unitCounts": {
+          "quarantined": 12,
+          "approved-existing-shard": 4,
+          "approved-upstream-facts": 8
+        },
+        "uniqueEligibleRecords": 227,
+        "existingPoolProxyTokens": 112418,
+        "gen2ReleaseReadyTokens": 0
+      }
+    },
+    {
+      "command": [
+        ".toolchains/gen1/Scripts/python.exe",
+        "-B",
+        "tools/audit_data_governance.py",
+        "--check"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "result": {
+        "ok": true,
+        "mode": "check",
+        "summary": {
+          "retainedDatasetCount": 12,
+          "recordCount": 17814,
+          "approvedTrainingShardCount": 0,
+          "approvedRuntimeRetrievalCount": 0,
+          "quarantinedDatasetCount": 12,
+          "catalogCoverageComplete": true,
+          "decision": "pass"
+        }
+      }
+    },
+    {
+      "command": [
+        ".toolchains/gen1/Scripts/python.exe",
+        "-B",
+        "tools/verify_runbook.py"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "result": {
+        "contractId": "vfai035-runbook-v1",
+        "contractSha256": "5cec8abdb7096ffbebbc352e37347757a9eaa73b65b0329db0da1fb3ab481957",
+        "forbiddenClaimCount": 0,
+        "networkAccessed": false,
+        "ok": true,
+        "rawContentStored": false,
+        "requiredCommandCount": 28,
+        "requiredSectionCount": 15,
+        "requiredSourceFileCount": 79,
+        "runbookSha256": "e5053fbd024ca4ad270aa8844baa70415efe1aa2b2c4e9ce98dcc82c38e7966e"
+      }
+    },
+    {
+      "command": [
+        ".toolchains/gen1/Scripts/python.exe",
+        "-B",
+        "tools/scan_quality_boundaries.py",
+        "--check"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "result": {
+        "schemaVersion": 1,
+        "scanId": "vfai032-quality-boundaries-v1",
+        "passed": true,
+        "filesScanned": 247,
+        "violations": [],
+        "networkAccessed": false,
+        "rawContentStored": false,
+        "scanSha256": "c0c6565df444e8013d3aad08ae22615b05164f2dd2811dea4017fa57b8fc5391"
+      }
+    },
+    {
+      "command": [
+        ".toolchains/gen1/Scripts/python.exe",
+        "-B",
+        "tools/snapshot_llm_cleanup.py",
+        "--verify",
+        "../backlog_history/llm-task-016-before-20260906T054449Z"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "result": {
+        "snapshot": "D:\\Project\\voltforge\\backlog_history\\llm-task-016-before-20260906T054449Z",
+        "verified_sources": 83,
+        "unchanged_protected_files": 131
+      }
+    },
+    {
+      "command": [
+        ".toolchains/gen1/Scripts/python.exe",
+        "-B",
+        "tools/build_gen2_tokenizer.py",
+        "check-corpus",
+        "--release",
+        "D:\\Project\\voltforge\\Voltforge_AI\\corpus\\pretraining-candidates\\v1\\8f55313b779ffa8c8beebc19cbb3761a354a0e219fdf794865882d4728dcf852"
+      ],
+      "exitCode": 2,
+      "expectedExitCode": 2,
+      "result": {
+        "status": "blocked",
+        "code": "GEN2_CORPUS_NOT_ADMITTED",
+        "tokenizerReleaseAccepted": false
+      }
+    }
+  ],
+  "fixtureManifests": [
+    {
+      "path": "Voltforge_AI/model/tokenizers/fixtures/gen2/v1/5380e995e9768d3bcb091f6e313ad92360a503d7d5c24ebbeb8101799089cfe5/manifest.json",
+      "sha256": "de98e73d6dc69400a2e2840746a596fb236223107c635b13cb919329235af0a1",
+      "bytes": 3627
+    },
+    {
+      "path": "Voltforge_AI/model/tokenizers/fixtures/gen2/v1/810305287f68cb337295bc2949bdb61fffd030c4061a92d40f3d1af65929e535/manifest.json",
+      "sha256": "005988abcf9f8270183314f36622e4b66e9157dc2d289220b8c017c19f988626",
+      "bytes": 3627
+    }
+  ],
+  "task023ByteBindingVerification": {
+    "status": "passed",
+    "releasePath": "D:\\Project\\voltforge\\Voltforge_AI\\corpus\\pretraining-candidates\\v1\\8f55313b779ffa8c8beebc19cbb3761a354a0e219fdf794865882d4728dcf852",
+    "recomputed": false,
+    "manifestSha256": "5ecc4f9c0795fe50335a90d118394c821a55bca79ea075c9205e54da232d86fd",
+    "scorecard": {
+      "actualTrainingExposures": 0,
+      "allCandidateAccounting": {
+        "domain": {
+          "code": {
+            "families": 1,
+            "records": 14,
+            "uniqueTokens": 718908
+          },
+          "electronics": {
+            "families": 10,
+            "records": 10,
+            "uniqueTokens": 2952
+          },
+          "language": {
+            "families": 1,
+            "records": 7,
+            "uniqueTokens": 86918
+          },
+          "math": {
+            "families": 7,
+            "records": 7,
+            "uniqueTokens": 1866
+          }
+        },
+        "language": {
+          "c": {
+            "families": 1,
+            "records": 14,
+            "uniqueTokens": 718908
+          },
+          "en": {
+            "families": 18,
+            "records": 24,
+            "uniqueTokens": 91736
+          }
+        },
+        "sourceId": {
+          "vf-freertos-kernel-dbf70559": {
+            "families": 1,
+            "records": 14,
+            "uniqueTokens": 718908
+          },
+          "vf-owned-foundation-domain-recipes-v1": {
+            "families": 17,
+            "records": 17,
+            "uniqueTokens": 4818
+          },
+          "vf-python-devguide-9d481ef4": {
+            "families": 1,
+            "records": 7,
+            "uniqueTokens": 86918
+          }
+        },
+        "split": {
+          "quarantine": {
+            "families": 1,
+            "records": 7,
+            "uniqueTokens": 86918
+          },
+          "test": {
+            "families": 5,
+            "records": 5,
+            "uniqueTokens": 1492
+          },
+          "train": {
+            "families": 13,
+            "records": 26,
+            "uniqueTokens": 722234
+          }
+        }
+      },
+      "candidateRecords": 38,
+      "includedAccounting": {
+        "domain": {
+          "code": {
+            "families": 1,
+            "records": 14,
+            "uniqueTokens": 718908
+          },
+          "electronics": {
+            "families": 10,
+            "records": 10,
+            "uniqueTokens": 2952
+          },
+          "math": {
+            "families": 7,
+            "records": 7,
+            "uniqueTokens": 1866
+          }
+        },
+        "language": {
+          "c": {
+            "families": 1,
+            "records": 14,
+            "uniqueTokens": 718908
+          },
+          "en": {
+            "families": 17,
+            "records": 17,
+            "uniqueTokens": 4818
+          }
+        },
+        "sourceId": {
+          "vf-freertos-kernel-dbf70559": {
+            "families": 1,
+            "records": 14,
+            "uniqueTokens": 718908
+          },
+          "vf-owned-foundation-domain-recipes-v1": {
+            "families": 17,
+            "records": 17,
+            "uniqueTokens": 4818
+          }
+        },
+        "split": {
+          "test": {
+            "families": 5,
+            "records": 5,
+            "uniqueTokens": 1492
+          },
+          "train": {
+            "families": 13,
+            "records": 26,
+            "uniqueTokens": 722234
+          }
+        }
+      },
+      "includedRecords": 31,
+      "inheritedQuarantinedRecordsNotReadmitted": 50,
+      "languageScope": "English technical documentation and owned domain examples; C source. No broad general-language corpus claimed.",
+      "readiness": {
+        "blockers": [
+          "source-rights-not-admitted:vf-freertos-kernel-dbf70559",
+          "source-rights-not-admitted:vf-owned-foundation-domain-recipes-v1",
+          "insufficient-independent-train-families:language",
+          "insufficient-independent-validation-families:language",
+          "insufficient-independent-train-families:code",
+          "insufficient-independent-validation-families:code",
+          "insufficient-independent-validation-families:electronics",
+          "insufficient-independent-validation-families:math",
+          "measured-scaling-budget-unavailable",
+          "heldout-mixture-pilot-unavailable",
+          "gen2-tokenizer-count-unavailable"
+        ],
+        "releasedGen2TrainingTokens": 0,
+        "sequenceIssue": "Task 023 completion references a measured scaling budget, but task 031 depends on 023. Candidate preparation does not resolve this acceptance-order loop or authorize later tasks.",
+        "status": "blocked",
+        "trainingAllowed": false
+      },
+      "releasedGen2TrainingTokens": 0,
+      "sourceFileAcquisitionDenials": [
+        {
+          "path": "documentation/style-guide.rst",
+          "reason": "broken-or-hidden-text",
+          "sha256": "fbdca20f5b1e60694ab61b4aafdc33cc339d1bc6a8b88dd929c038aed88fe234",
+          "sourceId": "vf-python-devguide-9d481ef4"
+        }
+      ],
+      "splitCounts": {
+        "quarantine": 7,
+        "test": 5,
+        "train": 26,
+        "validation": 0
+      },
+      "trainingAllowed": false,
+      "trainingUniqueProxyTokens": 722234
+    }
+  },
+  "task023RecomputedThisTurn": false
+}

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai018-optimized-package-v1",
+  "generatedAtUtc": "2026-08-29T01:44:37.278855Z",
+  "artifactId": "vfdlm-g1-edge-v0.1.2-optimized",
+  "parentArtifactId": "vfdlm-g1-edge-v0.1.1-runtime",
+  "artifactRoot": "model/registry/artifacts/vfdlm-g1-edge-v0.1.2-optimized",
+  "manifestMirrorPath": "model/registry/manifests/vfdlm-g1-edge-v0.1.2-optimized.json",
+  "manifestSha256": "fc97eae9340d725d0e6511524e8e2c81b199eef01d35d774ecf185df39288c77",
+  "manifestFileSha256": "8856829cdaaab3799f468529c65b131498f7fc81a14b7b19c8ae3cdd2fec5e19",
+  "packageBytes": 57340527,
+  "fileCount": 18,
+  "selectedProfileId": "vfai018-fp32-sdpa-kv",
+  "fallbackProfileId": "vfai017-safe-fp32-manual-kv",
+  "benchmarkReportSha256": "5dcd29ce8b46f7a48c3e56d00cb02d5a2b4dc814fe0cd3737be198494bc8286d",
+  "optimizationPolicySha256": "3e43ca747fb5c2a6ad5dbb6aa6d56b499a6a12d4ba91a31db74efb6a7cac4f11",
+  "weightsChanged": false,
+  "tokenizerContentChanged": false,
+  "quantizedFormatReleased": false,
+  "verification": {
+    "signatureVerified": true,
+    "exactFileSetVerified": true,
+    "allChecksumsVerified": true,
+    "optimizationEvidenceBound": true,
+    "active": false
+  },
+  "registry": {
+    "revision": 3,
+    "registrySha256": "3188ec3f52de6904094fff67f9b38ab089ae879b44eefd8f405654ad78289e90",
+    "activeArtifactId": null,
+    "catalogEntry": {
+      "artifactId": "vfdlm-g1-edge-v0.1.2-optimized",
+      "releaseStatus": "experimental",
+      "activationEligible": false,
+      "runtime": "pytorch-gen1-v1",
+      "root": "artifacts/vfdlm-g1-edge-v0.1.2-optimized",
+      "manifestPath": "artifact-manifest.json",
+      "manifestSha256": "fc97eae9340d725d0e6511524e8e2c81b199eef01d35d774ecf185df39288c77",
+      "manifestFileSha256": "8856829cdaaab3799f468529c65b131498f7fc81a14b7b19c8ae3cdd2fec5e19",
+      "parameterCount": 14198464,
+      "contextLength": 128,
+      "quantization": "fp32",
+      "packageBytes": 57340527
+    }
+  },
+  "reportSha256": "ef9997e3722d705c347103b99c920823f28e708c74040eefb432c3cfbdc0d4bd"
+}

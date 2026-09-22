@@ -1,0 +1,279 @@
+{
+  "$defs": {
+    "MemoryEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1,
+          "default": 1,
+          "title": "Schemaversion",
+          "type": "integer"
+        },
+        "contractVersion": {
+          "const": "1.0.0",
+          "default": "1.0.0",
+          "title": "Contractversion",
+          "type": "string"
+        },
+        "memoryId": {
+          "pattern": "^memory:v1:[a-f0-9]{24}$",
+          "title": "Memoryid",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "fact",
+            "decision",
+            "summary",
+            "recent-turn"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "scope": {
+          "enum": [
+            "project",
+            "session"
+          ],
+          "title": "Scope",
+          "type": "string"
+        },
+        "content": {
+          "maxLength": 1200,
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "contentSha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Contentsha256",
+          "type": "string"
+        },
+        "projectRevision": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Projectrevision",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 1,
+          "title": "Version",
+          "type": "integer"
+        },
+        "source": {
+          "enum": [
+            "user-approved",
+            "recent-turn-summary"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "createdAt": {
+          "maxLength": 40,
+          "minLength": 20,
+          "title": "Createdat",
+          "type": "string"
+        },
+        "updatedAt": {
+          "maxLength": 40,
+          "minLength": 20,
+          "title": "Updatedat",
+          "type": "string"
+        },
+        "expiresAt": {
+          "maxLength": 40,
+          "minLength": 20,
+          "title": "Expiresat",
+          "type": "string"
+        },
+        "staleForProjectRevision": {
+          "title": "Staleforprojectrevision",
+          "type": "boolean"
+        },
+        "redactionApplied": {
+          "title": "Redactionapplied",
+          "type": "boolean"
+        },
+        "authority": {
+          "const": "user-memory",
+          "default": "user-memory",
+          "title": "Authority",
+          "type": "string"
+        },
+        "modelEvidenceAllowed": {
+          "const": false,
+          "default": false,
+          "title": "Modelevidenceallowed",
+          "type": "boolean"
+        },
+        "trainingUseAllowed": {
+          "const": false,
+          "default": false,
+          "title": "Traininguseallowed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "memoryId",
+        "kind",
+        "scope",
+        "content",
+        "contentSha256",
+        "projectRevision",
+        "version",
+        "source",
+        "createdAt",
+        "updatedAt",
+        "expiresAt",
+        "staleForProjectRevision",
+        "redactionApplied"
+      ],
+      "title": "MemoryEntry",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "default": 1,
+      "title": "Schemaversion",
+      "type": "integer"
+    },
+    "contractVersion": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Contractversion",
+      "type": "string"
+    },
+    "policyId": {
+      "const": "vfai025-bounded-memory-v1",
+      "default": "vfai025-bounded-memory-v1",
+      "title": "Policyid",
+      "type": "string"
+    },
+    "policySha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Policysha256",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "ready",
+        "disabled",
+        "unavailable"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "reasonCode": {
+      "pattern": "^[A-Z][A-Z0-9_]{2,99}$",
+      "title": "Reasoncode",
+      "type": "string"
+    },
+    "enabled": {
+      "title": "Enabled",
+      "type": "boolean"
+    },
+    "authenticatedScope": {
+      "const": true,
+      "default": true,
+      "title": "Authenticatedscope",
+      "type": "boolean"
+    },
+    "projectRevision": {
+      "anyOf": [
+        {
+          "maxLength": 160,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Projectrevision"
+    },
+    "entries": {
+      "items": {
+        "$ref": "#/$defs/MemoryEntry"
+      },
+      "maxItems": 50,
+      "title": "Entries",
+      "type": "array"
+    },
+    "entryCount": {
+      "maximum": 50,
+      "minimum": 0,
+      "title": "Entrycount",
+      "type": "integer"
+    },
+    "staleEntryCount": {
+      "maximum": 50,
+      "minimum": 0,
+      "title": "Staleentrycount",
+      "type": "integer"
+    },
+    "omittedEntryCount": {
+      "minimum": 0,
+      "title": "Omittedentrycount",
+      "type": "integer"
+    },
+    "expiredPurgedCount": {
+      "minimum": 0,
+      "title": "Expiredpurgedcount",
+      "type": "integer"
+    },
+    "evictedCount": {
+      "minimum": 0,
+      "title": "Evictedcount",
+      "type": "integer"
+    },
+    "totalBytes": {
+      "maximum": 24576,
+      "minimum": 0,
+      "title": "Totalbytes",
+      "type": "integer"
+    },
+    "trainingUseAllowed": {
+      "const": false,
+      "default": false,
+      "title": "Traininguseallowed",
+      "type": "boolean"
+    },
+    "rawIdentifiersStored": {
+      "const": false,
+      "default": false,
+      "title": "Rawidentifiersstored",
+      "type": "boolean"
+    },
+    "rawProjectContextStored": {
+      "const": false,
+      "default": false,
+      "title": "Rawprojectcontextstored",
+      "type": "boolean"
+    },
+    "hiddenReasoningStored": {
+      "const": false,
+      "default": false,
+      "title": "Hiddenreasoningstored",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "policySha256",
+    "status",
+    "reasonCode",
+    "enabled",
+    "entryCount",
+    "staleEntryCount",
+    "omittedEntryCount",
+    "expiredPurgedCount",
+    "evictedCount",
+    "totalBytes"
+  ],
+  "title": "VoltForge bounded memory state v1",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:voltforge-ai:bounded-memory-state:v1"
+}

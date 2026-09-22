@@ -1,37 +1,107 @@
-from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, Field
+from typing import Any, Dict, List, Literal, Optional
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+
+from api_contract.schema import CONTRACT_VERSION
 
 
 class ChatMessage(BaseModel):
-    role: str
-    content: str
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    role: Literal["user", "assistant"]
+    content: str = Field(min_length=1, max_length=8_000)
+
+    @field_validator("content")
+    @classmethod
+    def non_blank_content(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("chat message cannot be blank")
+        return cleaned
+
+
+class FirmwareSource(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    filename: str = Field(min_length=1, max_length=255)
+    language: str = Field(min_length=1, max_length=32)
+    content: str = Field(max_length=200_000)
 
 
 class ChatRequest(BaseModel):
-    message: str
-    context: Optional[str] = ""
-    canvasContext: Optional[str] = ""
-    boardType: Optional[str] = "ARDUINO_UNO"
-    components: List[Dict[str, Any]] = Field(default_factory=list)
-    wires: List[Dict[str, Any]] = Field(default_factory=list)
-    netlist: Optional[Dict[str, Any]] = None
-    code: Optional[str] = ""
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    # Transport compatibility metadata is validated at the boundary but is
+    # excluded from project snapshots and all downstream evidence identities.
+    schemaVersion: Literal[1] = Field(default=1, exclude=True)
+    contractVersion: Literal["1.0.0"] = Field(
+        default=CONTRACT_VERSION, exclude=True
+    )
+    message: str = Field(min_length=1, max_length=6_000)
+    sessionId: Optional[str] = Field(default=None, min_length=1, max_length=80)
+    projectId: Optional[str] = Field(default=None, min_length=1, max_length=80)
+    projectRevision: Optional[str] = Field(default=None, min_length=1, max_length=160)
+    context: Optional[str] = Field(default="", max_length=60_000)
+    canvasContext: Optional[str] = Field(default="", max_length=60_000)
+    boardType: Optional[str] = Field(default="ARDUINO_UNO", max_length=80)
+    components: List[Dict[str, Any]] = Field(default_factory=list, max_length=500)
+    wires: List[Dict[str, Any]] = Field(default_factory=list, max_length=1_000)
+    netlist: Optional[Dict[str, Any]] = Field(default_factory=dict)
+    code: Optional[str] = Field(default="", max_length=200_000)
     canvasData: Optional[Dict[str, Any]] = None
     simulationState: Optional[Dict[str, Any]] = None
-    history: List[ChatMessage] = Field(default_factory=list)
+    history: List[ChatMessage] = Field(default_factory=list, max_length=20)
+    files: List[FirmwareSource] = Field(default_factory=list, max_length=20)
+    diagnostics: List[Dict[str, Any]] = Field(default_factory=list, max_length=100)
+    memory: List[Dict[str, Any]] = Field(default_factory=list, max_length=50)
+    retrievedEvidence: List[Dict[str, Any]] = Field(default_factory=list, max_length=50)
+
+    @field_validator("message")
+    @classmethod
+    def non_blank_message(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("message cannot be blank")
+        return cleaned
+
+    @model_validator(mode="after")
+    def bounded_conversation_context(self) -> "ChatRequest":
+        if sum(len(item.content) for item in self.history) > 40_000:
+            raise ValueError("chat history is too large")
+        if sum(len(item.content) for item in self.files) > 400_000:
+            raise ValueError("firmware context is too large")
+        return self
 
 
 class ChatResponse(BaseModel):
-    reply: str
+    model_config = ConfigDict(extra="forbid")
+
+    schemaVersion: Literal[1] = 1
+    contractVersion: Literal["1.0.0"] = CONTRACT_VERSION
+    requestId: Optional[str] = Field(default=None, min_length=3, max_length=160)
+    sessionId: Optional[str] = Field(default=None, min_length=1, max_length=80)
+    projectRevision: Optional[str] = Field(default=None, min_length=1, max_length=160)
+    model: Literal["voltforge-local-engine-v1"] = "voltforge-local-engine-v1"
+    mode: Literal[
+        "neural-quality-gated", "deterministic-fallback", "unavailable"
+    ] = (
+        "deterministic-fallback"
+    )
+    artifact: Optional[Dict[str, Any]] = None
+    readiness: Optional[Dict[str, Any]] = None
+    reply: str = Field(min_length=1, max_length=24_000)
     hasCode: bool = False
     generatedCode: Optional[str] = None
     confidence: float = 0.8
-    citations: List[Dict[str, str]] = Field(default_factory=list)
+    citations: List[Dict[str, Any]] = Field(default_factory=list)
     wireSuggestions: List[Dict[str, str]] = Field(default_factory=list)
     additions: List[Dict[str, Any]] = Field(default_factory=list)
     removals: List[Dict[str, Any]] = Field(default_factory=list)
     valueChanges: List[Dict[str, Any]] = Field(default_factory=list)
     codeFixes: List[Dict[str, Any]] = Field(default_factory=list)
+    localRetrieval: Optional[Dict[str, Any]] = None
+    internetRetrieval: Optional[Dict[str, Any]] = None
+    grounding: Optional[Dict[str, Any]] = None
+    memory: Optional[Dict[str, Any]] = None
 
 
 class ValidateRequest(BaseModel):
@@ -72,16 +142,28 @@ class GenerateCodeRequest(BaseModel):
 
 
 class FeedbackRequest(BaseModel):
-    userMessage: Optional[str] = ""
-    aiResponse: Optional[str] = ""
-    rating: int = 5
-    comments: Optional[str] = ""
-    sessionId: Optional[str] = None
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    # Feedback is linked to an authenticated project request and response, not
+    # to a transcript. Raw user messages, model replies, and project payloads
+    # are deliberately not accepted by this contract.
+    requestId: str = Field(min_length=3, max_length=160)
+    responseRecordId: str = Field(min_length=3, max_length=160)
+    projectId: str = Field(min_length=3, max_length=160)
+    projectRevision: str = Field(min_length=3, max_length=160)
+    artifactId: str = Field(min_length=3, max_length=200)
+    registryRevision: Optional[int] = Field(default=None, ge=1)
+    feedbackKind: Literal["useful", "incorrect", "unsafe"]
+    rating: int = Field(ge=1, le=5)
+    evidence: str = Field(min_length=1, max_length=1_200)
+    expectedBehavior: Optional[str] = Field(default=None, max_length=1_200)
+    evidenceApproved: bool
+    trainingConsent: bool = False
 
 
 class DatasheetSearchRequest(BaseModel):
-    query: str
-    limit: int = 5
+    query: str = Field(min_length=1, max_length=1_000)
+    limit: int = Field(default=4, ge=1, le=4)
 
 
 class SimulationStreamRequest(BaseModel):
@@ -89,6 +171,5 @@ class SimulationStreamRequest(BaseModel):
     components: List[Dict[str, Any]] = Field(default_factory=list)
     wires: List[Dict[str, Any]] = Field(default_factory=list)
     probes: List[str] = Field(default_factory=list)
-    durationMs: int = 1000
-    sampleRateHz: int = 100
-
+    durationMs: int = Field(default=1000, ge=1, le=60_000)
+    sampleRateHz: int = Field(default=100, ge=1, le=2_000)

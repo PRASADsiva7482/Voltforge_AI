@@ -1,0 +1,45 @@
+{
+  "status": "passed",
+  "contractId": "voltforge-owned-foundation-v1",
+  "familyNamespace": "vfdlm-g2",
+  "releaseStages": [
+    "base-model",
+    "instruction-model",
+    "integrated-assistant"
+  ],
+  "moduleCount": 9,
+  "mappedFollowups": 15,
+  "historicalBindings": 12,
+  "preservationChecked": true,
+  "preservedHistoricalFiles": 12,
+  "compatiblePythonRoutes": 13,
+  "scope": "design consistency only; no decoder, training, runtime or release acceptance",
+  "modelReleaseApproved": false,
+  "networkAccessed": false,
+  "nativeModelImported": false,
+  "inputs": [
+    {
+      "path": "foundation/contract.v1.json",
+      "sha256": "8641606ed74fd4f7c8887277aa3ae533de41adce0dbbd05a994bcd961441924f"
+    },
+    {
+      "path": "foundation/release-policy.v1.json",
+      "sha256": "e4225f92557972eea373ec4264466ab4a83371d6744ee51ee766cf8ea2992046"
+    },
+    {
+      "path": "foundation/compatibility-map.v1.json",
+      "sha256": "d049c37c9920aa6a76c8c8baf10697752b90c705a397f0f243d5d558b19ef22d"
+    },
+    {
+      "path": "docs/LLM_FOUNDATION_DESIGN.v1.md",
+      "sha256": "88f8d4b9cf5fd0118a3a25b07adadcf1213067453002c51daea5cb14fa7adaec"
+    },
+    {
+      "path": "tools/verify_llm_foundation.py",
+      "sha256": "300bafea8f1a2b7a04dadab93e70258231d5b31b7356295b3f5cfcc3734fbe0b"
+    }
+  ],
+  "thresholds": "pending LLM-TASK-018",
+  "nextTask": "LLM-TASK-018",
+  "generatedAtUtc": "2026-09-06T13:31:03.005319+00:00"
+}

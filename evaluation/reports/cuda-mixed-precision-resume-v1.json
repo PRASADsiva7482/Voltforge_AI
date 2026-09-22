@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai-fu-004-cuda-mixed-precision-resume-v1",
+  "generatedOn": "2026-08-31",
+  "capabilities": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "pythonVersion": "3.12.13",
+    "torchVersion": "2.8.0+cpu",
+    "torchCudaBuild": null,
+    "cudaAvailable": false,
+    "cudaDeviceCount": 0,
+    "cpuCapability": "AVX2",
+    "cpuAvx512Bf16": false,
+    "cudaDevices": []
+  },
+  "nvidiaSmi": {
+    "available": false,
+    "devices": []
+  },
+  "precisionSmokes": [
+    {
+      "precision": "bfloat16",
+      "executed": false,
+      "passed": false,
+      "reason": "CUDA_UNAVAILABLE"
+    },
+    {
+      "precision": "float16",
+      "executed": false,
+      "passed": false,
+      "reason": "CUDA_UNAVAILABLE"
+    }
+  ],
+  "gates": {
+    "ownedCudaVisibleToPinnedRuntime": false,
+    "bfloat16CapabilitySmokePassed": false,
+    "float16CapabilitySmokePassed": false,
+    "safePointOverflowRecoveryImplemented": true,
+    "controlledFp32Bf16Fp16Scorecard": "not-run-owned-cuda-unavailable",
+    "cudaResumeEquivalence": "not-run-owned-cuda-unavailable",
+    "cudaThroughputPeakMemoryAndValidationComparison": "not-run-owned-cuda-unavailable"
+  },
+  "decision": "await-owned-cuda-hardware",
+  "completionClaimed": false,
+  "governedCorpusLoaded": false,
+  "trainingDataTransferred": false,
+  "networkAccessed": false,
+  "trainerSourceSha256": "a817c0ec31bb0853d88836baa2854a5756e6b19b9ce661bb0166e48f1d9cfd7f",
+  "evaluatorSha256": "4d9664b085473ac68124d59ed3e58caf44a6e42bde7f1c176b555d18b52e5630",
+  "reportSha256": "2253504ec8b5c634f4fa5263b28070ff2a4c45ba1114479490c0522bf01da818"
+}

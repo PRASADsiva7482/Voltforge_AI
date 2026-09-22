@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai-fu-005-joint-tokenizer-model-sweep-v1",
+  "status": "readiness-contract-only",
+  "sourceFollowup": "VFAI-FU-005",
+  "dataDependency": {
+    "followupId": "VFAI-FU-006",
+    "minimumUniqueTrainingPredictedTokens": 100000000,
+    "requiresCompletedGovernanceAndDiversityGate": true,
+    "countingRule": "Count each approved packed next-token prediction once; repeated epochs, duplicated records, and mechanically paraphrased records do not increase unique coverage."
+  },
+  "fixedTokenizerContract": {
+    "algorithm": "voltforge-byte-bpe",
+    "trainingInitialization": "from-random-vocabulary-state",
+    "specialTokenIds": {
+      "[PAD]": 0,
+      "[UNK]": 1,
+      "[BOS]": 2,
+      "[EOS]": 3,
+      "[SYS]": 4,
+      "[USER]": 5,
+      "[ASSISTANT]": 6,
+      "[CODE]": 7,
+      "[PROJECT_CONTEXT]": 8,
+      "[TOOL_EVIDENCE]": 9,
+      "[STRUCTURED_ACTION]": 10,
+      "[CITATION]": 11,
+      "[REFUSAL]": 12,
+      "[UNCERTAINTY]": 13,
+      "[SEP]": 14,
+      "[MASK]": 15
+    },
+    "pretrainedVocabularyAllowed": false,
+    "pretrainedMergesAllowed": false,
+    "thirdPartyTokenizerAssetsAllowed": false
+  },
+  "vocabularyCandidates": [
+    {
+      "candidateId": "byte-bpe-2048-owned",
+      "vocabSize": 2048,
+      "role": "planned-control",
+      "manifestPath": null,
+      "state": "planned-not-trained"
+    },
+    {
+      "candidateId": "byte-bpe-3072-v1.1.0-baseline",
+      "vocabSize": 3072,
+      "role": "approved-baseline",
+      "manifestPath": "model/tokenizers/vfdlm-byte-bpe-v1.1.0/tokenizer_manifest.json",
+      "state": "approved"
+    },
+    {
+      "candidateId": "byte-bpe-4096-owned",
+      "vocabSize": 4096,
+      "role": "planned-control",
+      "manifestPath": null,
+      "state": "planned-not-trained"
+    }
+  ],
+  "candidateAdmission": {
+    "requiredApprovedCandidateCount": 3,
+    "sameApprovedNormalizedRecordIds": true,
+    "sameTrainingAndValidationSplitHashes": true,
+    "sameRawUtf8TrainingAndValidationBytes": true,
+    "sameDeterministicTrainerAndMinimumPairPolicy": true,
+    "requiredTokenizerGates": [
+      "round-trip",
+      "engineering-symbol",
+      "code-json",
+      "unicode",
+      "compression",
+      "fragmentation",
+      "governance",
+      "leakage",
+      "checksum"
+    ]
+  },
+  "fairExposure": {
+    "primaryExposureUnits": [
+      "normalized-records",
+      "raw-utf8-bytes"
+    ],
+    "tokenBudgetEquivalenceAllowed": false,
+    "sameRecordOrderAndSeedSchedule": true,
+    "sameRawContentExposurePerSeed": true,
+    "requiredAccounting": [
+      "token-count",
+      "bytes-per-token",
+      "context-occupancy",
+      "packed-predicted-tokens",
+      "embedding-parameters",
+      "total-parameters",
+      "optimizer-steps",
+      "estimated-training-flops",
+      "wall-time",
+      "peak-memory",
+      "artifact-bytes",
+      "first-token-latency",
+      "decode-throughput"
+    ]
+  },
+  "modelSweep": {
+    "initialization": "project-owned-random-initialization",
+    "minimumSeeds": 3,
+    "sameArchitectureCandidatesPerTokenizer": true,
+    "sameQualitySafetyAndRuntimeGates": true,
+    "releaseActivationAllowed": false
+  },
+  "selection": {
+    "method": "measured-pareto-frontier",
+    "qualityDimensions": [
+      "heldout-next-token-loss",
+      "heldout-output-loss",
+      "task-macro-loss",
+      "global-generation-quality",
+      "grounding",
+      "structured-output",
+      "safety"
+    ],
+    "costDimensions": [
+      "training-wall-time",
+      "peak-training-memory",
+      "artifact-bytes",
+      "first-token-latency",
+      "decode-throughput"
+    ],
+    "requiresMaterialImprovementOverBaseline": true,
+    "automaticPromotionAllowed": false
+  },
+  "forbiddenInputsAndServices": [
+    "pretrained-model",
+    "pretrained-tokenizer",
+    "third-party-tokenizer-assets",
+    "third-party-model-generated-corpus",
+    "hosted-training-service",
+    "hosted-inference-provider",
+    "unapproved-external-corpus"
+  ]
+}

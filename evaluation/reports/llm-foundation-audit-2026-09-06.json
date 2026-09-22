@@ -1,0 +1,678 @@
+{
+  "schema_version": 1,
+  "audit_id": "voltforge-llm-foundation-audit-v1",
+  "generated_at_utc": "2026-09-06T05:23:21.913937+00:00",
+  "source_fingerprints": [
+    {
+      "path": "api/chat.py",
+      "sha256": "e40f447cd972ae14a4dda1ed216ba194238c2394c6047908a01dae38aedcb672"
+    },
+    {
+      "path": "api/memory.py",
+      "sha256": "937485a835f287d77ecd048e2f3968f78176728f54cc9d718c3620ace302a19f"
+    },
+    {
+      "path": "api/routes.py",
+      "sha256": "88ce81a421ba6720871fca9ca9fbbdfb898be819e3ef851e61a44a7cb51bd7bf"
+    },
+    {
+      "path": "api/sse.py",
+      "sha256": "e8464ab15d3ee86b0cd65a5d3a0ddf6dcfbb2528c613d1161a3322cbd71d6c25"
+    },
+    {
+      "path": "model/local_engine.py",
+      "sha256": "f92968cfbc92215cd260a780ddd74d4f830aba73ab935445521e9ee54a1c3ebf"
+    },
+    {
+      "path": "model/reasoning_llm.py",
+      "sha256": "de3e9a214c588e1c233956eacce3d1ecbcd84a8f859f4cbebd48058ae04f12de"
+    },
+    {
+      "path": "model/runtime_service.py",
+      "sha256": "0d7758c299c762369cf858178d5db8f546dff5257372dada6edc8e77d941c28f"
+    },
+    {
+      "path": "model/generation_quality.py",
+      "sha256": "88b4aeda304a6ebf1207e6c8184aee239cb8c7f3d6d646b757227b332a4dff55"
+    },
+    {
+      "path": "model/registry_manager.py",
+      "sha256": "1145eeeecb19aeeceb8c0353653ce44c064acc3f26f1b5bc371a5be3d722b7aa"
+    },
+    {
+      "path": "model/gen1/config.py",
+      "sha256": "3d33e243caf190391579144682532c604ff7642bd9611749c55ce7141b205e2d"
+    },
+    {
+      "path": "model/gen1/model.py",
+      "sha256": "aae0c4e1d1bef099f37191a1342a865cec3ad239ee190507765e013da139a1e2"
+    },
+    {
+      "path": "gen1_training/trainer.py",
+      "sha256": "a817c0ec31bb0853d88836baa2854a5756e6b19b9ce661bb0166e48f1d9cfd7f"
+    },
+    {
+      "path": "gen1_training/data.py",
+      "sha256": "59a359f5bd73185a8c15581f65c1d8b78bbe66f208621e8c870911a24655ea4d"
+    },
+    {
+      "path": "tools/activate_domain_artifact.py",
+      "sha256": "cdf41019656190622e87510c0dafdf2dbf3d8bc4ba820d959f179a60f8c5bd3f"
+    },
+    {
+      "path": "engine/reasoning.py",
+      "sha256": "bb096f5784acd470ad06a9e91e0d1e874f45516d3f06bfdfcb4b346ac9520214"
+    },
+    {
+      "path": "engine/fuzzy_resolver.py",
+      "sha256": "df6ef56910df7691938bc1ee55d22b8afef06599d983a1a4b88b21c80d5ae14b"
+    },
+    {
+      "path": "grounding/gate.py",
+      "sha256": "e5b800cc4d014771a6b15d5bec02b48a893a1f0dbe727de6e6e0cd71f0244bee"
+    },
+    {
+      "path": "tools/audit_llm_foundation.py",
+      "sha256": "fcbafade4e29a466341a257b29753f3300c96a293ee08e5411cb5db95db3f2d3"
+    },
+    {
+      "path": "tests/test_local_engine.py",
+      "sha256": "13c2670f559904a765b1d452da902ac4895fc64fc16c532dc09135dfba50d253"
+    },
+    {
+      "path": "tests/test_local_llm_e2e.py",
+      "sha256": "cd1a0ebf04377a3f024134d8f8bdf6fb0de46ccedf56ab400309b3b520171daf"
+    },
+    {
+      "path": "model/registry/active_model.json",
+      "sha256": "0d6058fe34a103ba8d03150c05eed04e616e5397c70cf1d04efeb07b916c662c"
+    },
+    {
+      "path": "model/tokenizers/vfdlm-byte-bpe-v1.1.0/tokenizer_manifest.json",
+      "sha256": "8af7baf2412a0f93be4cec70583a4a2386ec3ba41dab8554c05722a201d3d400"
+    }
+  ],
+  "registry": {
+    "revision": 3,
+    "activeArtifactId": null,
+    "state": "no-approved-artifact",
+    "releaseStatus": "none",
+    "artifacts": [
+      {
+        "artifactId": "vfdlm-g1-edge-v0.1.0-bootstrap",
+        "releaseStatus": "experimental",
+        "activationEligible": false,
+        "runtime": "pytorch-gen1-v1",
+        "root": "artifacts/vfdlm-g1-edge-v0.1.0-bootstrap",
+        "manifestPath": "artifact-manifest.json",
+        "manifestSha256": "93508d7ecbbdd482982794ac9be8ffcf884a736d406f9a89616d6a59cc76cf61",
+        "manifestFileSha256": "f0a546ada7beffe2ce9e7ae6262c99a9b0073ed0fa02362508283e1c678d4b75",
+        "parameterCount": 14198464,
+        "contextLength": 128,
+        "quantization": "fp32",
+        "packageBytes": 57292019
+      },
+      {
+        "artifactId": "vfdlm-g1-edge-v0.1.1-runtime",
+        "releaseStatus": "experimental",
+        "activationEligible": false,
+        "runtime": "pytorch-gen1-v1",
+        "root": "artifacts/vfdlm-g1-edge-v0.1.1-runtime",
+        "manifestPath": "artifact-manifest.json",
+        "manifestSha256": "6e62cda425423bc64b7f12aa6c0965261c9fc9f162bc5e2f99b76531cdaa1efb",
+        "manifestFileSha256": "66fb6e8c6a2993c73855e4044f7e2410c017996faec2d7deb3c632b88d690432",
+        "parameterCount": 14198464,
+        "contextLength": 128,
+        "quantization": "fp32",
+        "packageBytes": 57292987
+      },
+      {
+        "artifactId": "vfdlm-g1-edge-v0.1.2-optimized",
+        "releaseStatus": "experimental",
+        "activationEligible": false,
+        "runtime": "pytorch-gen1-v1",
+        "root": "artifacts/vfdlm-g1-edge-v0.1.2-optimized",
+        "manifestPath": "artifact-manifest.json",
+        "manifestSha256": "fc97eae9340d725d0e6511524e8e2c81b199eef01d35d774ecf185df39288c77",
+        "manifestFileSha256": "8856829cdaaab3799f468529c65b131498f7fc81a14b7b19c8ae3cdd2fec5e19",
+        "parameterCount": 14198464,
+        "contextLength": 128,
+        "quantization": "fp32",
+        "packageBytes": 57340527
+      }
+    ]
+  },
+  "current_tokenizer": {
+    "version": "1.1.0",
+    "vocab_size": 3072,
+    "split": {
+      "id": "vf-tokenizer-split-v1",
+      "seed": "vfai-010-split-20260828",
+      "method": "per-task SHA-256 rank with approximately 10 percent evaluation",
+      "trainingRecordCount": 227,
+      "evaluationRecordCount": 23,
+      "trainingRecordIdsSha256": "a360f1a5e329b6d252c0e87bd40957bdf6c25a138facfb9854a3ab08961fef21",
+      "evaluationRecordIds": [
+        "vf-task-v1-017d7bc35d39f9778e8ed4fc",
+        "vf-task-v1-03f15dd30ad2b8cb264c1ae5",
+        "vf-task-v1-045bb4918761ff517afb9fd9",
+        "vf-task-v1-12795f3e811142291ca23974",
+        "vf-task-v1-19967786ecd49b26914c65e0",
+        "vf-task-v1-1f8f1f46aac9d15f3d259d2f",
+        "vf-task-v1-282f0cef9a3ddf01f2033457",
+        "vf-task-v1-298d1a55cfa4cc2da5ecb5ef",
+        "vf-task-v1-3897eb748d0d34d8225afcdf",
+        "vf-task-v1-395f1fff7e4344b5efabf463",
+        "vf-task-v1-3ce1febaaa2925caf80ce856",
+        "vf-task-v1-464a66df195cc132679d5a06",
+        "vf-task-v1-4778ea1037d0503876fc4c78",
+        "vf-task-v1-6269b58fda7e880175fa5984",
+        "vf-task-v1-7ea0da6cf3b2c310c1141eb7",
+        "vf-task-v1-8cf89cafb64b377638550cd9",
+        "vf-task-v1-a0fd0e62933ae6efbb59ba36",
+        "vf-task-v1-c5b2f703d58323f0a55c5ab9",
+        "vf-task-v1-cffd70ee37f78680fa11a764",
+        "vf-task-v1-e6017fe6073fa8848fa4ff4d",
+        "vf-task-v1-f1f8a356afdd356ee0de7cfa",
+        "vf-task-v1-f6d562191c1286f9b9098772",
+        "vf-task-v1-f9922da1b2a507014ededcd9"
+      ],
+      "trainingCorpusSha256": "b64ed41f43be0100863b75ac8ec62f16d4128bd3aaa4bd07c4b00c6bd407b188",
+      "evaluationCorpusSha256": "82cd690509c6cc660f62a973b9566b5bb418ee83f52d97b1ffc3d3609adce253",
+      "taskBalance": {
+        "circuit_validation": 3,
+        "compiler_repair": 2,
+        "domain_chat": 4,
+        "firmware_generation": 4,
+        "pin_routing": 2,
+        "refusal": 1,
+        "structured_output": 2,
+        "uncertainty": 1,
+        "wiring": 4
+      }
+    }
+  },
+  "unregistered_domain_binary": {
+    "exists": true,
+    "deserialized": false,
+    "bytes": 32804870,
+    "sha256": "b494561bca4a2b8e4eb7ef456bcbbc4c157efdbfd3a56db8e8e17f801eed26d4",
+    "magic_hex": "5646444c4d303031fa2300007b0a2020",
+    "custom_header_bytes": 9210,
+    "custom_header_keys": [
+      "artifactId",
+      "contextLength",
+      "format",
+      "magic",
+      "parameterCount",
+      "tensorCount",
+      "tensors",
+      "vocabSize"
+    ],
+    "header_claims": {
+      "format": "voltforge-domain-binary-v1",
+      "parameterCount": 8198912
+    },
+    "is_zip_container": false,
+    "identical_to_legacy_npz": false
+  },
+  "call_inventory": {
+    "chat_generation": [
+      {
+        "name": "resolve_stage",
+        "line": 222,
+        "end_line": 278,
+        "calls": [
+          "_deterministic_response",
+          "asyncio.new_event_loop",
+          "cancellation.check",
+          "grounded.context_metadata.get",
+          "hasattr",
+          "list",
+          "logger.warning",
+          "loop.close",
+          "loop.run_until_complete",
+          "metadata.get",
+          "model_health.get",
+          "model_runtime_service.runtime_for_generation",
+          "os.environ.get",
+          "os.environ.get('VOLTFORGE_AI_ENABLE_NEURAL_GENERATION', 'false').lower",
+          "resolve_generation",
+          "runtime.generate_neural_text",
+          "runtime.generate_task_record",
+          "runtime.generate_text"
+        ]
+      }
+    ],
+    "task_record_generation": [
+      {
+        "name": "generate_task_record",
+        "line": 347,
+        "end_line": 499,
+        "calls": [
+          "any",
+          "be.get",
+          "blocking_evidence.append",
+          "c.get",
+          "components.append",
+          "engineering_findings.append",
+          "ev.get",
+          "ev_payload.get",
+          "evidence_refs.append",
+          "f'Circuit check confirmed: {ev_summary}'.strip",
+          "f'Exact component datasheet values are not provided in the request context. Circuit analysis guidance: {answer}'.strip",
+          "first.get",
+          "input_data.get",
+          "input_data.get('user', {}).get",
+          "isinstance",
+          "issue.get",
+          "json.dumps",
+          "netlist.append",
+          "netlist.extend",
+          "p.get",
+          "payload.get",
+          "project_context.get",
+          "s.get",
+          "sec.get",
+          "segments.append",
+          "sel_c.get",
+          "sel_w.get",
+          "self._check_cancellation",
+          "self.embedded_engine.reason_and_solve",
+          "solution.get",
+          "str",
+          "task_record.get",
+          "valid_evidence.append",
+          "w.get",
+          "wires.append"
+        ]
+      }
+    ],
+    "embedded_constructor": [
+      {
+        "name": "__init__",
+        "line": 457,
+        "end_line": 472,
+        "calls": [
+          "VoltForgeTokenizer",
+          "os.path.abspath",
+          "os.path.dirname",
+          "os.path.exists",
+          "os.path.join",
+          "self.tokenizer.load"
+        ]
+      }
+    ],
+    "wrapper_health": [
+      {
+        "name": "health",
+        "line": 513,
+        "end_line": 537,
+        "calls": []
+      }
+    ]
+  },
+  "limits": [
+    "No training or benchmark rerun",
+    "No artifact deserialization or activation",
+    "No deployed server or browser verification",
+    "Inventory is not neural release approval"
+  ],
+  "synthetic_probes": {
+    "scope": "Synthetic in-process calls only; no HTTP gateway, browser or neural weights",
+    "registry_signature_verified": true,
+    "verified_registry_revision": 3,
+    "runtime_start": {
+      "ready": false,
+      "state": "unavailable",
+      "code": "NO_APPROVED_MODEL_ARTIFACT",
+      "activeArtifactId": null,
+      "runtimeOperational": false
+    },
+    "wrapper_health_without_loading_weights": {
+      "productName": "VoltForge AI",
+      "familyName": "VoltForge Domain Language Model",
+      "familySlug": "vfdlm",
+      "artifactId": "vfdlm-g1-server-v1.0.0-dedicated",
+      "generation": 1,
+      "deploymentProfile": "server",
+      "semanticVersion": "1.0.0-dedicated",
+      "ready": true,
+      "runtimeOperational": true,
+      "state": "ready",
+      "code": "MODEL_RUNTIME_READY",
+      "message": "Dedicated private AI server engine is operational.",
+      "mode": "embedded_engine",
+      "device": "embedded-offline",
+      "generationNetworkAccess": false,
+      "offlineOnly": true,
+      "thirdPartyApiPolicy": "BLOCKED_ZERO_TOLERANCE",
+      "contextLength": 4096,
+      "parameterCount": 7000000000
+    },
+    "blocked_socket_attempts": 0,
+    "embedded_rule_results": [
+      {
+        "prompt": "Hello!",
+        "answer": "**VoltForge Electronics Copilot Analysis**:\n\nRegarding your query on **Hello!** for `Arduino Uno R3`:\n\n1. **Electrical Principles**:\n   - Operating Level: `5.0V` logic rail.\n   - Max continuous pin current: `20.0mA` (do not connect high-current inductive or resistive loads directly to GPIO).\n   - Total package current budget: `200.0mA`.\n\n2. **Design & Circuit Recommendations**:\n   - Place **100nF decoupling capacitors** close to VCC/GND pins on digital ICs.\n   - Always place a **flyback diode** (e.g. 1N4007) across inductive coils (relays/motors) to prevent back-EMF spikes ($V = -L \\frac{di}{dt}$).\n   - For 3.3V boards (ESP32/Pico), use a **bidirectional level shifter** or resistor voltage divider when interfacing with 5V sensor outputs.",
+        "answer_sha256": "72c5f50c051a4622725f532e65e26216b0a093fe899ae1604ef5d4c19345db7e",
+        "answer_without_echo_sha256": "8eaf9536e097f71aa308b4be368dae02782e3f10b5f517bddb94467cd520d538"
+      },
+      {
+        "prompt": "What is an LED?",
+        "answer": "**VoltForge Electronics Copilot Analysis**:\n\nRegarding your query on **What is an LED?** for `Arduino Uno R3`:\n\n1. **Electrical Principles**:\n   - Operating Level: `5.0V` logic rail.\n   - Max continuous pin current: `20.0mA` (do not connect high-current inductive or resistive loads directly to GPIO).\n   - Total package current budget: `200.0mA`.\n\n2. **Design & Circuit Recommendations**:\n   - Place **100nF decoupling capacitors** close to VCC/GND pins on digital ICs.\n   - Always place a **flyback diode** (e.g. 1N4007) across inductive coils (relays/motors) to prevent back-EMF spikes ($V = -L \\frac{di}{dt}$).\n   - For 3.3V boards (ESP32/Pico), use a **bidirectional level shifter** or resistor voltage divider when interfacing with 5V sensor outputs.",
+        "answer_sha256": "a71015853da1c692c01b0ba8b0dae5ca59972c3bdaaf4a70cea14048e05ef029",
+        "answer_without_echo_sha256": "8eaf9536e097f71aa308b4be368dae02782e3f10b5f517bddb94467cd520d538"
+      },
+      {
+        "prompt": "What board am I using?",
+        "answer": "### Active Board: `Arduino Uno R3`\n\nYou are currently using the **Arduino Uno R3**.\n\n**Hardware Specifications**:\n- **Microcontroller (MCU)**: `ATmega328P` running at `16MHz`\n- **Logic Level**: `5.0V` (GPIO HIGH = `5.0V`, LOW = `0V`)\n- **Max GPIO Current**: `20.0mA` continuous per I/O pin\n- **PWM Pins**: `D3, D5, D6, D9, D10, D11`\n- **Analog Inputs (ADC)**: `A0, A1, A2, A3, A4, A5` (10-bit resolution)\n\n**Canvas Status**: Currently empty. Drag components from the sidebar to begin wiring.",
+        "answer_sha256": "86e62b60f8c0a2b36f328f397ec0d1934a029d9d3b78e8569ea81cb9d83b1668",
+        "answer_without_echo_sha256": "86e62b60f8c0a2b36f328f397ec0d1934a029d9d3b78e8569ea81cb9d83b1668"
+      },
+      {
+        "prompt": "Explain metastability and how a two flip-flop synchronizer helps.",
+        "answer": "**VoltForge Electronics Copilot Analysis**:\n\nRegarding your query on **Explain metastability and how a two flip-flop synchronizer helps.** for `Arduino Uno R3`:\n\n1. **Electrical Principles**:\n   - Operating Level: `5.0V` logic rail.\n   - Max continuous pin current: `20.0mA` (do not connect high-current inductive or resistive loads directly to GPIO).\n   - Total package current budget: `200.0mA`.\n\n2. **Design & Circuit Recommendations**:\n   - Place **100nF decoupling capacitors** close to VCC/GND pins on digital ICs.\n   - Always place a **flyback diode** (e.g. 1N4007) across inductive coils (relays/motors) to prevent back-EMF spikes ($V = -L \\frac{di}{dt}$).\n   - For 3.3V boards (ESP32/Pico), use a **bidirectional level shifter** or resistor voltage divider when interfacing with 5V sensor outputs.",
+        "answer_sha256": "692802a2016a34d97f601e7eb273b29dcea9df3193a58e97015832afba915612",
+        "answer_without_echo_sha256": "8eaf9536e097f71aa308b4be368dae02782e3f10b5f517bddb94467cd520d538"
+      },
+      {
+        "prompt": "How can I debounce a mechanical push button without blocking the loop?",
+        "answer": "**VoltForge Electronics Copilot Analysis**:\n\nRegarding your query on **How can I debounce a mechanical push button without blocking the loop?** for `Arduino Uno R3`:\n\n1. **Electrical Principles**:\n   - Operating Level: `5.0V` logic rail.\n   - Max continuous pin current: `20.0mA` (do not connect high-current inductive or resistive loads directly to GPIO).\n   - Total package current budget: `200.0mA`.\n\n2. **Design & Circuit Recommendations**:\n   - Place **100nF decoupling capacitors** close to VCC/GND pins on digital ICs.\n   - Always place a **flyback diode** (e.g. 1N4007) across inductive coils (relays/motors) to prevent back-EMF spikes ($V = -L \\frac{di}{dt}$).\n   - For 3.3V boards (ESP32/Pico), use a **bidirectional level shifter** or resistor voltage divider when interfacing with 5V sensor outputs.",
+        "answer_sha256": "8e3b6bb0949642233677a1dd74f523b83a3e72a738528627ec43fe466d7c3b31",
+        "answer_without_echo_sha256": "8eaf9536e097f71aa308b4be368dae02782e3f10b5f517bddb94467cd520d538"
+      },
+      {
+        "prompt": "Compare UART framing errors with an I2C bus stuck low.",
+        "answer": "**VoltForge Electronics Copilot Analysis**:\n\nRegarding your query on **Compare UART framing errors with an I2C bus stuck low.** for `Arduino Uno R3`:\n\n1. **Electrical Principles**:\n   - Operating Level: `5.0V` logic rail.\n   - Max continuous pin current: `20.0mA` (do not connect high-current inductive or resistive loads directly to GPIO).\n   - Total package current budget: `200.0mA`.\n\n2. **Design & Circuit Recommendations**:\n   - Place **100nF decoupling capacitors** close to VCC/GND pins on digital ICs.\n   - Always place a **flyback diode** (e.g. 1N4007) across inductive coils (relays/motors) to prevent back-EMF spikes ($V = -L \\frac{di}{dt}$).\n   - For 3.3V boards (ESP32/Pico), use a **bidirectional level shifter** or resistor voltage divider when interfacing with 5V sensor outputs.",
+        "answer_sha256": "0bebaf70f76e9ca555db7f6683ccb9f1aceaffd35167e595f294bd73ffaea4ef",
+        "answer_without_echo_sha256": "8eaf9536e097f71aa308b4be368dae02782e3f10b5f517bddb94467cd520d538"
+      },
+      {
+        "prompt": "Why does an ADC reading change when its reference voltage changes?",
+        "answer": "**VoltForge Electronics Copilot Analysis**:\n\nRegarding your query on **Why does an ADC reading change when its reference voltage changes?** for `Arduino Uno R3`:\n\n1. **Electrical Principles**:\n   - Operating Level: `5.0V` logic rail.\n   - Max continuous pin current: `20.0mA` (do not connect high-current inductive or resistive loads directly to GPIO).\n   - Total package current budget: `200.0mA`.\n\n2. **Design & Circuit Recommendations**:\n   - Place **100nF decoupling capacitors** close to VCC/GND pins on digital ICs.\n   - Always place a **flyback diode** (e.g. 1N4007) across inductive coils (relays/motors) to prevent back-EMF spikes ($V = -L \\frac{di}{dt}$).\n   - For 3.3V boards (ESP32/Pico), use a **bidirectional level shifter** or resistor voltage divider when interfacing with 5V sensor outputs.",
+        "answer_sha256": "9f38ee8144521e2c41a56ebac43dd184854123009643003dd46b42f40e8383d3",
+        "answer_without_echo_sha256": "8eaf9536e097f71aa308b4be368dae02782e3f10b5f517bddb94467cd520d538"
+      },
+      {
+        "prompt": "How should I measure sleep current without waking my microcontroller?",
+        "answer": "**VoltForge Electronics Copilot Analysis**:\n\nRegarding your query on **How should I measure sleep current without waking my microcontroller?** for `Arduino Uno R3`:\n\n1. **Electrical Principles**:\n   - Operating Level: `5.0V` logic rail.\n   - Max continuous pin current: `20.0mA` (do not connect high-current inductive or resistive loads directly to GPIO).\n   - Total package current budget: `200.0mA`.\n\n2. **Design & Circuit Recommendations**:\n   - Place **100nF decoupling capacitors** close to VCC/GND pins on digital ICs.\n   - Always place a **flyback diode** (e.g. 1N4007) across inductive coils (relays/motors) to prevent back-EMF spikes ($V = -L \\frac{di}{dt}$).\n   - For 3.3V boards (ESP32/Pico), use a **bidirectional level shifter** or resistor voltage divider when interfacing with 5V sensor outputs.",
+        "answer_sha256": "ab11613043c1bcd345bb25dc8dc873256668ebda5f97114bfe8b27ea4a8b3288",
+        "answer_without_echo_sha256": "8eaf9536e097f71aa308b4be368dae02782e3f10b5f517bddb94467cd520d538"
+      }
+    ],
+    "identical_rule_answer_groups": [],
+    "identical_rule_answers_after_removing_prompt_echo": [
+      [
+        "Hello!",
+        "What is an LED?",
+        "Explain metastability and how a two flip-flop synchronizer helps.",
+        "How can I debounce a mechanical push button without blocking the loop?",
+        "Compare UART framing errors with an I2C bus stuck low.",
+        "Why does an ADC reading change when its reference voltage changes?",
+        "How should I measure sleep current without waking my microcontroller?"
+      ]
+    ],
+    "chat_results": [
+      {
+        "prompt": "Hello!",
+        "events": [
+          "start",
+          "tool",
+          "tool",
+          "tool",
+          "citation",
+          "citation",
+          "citation",
+          "uncertainty",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "complete"
+        ],
+        "mode": "deterministic-fallback",
+        "fallback_used": true,
+        "neural_attempted": false,
+        "reply": "### 👋 Hello! I'm your VoltForge AI Electronics Copilot\nI'm ready on your **ARDUINO UNO** project (0 component(s), 0 wire(s) placed).\n\n**Here are ways I can help you:**\n- ⚡ **Circuit Diagnostics**: Ask *'Validate my schematic'* or *'Check for short circuits'*\nI cannot verify the requested datasheet rating from the bounded evidence available.\n- 💻 **Firmware Synthesis**: Ask *'Generate complete C++ code for my placed components'*\nI cannot verify the requested datasheet rating from the bounded evidence available.\n- 🔍 **Component Specs**: Ask *'What are the specs for DHT22 / ESP32 / L298N?'*\n\nWhat would you like to build or inspect on your circuit?",
+        "reply_sha256": "b46a9333fb27869e3916e1d8f1c50fb433e03e8acffcfc337f21ce7f19638a07"
+      },
+      {
+        "prompt": "What is an LED?",
+        "events": [
+          "start",
+          "tool",
+          "tool",
+          "tool",
+          "citation",
+          "citation",
+          "citation",
+          "citation",
+          "citation",
+          "uncertainty",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "complete"
+        ],
+        "mode": "deterministic-fallback",
+        "fallback_used": true,
+        "neural_attempted": false,
+        "reply": "Local curated evidence:\n-  LED current limiting (VoltForge deterministic rule v1): condition=\"An LED is driven from a voltage source or GPIO.\"; required-action=\"Select a resistor/driver from evidenced supply voltage, exact LED forward-voltage range, target current, and power margin.\"; severity=\"high\"\n-  Generic LED (manufacturer part not selected): electrical-ratings=null; manufacturer=null; part-number=null\n-  Piecewise LED model (configured forward-drop plus current path): assumptions=[\"Forward drop is a configured approximation, not a universal LED property.\"]; limitations=[\"Does not predict color, luminous intensity, thermal runaway, reverse breakdown, or a manufacturer-specific I-V curve.\"]; model=\"configured forward-drop plus current path\"\n\n### 📚 Component Knowledge: **Solomon Systech SSD1306 128x64 OLED Display**\n- **Category**: DISPLAY\nI cannot verify the requested datasheet rating from the bounded evidence available.\nI cannot verify the requested datasheet rating from the bounded evidence available.\nI cannot verify the requested datasheet rating from the bounded evidence available.\n- **Package**: Module (27x27mm typical)\nI cannot verify the requested datasheet rating from the bounded evidence available.\n\nI cannot verify the requested datasheet rating from the bounded evidence available.\nI cannot verify the requested datasheet rating from the bounded evidence available.\n**Drop-in Equivalents**: SH1106, SSD1309\n\n**Recommended Wiring for ARDUINO_UNO**:",
+        "reply_sha256": "774ed25b8347234d7fc30f5796de49e867bbdfa499f7a8bc27b49ebe68d6d783"
+      },
+      {
+        "prompt": "What board am I using?",
+        "events": [
+          "start",
+          "tool",
+          "tool",
+          "tool",
+          "citation",
+          "citation",
+          "citation",
+          "citation",
+          "citation",
+          "uncertainty",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "complete"
+        ],
+        "mode": "deterministic-fallback",
+        "fallback_used": true,
+        "neural_attempted": false,
+        "reply": "Local curated evidence:\nI cannot verify the requested datasheet rating from the bounded evidence available.\nI cannot verify the requested datasheet rating from the bounded evidence available.\n-  Arduino digital I/O API (Arduino core selected by exact board package): api-symbols=[\"pinMode\", \"digitalRead\", \"digitalWrite\"]; framework=\"Arduino\"; include=\"Arduino.h\"\n\n### Active Board: `Arduino Uno R3`\n\nI cannot verify the requested current web claim from the bounded evidence available.\n\n**Hardware Specifications**:\nI cannot verify the requested datasheet rating from the bounded evidence available.\nI cannot verify the requested datasheet rating from the bounded evidence available.\nI cannot verify the requested datasheet rating from the bounded evidence available.\nI cannot verify the requested pin capability from the bounded evidence available.\nI cannot verify the requested pin capability from the bounded evidence available.\n\nI cannot verify the requested current web claim from the bounded evidence available.",
+        "reply_sha256": "388b0c94e8a09d95c42f1e8dace7bdebe5b34dc106ca842451cbee37a76828c0"
+      },
+      {
+        "prompt": "Explain metastability and how a two flip-flop synchronizer helps.",
+        "events": [
+          "start",
+          "tool",
+          "tool",
+          "tool",
+          "citation",
+          "citation",
+          "citation",
+          "uncertainty",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "complete"
+        ],
+        "mode": "deterministic-fallback",
+        "fallback_used": true,
+        "neural_attempted": false,
+        "reply": "### 💡 VoltForge AI Electronics Copilot\nI'm your embedded systems and circuit engineering copilot for **ARDUINO UNO**.\n\n**Here are ways I can help you:**\n- ⚡ **Circuit Diagnostics**: Ask *'Validate my schematic'* or *'Check for short circuits'*\nI cannot verify the requested datasheet rating from the bounded evidence available.\n- 💻 **Firmware Synthesis**: Ask *'Generate complete C++ code for placed components'*\nI cannot verify the requested datasheet rating from the bounded evidence available.\n- 🔍 **Component Specs**: Ask *'What are the specs for ESP32 / DHT22 / MPU6050?'*",
+        "reply_sha256": "ea877279abc8c921a6a6c97525e9422e847b08661e07dbc5ef6fed68d79ec16e"
+      },
+      {
+        "prompt": "How can I debounce a mechanical push button without blocking the loop?",
+        "events": [
+          "start",
+          "tool",
+          "tool",
+          "tool",
+          "citation",
+          "citation",
+          "citation",
+          "citation",
+          "uncertainty",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "complete"
+        ],
+        "mode": "deterministic-fallback",
+        "fallback_used": true,
+        "neural_attempted": false,
+        "reply": "Local curated evidence:\nI cannot verify the requested datasheet rating from the bounded evidence available.\n\n**VoltForge Electronics Copilot Analysis**:\n\nRegarding your query on **How can I debounce a mechanical push button without blocking the loop?** for `Arduino Uno R3`:\n\n1. **Electrical Principles**:\nI cannot verify the requested datasheet rating from the bounded evidence available.\nI cannot verify the requested datasheet rating from the bounded evidence available.\nI cannot verify the requested datasheet rating from the bounded evidence available.\n\n2. **Design & Circuit Recommendations**:\nI cannot verify the requested datasheet rating from the bounded evidence available.\n   - Always place a **flyback diode** (e.g. 1N4007) across inductive coils (relays/motors) to prevent back-EMF spikes ($V = -L \\frac{di}{dt}$).\nI cannot verify the requested datasheet rating from the bounded evidence available.",
+        "reply_sha256": "4c4e4d7396b47a6f61b0bc4db7d6ba51f3e1c98c8da897bd74528a9b67d3ff95"
+      },
+      {
+        "prompt": "Compare UART framing errors with an I2C bus stuck low.",
+        "events": [
+          "start",
+          "tool",
+          "tool",
+          "tool",
+          "citation",
+          "citation",
+          "citation",
+          "citation",
+          "citation",
+          "uncertainty",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "complete"
+        ],
+        "mode": "deterministic-fallback",
+        "fallback_used": true,
+        "neural_attempted": false,
+        "reply": "Authoritative deterministic engineering checks\nStatus: pass; 0 finding(s), 0 blocking.\nThe checks applicable to this request produced no finding; this is not a hardware certification.\n\nLocal curated evidence:\nI cannot verify the requested datasheet rating from the bounded evidence available.\nI cannot verify the requested datasheet rating from the bounded evidence available.\nI cannot verify the requested datasheet rating from the bounded evidence available.\n\n### 🔧 Diagnostic Report for ARDUINO_UNO:\n\n**GENERAL_TROUBLESHOOTING** (Probability: MEDIUM)\n**Cause**: General circuit troubleshooting guide.\n  1. Check all power connections — VCC and GND continuity.\n  2. Verify correct pin assignments in both code and canvas.\n  3. Test individual components in isolation.\n  4. Use multimeter to measure voltages at critical nodes.\n  5. Check for loose wires or breadboard contact issues.\n\n**💡 Try next:**\nI cannot verify the requested datasheet rating from the bounded evidence available.\n- Check pin assignments in my code\n- Generate multimeter test guide",
+        "reply_sha256": "01991eba3a14041180d3a897c5b9cd4be4e40395aae7f0131507c72476b8110d"
+      },
+      {
+        "prompt": "Why does an ADC reading change when its reference voltage changes?",
+        "events": [
+          "start",
+          "tool",
+          "tool",
+          "tool",
+          "citation",
+          "citation",
+          "citation",
+          "citation",
+          "citation",
+          "uncertainty",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "complete"
+        ],
+        "mode": "deterministic-fallback",
+        "fallback_used": true,
+        "neural_attempted": false,
+        "reply": "Local curated evidence:\n-  Logic voltage compatibility (VoltForge deterministic rule v1): condition=\"A signal or supply voltage is connected to a board/component pin.\"; required-action=\"Compare against the exact variant's evidenced absolute and recommended ratings; add translation or change the design when incompatible.\"; severity=\"critical\"\n-  Ideal capacitor model (constant capacitance): assumptions=[\"Capacitance is constant.\", \"Initial voltage is explicit or zero.\"]; limitations=[\"Does not include ESR, ESL, leakage, dielectric absorption, voltage coefficient, or breakdown.\"]; model=\"constant capacitance\"\n-  Undeclared identifier (gcc-compatible-cpp): causes=[\"Name is misspelled.\", \"Declaration is out of scope.\", \"Required header or generated symbol is missing.\"]; diagnostic-pattern=\"['`].+['`] was not declared in this scope\"; remediation=[\"Resolve the exact source location.\", \"Compare declaration spelling and scope.\", \"Add a declaration only after its intended type and ownership are known.\"]\n\n**VoltForge Electronics Copilot Analysis**:\n\nRegarding your query on **Why does an ADC reading change when its reference voltage changes?** for `Arduino Uno R3`:\n\n1. **Electrical Principles**:\nI cannot verify the requested datasheet rating from the bounded evidence available.\nI cannot verify the requested datasheet rating from the bounded evidence available.\nI cannot verify the requested datasheet rating from the bounded evidence available.\n\n2. **Design & Circuit Recommendations**:\nI cannot verify the requested datasheet rating from the bounded evidence available.\n   - Always place a **flyback diode** (e.g. 1N4007) across inductive coils (relays/motors) to prevent back-EMF spikes ($V = -L \\frac{di}{dt}$).\nI cannot verify the requested datasheet rating from the bounded evidence available.",
+        "reply_sha256": "0625212268bb0095145c5fd811a6472a9a95bd6f7de4e4d71528e8c456347393"
+      },
+      {
+        "prompt": "How should I measure sleep current without waking my microcontroller?",
+        "events": [
+          "start",
+          "tool",
+          "tool",
+          "tool",
+          "citation",
+          "citation",
+          "citation",
+          "citation",
+          "citation",
+          "uncertainty",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "complete"
+        ],
+        "mode": "deterministic-fallback",
+        "fallback_used": true,
+        "neural_attempted": false,
+        "reply": "Local curated evidence:\nI cannot verify the requested datasheet rating from the bounded evidence available.\n-  GPIO current limit (VoltForge deterministic rule v1): condition=\"A GPIO sources or sinks a load.\"; required-action=\"Verify per-pin, port-group, and total-device current against the exact board/MCU revision and add a driver when required.\"; severity=\"critical\"\n-  LED current limiting (VoltForge deterministic rule v1): condition=\"An LED is driven from a voltage source or GPIO.\"; required-action=\"Select a resistor/driver from evidenced supply voltage, exact LED forward-voltage range, target current, and power margin.\"; severity=\"high\"\n\n### 🔋 Battery Life Estimate:\n- **Battery**: 2000mAh\nI cannot verify the requested datasheet rating from the bounded evidence available.\n- **Sleep Current**: 10µA\n- **Active Ratio**: 5%\nI cannot verify the requested datasheet rating from the bounded evidence available.\n- **Estimated Runtime**: **423.99 hours** (17.67 days)",
+        "reply_sha256": "bc9b93e5878d9f11926ed482000c3ff338d8abc63c7b92d2d1e08a95f6d3bebd"
+      }
+    ]
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "taskId": "LLM-TASK-023",
+  "substep": "independent-leakage-precision-review",
+  "status": "precision-review-complete-task023-corpus-admission-in-progress",
+  "recordedAtUtc": "2026-09-09T02:43:04.382442+00:00",
+  "summary": "Completed the independent leakage-precision review substep for task 023. The read-only reviewer separates identity/literal/code signals from lexical-only matches and exports counts without protected prompt text. Across 56 authored controls from 10 families, the unchanged matcher blocks all 32 protected positives but also 16 of 24 unrelated negatives. Two genuine paraphrase controls remain blocked for review, so word-overlap matches cannot simply be ignored. On the real 38-document corpus and 1,005 guards, both direct matches are lexical-only; family propagation quarantines five additional documents. The two real matches remain unadjudicated, and all seven existing quarantines and 50 inherited exclusions remain intact. Partition decisions reproduce exactly. All 123 regression tests passed, including 26 precision-review tests and full review recomputation; governance, source, runbook, tokenizer and historical artifact checks passed. No matcher threshold, source permission, corpus admission, tokenizer fit, model or serving route changed. Task 023 remains IN_PROGRESS for exact source-use admission, independent language/validation coverage, corpus-scale measurements and admitted input-corpus release; task 024's production tokenizer remains blocked.",
+  "reviewManifest": {
+    "path": "Voltforge_AI/corpus/leakage-reviews/v1/72e42051c6187257f2e5954a9e0056e006915ded4b9c168a2e7f2c1b426be5ec/manifest.json",
+    "sha256": "6815f7b74adfe8bd19485886ed5f6402a303f297276fe0119f5933c2d1bc0bcc",
+    "bytes": 3269
+  },
+  "tests": {
+    "passed": 123,
+    "precisionReviewTests": 26,
+    "failed": 0,
+    "skipped": 0,
+    "junit": {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-023-precision-tests.xml",
+      "sha256": "f0fbb9e31a145a8ea1c86a6e8f9c4e0a1aaf696d1aa452b319da88f7fac2317e",
+      "bytes": 16849
+    }
+  },
+  "checks": {
+    "path": "Voltforge_AI/evaluation/reports/llm-task-023-precision-checks.json",
+    "sha256": "7bab723e3eaef3711ca185e6014f8abfd555af68aa718fe293bfc634b468ddf0",
+    "bytes": 6948
+  },
+  "planningSnapshot": {
+    "path": "backlog_history/llm-task-023-precision-before/manifest.json",
+    "sha256": "c6b4c3d074792238a589aa8d0896a6f82217db4c9e50ca891c19990721c09d42",
+    "bytes": 1937
+  },
+  "substepCompleted": true,
+  "taskCompleted": false,
+  "corpusReleased": false,
+  "matcherChanged": false,
+  "trainingAllowed": false,
+  "realMatchAdjudicationCompleted": false,
+  "automaticReadmissions": 0,
+  "nextTask": "LLM-TASK-023",
+  "remainingWork": [
+    "Complete source-use admission for exact source bytes and retained license/privacy/retention/removal obligations; candidate acquisition is not training approval.",
+    "Add independent general-language/technical, code, electronics and math families with populated validation coverage; current language training and validation coverage remain empty.",
+    "Independent lexical-precision controls are verified. Before adopting a changed matcher for fresh data, freeze and validate its precision/recall and review process; do not automatically reverse old exclusions.",
+    "Measure acquisition, normalization, tokenization and matching on the intended corpus scale with finite resource budgets.",
+    "Publish an admitted pilot/input corpus with a provisional unique-token budget; Gen2 recounting belongs to task 024 and measured production acceptance remains in tasks 031/032."
+  ],
+  "planningCheck": {
+    "status": "passed",
+    "active_tasks": 41,
+    "legacy_tasks": 14,
+    "milestones": 10,
+    "root_causes": 14,
+    "status_counts": {
+      "COMPLETED": 8,
+      "IN_PROGRESS": 2,
+      "TODO": 31
+    },
+    "next_task": "LLM-TASK-023",
+    "scope": "planning consistency only; no model release credit"
+  },
+  "sourceFingerprints": [
+    {
+      "path": "VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.json",
+      "sha256": "e3c0a78a95f6be9ae2e7aa87cc6f73e6dd0bb78fcfd69fa625ad5bd09a9bc445",
+      "bytes": 133435
+    },
+    {
+      "path": "VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.md",
+      "sha256": "13313297a271660873084db32e22d89da3291eff6b27fe013088a6466fe66bb4",
+      "bytes": 95500
+    },
+    {
+      "path": "AI_CHAT_ROOT_CAUSE_BACKLOG.json",
+      "sha256": "a0c71461af1bae86c479bb6826b2b93e49f2005478d2e2393229e4e0ddd02a85",
+      "bytes": 39889
+    },
+    {
+      "path": "AI_CHAT_ROOT_CAUSE_ANALYSIS.md",
+      "sha256": "37bc7efb58a6d2242d2bf1889484de657c50b080f36598b4e3bff6ce5661048d",
+      "bytes": 31068
+    },
+    {
+      "path": "Voltforge_AI/docs/VOLTForge_AI_RUNBOOK.md",
+      "sha256": "6249eb6dce82763749a1b0a81136442f2f11208e1605dc526d57a16b58077826",
+      "bytes": 36200
+    },
+    {
+      "path": "Voltforge_AI/docs/runbook-contract.v1.json",
+      "sha256": "f4b59203f33a6b9c2c60fc1ae47cb4e385352be0c833e493a5d665ad75b03936",
+      "bytes": 9032
+    },
+    {
+      "path": "Voltforge_AI/.gitattributes",
+      "sha256": "af5e3f4d72cdca5e44438f43b61be40969982b623cdcc6967299242248db7aa1",
+      "bytes": 551
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_PRETRAINING_CORPUS_CANDIDATE.v1.md",
+      "sha256": "9e09afd739063c6cb69b7f8b24927554f47b0ad1d4e0dd03800580502b030407",
+      "bytes": 11976
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_CORPUS_LEAKAGE_PRECISION.v1.md",
+      "sha256": "00b2581984ebdb15dc98601fef4c48caec618c63fdc95b6a39121b926b801e49",
+      "bytes": 5032
+    },
+    {
+      "path": "Voltforge_AI/tools/review_corpus_leakage.py",
+      "sha256": "4600212a66236fbaf6841a239856bd7d0857ddfef9f3ca6721ac18184914c1d8",
+      "bytes": 1337
+    },
+    {
+      "path": "Voltforge_AI/tools/record_corpus_review_progress.py",
+      "sha256": "842f48888b5bf6c32dd00ab8a0c55833347053d3e07bab897cfa614eb590ab9c",
+      "bytes": 14199
+    },
+    {
+      "path": "Voltforge_AI/tests/test_corpus_leakage_review.py",
+      "sha256": "a198d7b224b8f52b6e2c67279375216e37426d851c0eae1db5eaba3b95db7260",
+      "bytes": 7666
+    }
+  ]
+}

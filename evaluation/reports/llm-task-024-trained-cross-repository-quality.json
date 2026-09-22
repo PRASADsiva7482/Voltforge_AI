@@ -1,0 +1,522 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai032-cross-repository-quality-v1",
+  "generatedAtUtc": "2026-09-09T14:03:02.707566Z",
+  "lane": "fast",
+  "release": false,
+  "manifestSha256": "0eae572c99a270c2f3d9b9bd82dfec3377051cf34aaf7b72d5f4e08f6376590a",
+  "inputs": {
+    "manifestSha256": "0eae572c99a270c2f3d9b9bd82dfec3377051cf34aaf7b72d5f4e08f6376590a",
+    "repositories": {
+      "ai": {
+        "sha256": "8fe067166dc9e6b9aad7ba895fa396e67ee9185f7448c2c472f4996d544f1a43",
+        "fileCount": 1763,
+        "bytes": 4695425664
+      },
+      "backend": {
+        "sha256": "15da4c800198975235f7fe2a9b5789d344c67fd218e4afd64b200611d21137d9",
+        "fileCount": 117,
+        "bytes": 371371
+      },
+      "ui": {
+        "sha256": "c35827de4da6194e1a4d10085f6d21d6ced5f0d2df078e977d60fd0ba0f7d989",
+        "fileCount": 238,
+        "bytes": 1946241
+      }
+    }
+  },
+  "git": {
+    "ai": {
+      "head": "586fd809c63faaffd032ed5fe5ac53ad0dbbd598",
+      "clean": false
+    },
+    "backend": {
+      "head": "a56dfd9f15fb2191a94fd7043dde822a2d058e21",
+      "clean": false
+    },
+    "ui": {
+      "head": "2c67bda37e372f21d8fa29cb43e16afab95cdb37",
+      "clean": false
+    }
+  },
+  "releaseWorktrees": [
+    {
+      "repository": "Voltforge_AI",
+      "clean": false,
+      "head": "586fd809c63faaffd032ed5fe5ac53ad0dbbd598"
+    },
+    {
+      "repository": "Voltforge_BL",
+      "clean": false,
+      "head": "a56dfd9f15fb2191a94fd7043dde822a2d058e21"
+    },
+    {
+      "repository": "Voltforge_UI",
+      "clean": false,
+      "head": "2c67bda37e372f21d8fa29cb43e16afab95cdb37"
+    }
+  ],
+  "toolVersions": {
+    "python": "Python 3.12.13",
+    "maven": "Apache Maven 3.9.15 (98b2cdbfdb5f1ac8781f537ea9acccaed7922349)",
+    "npm": "10.8.2",
+    "git": "git version 2.53.0.windows.1"
+  },
+  "checks": [
+    {
+      "id": "ai-quality-boundaries",
+      "lane": "fast",
+      "category": "artifact-and-provider-scan",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 2971
+    },
+    {
+      "id": "ai-runbook-contract",
+      "lane": "fast",
+      "category": "operations-contract",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 104
+    },
+    {
+      "id": "ai-hardware-coverage",
+      "lane": "fast",
+      "category": "cross-repository-catalog-boundary",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 482
+    },
+    {
+      "id": "ai-unit-contract-tests",
+      "lane": "fast",
+      "category": "python-tests",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 168570
+    },
+    {
+      "id": "ai-evaluation-leakage",
+      "lane": "fast",
+      "category": "evaluation-integrity",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 10690
+    },
+    {
+      "id": "ai-data-governance",
+      "lane": "fast",
+      "category": "data-governance",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 296
+    },
+    {
+      "id": "ai-task-schema",
+      "lane": "fast",
+      "category": "schema-drift",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 521
+    },
+    {
+      "id": "ai-registry-integrity",
+      "lane": "fast",
+      "category": "artifact-integrity",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 2711
+    },
+    {
+      "id": "ai-api-contract-evaluation",
+      "lane": "fast",
+      "category": "quality-evaluation",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 8098
+    },
+    {
+      "id": "ai-generation-quality-evaluation",
+      "lane": "fast",
+      "category": "quality-evaluation",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 2075
+    },
+    {
+      "id": "ai-grounding-evaluation",
+      "lane": "fast",
+      "category": "quality-evaluation",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 527
+    },
+    {
+      "id": "ai-internet-boundary-evaluation",
+      "lane": "fast",
+      "category": "offline-security-evaluation",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 4998
+    },
+    {
+      "id": "ai-local-retrieval-evaluation",
+      "lane": "fast",
+      "category": "quality-evaluation",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 14865
+    },
+    {
+      "id": "ai-memory-evaluation",
+      "lane": "fast",
+      "category": "privacy-and-memory-evaluation",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 672
+    },
+    {
+      "id": "ai-context-evaluation",
+      "lane": "fast",
+      "category": "context-evaluation",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 845
+    },
+    {
+      "id": "ai-engineering-tools-evaluation",
+      "lane": "fast",
+      "category": "deterministic-tool-evaluation",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 4839
+    },
+    {
+      "id": "ai-observability-evaluation",
+      "lane": "fast",
+      "category": "observability-evaluation",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 196
+    },
+    {
+      "id": "ai-proposal-transaction-evaluation",
+      "lane": "fast",
+      "category": "safety-evaluation",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 245
+    },
+    {
+      "id": "ai-security-threat-model-evaluation",
+      "lane": "fast",
+      "category": "security-evaluation",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 238
+    },
+    {
+      "id": "spring-gateway-evaluation",
+      "lane": "fast",
+      "category": "backend-boundary-evaluation",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 130
+    },
+    {
+      "id": "ui-ai-boundary-evaluation",
+      "lane": "fast",
+      "category": "ui-boundary-evaluation",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 203
+    },
+    {
+      "id": "backend-tests",
+      "lane": "fast",
+      "category": "backend-tests",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 12290
+    },
+    {
+      "id": "ui-tests",
+      "lane": "fast",
+      "category": "ui-tests",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 30708
+    },
+    {
+      "id": "ui-production-build-and-budget",
+      "lane": "fast",
+      "category": "ui-build",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 13359
+    },
+    {
+      "id": "ai-whitespace-check",
+      "lane": "fast",
+      "category": "repository-hygiene",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 107
+    },
+    {
+      "id": "backend-whitespace-check",
+      "lane": "fast",
+      "category": "repository-hygiene",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 101
+    },
+    {
+      "id": "ui-whitespace-check",
+      "lane": "fast",
+      "category": "repository-hygiene",
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 53
+    }
+  ],
+  "scorecard": {
+    "schemaVersion": 1,
+    "pipelineId": "vfai032-cross-repository-quality-v1",
+    "lane": "fast",
+    "release": false,
+    "manifestSha256": "0eae572c99a270c2f3d9b9bd82dfec3377051cf34aaf7b72d5f4e08f6376590a",
+    "inputs": {
+      "ai": {
+        "sha256": "8fe067166dc9e6b9aad7ba895fa396e67ee9185f7448c2c472f4996d544f1a43",
+        "fileCount": 1763,
+        "bytes": 4695425664
+      },
+      "backend": {
+        "sha256": "15da4c800198975235f7fe2a9b5789d344c67fd218e4afd64b200611d21137d9",
+        "fileCount": 117,
+        "bytes": 371371
+      },
+      "ui": {
+        "sha256": "c35827de4da6194e1a4d10085f6d21d6ced5f0d2df078e977d60fd0ba0f7d989",
+        "fileCount": 238,
+        "bytes": 1946241
+      }
+    },
+    "gitHeads": {
+      "ai": "586fd809c63faaffd032ed5fe5ac53ad0dbbd598",
+      "backend": "a56dfd9f15fb2191a94fd7043dde822a2d058e21",
+      "ui": "2c67bda37e372f21d8fa29cb43e16afab95cdb37"
+    },
+    "toolVersions": {
+      "python": "Python 3.12.13",
+      "maven": "Apache Maven 3.9.15 (98b2cdbfdb5f1ac8781f537ea9acccaed7922349)",
+      "npm": "10.8.2",
+      "git": "git version 2.53.0.windows.1"
+    },
+    "checks": [
+      {
+        "id": "ai-quality-boundaries",
+        "lane": "fast",
+        "category": "artifact-and-provider-scan",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ai-runbook-contract",
+        "lane": "fast",
+        "category": "operations-contract",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ai-hardware-coverage",
+        "lane": "fast",
+        "category": "cross-repository-catalog-boundary",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ai-unit-contract-tests",
+        "lane": "fast",
+        "category": "python-tests",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ai-evaluation-leakage",
+        "lane": "fast",
+        "category": "evaluation-integrity",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ai-data-governance",
+        "lane": "fast",
+        "category": "data-governance",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ai-task-schema",
+        "lane": "fast",
+        "category": "schema-drift",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ai-registry-integrity",
+        "lane": "fast",
+        "category": "artifact-integrity",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ai-api-contract-evaluation",
+        "lane": "fast",
+        "category": "quality-evaluation",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ai-generation-quality-evaluation",
+        "lane": "fast",
+        "category": "quality-evaluation",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ai-grounding-evaluation",
+        "lane": "fast",
+        "category": "quality-evaluation",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ai-internet-boundary-evaluation",
+        "lane": "fast",
+        "category": "offline-security-evaluation",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ai-local-retrieval-evaluation",
+        "lane": "fast",
+        "category": "quality-evaluation",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ai-memory-evaluation",
+        "lane": "fast",
+        "category": "privacy-and-memory-evaluation",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ai-context-evaluation",
+        "lane": "fast",
+        "category": "context-evaluation",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ai-engineering-tools-evaluation",
+        "lane": "fast",
+        "category": "deterministic-tool-evaluation",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ai-observability-evaluation",
+        "lane": "fast",
+        "category": "observability-evaluation",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ai-proposal-transaction-evaluation",
+        "lane": "fast",
+        "category": "safety-evaluation",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ai-security-threat-model-evaluation",
+        "lane": "fast",
+        "category": "security-evaluation",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "spring-gateway-evaluation",
+        "lane": "fast",
+        "category": "backend-boundary-evaluation",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ui-ai-boundary-evaluation",
+        "lane": "fast",
+        "category": "ui-boundary-evaluation",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "backend-tests",
+        "lane": "fast",
+        "category": "backend-tests",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ui-tests",
+        "lane": "fast",
+        "category": "ui-tests",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ui-production-build-and-budget",
+        "lane": "fast",
+        "category": "ui-build",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ai-whitespace-check",
+        "lane": "fast",
+        "category": "repository-hygiene",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "backend-whitespace-check",
+        "lane": "fast",
+        "category": "repository-hygiene",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "ui-whitespace-check",
+        "lane": "fast",
+        "category": "repository-hygiene",
+        "status": "pass",
+        "exitCode": 0
+      }
+    ],
+    "summary": {
+      "passed": 27,
+      "failed": 0,
+      "skipped": 0
+    },
+    "scorecardSha256": "e3665a1f82b907e7553a95f53474c391a5a5819ee62e1be12c5c6abaa174cf43"
+  },
+  "privacy": {
+    "rawStdoutStored": false,
+    "rawStderrStored": false,
+    "rawPromptStored": false,
+    "rawProjectContentStored": false
+  },
+  "reportSha256": "c903f00da0f750679c5f03376820b14015fde84df5992822d624319718cda6ca"
+}

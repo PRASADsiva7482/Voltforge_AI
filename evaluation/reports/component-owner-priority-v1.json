@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "vfai-fu-011-component-owner-priority-v1",
+  "policyId": "vfai-fu-011-component-coverage-v1",
+  "generatedOn": "2026-09-06",
+  "owner": "VoltForge Electronics Engineering Team",
+  "selectionCriteria": "Usage frequency on canvas, simulation fidelity, circuit diagnostic coverage, and primary manufacturer evidence availability.",
+  "prioritizedComponents": [
+    {
+      "rank": 1,
+      "componentType": "OLED_DISPLAY",
+      "displayName": "OLED Display 128x64",
+      "selectedExactPart": "ADAFRUIT_SSD1306_STEMMA_128X64",
+      "manufacturer": "Adafruit Industries",
+      "orderablePartNumber": "PID 326 / 438",
+      "packageRevision": "STEMMA QT / Qwiic I2C",
+      "primaryEvidence": "https://learn.adafruit.com/monochrome-oled-breakouts/wiring-128x64-oleds",
+      "rationale": "Most popular I2C visual display on microcontroller projects; exact address 0x3C and built-in 3.3V/5V auto-reset level shifter."
+    },
+    {
+      "rank": 2,
+      "componentType": "IC_555_TIMER",
+      "displayName": "NE555 Timer",
+      "selectedExactPart": "TI_NE555P",
+      "manufacturer": "Texas Instruments",
+      "orderablePartNumber": "NE555P",
+      "packageRevision": "DIP-8 (P0008A)",
+      "primaryEvidence": "https://www.ti.com/lit/ds/symlink/ne555.pdf",
+      "rationale": "Ubiquitous analog/timing IC across educational and production circuits; exact 8-pin DIP pinout, 4.5V-16V supply, 200mA drive."
+    },
+    {
+      "rank": 3,
+      "componentType": "OPAMP_LM358",
+      "displayName": "LM358 Op-Amp",
+      "selectedExactPart": "TI_LM358N",
+      "manufacturer": "Texas Instruments",
+      "orderablePartNumber": "LM358N",
+      "packageRevision": "DIP-8",
+      "primaryEvidence": "https://www.ti.com/lit/ds/symlink/lm358.pdf",
+      "rationale": "Standard dual low-power operational amplifier; 3V-32V single-supply operation with ground-sensing inputs."
+    },
+    {
+      "rank": 4,
+      "componentType": "RELAY_SINGLE",
+      "displayName": "Single Relay Module",
+      "selectedExactPart": "SONGLE_SRD_05VDC_MODULE",
+      "manufacturer": "Songle / Keyestudio",
+      "orderablePartNumber": "SRD-05VDC-SL-C",
+      "packageRevision": "Single-Channel Opto-Isolated Breakout",
+      "primaryEvidence": "https://www.songle.com/en/pdf/2008417937402660.pdf",
+      "rationale": "Essential high-voltage/load actuator with optocoupler galvanic isolation, 10A 250VAC/30VDC contacts, and flyback suppression."
+    },
+    {
+      "rank": 5,
+      "componentType": "LED_STANDARD",
+      "displayName": "Standard LED",
+      "selectedExactPart": "BROADCOM_HLMP_3301",
+      "manufacturer": "Broadcom / Avago",
+      "orderablePartNumber": "HLMP-3301",
+      "packageRevision": "T-1 3/4 (5mm) Through-Hole",
+      "primaryEvidence": "https://docs.broadcom.com/doc/AV02-1558EN",
+      "rationale": "Standard 5mm high-efficiency red indicator LED with nominal 2.0V forward voltage and 20mA max forward current."
+    }
+  ],
+  "summary": {
+    "totalPrioritized": 5,
+    "immutableCorpusReleaseReady": true,
+    "genericLabelsFailClosed": true
+  }
+}

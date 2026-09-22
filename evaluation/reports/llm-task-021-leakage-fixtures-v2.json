@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "taskId": "LLM-TASK-021",
+  "status": "passed",
+  "scenarios": [
+    {
+      "scenario": "exact-copy",
+      "candidateSha256": "236af72904cac08b08f465c663a50b91832baa18d3dab36747ab3a1642e7829f",
+      "outcome": "rejected",
+      "reason": "exact-content"
+    },
+    {
+      "scenario": "paraphrase",
+      "candidateSha256": "58a67abcd294fc1d6b743f3a450e06427845ee894c6b30b18cf0b5a27b1ca2ac",
+      "outcome": "rejected",
+      "reason": "lexical-paraphrase"
+    },
+    {
+      "scenario": "renamed-code",
+      "candidateSha256": "caa4c774299fcad54c924d5ba9e2d922e0a0aebcff61ef744fda5ad416fe04ea",
+      "outcome": "rejected",
+      "reason": "renamed-code"
+    },
+    {
+      "scenario": "parameterized-code",
+      "candidateSha256": "6e262b39196f5441a06931c920477fbebc006e25304fdfb4fb7c99e32554eaa9",
+      "outcome": "rejected",
+      "reason": "parameterized-code-family"
+    },
+    {
+      "scenario": "board-template-variant",
+      "candidateSha256": "eb976165ceb7944826e5bf3f09e9c7cf346bcb9fa3029cdd10656fc7038e3b96",
+      "outcome": "rejected",
+      "reason": "protected-lineage-family"
+    },
+    {
+      "scenario": "embedded-marker",
+      "candidateSha256": "cabc51ffa46c93ca16b8f085607617479d1380691653219cb14fb10180c80727",
+      "outcome": "rejected",
+      "reason": "protected-exact-containment"
+    },
+    {
+      "scenario": "historical-id",
+      "candidateSha256": "886eb4dc4918a5238b9def7c479096116ce89b895d9782515ba11eb03a677091",
+      "outcome": "rejected",
+      "reason": "protected-record-id"
+    }
+  ],
+  "leakedFixturesRejected": 7,
+  "unrelatedControlAccepted": true,
+  "nonemptyPartitionControl": {
+    "documents": 100,
+    "splitCounts": {
+      "train": 80,
+      "test": 10,
+      "validation": 10
+    },
+    "crossSplitAudit": {
+      "status": "passed",
+      "counts": {
+        "lineage": 0,
+        "exactRaw": 0,
+        "exactNormalized": 0,
+        "nearTextOrCode": 0,
+        "protected": 0
+      },
+      "includedDocuments": 100,
+      "nonemptySplits": [
+        "test",
+        "train",
+        "validation"
+      ],
+      "semanticCompletenessClaimed": false
+    }
+  },
+  "deliberateCrossSplitCollisionRejected": true,
+  "preRenderReservationsVerified": 12,
+  "trainingAllowed": false,
+  "rawProtectedContentStored": false,
+  "scope": "Authored synthetic positive/negative controls, not real corpus adequacy or general semantic recall.",
+  "sourceFingerprints": [
+    {
+      "path": "data_governance/splitting/__init__.py",
+      "sha256": "dd481bc2c244b7e96faa07583f65ba4c8c1f116f18379212b74b2a3229400e76"
+    },
+    {
+      "path": "data_governance/splitting/policy.v1.json",
+      "sha256": "cae5061a4ca9ceba68e87c4c1aa433cd70ca93c2bd45229614e970d399c9f78e"
+    },
+    {
+      "path": "data_governance/splitting/signatures.py",
+      "sha256": "1ab443d57d1e1de6ad9eb8251b3f17597cfe6f8c55843fca6b8801f9b51a289a"
+    },
+    {
+      "path": "data_governance/splitting/partition.py",
+      "sha256": "4d1411756331924ef8c2db0e5dfcb2b5ba535dacea5afcbd096e04d951feb9fc"
+    },
+    {
+      "path": "data_governance/splitting/release.py",
+      "sha256": "94396cf25972c71d4cf7afb832902c7b7fd9f4ecd4934e84b4f8b6e740c94147"
+    }
+  ]
+}

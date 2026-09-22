@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vf-g2-partitions-v1",
+  "seed": "voltforge-g2-family-split-v1-20260908",
+  "splitWeights": {"train": 80, "validation": 10, "test": 10},
+  "nearTextJaccard": 0.82,
+  "protectedContainment": 0.9,
+  "minimumNearWords": 6,
+  "minimumCodeTokens": 12,
+  "maxDocuments": 5000,
+  "maxPairComparisons": 2000000,
+  "proxyTokenizer": "model/tokenizers/vfdlm-byte-bpe-v1.1.0",
+  "excludedUses": ["tokenizer-fitting", "pretraining", "sft", "retrieval-evaluation", "tuning"],
+  "trainingAllowed": false,
+  "scope": "Exact, lexical paraphrase and structural code/family checks; no general semantic completeness claim. Resource limits fail closed; larger corpora require a reviewed indexed implementation."
+}

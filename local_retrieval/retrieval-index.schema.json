@@ -1,0 +1,473 @@
+{
+  "$defs": {
+    "IndexedFact": {
+      "additionalProperties": false,
+      "properties": {
+        "factId": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,199}$",
+          "title": "Factid",
+          "type": "string"
+        },
+        "claimId": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,199}$",
+          "title": "Claimid",
+          "type": "string"
+        },
+        "property": {
+          "pattern": "^[a-z][a-z0-9-]{1,79}$",
+          "title": "Property",
+          "type": "string"
+        },
+        "pointer": {
+          "maxLength": 500,
+          "title": "Pointer",
+          "type": "string"
+        },
+        "value": {
+          "default": null,
+          "title": "Value"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "bounded",
+            "conditional",
+            "unknown"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "conditions": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 30,
+          "title": "Conditions",
+          "type": "array"
+        },
+        "evidenceRefs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Evidencerefs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "factId",
+        "claimId",
+        "property",
+        "pointer",
+        "status",
+        "evidenceRefs"
+      ],
+      "title": "IndexedFact",
+      "type": "object"
+    },
+    "RetrievalEvidence": {
+      "additionalProperties": false,
+      "properties": {
+        "evidenceId": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,199}$",
+          "title": "Evidenceid",
+          "type": "string"
+        },
+        "evidenceKind": {
+          "enum": [
+            "manufacturer-documentation",
+            "maintainer-documentation",
+            "toolchain-documentation",
+            "project-engineering-rule"
+          ],
+          "title": "Evidencekind",
+          "type": "string"
+        },
+        "publisher": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Publisher",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "documentRevision": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Documentrevision",
+          "type": "string"
+        },
+        "locator": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Locator",
+          "type": "string"
+        },
+        "verifiedAt": {
+          "pattern": "^20[0-9]{2}-[01][0-9]-[0-3][0-9]$",
+          "title": "Verifiedat",
+          "type": "string"
+        }
+      },
+      "required": [
+        "evidenceId",
+        "evidenceKind",
+        "publisher",
+        "title",
+        "documentRevision",
+        "locator",
+        "verifiedAt"
+      ],
+      "title": "RetrievalEvidence",
+      "type": "object"
+    },
+    "RetrievalIndexChunk": {
+      "additionalProperties": false,
+      "properties": {
+        "chunkId": {
+          "pattern": "^vf-retrieval-chunk-v1-[a-f0-9]{24}$",
+          "title": "Chunkid",
+          "type": "string"
+        },
+        "recordId": {
+          "pattern": "^vf-knowledge-v1-[a-z0-9][a-z0-9.-]{2,119}$",
+          "title": "Recordid",
+          "type": "string"
+        },
+        "recordType": {
+          "enum": [
+            "board",
+            "pin-map",
+            "component",
+            "wiring-recipe",
+            "firmware-api",
+            "compiler-diagnostic",
+            "simulation-behavior",
+            "safety-constraint"
+          ],
+          "title": "Recordtype",
+          "type": "string"
+        },
+        "supportStatus": {
+          "enum": [
+            "supported",
+            "variant-required",
+            "reference-only"
+          ],
+          "title": "Supportstatus",
+          "type": "string"
+        },
+        "subject": {
+          "$ref": "#/$defs/RetrievalSubject"
+        },
+        "source": {
+          "$ref": "#/$defs/RetrievalSource"
+        },
+        "facts": {
+          "items": {
+            "$ref": "#/$defs/IndexedFact"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Facts",
+          "type": "array"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/RetrievalEvidence"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "boardKeys": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Boardkeys",
+          "type": "array"
+        },
+        "componentKeys": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Componentkeys",
+          "type": "array"
+        },
+        "termFrequencies": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "maxProperties": 1000,
+          "minProperties": 1,
+          "title": "Termfrequencies",
+          "type": "object"
+        },
+        "documentLength": {
+          "maximum": 20000,
+          "minimum": 1,
+          "title": "Documentlength",
+          "type": "integer"
+        },
+        "contentSha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Contentsha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "chunkId",
+        "recordId",
+        "recordType",
+        "supportStatus",
+        "subject",
+        "source",
+        "facts",
+        "evidence",
+        "termFrequencies",
+        "documentLength",
+        "contentSha256"
+      ],
+      "title": "RetrievalIndexChunk",
+      "type": "object"
+    },
+    "RetrievalSource": {
+      "additionalProperties": false,
+      "properties": {
+        "sourceId": {
+          "const": "vf-src-curated-electronics-corpus-v1",
+          "title": "Sourceid",
+          "type": "string"
+        },
+        "sourceRevision": {
+          "const": "1.1.0",
+          "title": "Sourcerevision",
+          "type": "string"
+        },
+        "recordRevision": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,199}$",
+          "title": "Recordrevision",
+          "type": "string"
+        },
+        "validFrom": {
+          "pattern": "^20[0-9]{2}-[01][0-9]-[0-3][0-9]$",
+          "title": "Validfrom",
+          "type": "string"
+        },
+        "recordId": {
+          "pattern": "^vf-knowledge-v1-[a-z0-9][a-z0-9.-]{2,119}$",
+          "title": "Recordid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sourceId",
+        "sourceRevision",
+        "recordRevision",
+        "validFrom",
+        "recordId"
+      ],
+      "title": "RetrievalSource",
+      "type": "object"
+    },
+    "RetrievalSubject": {
+      "additionalProperties": false,
+      "properties": {
+        "subjectId": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,199}$",
+          "title": "Subjectid",
+          "type": "string"
+        },
+        "familyId": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,199}$",
+          "title": "Familyid",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 300,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "variant": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Variant",
+          "type": "string"
+        }
+      },
+      "required": [
+        "subjectId",
+        "familyId",
+        "name",
+        "variant"
+      ],
+      "title": "RetrievalSubject",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "default": 1,
+      "title": "Schemaversion",
+      "type": "integer"
+    },
+    "contractVersion": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Contractversion",
+      "type": "string"
+    },
+    "indexId": {
+      "const": "vf-curated-local-index-v1",
+      "default": "vf-curated-local-index-v1",
+      "title": "Indexid",
+      "type": "string"
+    },
+    "indexVersion": {
+      "const": "1.1.0",
+      "default": "1.1.0",
+      "title": "Indexversion",
+      "type": "string"
+    },
+    "policyId": {
+      "const": "vfai022-curated-local-retrieval-v1",
+      "default": "vfai022-curated-local-retrieval-v1",
+      "title": "Policyid",
+      "type": "string"
+    },
+    "policySha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Policysha256",
+      "type": "string"
+    },
+    "algorithm": {
+      "const": "bm25-lexical-v1",
+      "default": "bm25-lexical-v1",
+      "title": "Algorithm",
+      "type": "string"
+    },
+    "sourceId": {
+      "const": "vf-src-curated-electronics-corpus-v1",
+      "title": "Sourceid",
+      "type": "string"
+    },
+    "sourceRevision": {
+      "const": "1.1.0",
+      "title": "Sourcerevision",
+      "type": "string"
+    },
+    "sourceEntrySha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Sourceentrysha256",
+      "type": "string"
+    },
+    "sourceCatalogSha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Sourcecatalogsha256",
+      "type": "string"
+    },
+    "corpusContentSha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Corpuscontentsha256",
+      "type": "string"
+    },
+    "builderSha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Buildersha256",
+      "type": "string"
+    },
+    "recordCount": {
+      "minimum": 1,
+      "title": "Recordcount",
+      "type": "integer"
+    },
+    "chunkCount": {
+      "minimum": 1,
+      "title": "Chunkcount",
+      "type": "integer"
+    },
+    "averageDocumentLength": {
+      "pattern": "^[0-9]+(?:\\.[0-9]+)?$",
+      "title": "Averagedocumentlength",
+      "type": "string"
+    },
+    "documentFrequencies": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "maxProperties": 20000,
+      "minProperties": 1,
+      "title": "Documentfrequencies",
+      "type": "object"
+    },
+    "chunks": {
+      "items": {
+        "$ref": "#/$defs/RetrievalIndexChunk"
+      },
+      "maxItems": 10000,
+      "minItems": 1,
+      "title": "Chunks",
+      "type": "array"
+    },
+    "rawSourceDocumentsStored": {
+      "const": false,
+      "default": false,
+      "title": "Rawsourcedocumentsstored",
+      "type": "boolean"
+    },
+    "embeddingsPresent": {
+      "const": false,
+      "default": false,
+      "title": "Embeddingspresent",
+      "type": "boolean"
+    },
+    "indexSha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Indexsha256",
+      "type": "string"
+    }
+  },
+  "required": [
+    "policySha256",
+    "sourceId",
+    "sourceRevision",
+    "sourceEntrySha256",
+    "sourceCatalogSha256",
+    "corpusContentSha256",
+    "builderSha256",
+    "recordCount",
+    "chunkCount",
+    "averageDocumentLength",
+    "documentFrequencies",
+    "chunks",
+    "indexSha256"
+  ],
+  "title": "VoltForge curated local retrieval index v1",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:voltforge-ai:curated-local-retrieval-index:v1"
+}

@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "shardId": "vf-shard-176effc2e25cd6d4c253",
+  "path": "model/artifacts/dataset.jsonl",
+  "recordFormat": "jsonl-v0",
+  "recordCount": 10500,
+  "sizeBytes": 5457916,
+  "sha256": "176effc2e25cd6d4c2534a4d36f85d5a60607c20289e654d7c6ee71151e5db78",
+  "status": "quarantined",
+  "eligibleUses": [],
+  "reason": "The output depends on an unlicensed legacy seed and predates an immutable generation manifest.",
+  "createdAtUtc": "2026-09-01T11:41:37.843922+00:00",
+  "sourceRegistry": {
+    "registryId": "voltforge-source-registry",
+    "version": "1.2.0",
+    "sha256": "d775e5c2c633fee61ed4553058ad356a83f9298388bb8b5b48cd4880fcadb506"
+  },
+  "sources": [
+    {
+      "sourceId": "vf-src-project-multitask-generator-v1",
+      "revision": "2.0.0",
+      "checksum": "abbee153e1ee8408da91c6f7f92ed833c3534a88c93114c06ea1e9933063f24a",
+      "licenseStatus": "approved",
+      "privacyClass": "project-authored-non-user-data",
+      "approvalStatus": "approved"
+    },
+    {
+      "sourceId": "vf-src-legacy-dataset-txt-v0",
+      "revision": "legacy-snapshot-2026-08-13",
+      "checksum": "db5b42f71e3fc74b7ba2514997865b2f653eb9c8623eb5ddb0bd8222577d1802",
+      "licenseStatus": "unverified",
+      "privacyClass": "unknown-origin-no-observed-user-identifiers",
+      "approvalStatus": "quarantined"
+    }
+  ],
+  "producer": {
+    "id": "vf-multitask-dataset-generator",
+    "version": "pre-governance",
+    "path": "model/generate_dataset.py",
+    "sha256": "abbee153e1ee8408da91c6f7f92ed833c3534a88c93114c06ea1e9933063f24a"
+  },
+  "preprocessing": {
+    "id": "unknown-pre-governance-process",
+    "version": "unknown",
+    "path": null,
+    "sha256": null
+  },
+  "taskSchema": {
+    "id": "legacy-untyped",
+    "version": "0",
+    "path": null,
+    "sha256": null
+  },
+  "recordProvenance": {
+    "mode": "shard-inherited",
+    "selector": "all-records",
+    "sourceIds": [
+      "vf-src-project-multitask-generator-v1",
+      "vf-src-legacy-dataset-txt-v0"
+    ],
+    "statement": "Every non-empty record in this shard inherits this immutable source and producer snapshot."
+  },
+  "retention": {
+    "sourcePolicies": [
+      {
+        "sourceId": "vf-src-project-multitask-generator-v1",
+        "policy": {
+          "class": "project-source",
+          "duration": "while referenced by an approved shard or artifact",
+          "reviewTrigger": "source revision or policy change"
+        },
+        "deletionProcedure": "Run tools/source_removal_impact.py for this source, remove generated shards and manifests, and retrain all identified dependent artifacts."
+      },
+      {
+        "sourceId": "vf-src-legacy-dataset-txt-v0",
+        "policy": {
+          "class": "quarantined-audit-evidence",
+          "duration": "until owner review or deletion",
+          "reviewTrigger": "license and origin evidence becomes available"
+        },
+        "deletionProcedure": "Run tools/source_removal_impact.py for this source, delete dataset.txt and every listed dependent shard/manifest, retain the impact report, and retrain any affected approved artifact."
+      }
+    ]
+  },
+  "manifestSha256": "61ec1b3c0408518e9ee22db1256c5cd931a64c358f690413f862c1f603c26afd"
+}

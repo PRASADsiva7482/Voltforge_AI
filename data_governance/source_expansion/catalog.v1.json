@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "catalogId": "vf-g2-source-expansion-v1",
+  "taskId": "LLM-TASK-023",
+  "selectionBasis": "Independent technical English and C repository families; selections and split reservations declared before content/leakage evaluation",
+  "sources": [
+    {
+      "sourceId": "vf-g2-lgwt-4675d96a",
+      "repository": "quii/learn-go-with-tests",
+      "revision": "4675d96ad50b815d3e9fdc2122ab3dbc14636252",
+      "domain": "language",
+      "language": "en",
+      "reservedSplit": "train",
+      "licensePath": "LICENSE.md",
+      "scopeEvidencePaths": ["README.md"],
+      "selectedPaths": ["arrays-and-slices.md", "structs-methods-and-interfaces.md", "pointers-and-errors.md", "iteration.md", "concurrency.md", "dependency-injection.md"]
+    },
+    {
+      "sourceId": "vf-g2-rust-book-1500248d",
+      "repository": "rust-lang/book",
+      "revision": "1500248d8f230566e4ec9f27fcbb8fe9e2898ab1",
+      "domain": "language",
+      "language": "en",
+      "reservedSplit": "train",
+      "licensePath": "LICENSE-MIT",
+      "scopeEvidencePaths": ["README.md", "LICENSE-APACHE"],
+      "selectedPaths": ["src/ch03-01-variables-and-mutability.md", "src/ch03-02-data-types.md", "src/ch03-03-how-functions-work.md", "src/ch03-05-control-flow.md", "src/ch04-01-what-is-ownership.md", "src/ch04-02-references-and-borrowing.md"]
+    },
+    {
+      "sourceId": "vf-g2-mkdocs-9d65447e",
+      "repository": "squidfunk/mkdocs-material",
+      "revision": "9d65447eb4039c153edefbc378029257886737ff",
+      "domain": "language",
+      "language": "en",
+      "reservedSplit": "validation",
+      "licensePath": "LICENSE",
+      "scopeEvidencePaths": ["README.md", "docs/license.md"],
+      "selectedPaths": ["docs/setup/changing-the-colors.md", "docs/setup/changing-the-fonts.md", "docs/setup/changing-the-language.md", "docs/setup/setting-up-navigation.md", "docs/setup/setting-up-site-search.md", "docs/setup/setting-up-site-analytics.md"]
+    },
+    {
+      "sourceId": "vf-g2-cjson-fb16e5cf",
+      "repository": "DaveGamble/cJSON",
+      "revision": "fb16e5cf358798aabb049655975cde8427101056",
+      "domain": "code",
+      "language": "c",
+      "reservedSplit": "train",
+      "licensePath": "LICENSE",
+      "scopeEvidencePaths": ["README.md"],
+      "selectedPaths": ["cJSON.c", "cJSON.h", "cJSON_Utils.c", "cJSON_Utils.h"]
+    },
+    {
+      "sourceId": "vf-g2-logc-f9ea3499",
+      "repository": "rxi/log.c",
+      "revision": "f9ea34994bd58ed342d2245cd4110bb5c6790153",
+      "domain": "code",
+      "language": "c",
+      "reservedSplit": "validation",
+      "licensePath": "LICENSE",
+      "scopeEvidencePaths": ["README.md"],
+      "selectedPaths": ["src/log.c", "src/log.h"]
+    }
+  ]
+}

@@ -1,0 +1,642 @@
+{
+  "$defs": {
+    "AssistantTextRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "assistant-text",
+          "default": "assistant-text",
+          "title": "Type",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 200000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "evidenceRefs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Evidencerefs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "title": "AssistantTextRecord",
+      "type": "object"
+    },
+    "CitationRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "citation",
+          "default": "citation",
+          "title": "Type",
+          "type": "string"
+        },
+        "citationId": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,159}$",
+          "title": "Citationid",
+          "type": "string"
+        },
+        "sourceId": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,159}$",
+          "title": "Sourceid",
+          "type": "string"
+        },
+        "sourceRevision": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,159}$",
+          "title": "Sourcerevision",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "locator": {
+          "anyOf": [
+            {
+              "maxLength": 2000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Locator"
+        },
+        "contentSha256": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contentsha256"
+        },
+        "evidenceRefs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Evidencerefs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "citationId",
+        "sourceId",
+        "sourceRevision",
+        "title"
+      ],
+      "title": "CitationRecord",
+      "type": "object"
+    },
+    "GeneratorRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,159}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version"
+      ],
+      "title": "GeneratorRecord",
+      "type": "object"
+    },
+    "ProjectContextRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "project-context",
+          "default": "project-context",
+          "title": "Type",
+          "type": "string"
+        },
+        "projectId": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Projectid",
+          "type": "string"
+        },
+        "sourceProjectRevision": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,159}$",
+          "title": "Sourceprojectrevision",
+          "type": "string"
+        },
+        "revisionSource": {
+          "enum": [
+            "client",
+            "derived-snapshot",
+            "synthetic",
+            "evaluation"
+          ],
+          "title": "Revisionsource",
+          "type": "string"
+        },
+        "boardType": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Boardtype"
+        },
+        "payload": {
+          "additionalProperties": true,
+          "title": "Payload",
+          "type": "object"
+        }
+      },
+      "required": [
+        "projectId",
+        "sourceProjectRevision",
+        "revisionSource"
+      ],
+      "title": "ProjectContextRecord",
+      "type": "object"
+    },
+    "RefusalRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "refusal",
+          "default": "refusal",
+          "title": "Type",
+          "type": "string"
+        },
+        "reasonCode": {
+          "enum": [
+            "out-of-domain",
+            "unsafe-request",
+            "malformed-input",
+            "capability-unavailable",
+            "insufficient-evidence"
+          ],
+          "title": "Reasoncode",
+          "type": "string"
+        },
+        "message": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        },
+        "recoverable": {
+          "title": "Recoverable",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "reasonCode",
+        "message",
+        "recoverable"
+      ],
+      "title": "RefusalRecord",
+      "type": "object"
+    },
+    "StructuredActionRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "structured-action",
+          "default": "structured-action",
+          "title": "Type",
+          "type": "string"
+        },
+        "actionId": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,159}$",
+          "title": "Actionid",
+          "type": "string"
+        },
+        "actionKind": {
+          "enum": [
+            "wire-suggestion",
+            "component-addition",
+            "component-removal",
+            "value-change",
+            "code-fix"
+          ],
+          "title": "Actionkind",
+          "type": "string"
+        },
+        "sourceProjectRevision": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,159}$",
+          "title": "Sourceprojectrevision",
+          "type": "string"
+        },
+        "applicationMode": {
+          "const": "proposal-only",
+          "default": "proposal-only",
+          "title": "Applicationmode",
+          "type": "string"
+        },
+        "requiresUserConfirmation": {
+          "const": true,
+          "default": true,
+          "title": "Requiresuserconfirmation",
+          "type": "boolean"
+        },
+        "evidenceRefs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Evidencerefs",
+          "type": "array"
+        },
+        "payload": {
+          "additionalProperties": true,
+          "title": "Payload",
+          "type": "object"
+        }
+      },
+      "required": [
+        "actionId",
+        "actionKind",
+        "sourceProjectRevision",
+        "payload"
+      ],
+      "title": "StructuredActionRecord",
+      "type": "object"
+    },
+    "SystemRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "system",
+          "default": "system",
+          "title": "Type",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 16000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "policyVersion": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Policyversion",
+          "type": "string"
+        }
+      },
+      "required": [
+        "text",
+        "policyVersion"
+      ],
+      "title": "SystemRecord",
+      "type": "object"
+    },
+    "TaskInput": {
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "$ref": "#/$defs/SystemRecord"
+        },
+        "user": {
+          "$ref": "#/$defs/UserRecord"
+        },
+        "projectContext": {
+          "$ref": "#/$defs/ProjectContextRecord"
+        },
+        "toolEvidence": {
+          "items": {
+            "$ref": "#/$defs/ToolEvidenceRecord"
+          },
+          "maxItems": 100,
+          "title": "Toolevidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "system",
+        "user",
+        "projectContext"
+      ],
+      "title": "TaskInput",
+      "type": "object"
+    },
+    "TaskMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "sourceKind": {
+          "enum": [
+            "synthetic",
+            "evaluation",
+            "runtime",
+            "curated"
+          ],
+          "title": "Sourcekind",
+          "type": "string"
+        },
+        "sourceIds": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Sourceids",
+          "type": "array"
+        },
+        "generator": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/GeneratorRecord"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "sourceKind"
+      ],
+      "title": "TaskMetadata",
+      "type": "object"
+    },
+    "TaskOutput": {
+      "additionalProperties": false,
+      "properties": {
+        "assistantText": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AssistantTextRecord"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "structuredActions": {
+          "items": {
+            "$ref": "#/$defs/StructuredActionRecord"
+          },
+          "maxItems": 100,
+          "title": "Structuredactions",
+          "type": "array"
+        },
+        "citations": {
+          "items": {
+            "$ref": "#/$defs/CitationRecord"
+          },
+          "maxItems": 100,
+          "title": "Citations",
+          "type": "array"
+        },
+        "refusal": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RefusalRecord"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "uncertainty": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/UncertaintyRecord"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "title": "TaskOutput",
+      "type": "object"
+    },
+    "ToolEvidenceRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "tool-evidence",
+          "default": "tool-evidence",
+          "title": "Type",
+          "type": "string"
+        },
+        "evidenceId": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,159}$",
+          "title": "Evidenceid",
+          "type": "string"
+        },
+        "toolName": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,159}$",
+          "title": "Toolname",
+          "type": "string"
+        },
+        "toolVersion": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Toolversion",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "complete",
+            "failed",
+            "reported",
+            "unavailable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "authority": {
+          "enum": [
+            "deterministic",
+            "client-reported",
+            "retrieved"
+          ],
+          "title": "Authority",
+          "type": "string"
+        },
+        "sourceProjectRevision": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,159}$",
+          "title": "Sourceprojectrevision",
+          "type": "string"
+        },
+        "summary": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Summary",
+          "type": "string"
+        },
+        "payload": {
+          "additionalProperties": true,
+          "title": "Payload",
+          "type": "object"
+        }
+      },
+      "required": [
+        "evidenceId",
+        "toolName",
+        "toolVersion",
+        "status",
+        "authority",
+        "sourceProjectRevision",
+        "summary"
+      ],
+      "title": "ToolEvidenceRecord",
+      "type": "object"
+    },
+    "UncertaintyRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "uncertainty",
+          "default": "uncertainty",
+          "title": "Type",
+          "type": "string"
+        },
+        "level": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "unknown"
+          ],
+          "title": "Level",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "missingEvidence": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Missingevidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "level",
+        "reason"
+      ],
+      "title": "UncertaintyRecord",
+      "type": "object"
+    },
+    "UserRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "user",
+          "default": "user",
+          "title": "Type",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 16000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "title": "UserRecord",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "default": 1,
+      "title": "Schemaversion",
+      "type": "integer"
+    },
+    "contractVersion": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Contractversion",
+      "type": "string"
+    },
+    "recordId": {
+      "pattern": "^vf-task-v1-[a-f0-9]{24}$",
+      "title": "Recordid",
+      "type": "string"
+    },
+    "recordKind": {
+      "enum": [
+        "example",
+        "inference-request",
+        "inference-response"
+      ],
+      "title": "Recordkind",
+      "type": "string"
+    },
+    "task": {
+      "pattern": "^[a-z][a-z0-9_]{2,79}$",
+      "title": "Task",
+      "type": "string"
+    },
+    "input": {
+      "$ref": "#/$defs/TaskInput"
+    },
+    "output": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/TaskOutput"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "metadata": {
+      "$ref": "#/$defs/TaskMetadata"
+    }
+  },
+  "required": [
+    "recordId",
+    "recordKind",
+    "task",
+    "input",
+    "metadata"
+  ],
+  "title": "VoltForge task record v1",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:voltforge-ai:task-record:v1"
+}

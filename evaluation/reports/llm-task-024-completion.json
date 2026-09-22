@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "taskId": "LLM-TASK-024",
+  "status": "completed-all-recorded-task024-tokenizer-acceptance",
+  "recordedAtUtc": "2026-09-10T01:44:07.057628+00:00",
+  "summary": "Completed owned tokenizer 0.1.0 from the exact admitted 42-document/1,475,271-byte training split. Both 16,384/32,768 candidates reached their targets and reproduce their merge sets. Frozen-candidate validation comparison under the predeclared selection rule selects 16,384 entries; measured per-domain macro reduction for 32k versus 16k is 7.29%. The selected tokenizer counts 139,542 unique train, 19,348 validation and 708 test tokens. Validation never fits merges; test counting occurs only after selection. The immutable release/version record binds corpus, code, vocabulary, merges, special IDs, chat template, comparison and resource receipts. Literal markers, arbitrary bytes, SI/Unicode, long-code overhead, fertility, compression and codec throughput are measured. A real 533,600-parameter random decoder consumes the selected tokenizer/template through the context compiler, with matching embeddings/logits and cached-prefix parity. All 296 regressions (47 new trained-tokenizer tests), governance/history checks and 27 fast cross-repository checks passed. Old tokenizers, corpus artifacts and protected evaluation history remain unchanged. No model weights were trained, no checkpoint was loaded/saved, and no serving or external-retention approval was claimed. Task 025 architecture acceptance remains separate.",
+  "taskCompleted": true,
+  "tokenizerManifest": {
+    "path": "Voltforge_AI/model/tokenizers/gen2/releases/f2bf8a23c7d251252bf120ea3262875152e3dede6a4549e3ea147bc867a09d65/manifest.json",
+    "sha256": "4da505f8122bf01bec41c6643966059d48a5e389ee54bff9bfeca077a6af8dc0",
+    "bytes": 14273
+  },
+  "comparison": {
+    "path": "Voltforge_AI/model/tokenizers/gen2/comparisons/v1/d16d202707d79ee8dd5f13493b655a56838ebceeb745aeff86376ca12f477d40/report.json",
+    "sha256": "6bf036e7ef90864bcf2296265d07700c1144ee4b68f9bc02a5e5d02e6da2ad6a",
+    "bytes": 73179
+  },
+  "corpusRecount": {
+    "path": "Voltforge_AI/corpus/token-counts/gen2/v1/e94d9f2c168dda354fa5c76ab8decabd252d66002c99c300eccdf4e490b5614f/report.json",
+    "sha256": "e3f08b6d0e9a45755c2e244fcd06d9ff2ff7b8c7f3bad30463a9833546124413",
+    "bytes": 34130
+  },
+  "modelContextIntegration": {
+    "path": "Voltforge_AI/model/tokenizers/gen2/integration/v1/f17eae152f367f847fa8da33830b77317067374a19def449f76c9fcaa6bc991c/report.json",
+    "sha256": "fcd2a759d2f44ee92845823562a371db4f452a57f146c14e3ef33ff1b56f81c6",
+    "bytes": 5899
+  },
+  "tests": {
+    "passed": 296,
+    "newTrainedTokenizerTests": 47,
+    "failed": 0,
+    "skipped": 0,
+    "junit": {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-024-trained-tests.xml",
+      "sha256": "ed1660f61a47fd42d6330be92f2396521e46fbc5f607abff7ba67868a0e1e809",
+      "bytes": 40661
+    }
+  },
+  "checks": {
+    "path": "Voltforge_AI/evaluation/reports/llm-task-024-trained-checks.json",
+    "sha256": "3b804af88166405215491ddd0e7e1235329afdfc34297078c86ccdfeeba3ea21",
+    "bytes": 7617
+  },
+  "crossRepositoryQuality": {
+    "path": "Voltforge_AI/evaluation/reports/llm-task-024-trained-cross-repository-quality.json",
+    "sha256": "9b945402083494a5f7daeaa1261c4f7aab27cbc45be84ed9a218394dc56aa7af",
+    "bytes": 13613
+  },
+  "modelWeightsTrained": false,
+  "servingActivated": false,
+  "externalRetentionAccepted": false,
+  "remainingTask024Work": [],
+  "nextTaskId": "LLM-TASK-025",
+  "planningCheck": {
+    "status": "passed",
+    "active_tasks": 41,
+    "legacy_tasks": 14,
+    "milestones": 10,
+    "root_causes": 14,
+    "status_counts": {
+      "COMPLETED": 10,
+      "TODO": 31
+    },
+    "next_task": "LLM-TASK-025",
+    "scope": "planning consistency only; no model release credit"
+  },
+  "planningAndDocumentationBindings": [
+    {
+      "path": "VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.json",
+      "sha256": "091d0b28bf812f7fd8009f33dca4fd28e49bb59699b565bd836d5ae6ed90b864",
+      "bytes": 138906
+    },
+    {
+      "path": "VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.md",
+      "sha256": "07860a9a9c1f11710ad6643603443335e090405e7f4da9365de8f2d08c23db3d",
+      "bytes": 91744
+    },
+    {
+      "path": "AI_CHAT_ROOT_CAUSE_BACKLOG.json",
+      "sha256": "b378afb34338534b1b5bdbbd94c59eeae9b66838b385af555be8d62db7048078",
+      "bytes": 44152
+    },
+    {
+      "path": "AI_CHAT_ROOT_CAUSE_ANALYSIS.md",
+      "sha256": "78ecb7db9df45822b44d19906c769450f3fd441bc28e7a04705b6b1ad0a6f73a",
+      "bytes": 32596
+    },
+    {
+      "path": "Voltforge_AI/docs/VOLTForge_AI_RUNBOOK.md",
+      "sha256": "7a000c8878e4f3fcd12ddac89eb49c6e43419f467e35564d8e716ba69ff5e73e",
+      "bytes": 37061
+    },
+    {
+      "path": "Voltforge_AI/docs/runbook-contract.v1.json",
+      "sha256": "b850ab5a76656a52e5768442f9ed212058f407ee6db3e7cc29bd846f4825af89",
+      "bytes": 11320
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_TRAINED_GEN2_TOKENIZER.v1.md",
+      "sha256": "5d1a594cfdffbb7ce73a5ff104be78c8a98f597f2fda316bc223644e9af5fd54",
+      "bytes": 7939
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_GEN2_TOKENIZER_PREPARATION.v1.md",
+      "sha256": "3ad9cb8ab28493aab91b4bbf481cad848db6135215c8441cd4d29f6c972551d8",
+      "bytes": 5579
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_PILOT_INPUT_CORPUS.v1.md",
+      "sha256": "5469bf58da854ed376ea664a43b380ad9bb506827e157fbb544622a37573f0d7",
+      "bytes": 9137
+    },
+    {
+      "path": "Voltforge_AI/tests/test_trained_gen2_tokenizer.py",
+      "sha256": "73b1a67d8fcfdc6dbf9c12f9396b69081d008fb8fe721e260953b29abccc9757",
+      "bytes": 12116
+    },
+    {
+      "path": "Voltforge_AI/tools/record_trained_tokenizer.py",
+      "sha256": "62b9071bf7b1cef1caa7f3e10e1a82665ccfa645bba832d5604fdfd686a6c2b1",
+      "bytes": 30039
+    }
+  ],
+  "completedOn": "2026-09-10",
+  "verificationCompletedOn": "2026-09-09",
+  "finalSourceSnapshotMatchesPassedQualityLane": true,
+  "verificationHistory": {
+    "firstAttempt": {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-024-trained-cross-repository-quality-first-attempt.json",
+      "sha256": "dfcf105f354cb4c99e270e5bf729fe6f9aa0ddb3ac5ccad3003c9b0c3daef87d",
+      "bytes": 13626
+    },
+    "firstAttemptSummary": {
+      "passed": 26,
+      "failed": 1,
+      "failedCheck": "ai-unit-contract-tests"
+    },
+    "isolatedChatRecheck": {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-024-chat-contract-recheck.xml",
+      "sha256": "849fb3d2b5822b5209690bbd513602cb68ba77dcb7926e908893348784af7667",
+      "bytes": 341
+    },
+    "finalAcceptedLane": {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-024-trained-cross-repository-quality.json",
+      "sha256": "9b945402083494a5f7daeaa1261c4f7aab27cbc45be84ed9a218394dc56aa7af",
+      "bytes": 13613
+    },
+    "note": "The original runner retained check status without failure stdout. The chat test identified in pytest's failure cache passed alone, then all 330 AI unit tests and all 27 lane checks passed in the separate full rerun. No API code or deadline policy was changed."
+  }
+}

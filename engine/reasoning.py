@@ -1,5 +1,5 @@
 """
-Voltforge AI - Enterprise 6-Pass Chain-of-Thought Electronics Reasoning Orchestrator (v2)
+Voltforge AI - Deterministic Electronics Task Orchestrator
 Integrates ALL 16 engine modules:
   FuzzyResolver, PhysicsSolver, PinRouter, ElectricalVerifier, WebSearchEngine,
   FirmwareAnalyzer, DeepFirmwareAnalyzer, ComponentKnowledgeGraph, TroubleshootingEngine,
@@ -14,6 +14,7 @@ import time
 from typing import Any, Dict, List, Optional
 from circuit_verifier import ElectricalVerifier
 from web_search_engine import WebSearchEngine
+from internet_retrieval import retrieval_trigger
 from engine.code_generator import FirmwareCodeGenerator
 from engine.fuzzy_resolver import FuzzyResolver
 from engine.physics_solver import ElectricalPhysicsSolver
@@ -33,29 +34,47 @@ from engine.pcb_engine import TrackWidthCalculator, ViaCurrentCapacity, Differen
 from engine.context_memory import ConversationMemory, EntityExtractor, IntentClassifier, ClarificationGenerator, AutoSuggestEngine
 from engine.security import InputSanitizer, PerformanceMetrics
 from api.schemas import ChatResponse
+from data_governance.governance import DataGovernanceError, require_approved_shard
+from evaluation.leakage import get_held_out_registry
+
+from engine.deterministic_tools import DeterministicElectronicsTools
 
 logger = logging.getLogger("voltforge-ai.reasoning")
 
 
 class ElectronicsReasoningOrchestrator:
-    """Enterprise 6-Pass Chain-of-Thought Reasoning Engine with full module integration."""
+    """Deterministic task routing and engineering-tool integration."""
 
-    def __init__(self):
-        self.web_search = WebSearchEngine()
+    def __init__(self, internet_retrieval_enabled: Optional[bool] = None):
+        self.web_search = WebSearchEngine(internet_enabled=internet_retrieval_enabled)
         self.verifier = ElectricalVerifier()
         self.conversation_memory = ConversationMemory()
         self.performance_metrics = PerformanceMetrics()
+        self.reasoning_engine = DeterministicElectronicsTools()
         self.dataset_pairs: List[tuple[str, str]] = []
         self._load_dataset()
 
     def _load_dataset(self):
         dataset_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "dataset.txt")
+        held_out_registry = get_held_out_registry()
         if os.path.exists(dataset_path):
+            try:
+                require_approved_shard(dataset_path, "runtime-retrieval")
+            except DataGovernanceError as error:
+                logger.warning(
+                    "Local retrieval corpus denied by data governance (%s): %s",
+                    error.code,
+                    error.message,
+                )
+                return
             with open(dataset_path, "r", encoding="utf-8") as f:
                 for chunk in f.read().split("[Q]"):
                     if not chunk.strip() or "[A]" not in chunk:
                         continue
                     q, a = chunk.split("[A]", 1)
+                    if held_out_registry.match_record({"question": q, "answer": a}) is not None:
+                        logger.warning("Excluded held-out evaluation collision from local retrieval data")
+                        continue
                     self.dataset_pairs.append((q.strip().lower(), a.strip()))
 
     def process_chat(
@@ -68,6 +87,14 @@ class ElectronicsReasoningOrchestrator:
         context: Dict[str, Any] = None
     ) -> ChatResponse:
         start_time = time.time()
+        context = context or {}
+        canvas_ctx = context.get("canvasContext", {}) if isinstance(context.get("canvasContext"), dict) else {}
+        if not components:
+            components = context.get("components") or canvas_ctx.get("components") or []
+        if not wires:
+            wires = context.get("wires") or canvas_ctx.get("wires") or []
+        if not code and canvas_ctx.get("code"):
+            code = canvas_ctx.get("code")
         components = components or []
         wires = wires or []
 
@@ -84,7 +111,8 @@ class ElectronicsReasoningOrchestrator:
         norm_result = FuzzyResolver.normalize_text(message)
         resolved_boards = norm_result.get("resolvedBoards", [])
         resolved_components = norm_result.get("resolvedComponents", [])
-        effective_board = resolved_boards[0] if resolved_boards else board_type
+        ctx_board = canvas_ctx.get("board") or context.get("board")
+        effective_board = resolved_boards[0] if resolved_boards else (ctx_board or board_type)
         lower = message.lower().strip()
 
         # Entity extraction & intent classification
@@ -115,7 +143,7 @@ class ElectronicsReasoningOrchestrator:
             # Extract previous system context
             prev_prompt = last_user_msg or "circuit"
             combined_prompt = f"{prev_prompt} with {message}"
-            logger.info(f"Resolved multi-turn synthesis prompt: {combined_prompt}")
+            logger.info("Resolved bounded multi-turn synthesis context")
             synth = NLCircuitSynthesizer.synthesize(combined_prompt, effective_board)
             if synth["success"]:
                 bom = BOMExporter.generate_bom(synth["components"], effective_board)
@@ -525,26 +553,82 @@ class ElectronicsReasoningOrchestrator:
                     confidence=0.96,
                 ), start_time, "analog")
 
+        # --- 555 Timer Calculations ---
+        if "555" in lower and any(kw in lower for kw in ("timer", "frequency", "oscillator", "astable", "monostable")):
+            if self.reasoning_engine is not None:
+                r_res = self.reasoning_engine.reason_and_solve(message, effective_board, components, wires, code)
+                if r_res and r_res.get("answer"):
+                    return self._finalize(ChatResponse(
+                        reply=r_res["answer"],
+                        confidence=r_res.get("confidence", 0.98),
+                    ), start_time, "calculate")
+            t555 = Timer555Solver.astable(10000, 47000, 10e-6)
+            return self._finalize(ChatResponse(
+                reply=f"### 555 Timer Astable Mode:\n- **R1**: 10kΩ, **R2**: 47kΩ, **C**: 10µF\n- **Frequency**: {t555['frequency_Hz']}Hz\n- **Period**: {t555['period_s']}s\n- **Duty Cycle**: {t555['dutyCyclePercent']}%\n- **T_high**: {t555['tHigh_s']}s, **T_low**: {t555['tLow_s']}s",
+                confidence=0.97,
+            ), start_time, "calculate")
+
+        # --- Reactance & Resonance Calculations ---
+        if any(kw in lower for kw in ("reactance", "capacitive reactance", "inductive reactance", "impedance", "lc resonance", "xc", "xl")):
+            if self.reasoning_engine is not None:
+                r_res = self.reasoning_engine.reason_and_solve(message, effective_board, components, wires, code)
+                if r_res and r_res.get("answer"):
+                    return self._finalize(ChatResponse(
+                        reply=r_res["answer"],
+                        confidence=r_res.get("confidence", 0.97),
+                    ), start_time, "calculate")
+
+        # --- Transistor Switching & Base Resistor Calculations ---
+        if any(kw in lower for kw in ("base resistor", "transistor switch", "transistor saturation", "transistor calculation", "bjt switch")) or ("transistor" in lower and "resistor" in lower):
+            if self.reasoning_engine is not None:
+                r_res = self.reasoning_engine.reason_and_solve(message, effective_board, components, wires, code)
+                if r_res and r_res.get("answer"):
+                    return self._finalize(ChatResponse(
+                        reply=r_res["answer"],
+                        confidence=r_res.get("confidence", 0.97),
+                    ), start_time, "calculate")
+
         # --- Physics & Math Calculations ---
-        if intent == "calculate" or any(kw in lower for kw in ("led resistor", "resistor calculator", "ohms law", "ohm's law", "voltage divider", "power dissipation")):
-            if "voltage divider" in lower:
-                calc = ElectricalPhysicsSolver.calculate_voltage_divider(5.0, 10000.0, 20000.0)
-                return self._finalize(ChatResponse(
-                    reply=f"### Voltage Divider Calculator:\n- **V_in**: 5.0V\n- **R1**: 10kΩ, **R2**: 20kΩ\n- **V_out**: {calc['vOut']}V\n- **Current Draw**: {calc['currentDrawmA']}mA\n- **3.3V Safe**: {'✅ Yes' if calc['is3V3Safe'] else '❌ No'}",
-                    confidence=0.98,
-                ), start_time, "calculate")
+        if "voltage divider" in lower:
+            if self.reasoning_engine is not None:
+                r_res = self.reasoning_engine.reason_and_solve(message, effective_board, components, wires, code)
+                if r_res and r_res.get("answer"):
+                    return self._finalize(ChatResponse(
+                        reply=r_res["answer"],
+                        confidence=r_res.get("confidence", 0.98),
+                    ), start_time, "calculate")
+            calc = ElectricalPhysicsSolver.calculate_voltage_divider(5.0, 10000.0, 20000.0)
+            return self._finalize(ChatResponse(
+                reply=f"### Voltage Divider Calculator:\n- **V_in**: 5.0V\n- **R1**: 10kΩ, **R2**: 20kΩ\n- **V_out**: {calc['vOut']}V\n- **Current Draw**: {calc['currentDrawmA']}mA\n- **3.3V Safe**: {'✅ Yes' if calc['is3V3Safe'] else '❌ No'}",
+                confidence=0.98,
+            ), start_time, "calculate")
+
+        if any(kw in lower for kw in ("led resistor", "resistor calculator", "calculate resistor", "resistor for led", "led current")):
+            if self.reasoning_engine is not None:
+                r_res = self.reasoning_engine.reason_and_solve(message, effective_board, components, wires, code)
+                if r_res and r_res.get("answer"):
+                    return self._finalize(ChatResponse(
+                        reply=r_res["answer"],
+                        confidence=r_res.get("confidence", 0.98),
+                    ), start_time, "calculate")
             calc = ElectricalPhysicsSolver.calculate_led_resistor(5.0, 2.0, 20.0)
             return self._finalize(ChatResponse(
                 reply=f"### LED Current-Limiting Resistor:\n- **Supply**: 5.0V, **LED V_f**: 2.0V, **Target I**: 20mA\n- **Exact R**: {calc['exactResistance']}Ω\n- **Recommended**: **{calc['recommendedResistor']}**\n- **Power**: {calc['powerDissipation']}W ({'✅ Safe for ¼W' if calc['isSafeQuarterWatt'] else '⚠️ Exceeds ¼W'})",
                 confidence=0.98,
             ), start_time, "calculate")
 
-        # --- 555 Timer Calculations ---
-        if "555" in lower and any(kw in lower for kw in ("timer", "frequency", "oscillator", "astable")):
-            t555 = Timer555Solver.astable(10000, 47000, 10e-6)
+        if intent == "calculate" and ("resistor" in lower or "ohm" in lower or "power" in lower):
+            if self.reasoning_engine is not None:
+                r_res = self.reasoning_engine.reason_and_solve(message, effective_board, components, wires, code)
+                if r_res and r_res.get("answer"):
+                    return self._finalize(ChatResponse(
+                        reply=r_res["answer"],
+                        confidence=r_res.get("confidence", 0.97),
+                    ), start_time, "calculate")
+            calc = ElectricalPhysicsSolver.calculate_led_resistor(5.0, 2.0, 20.0)
             return self._finalize(ChatResponse(
-                reply=f"### 555 Timer Astable Mode:\n- **R1**: 10kΩ, **R2**: 47kΩ, **C**: 10µF\n- **Frequency**: {t555['frequency_Hz']}Hz\n- **Period**: {t555['period_s']}s\n- **Duty Cycle**: {t555['dutyCyclePercent']}%\n- **T_high**: {t555['tHigh_s']}s, **T_low**: {t555['tLow_s']}s",
-                confidence=0.97,
+                reply=f"### LED Current-Limiting Resistor:\n- **Supply**: 5.0V, **LED V_f**: 2.0V, **Target I**: 20mA\n- **Exact R**: {calc['exactResistance']}Ω\n- **Recommended**: **{calc['recommendedResistor']}**\n- **Power**: {calc['powerDissipation']}W ({'✅ Safe for ¼W' if calc['isSafeQuarterWatt'] else '⚠️ Exceeds ¼W'})",
+                confidence=0.98,
             ), start_time, "calculate")
 
         # --- Battery Life Estimation ---
@@ -740,8 +824,15 @@ class ElectronicsReasoningOrchestrator:
         # PASS 5: Web Search & Datasheet Retrieval
         # ═══════════════════════════════════════════════════
         if intent == "datasheet" or any(term in lower for term in ("datasheet", "spec", "pinout", "what is", "how to connect", "i2c address", "chip", "module", "sensor", "search")):
+            internet_trigger = retrieval_trigger(message, "no-results")
             target_comp = resolved_components[0] if resolved_components else message
-            s_info = self.web_search.get_component_info(target_comp)
+            s_info = (
+                self.web_search.get_component_info(
+                    target_comp, retrieval_reason=internet_trigger
+                )
+                if internet_trigger != "not-triggered"
+                else None
+            )
             if s_info and s_info.get("searchResults"):
                 specs = s_info.get("specs", {})
                 citations = s_info.get("citations", [])
@@ -786,7 +877,7 @@ class ElectronicsReasoningOrchestrator:
 
 
         # ═══════════════════════════════════════════════════
-        # PASS 6: Context-Aware Fallback with Auto-Suggest
+        # PASS 6: Context-Aware Fallback with Intelligent Guidance
         # ═══════════════════════════════════════════════════
         clarification = ClarificationGenerator.generate(message, entities, intent)
         if clarification:
@@ -794,20 +885,118 @@ class ElectronicsReasoningOrchestrator:
 
         comp_count = len(components)
         wire_count = len(wires)
+        board_label = effective_board.replace("_", " ")
+
+        # 1. User asking to explain, summarize, or inspect their active canvas/circuit
+        circuit_explain_terms = (
+            "my circuit", "this circuit", "my canvas", "what do i have", "explain circuit",
+            "what does it do", "describe circuit", "circuit summary", "what is on my canvas",
+            "placed components", "current components", "my components"
+        )
+        if any(term in lower for term in circuit_explain_terms):
+            if self.reasoning_engine is not None:
+                try:
+                    memory_entries = (context or {}).get("memory") or []
+                    reasoning_result = self.reasoning_engine.reason_and_solve(
+                        prompt=message,
+                        board_type=effective_board,
+                        components=components,
+                        wires=wires,
+                        code=code,
+                        memory=memory_entries,
+                    )
+                    answer = reasoning_result.get("answer")
+                    if answer:
+                        actions = reasoning_result.get("actions", {})
+                        return self._finalize(ChatResponse(
+                            reply=answer,
+                            confidence=reasoning_result.get("confidence", 0.95),
+                            hasCode=bool(reasoning_result.get("has_code", False)),
+                            generatedCode=reasoning_result.get("generated_code"),
+                            additions=actions.get("additions", []),
+                            wireSuggestions=actions.get("wireSuggestions", []),
+                            codeFixes=actions.get("codeFixes", []),
+                        ), start_time, "domain_reasoning")
+                except Exception as err:
+                    logger.warning("Domain reasoning engine execution fallback: %s", err)
+
+            lines = [f"### 🔌 Active Canvas Circuit: **{board_label}**"]
+            if comp_count == 0:
+                lines.append("Your canvas is currently empty. Add components (such as an LED, Resistor, Relay, or Sensor) to enable circuit diagnostics and firmware synthesis.")
+            else:
+                comp_names = [f"`{c.get('name') or c.get('type')}`" for c in components[:12]]
+                lines.append(f"You have placed **{comp_count} component(s)** and **{wire_count} connection(s)**:")
+                lines.append(f"- **Placed Parts**: {', '.join(comp_names)}")
+                if wires:
+                    sample_wires = [f"`{w.get('from', '?')}` → `{w.get('to', '?')}`" for w in wires[:6]]
+                    lines.append(f"- **Key Wires**: {', '.join(sample_wires)}")
+                lines.append("\n**What would you like to do next?**")
+                lines.append(f"- ⚡ Ask *'Validate my circuit'* to run safety checks on your {board_label}.")
+                lines.append(f"- 💻 Ask *'Generate complete firmware'* to write C++ code for these components.")
+                lines.append("- 📐 Ask *'Calculate resistor for LED'* or *'Check pin compatibility'*.")
+            return self._finalize(ChatResponse(reply="\n".join(lines), confidence=0.90), start_time, "circuit_summary")
+
+        # 2. General help, capabilities, or short open queries (e.g. "what", "how", "help", "can you help")
+        help_terms = ("help", "what can you do", "who are you", "what are you", "features", "capabilities", "what do you do")
+        if lower in {"what", "how", "why", "help"} or any(term in lower for term in help_terms):
+            lines = [
+                f"### 💡 VoltForge AI Electronics Copilot",
+                f"I'm your embedded systems and circuit engineering copilot for **{board_label}**.",
+                "",
+                "**Here are ways I can help you:**",
+                f"- ⚡ **Circuit Diagnostics**: Ask *'Validate my schematic'* or *'Check for short circuits'*",
+                f"- 🔌 **Wiring & Pinouts**: Ask *'How do I connect an I2C OLED display to {board_label}?'*",
+                f"- 💻 **Firmware Synthesis**: Ask *'Generate complete C++ code for placed components'*",
+                f"- 📊 **Calculators & SPICE**: Ask *'Calculate LED resistor for 5V'* or *'555 timer frequency'*",
+                f"- 🔍 **Component Specs**: Ask *'What are the specs for ESP32 / DHT22 / MPU6050?'*",
+            ]
+            if comp_count > 0:
+                lines.append(f"\n*Active Canvas: {comp_count} component(s) and {wire_count} wire(s) placed on {board_label}.*")
+            return self._finalize(ChatResponse(reply="\n".join(lines), confidence=0.88), start_time, "help")
+
+        # 3. Dynamic Electronics Domain Reasoning via Embedded Engine
+        if self.reasoning_engine is not None:
+            try:
+                memory_entries = context.get("memory") or []
+                reasoning_result = self.reasoning_engine.reason_and_solve(
+                    prompt=message,
+                    board_type=effective_board,
+                    components=components,
+                    wires=wires,
+                    code=code,
+                    memory=memory_entries,
+                )
+                answer = reasoning_result.get("answer")
+                if answer:
+                    actions = reasoning_result.get("actions", {})
+                    return self._finalize(ChatResponse(
+                        reply=answer,
+                        confidence=reasoning_result.get("confidence", 0.95),
+                        hasCode=bool(reasoning_result.get("has_code", False)),
+                        generatedCode=reasoning_result.get("generated_code"),
+                        additions=actions.get("additions", []),
+                        wireSuggestions=actions.get("wireSuggestions", []),
+                        codeFixes=actions.get("codeFixes", []),
+                    ), start_time, "domain_reasoning")
+            except Exception as err:
+                logger.warning("Domain reasoning engine execution fallback: %s", err)
+
+        # 4. Conversational suggestions
         suggestions = AutoSuggestEngine.suggest(intent, entities, effective_board)
-        lines = []
-        if comp_count == 0:
-            lines.append(f"**Voltforge AI** ready for {effective_board}.")
-            lines.append("Add components to your canvas to enable circuit-aware analysis.")
-        else:
-            lines.append(f"I see **{comp_count} component(s)** and **{wire_count} wire(s)** on your {effective_board} canvas.")
+        lines = [
+            f"I understand you're asking about **'{message.strip()}'**.",
+            f"As your **{board_label}** copilot, I can help design, wire, program, or validate this electronics project.",
+        ]
+        if comp_count > 0:
+            comp_names = [f"`{c.get('name') or c.get('type')}`" for c in components[:6]]
+            lines.append(f"\n*Active on canvas*: **{comp_count} component(s)** ({', '.join(comp_names)}) and **{wire_count} wire(s)**.")
         if suggestions:
-            lines.append("\n**💡 Try:**")
+            lines.append("\n**💡 Recommended Actions:**")
             for s in suggestions:
                 lines.append(f"- {s}")
 
         return self._finalize(ChatResponse(
-            reply="\n".join(lines), confidence=0.88,
+            reply="\n".join(lines), confidence=0.85,
         ), start_time, "fallback")
 
     def _finalize(self, response: ChatResponse, start_time: float, endpoint: str) -> ChatResponse:

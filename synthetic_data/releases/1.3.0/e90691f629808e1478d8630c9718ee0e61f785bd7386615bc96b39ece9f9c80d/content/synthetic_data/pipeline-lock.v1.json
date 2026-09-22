@@ -1,0 +1,256 @@
+{
+  "schemaVersion": 1,
+  "pipelineId": "vf-verified-synthetic-pipeline-v1",
+  "pipelineVersion": "1.3.0",
+  "generator": {
+    "id": "vf-verified-synthetic-generator",
+    "version": "1.2.0"
+  },
+  "grammar": {
+    "id": "vf-verified-synthetic-grammar",
+    "version": "1.2.0",
+    "deterministicSeed": 2026082809
+  },
+  "toolchains": {
+    "arduino-avr-1.8.6": {
+      "arduinoCliExecutableSha256": "1017de89179c3167e6b8a38ca6cc4091fa69a3cf97aafa7810f01423003f5571",
+      "arduinoCliVersion": "1.5.1",
+      "coreId": "arduino:avr",
+      "coreVersion": "1.8.6",
+      "fileHashes": {
+        ".toolchains/arduino-data/packages/arduino/hardware/avr/1.8.6/boards.txt": "8d9bfed2385fefb4cfc1999ccf9f70ad097f8fd32f8e4b299a49ea3d1f1de8de",
+        ".toolchains/arduino-data/packages/arduino/hardware/avr/1.8.6/installed.json": "6e7d2c43f943f9aedce197d871119735c69c08631f91036e73fd2b60c7566d54",
+        ".toolchains/arduino-data/packages/arduino/hardware/avr/1.8.6/platform.txt": "513b2ee073e686a9e823a6a512e64a5a0ee33af3e1d7108e0fc869a11485a7aa",
+        ".toolchains/arduino-data/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/bin/avr-g++.exe": "098f5708a5d70e3abb6b504145b46c9320ef4b6d43b6b8f1c09b431e611d543b"
+      },
+      "license": {
+        "spdx": "LGPL-2.1-or-later",
+        "url": "https://github.com/arduino/ArduinoCore-avr"
+      },
+      "manifestId": "vf-compiler-toolchain-manifest-v1",
+      "manifestVersion": "1.0.0",
+      "packageArchives": [
+        {
+          "name": "avr-1.8.6.tar.bz2",
+          "sha256": "ff1d17274b5a952f172074bd36c3924336baefded0232e10982f8999c2f7c3b6",
+          "url": "https://downloads.arduino.cc/cores/staging/avr-1.8.6.tar.bz2"
+        },
+        {
+          "name": "avr-gcc-7.3.0-atmel3.6.1-arduino7-i686-w64-mingw32.zip",
+          "sha256": "a54f64755fff4cb792a1495e5defdd789902a2a3503982e81b898299cf39800e",
+          "url": "https://downloads.arduino.cc/tools/avr-gcc-7.3.0-atmel3.6.1-arduino7-i686-w64-mingw32.zip"
+        }
+      ],
+      "profileId": "arduino-avr-1.8.6"
+    },
+    "arduino-megaavr-1.8.8": {
+      "arduinoCliExecutableSha256": "1017de89179c3167e6b8a38ca6cc4091fa69a3cf97aafa7810f01423003f5571",
+      "arduinoCliVersion": "1.5.1",
+      "coreId": "arduino:megaavr",
+      "coreVersion": "1.8.8",
+      "fileHashes": {
+        ".toolchains/arduino-data/packages/arduino/hardware/megaavr/1.8.8/boards.txt": "e9b9842d6c73a6bef92bc1e89487d4f341c8e8848ac149ad25819d0f6948e7cb",
+        ".toolchains/arduino-data/packages/arduino/hardware/megaavr/1.8.8/installed.json": "eecd9082106aab6c131d0263e1a10fd3f49bcdf8eadddf65abf7a5d3cd6bfcf1",
+        ".toolchains/arduino-data/packages/arduino/hardware/megaavr/1.8.8/platform.txt": "f9ca600be2aa83675c57217982bd63cd7030fd65cfff957e396935b860d73e0a",
+        ".toolchains/arduino-data/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino5/bin/avr-g++.exe": "70109be6c0e7612dd2f55feb4be4eebac1a6edae399c518801addcfc345f8bf7"
+      },
+      "license": {
+        "spdx": "LGPL-2.1-or-later",
+        "url": "https://github.com/arduino/ArduinoCore-megaavr"
+      },
+      "manifestId": "vf-compiler-toolchain-manifest-v1",
+      "manifestVersion": "1.0.0",
+      "packageArchives": [
+        {
+          "name": "core-ArduinoCore-megaavr-1.8.8.tar.bz2",
+          "sha256": "4ffba95eef2c217dfadbe545a81c898a184e8dc0ad3a963f15ef4f627de608de",
+          "url": "https://downloads.arduino.cc/cores/core-ArduinoCore-megaavr-1.8.8.tar.bz2"
+        },
+        {
+          "name": "avr-gcc-7.3.0-atmel3.6.1-arduino5-i686-w64-mingw32.zip",
+          "sha256": "6d4a5d089a36e5b5252befc73da204555b49e376ce7577ee19ca7f028b295830",
+          "url": "https://downloads.arduino.cc/tools/avr-gcc-7.3.0-atmel3.6.1-arduino5-i686-w64-mingw32.zip"
+        }
+      ],
+      "profileId": "arduino-megaavr-1.8.8"
+    },
+    "arduino-renesas-uno-1.6.0": {
+      "arduinoCliExecutableSha256": "1017de89179c3167e6b8a38ca6cc4091fa69a3cf97aafa7810f01423003f5571",
+      "arduinoCliVersion": "1.5.1",
+      "coreId": "arduino:renesas_uno",
+      "coreVersion": "1.6.0",
+      "fileHashes": {
+        ".toolchains/arduino-data/packages/arduino/hardware/renesas_uno/1.6.0/LICENSE": "f3b3469d7b15d5c7ee61d7f88012b58357ca1279b6ac4ae6c29e9b4381286947",
+        ".toolchains/arduino-data/packages/arduino/hardware/renesas_uno/1.6.0/boards.txt": "0b0316053fde5a79f764695e8a2758fe051d0c7bbf5e19f82ad9af69328a62b0",
+        ".toolchains/arduino-data/packages/arduino/hardware/renesas_uno/1.6.0/installed.json": "d77eeab4191c25c51391e73a48062c973d53777b7c99cdb672ef2b2e628ae11d",
+        ".toolchains/arduino-data/packages/arduino/hardware/renesas_uno/1.6.0/platform.txt": "214438bad88918258fd2b64c4253c26c9a8f59fb431ef01c3bab96f28452490a",
+        ".toolchains/arduino-data/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/bin/arm-none-eabi-g++.exe": "0b007086d0b2e4a403440c09a907dd9f5da296a4163378d2cd2e85e35d8c13b5"
+      },
+      "license": {
+        "spdx": "MIT",
+        "url": "https://github.com/arduino/ArduinoCore-renesas"
+      },
+      "manifestId": "vf-compiler-toolchain-manifest-v1",
+      "manifestVersion": "1.0.0",
+      "packageArchives": [
+        {
+          "name": "ArduinoCore-renesas_uno-1.6.0.tar.bz2",
+          "sha256": "71aa5d81f9455dbc2e8977b594963494e41466a8ed439a841b9d029b4aa31c8b",
+          "url": "http://downloads.arduino.cc/cores/staging/ArduinoCore-renesas_uno-1.6.0.tar.bz2"
+        },
+        {
+          "name": "gcc-arm-none-eabi-7-2017-q4-major-win32-arduino1.zip",
+          "sha256": "96dd0091856f4d2eb21046eba571321feecf7d50b9c156f708b2a8b683903382",
+          "url": "https://downloads.arduino.cc/tools/gcc-arm-none-eabi-7-2017-q4-major-win32-arduino1.zip"
+        }
+      ],
+      "profileId": "arduino-renesas-uno-1.6.0"
+    },
+    "esp32-3.3.11": {
+      "arduinoCliExecutableSha256": "1017de89179c3167e6b8a38ca6cc4091fa69a3cf97aafa7810f01423003f5571",
+      "arduinoCliVersion": "1.5.1",
+      "coreId": "esp32:esp32",
+      "coreVersion": "3.3.11",
+      "fileHashes": {
+        ".toolchains/arduino-data/packages/esp32/hardware/esp32/3.3.11/boards.txt": "609d024fd011afc341945805ab1901c925dd2d9ba7d29c979374a7e3618c0113",
+        ".toolchains/arduino-data/packages/esp32/hardware/esp32/3.3.11/installed.json": "715792fdd8734c8fd7e3e83c20ee150cb9e903f01155321c21bb69b15acf529d",
+        ".toolchains/arduino-data/packages/esp32/hardware/esp32/3.3.11/package.json": "9e303d060e4506a3a6370b5297fc24cf2db02c0f9bf24408c97753fb63d6d170",
+        ".toolchains/arduino-data/packages/esp32/hardware/esp32/3.3.11/platform.txt": "82d29b4d98b14b0db490bf351c1772849c57b48c1c44f84fb635cd68afaf20f5",
+        ".toolchains/arduino-data/packages/esp32/tools/esp-x32/2601/bin/xtensa-esp32-elf-g++.exe": "ac8d55c45dbcaefe082299357245d7f12786c61a4e3c06a8e21f31d6890fb29e",
+        ".toolchains/arduino-data/packages/esp32/tools/esp-x32/2601/bin/xtensa-esp32s3-elf-g++.exe": "ac8d55c45dbcaefe082299357245d7f12786c61a4e3c06a8e21f31d6890fb29e"
+      },
+      "license": {
+        "spdx": "LGPL-2.1-or-later",
+        "url": "https://github.com/espressif/arduino-esp32"
+      },
+      "manifestId": "vf-compiler-toolchain-manifest-v1",
+      "manifestVersion": "1.0.0",
+      "packageArchives": [
+        {
+          "name": "esp32-core-3.3.11.zip",
+          "sha256": "a18203f2429f5551ec929b80e8129e439df7a3a009b536b305f00b4a1f1bbb62",
+          "url": "https://github.com/espressif/arduino-esp32/releases/download/3.3.11/esp32-core-3.3.11.zip"
+        },
+        {
+          "name": "xtensa-esp-elf-14.2.0_20260121-i686-w64-mingw32.zip",
+          "sha256": "d57eeb3783bce663cca312323ac9b305a22dfab479c642320c62aeefcc536ac0",
+          "url": "https://github.com/espressif/crosstool-NG/releases/download/esp-14.2.0_20260121/xtensa-esp-elf-14.2.0_20260121-i686-w64-mingw32.zip"
+        },
+        {
+          "name": "esp32-libs-3.3.11.zip",
+          "sha256": "f7d70b98d83482ef9065f13e9dbe21f8c1292f0dc6e6ee9f1970b3b2e5ea894f",
+          "url": "https://github.com/espressif/arduino-esp32/releases/download/3.3.11/esp32-libs-3.3.11.zip"
+        },
+        {
+          "name": "esp32s3-libs-3.3.11.zip",
+          "sha256": "fec76794708694120c6ec803cdbfc7dcd36286ea22b7d38097b7909bbd19f7b5",
+          "url": "https://github.com/espressif/arduino-esp32/releases/download/3.3.11/esp32s3-libs-3.3.11.zip"
+        }
+      ],
+      "profileId": "esp32-3.3.11"
+    },
+    "pico-6.0.0": {
+      "arduinoCliExecutableSha256": "1017de89179c3167e6b8a38ca6cc4091fa69a3cf97aafa7810f01423003f5571",
+      "arduinoCliVersion": "1.5.1",
+      "coreId": "pico:rp2040",
+      "coreVersion": "6.0.0",
+      "fileHashes": {
+        ".toolchains/arduino-data/packages/rp2040/tools/pqt-gcc-riscv/5.0.0-9576866/bin/riscv32-unknown-elf-g++.exe": "c410291c33ab66b965015a183fb4f257f293a7dabb5a6c8836b09cccfa31d210",
+        ".toolchains/arduino-data/packages/rp2040/tools/pqt-gcc/5.0.0-9576866/bin/arm-none-eabi-g++.exe": "72abb5006ef8aab759389e3d572252057262a0e6ef4f23f6621de65b89ee37b5",
+        ".toolchains/arduino-user/hardware/pico/rp2040/LICENSE": "7ffe1954587c77dfba1cf8eb9b2ea743671fa6e63f9e7a2f258119d42e14eefe",
+        ".toolchains/arduino-user/hardware/pico/rp2040/boards.txt": "bb24cd001f77a8c5e16c074f2b9ae13363fd4d8d07f45a72922e392702aa64dc",
+        ".toolchains/arduino-user/hardware/pico/rp2040/platform.txt": "4b249b4efc87095da28b65234b4ac7bcfd164145859fc03a35f90bac04d83661"
+      },
+      "license": {
+        "spdx": "LGPL-2.1",
+        "url": "https://github.com/earlephilhower/arduino-pico/blob/6.0.0/LICENSE"
+      },
+      "manifestId": "vf-compiler-toolchain-manifest-v1",
+      "manifestVersion": "1.0.0",
+      "packageArchives": [],
+      "profileId": "pico-6.0.0",
+      "source": {
+        "path": ".toolchains/arduino-user/hardware/pico/rp2040",
+        "repository": "https://github.com/earlephilhower/arduino-pico.git",
+        "revision": "0bcd162ad6c9173544cc37c6a1b63de19239e359",
+        "submodules": {
+          "ArduinoCore-API": "82928635c893189343cf8eb78569f0c4136fded0",
+          "FreeRTOS-Kernel": "2e588af95bad29aef577373512883370c9408c1c",
+          "lib/tlsf": "8653cec85de043454d0e9ddb0957711f6bd14fa1",
+          "pico-sdk": "98a542c1a62fb549ffb5d66a3e5892b06276b670"
+        }
+      }
+    }
+  },
+  "dependencies": [
+    {
+      "path": "data_governance/governance.py",
+      "sha256": "6cc04f54db18577f82d7171e4082771bdf434a85374e6ee62f01b0807772a08e"
+    },
+    {
+      "path": "synthetic_data/grammar.py",
+      "sha256": "ed33d4bf2a0e7f89df45e021820576e436d615a1bb5cd14af500ef8cdbb2bd9a"
+    },
+    {
+      "path": "synthetic_data/verifiers.py",
+      "sha256": "a58b371fb26cd5649af5d81ab1518ed05d82da4877f108ee1c47cb7e4c6c9531"
+    },
+    {
+      "path": "synthetic_data/generator.py",
+      "sha256": "b4739ebfc9d6507c4a98fbf2100510c27b32e31fbb590d1a13e5c5e121cc132e"
+    },
+    {
+      "path": "synthetic_data/immutable_release.py",
+      "sha256": "f82e60233d0d60c7419c07940a537d477336eb1b1dbef38f816892ee0ebb898b"
+    },
+    {
+      "path": "synthetic_data/pipeline.py",
+      "sha256": "4c6f01e84e76ed2ba8db81309bb218ca785587b83357be6973a7483e58672ec1"
+    },
+    {
+      "path": "synthetic_data/toolchains.v1.json",
+      "sha256": "43d8b9fc31a2b10d39bb91e2588bc0569c1afd5c79c1f14f854f4d9cc255421a"
+    },
+    {
+      "path": "tools/build_verified_synthetic_data.py",
+      "sha256": "d45cd0f0aa994b88eadde5253ee4230a9d5b9d38c1c78704afc020eceaf084ea"
+    },
+    {
+      "path": "electronics_corpus/catalog.v1.json",
+      "sha256": "db6c299f7b26ed50c42478a47ef5f163f1cb838db37ac131058f8fcc311d0c9b"
+    },
+    {
+      "path": "electronics_corpus/knowledge-record.schema.json",
+      "sha256": "2b3a63a94be20c85ea801a0b1eac64de5c9c53052fb4e362f2ff0c43d5863503"
+    },
+    {
+      "path": "task_schema/task-record.schema.json",
+      "sha256": "a22d38d4bdd83d6bacee896d62c46547032daa9381c0c420646988f5dc2fd0fd"
+    },
+    {
+      "path": "evaluation/leakage.py",
+      "sha256": "09615b4bdd79f0da39253a3db4f03f650e15195686bd3c73ec03ede8b1ae7754"
+    },
+    {
+      "path": "engine/pin_router.py",
+      "sha256": "05fa5d6e9e5ad0392452429080a07c537bf3f57e98c68f00fca252c551012aeb"
+    }
+  ],
+  "outputs": {
+    "shards": [
+      "synthetic_data/shards/v1/grounded-electronics.jsonl",
+      "synthetic_data/shards/v1/circuit-safety.jsonl",
+      "synthetic_data/shards/v1/firmware.jsonl",
+      "synthetic_data/shards/v1/compiler-repair.jsonl"
+    ],
+    "compileReceipts": "synthetic_data/receipts/v1/compile-receipts.jsonl",
+    "generationReport": "synthetic_data/reports/current-generation-report.json"
+  },
+  "contracts": {
+    "taskRecord": "vf-task-record-jsonl-v1",
+    "compileReceipt": "vf-compile-receipt-v1",
+    "heldOutExclusion": "evaluation.leakage.exclude_held_out_records",
+    "structuredApplicationMode": "proposal-only"
+  },
+  "lockSha256": "1b48db12e577eebfe46c8110bb59e7a828fa8021668028777fefd157e3e57e4c"
+}

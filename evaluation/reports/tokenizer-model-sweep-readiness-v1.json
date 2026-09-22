@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai-fu-005-tokenizer-model-sweep-readiness-v1",
+  "generatedOn": "2026-09-01",
+  "followup": {
+    "id": "VFAI-FU-005",
+    "recordedStatus": "accepted_for_later"
+  },
+  "policy": {
+    "policyId": "vfai-fu-005-joint-tokenizer-model-sweep-v1",
+    "status": "readiness-contract-only",
+    "requiredApprovedCandidateCount": 3,
+    "minimumUniqueTrainingPredictedTokens": 100000000
+  },
+  "corpus": {
+    "datasetId": "vfai009-approved-packed-v1",
+    "approvalStatus": "approved",
+    "trainingRecordCount": 227,
+    "validationRecordCount": 23,
+    "uniqueTrainingPredictedTokens": 155690,
+    "edgeMinimumUniqueTrainingPredictedTokens": 100000000,
+    "edgeCoveragePercent": 0.15569,
+    "edgeTokenGap": 99844310,
+    "trainingCorpusSha256": "b64ed41f43be0100863b75ac8ec62f16d4128bd3aaa4bd07c4b00c6bd407b188",
+    "validationCorpusSha256": "82cd690509c6cc660f62a973b9566b5bb418ee83f52d97b1ffc3d3609adce253",
+    "packedCorpusFingerprint": "6ec99dfbe4246fee68d4781aa9d3ce54a9d9f8b68af1e1455ff2f549e0142718",
+    "tokenizer": {
+      "tokenizerId": "vfdlm-byte-bpe",
+      "version": "1.1.0",
+      "vocabSize": 3072,
+      "artifactSha256": "1858abfc83a469a48f9b2bfef65d484fe24bd4a553a3cc05030cfcfd2cdc76c4",
+      "manifestSha256": "8af7baf2412a0f93be4cec70583a4a2386ec3ba41dab8554c05722a201d3d400"
+    }
+  },
+  "candidateTokenizers": [
+    {
+      "candidateId": "byte-bpe-2048-owned",
+      "vocabSize": 2048,
+      "role": "planned-control",
+      "declaredState": "planned-not-trained",
+      "manifestPath": null,
+      "approved": false,
+      "reason": "MANIFEST_NOT_ASSIGNED",
+      "artifactSha256": null,
+      "manifestFileSha256": null
+    },
+    {
+      "candidateId": "byte-bpe-3072-v1.1.0-baseline",
+      "vocabSize": 3072,
+      "role": "approved-baseline",
+      "declaredState": "approved",
+      "manifestPath": "model/tokenizers/vfdlm-byte-bpe-v1.1.0/tokenizer_manifest.json",
+      "approved": true,
+      "reason": null,
+      "artifactSha256": "1858abfc83a469a48f9b2bfef65d484fe24bd4a553a3cc05030cfcfd2cdc76c4",
+      "manifestFileSha256": "8af7baf2412a0f93be4cec70583a4a2386ec3ba41dab8554c05722a201d3d400",
+      "gates": {
+        "releaseApproved": true,
+        "declaredVocabularyMatches": true,
+        "algorithmMatches": true,
+        "artifactChecksumValid": true,
+        "configChecksumValid": true,
+        "fixedSpecialTokenIdsMatch": true,
+        "trainedFromScratch": true
+      }
+    },
+    {
+      "candidateId": "byte-bpe-4096-owned",
+      "vocabSize": 4096,
+      "role": "planned-control",
+      "declaredState": "planned-not-trained",
+      "manifestPath": null,
+      "approved": false,
+      "reason": "MANIFEST_NOT_ASSIGNED",
+      "artifactSha256": null,
+      "manifestFileSha256": null
+    }
+  ],
+  "gates": {
+    "masterBacklogComplete": true,
+    "governedCorpusAtEdgeMinimum": false,
+    "corpusGovernanceAndDiversityAccepted": false,
+    "approvedTokenizerCandidates": 1,
+    "approvedTokenizerCandidateGate": false,
+    "fairExposureAndSelectionControlsDefined": true,
+    "jointSweepExecutionAllowed": false
+  },
+  "decision": "await-governed-corpus-expansion",
+  "completionClaimed": false,
+  "tokenizerCandidatesTrainedByEvaluator": false,
+  "modelSweepExecuted": false,
+  "governedCorpusExported": false,
+  "networkAccessed": false,
+  "unmeasured": [
+    "alternative tokenizer quality and compression",
+    "joint tokenizer and decoder quality-cost frontier",
+    "three-seed training reproducibility",
+    "training throughput and peak memory",
+    "artifact size and runtime latency"
+  ],
+  "sourceSha256": {
+    "AI_MASTER_BACKLOG.json": "7b0befd8d631a3bbc64300da195484e91d6e87cfdeddf511048aa0007905a99b",
+    "AI_FOLLOWUP_BACKLOG.json": "f723a4b37ff7ad18b77130b9a8c1ad4132ef5af4a8781ee3fd47630fdaa649b3",
+    "gen1_sweep/joint-tokenizer-model-policy.v1.json": "e11c37a383d4910d4338162b449556b641d5a191baae2aa7d570d279f51b75f6",
+    "tools/evaluate_tokenizer_model_sweep_readiness.py": "2d95cd06e7e09f383419697ebb8df7f9f8c848331ec8c7d163d0dbc83d2bc5ee"
+  },
+  "reportSha256": "2035d1ca04637d8ff2a1997149bf5daba217fc748f85e93c403b22eedaf1c312"
+}

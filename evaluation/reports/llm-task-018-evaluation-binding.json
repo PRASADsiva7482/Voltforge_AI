@@ -1,0 +1,37 @@
+{
+  "status": "passed",
+  "thresholdState": "frozen-independent-suite",
+  "bindingSha256": "7ef69cb85d9b57691cb56eeec819e6a34b5cc1cf8f8d7f335b94a97c9a47ee47",
+  "suite": {
+    "status": "passed",
+    "suiteSha256": "2fdd61cbc4cecbc20b364f7825b63bae2382ba784ca993a901839d2515985cc6",
+    "policySha256": "35c9a2ce79922beb3ec1c36e41ce61eeafcb351e6a3365851d20aa6bb4b20618",
+    "counts": {
+      "development": 100,
+      "validation": 100,
+      "acceptance": 500,
+      "adversarial": 100,
+      "compile": 100
+    },
+    "acceptanceCategories": {
+      "concepts": 50,
+      "diagnostics": 50,
+      "firmware_review": 50,
+      "numerical": 50,
+      "grounding": 50,
+      "multi_turn": 50,
+      "long_context": 50,
+      "project_actions": 50,
+      "instruction_scope": 50,
+      "uncertainty_safety": 50
+    },
+    "coreScenarioFamilies": 100,
+    "coreTemplateFamilies": 73,
+    "trainingUseAllowed": false,
+    "confidentialSealingClaimed": false
+  },
+  "historicalDesignFilesPreserved": 4,
+  "modelReleaseApproved": false,
+  "activationAllowed": false,
+  "scope": "Satisfies task-017 pending threshold/suite reference only; every training, lineage and release gate remains required."
+}

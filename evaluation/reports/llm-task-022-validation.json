@@ -1,0 +1,258 @@
+{
+  "schemaVersion": 1,
+  "taskId": "LLM-TASK-022",
+  "status": "completed-owned-domain-candidates-corpus-inadequate",
+  "recordedAtUtc": "2026-09-08T09:59:12.536244+00:00",
+  "summary": "Added an immutable owned-domain candidate source with 67 records across 27 new families: 51 parameterized calculation examples across 17 families, 12 broken/fixed firmware projects across six recipes and two exact AVR boards, and four exact-entity uncertainty examples. Independent algorithm review checks units, finite bounds and tolerances; all 153 deliberately corrupted calculation controls are rejected. All 24 pinned compiler cases pass their expected outcomes (12 fixed accepted, 12 broken rejected), including a fresh recompile. Pre-render reservations and the unchanged protected matcher yield 17 surviving records/families (12 train, 0 validation, 5 test), with zero audited cross-split/protected collisions. 50 candidates remain quarantined: 15 cross-reservation bridges and 35 duplicates; all 12 firmware candidates are excluded. 286 regression tests passed; governance, runbook and historical-preservation checks passed. The candidate release retains trainingAllowed=false and domainCorpusReady=false. No model was trained or activated.",
+  "domainVerification": {
+    "status": "passed",
+    "releasePath": "D:\\Project\\voltforge\\Voltforge_AI\\corpus\\owned-domain\\v1\\8ac1756fd8c8402d032ccedc94d58d44faf5ec67659754e2b6770fce3c130a25",
+    "manifestSha256": "c63ac2d821eaf6f564a2a805679a2cc35557826b0d1c1cfe5298db2dd2811488",
+    "recomputed": true,
+    "freshCompileExecutions": 0,
+    "coverage": {
+      "candidateRecords": 67,
+      "includedRecords": 17,
+      "candidateFamilies": 27,
+      "includedFamilies": 17,
+      "candidateDomainCounts": {
+        "firmware-debug": 12,
+        "memory": 6,
+        "analog": 9,
+        "digital": 6,
+        "entity-grounding": 4,
+        "control": 6,
+        "buses": 6,
+        "adc": 6,
+        "power": 6,
+        "timing": 6
+      },
+      "includedDomainCounts": {
+        "memory": 1,
+        "analog": 3,
+        "digital": 2,
+        "entity-grounding": 1,
+        "control": 2,
+        "buses": 2,
+        "adc": 2,
+        "power": 2,
+        "timing": 2
+      },
+      "splitCounts": {
+        "train": 12,
+        "validation": 0,
+        "test": 5,
+        "quarantine": 50
+      },
+      "reasonCounts": {
+        "post-render-cross-reservation-bridge": 15,
+        "partitioned": 17,
+        "near-duplicate": 35
+      },
+      "calculationReceipts": 51,
+      "calculationFamilies": 17,
+      "calculationNegativeControlsRejected": 153,
+      "firmwareFamilies": 6,
+      "compileExecutions": 24,
+      "compilerSuccesses": 12,
+      "expectedCompilerFailures": 12,
+      "exactTargets": [
+        "arduino:avr:mega:cpu=atmega2560",
+        "arduino:avr:uno"
+      ],
+      "independentHumanReviewCompleted": false,
+      "hardwareExecutionVerified": false,
+      "trainingAllowed": false,
+      "releasedGen2TrainingTokens": 0,
+      "leakageAudit": {
+        "status": "passed",
+        "counts": {
+          "lineage": 0,
+          "exactRaw": 0,
+          "exactNormalized": 0,
+          "nearTextOrCode": 0,
+          "protected": 0
+        },
+        "includedDocuments": 17,
+        "nonemptySplits": [
+          "test",
+          "train"
+        ],
+        "semanticCompletenessClaimed": false
+      },
+      "semanticLeakageCompletenessClaimed": false,
+      "domainsWithoutIncludedRecords": [
+        "firmware-debug"
+      ],
+      "domainCorpusReady": false
+    }
+  },
+  "freshCompilerEvidence": {
+    "path": "Voltforge_AI/evaluation/reports/llm-task-022-domain-recompile.json",
+    "sha256": "705bf42d624c44c0cd095c47b2009088da831744cbfb5264ae96ed117647df93",
+    "bytes": 1566
+  },
+  "tests": {
+    "passed": 286,
+    "failed": 0,
+    "skipped": 0,
+    "junit": {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-022-tests.xml",
+      "sha256": "09a98bc2c8b7f7ee4f9e7d4e8e601bf7dad67556512c269c41002628abb68f3e",
+      "bytes": 43136
+    }
+  },
+  "limits": [
+    "This is a domain candidate/data-generation milestone, not a released pretraining corpus. Only 12 records are in the candidate train split; validation is empty.",
+    "All firmware records remain quarantined by protected board-name containment/shared question wording and cross-reservation family connections. Do not train on them or reduce thresholds to admit them.",
+    "Task 023 must add an explicitly reviewed versioned source/matcher adapter with independent boilerplate-versus-answer/code contamination controls, expand independent families, and populate validation before corpus release.",
+    "New candidate source rights are not inherited from task 019 approvals. Task 023 must admit the exact new source bytes and provenance before training use.",
+    "Only Uno R3 and Mega 2560 Rev3 were newly compiled. All six recipes currently use an undeclared-function-call defect; broader defect classes and hardware/runtime verification remain follow-up work.",
+    "Calculation review is independently implemented algorithmic verification, not human review or measured electrical evidence; hypothetical values never become part ratings.",
+    "Protected matching is lexical/structural, not proof against arbitrary semantic paraphrases. Existing indexed-matcher scale, confidential evaluation custody and owner backup/restore gates remain open."
+  ],
+  "preservation": {
+    "planningFilesSnapshotted": 7,
+    "historicalContractBindingsUnchanged": 12,
+    "protectedArtifactDataFilesUnchanged": 131,
+    "task018SuiteUnchanged": true,
+    "task019InventoryUnchanged": true,
+    "task020And021RecomputedUnchanged": true
+  },
+  "gen2CorpusReleased": false,
+  "trainingAllowed": false,
+  "domainCorpusReady": false,
+  "modelReleaseApproved": false,
+  "networkAccessDuringBuild": false,
+  "documentationReferencesBrowsed": true,
+  "thirdPartySourceBodiesImported": false,
+  "nextTask": "LLM-TASK-023",
+  "planningCheck": {
+    "status": "passed",
+    "active_tasks": 41,
+    "legacy_tasks": 14,
+    "milestones": 10,
+    "root_causes": 14,
+    "status_counts": {
+      "COMPLETED": 8,
+      "TODO": 33
+    },
+    "next_task": "LLM-TASK-023",
+    "scope": "planning consistency only; no model release credit"
+  },
+  "sourceFingerprints": [
+    {
+      "path": "VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.json",
+      "sha256": "a00611d9e5b0dbb873eb6336cca3d1ebafff4e45938dd1162a297ed578f5a3a4",
+      "bytes": 122279
+    },
+    {
+      "path": "VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.md",
+      "sha256": "96ce9d7abdcd411cc61b91f95496b1e6ad38edbd63e022a50e066bf4e5c72d1d",
+      "bytes": 82934
+    },
+    {
+      "path": "AI_CHAT_ROOT_CAUSE_BACKLOG.json",
+      "sha256": "cc385122596360541da6bfa0fde9dd6abebbd0e2478ce3e3a77b2dcebda150e9",
+      "bytes": 36149
+    },
+    {
+      "path": "AI_CHAT_ROOT_CAUSE_ANALYSIS.md",
+      "sha256": "fec2904f626340314a5edc4dd646241ed6c8e9b42a7456b5b8461aa7f5613c1e",
+      "bytes": 26782
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_OWNED_DOMAIN_DATA.v1.md",
+      "sha256": "10aa52792cffb3f1a04a883a1bacfa90a836998ebad824d81f911668d4b0c0c6",
+      "bytes": 8575
+    },
+    {
+      "path": "Voltforge_AI/docs/VOLTForge_AI_RUNBOOK.md",
+      "sha256": "a2e8de4c65852fd1242c1c7936b36355b62202bba10c1cdb6ee307479c2d1da2",
+      "bytes": 34096
+    },
+    {
+      "path": "Voltforge_AI/docs/runbook-contract.v1.json",
+      "sha256": "fd266bce994d67dd4622b3f9cf66576092696d268ed1d060e62f979fe4b43671",
+      "bytes": 7135
+    },
+    {
+      "path": "Voltforge_AI/.gitattributes",
+      "sha256": "dea87687cc3551f00b2d8cc08cd0cc89eef898a79d12a3012f3aa20cb230b478",
+      "bytes": 373
+    },
+    {
+      "path": "Voltforge_AI/tests/test_owned_domain_data.py",
+      "sha256": "5d89de253265fcc3dbba51eb20929670f15b2ed5fe5e390afe74539d99d56547",
+      "bytes": 8381
+    },
+    {
+      "path": "Voltforge_AI/tools/build_owned_domain_data.py",
+      "sha256": "8a033752f61093b9686e7da3584025ae7bd224982e151f885badc90ec96768ee",
+      "bytes": 1101
+    },
+    {
+      "path": "Voltforge_AI/tools/record_owned_domain_data.py",
+      "sha256": "4560ec56f8fc2299fb1cffc8fe3fd3eaf17df6f6ddd91f83e2052c65f855a421",
+      "bytes": 15403
+    }
+  ],
+  "evidence": [
+    {
+      "path": "Voltforge_AI/corpus/owned-domain/v1/8ac1756fd8c8402d032ccedc94d58d44faf5ec67659754e2b6770fce3c130a25/manifest.json",
+      "sha256": "c63ac2d821eaf6f564a2a805679a2cc35557826b0d1c1cfe5298db2dd2811488",
+      "bytes": 13506
+    },
+    {
+      "path": "Voltforge_AI/corpus/owned-domain/v1/8ac1756fd8c8402d032ccedc94d58d44faf5ec67659754e2b6770fce3c130a25/coverage.json",
+      "sha256": "241169b40233fba55067c3330f1706fe514bf910f8b28e79b1cda8685087fed4",
+      "bytes": 1260
+    },
+    {
+      "path": "Voltforge_AI/corpus/owned-domain/v1/8ac1756fd8c8402d032ccedc94d58d44faf5ec67659754e2b6770fce3c130a25/calculation-review.jsonl",
+      "sha256": "3f8dda6791ca313f0038ca0bb8d41600f189c6d607fbb3da49d65b49f81aa677",
+      "bytes": 24775
+    },
+    {
+      "path": "Voltforge_AI/corpus/owned-domain/v1/8ac1756fd8c8402d032ccedc94d58d44faf5ec67659754e2b6770fce3c130a25/compiler-receipts.json",
+      "sha256": "c43930d87ea398fa352a1f781c0cf46cfdbfe1b89e18a424ad54f175409baf2c",
+      "bytes": 58534
+    },
+    {
+      "path": "Voltforge_AI/corpus/owned-domain/v1/8ac1756fd8c8402d032ccedc94d58d44faf5ec67659754e2b6770fce3c130a25/leakage.json",
+      "sha256": "6b91abd06fa32af0379d75bd7836dd669c02bddf0cb7a136cc09b5de92b476b8",
+      "bytes": 13782
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_OWNED_DOMAIN_DATA.v1.md",
+      "sha256": "10aa52792cffb3f1a04a883a1bacfa90a836998ebad824d81f911668d4b0c0c6",
+      "bytes": 8575
+    },
+    {
+      "path": "backlog_history/llm-task-022-before/manifest.json",
+      "sha256": "4a454bc4467348afa50b67f52d23709e9d03b4ea107b2726b33e27efdd54703f",
+      "bytes": 1467
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-022-domain-build.json",
+      "sha256": "41167d5d74e03ca62069851518fe88559a0bfe640cd7fc733bb8784605d0f96c",
+      "bytes": 1688
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-022-domain-recompile.json",
+      "sha256": "705bf42d624c44c0cd095c47b2009088da831744cbfb5264ae96ed117647df93",
+      "bytes": 1566
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-022-tests.xml",
+      "sha256": "09a98bc2c8b7f7ee4f9e7d4e8e601bf7dad67556512c269c41002628abb68f3e",
+      "bytes": 43136
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-022-checks.json",
+      "sha256": "8fb9f7d82fd1ee01b9976787f4abdcd4a6f293504bde1db9de8814b1cb456491",
+      "bytes": 5989
+    }
+  ],
+  "documentationFinalization": "Synchronized the Markdown Updated date with the accepted JSON checkpoint; planning consistency rechecked."
+}

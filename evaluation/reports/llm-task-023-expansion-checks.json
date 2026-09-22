@@ -1,0 +1,330 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "command": [
+        ".toolchains/gen1/Scripts/python.exe",
+        "-B",
+        "tools/verify_llm_foundation.py",
+        "--check-preserved-history"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "result": {
+        "status": "passed",
+        "contractId": "voltforge-owned-foundation-v1",
+        "familyNamespace": "vfdlm-g2",
+        "releaseStages": [
+          "base-model",
+          "instruction-model",
+          "integrated-assistant"
+        ],
+        "moduleCount": 9,
+        "mappedFollowups": 15,
+        "historicalBindings": 12,
+        "preservationChecked": true,
+        "preservedHistoricalFiles": 12,
+        "compatiblePythonRoutes": 13,
+        "scope": "design consistency only; no decoder, training, runtime or release acceptance",
+        "modelReleaseApproved": false,
+        "networkAccessed": false,
+        "nativeModelImported": false,
+        "inputs": [
+          {
+            "path": "foundation/contract.v1.json",
+            "sha256": "8641606ed74fd4f7c8887277aa3ae533de41adce0dbbd05a994bcd961441924f"
+          },
+          {
+            "path": "foundation/release-policy.v1.json",
+            "sha256": "e4225f92557972eea373ec4264466ab4a83371d6744ee51ee766cf8ea2992046"
+          },
+          {
+            "path": "foundation/compatibility-map.v1.json",
+            "sha256": "d049c37c9920aa6a76c8c8baf10697752b90c705a397f0f243d5d558b19ef22d"
+          },
+          {
+            "path": "docs/LLM_FOUNDATION_DESIGN.v1.md",
+            "sha256": "88f8d4b9cf5fd0118a3a25b07adadcf1213067453002c51daea5cb14fa7adaec"
+          },
+          {
+            "path": "tools/verify_llm_foundation.py",
+            "sha256": "300bafea8f1a2b7a04dadab93e70258231d5b31b7356295b3f5cfcc3734fbe0b"
+          }
+        ],
+        "thresholds": "pending LLM-TASK-018",
+        "nextTask": "LLM-TASK-018"
+      }
+    },
+    {
+      "command": [
+        ".toolchains/gen1/Scripts/python.exe",
+        "-B",
+        "tools/verify_foundation_evaluation_binding.py"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "result": {
+        "status": "passed",
+        "thresholdState": "frozen-independent-suite",
+        "bindingSha256": "7ef69cb85d9b57691cb56eeec819e6a34b5cc1cf8f8d7f335b94a97c9a47ee47",
+        "suite": {
+          "status": "passed",
+          "suiteSha256": "2fdd61cbc4cecbc20b364f7825b63bae2382ba784ca993a901839d2515985cc6",
+          "policySha256": "35c9a2ce79922beb3ec1c36e41ce61eeafcb351e6a3365851d20aa6bb4b20618",
+          "counts": {
+            "development": 100,
+            "validation": 100,
+            "acceptance": 500,
+            "adversarial": 100,
+            "compile": 100
+          },
+          "acceptanceCategories": {
+            "concepts": 50,
+            "diagnostics": 50,
+            "firmware_review": 50,
+            "numerical": 50,
+            "grounding": 50,
+            "multi_turn": 50,
+            "long_context": 50,
+            "project_actions": 50,
+            "instruction_scope": 50,
+            "uncertainty_safety": 50
+          },
+          "coreScenarioFamilies": 100,
+          "coreTemplateFamilies": 73,
+          "trainingUseAllowed": false,
+          "confidentialSealingClaimed": false
+        },
+        "historicalDesignFilesPreserved": 4,
+        "modelReleaseApproved": false,
+        "activationAllowed": false,
+        "scope": "Satisfies task-017 pending threshold/suite reference only; every training, lineage and release gate remains required."
+      }
+    },
+    {
+      "command": [
+        ".toolchains/gen1/Scripts/python.exe",
+        "-B",
+        "tools/inventory_llm_sources.py",
+        "verify",
+        "--recompute"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "result": {
+        "status": "passed",
+        "sourceCounts": {
+          "existing": 8,
+          "approvedForExistingTrainingUse": 4,
+          "notApprovedForTraining": 4,
+          "proposedNotAdmitted": 7,
+          "excludedClasses": 4
+        },
+        "unitCounts": {
+          "quarantined": 12,
+          "approved-existing-shard": 4,
+          "approved-upstream-facts": 8
+        },
+        "uniqueEligibleRecords": 227,
+        "existingPoolProxyTokens": 112418,
+        "gen2ReleaseReadyTokens": 0
+      }
+    },
+    {
+      "command": [
+        ".toolchains/gen1/Scripts/python.exe",
+        "-B",
+        "tools/audit_data_governance.py",
+        "--check"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "result": {
+        "ok": true,
+        "mode": "check",
+        "summary": {
+          "retainedDatasetCount": 12,
+          "recordCount": 17814,
+          "approvedTrainingShardCount": 0,
+          "approvedRuntimeRetrievalCount": 0,
+          "quarantinedDatasetCount": 12,
+          "catalogCoverageComplete": true,
+          "decision": "pass"
+        }
+      }
+    },
+    {
+      "command": [
+        ".toolchains/gen1/Scripts/python.exe",
+        "-B",
+        "tools/verify_runbook.py"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "result": {
+        "contractId": "vfai035-runbook-v1",
+        "contractSha256": "e4a9f4f2cc144195febc50db525fa740ca3306218c67f76bed8f9bf566761a22",
+        "forbiddenClaimCount": 0,
+        "networkAccessed": false,
+        "ok": true,
+        "rawContentStored": false,
+        "requiredCommandCount": 30,
+        "requiredSectionCount": 15,
+        "requiredSourceFileCount": 93,
+        "runbookSha256": "0fb5e45d075d5abd0c8eb4b3cc0f1d636aae1555cca90d4aa0b61cf5e91c2e80"
+      }
+    },
+    {
+      "command": [
+        ".toolchains/gen1/Scripts/python.exe",
+        "-B",
+        "tools/scan_quality_boundaries.py",
+        "--check"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "result": {
+        "schemaVersion": 1,
+        "scanId": "vfai032-quality-boundaries-v1",
+        "passed": true,
+        "filesScanned": 247,
+        "violations": [],
+        "networkAccessed": false,
+        "rawContentStored": false,
+        "scanSha256": "c0c6565df444e8013d3aad08ae22615b05164f2dd2811dea4017fa57b8fc5391"
+      }
+    },
+    {
+      "command": [
+        ".toolchains/gen1/Scripts/python.exe",
+        "-B",
+        "tools/snapshot_llm_cleanup.py",
+        "--verify",
+        "../backlog_history/llm-task-016-before-20260906T054449Z"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "result": {
+        "snapshot": "D:\\Project\\voltforge\\backlog_history\\llm-task-016-before-20260906T054449Z",
+        "verified_sources": 83,
+        "unchanged_protected_files": 131
+      }
+    },
+    {
+      "command": [
+        ".toolchains/gen1/Scripts/python.exe",
+        "-B",
+        "tools/expand_pretraining_sources.py",
+        "verify-admission"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "result": {
+        "status": "passed-exact-source-input-admission",
+        "sources": 5,
+        "selectedFiles": 24,
+        "corpusTrainingAllowed": false
+      }
+    },
+    {
+      "command": [
+        ".toolchains/gen1/Scripts/python.exe",
+        "-B",
+        "tools/expand_pretraining_sources.py",
+        "require-use",
+        "--release",
+        "D:\\Project\\voltforge\\Voltforge_AI\\corpus\\pretraining-candidates\\source-expansion-v1\\733a4f704e7433f3d19f1f3c95e6109eceaf3f838be56acf6efff27322081f30",
+        "--usage",
+        "tokenizer-fitting"
+      ],
+      "exitCode": 2,
+      "expectedExitCode": 2,
+      "result": {
+        "status": "blocked",
+        "code": "EXPANDED_CORPUS_RELEASE_GATES_UNMET",
+        "trainingAllowed": false
+      }
+    },
+    {
+      "command": [
+        ".toolchains/gen1/Scripts/python.exe",
+        "-B",
+        "tools/expand_pretraining_sources.py",
+        "source-impact",
+        "--release",
+        "D:\\Project\\voltforge\\Voltforge_AI\\corpus\\pretraining-candidates\\source-expansion-v1\\733a4f704e7433f3d19f1f3c95e6109eceaf3f838be56acf6efff27322081f30",
+        "--source-id",
+        "vf-g2-mkdocs-9d65447e"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "result": {
+        "sourceId": "vf-g2-mkdocs-9d65447e",
+        "affectedDocuments": [
+          {
+            "documentId": "vf-g2-mkdocs-9d65447e:docs/setup/changing-the-colors.md",
+            "split": "validation",
+            "tokens": 8469,
+            "normalizedSha256": "8db261a9c0696655e8f3aef28b4d243c161849c95be7029a512178aebb822372",
+            "decisionReason": "partitioned"
+          },
+          {
+            "documentId": "vf-g2-mkdocs-9d65447e:docs/setup/changing-the-fonts.md",
+            "split": "validation",
+            "tokens": 1801,
+            "normalizedSha256": "f5ccd6b56d9a905b3a609f65239b0e419e823090898e5c5db9b9b455040f894b",
+            "decisionReason": "partitioned"
+          },
+          {
+            "documentId": "vf-g2-mkdocs-9d65447e:docs/setup/changing-the-language.md",
+            "split": "validation",
+            "tokens": 3586,
+            "normalizedSha256": "fd98deb475c3cf368f115e2652f0c2a736d8c47e68a7a8fa2774a73337ec3cae",
+            "decisionReason": "partitioned"
+          },
+          {
+            "documentId": "vf-g2-mkdocs-9d65447e:docs/setup/setting-up-navigation.md",
+            "split": "validation",
+            "tokens": 10749,
+            "normalizedSha256": "363530ae471078a92de85d8cd035781c691a01491eab24eec2b0ac72c2c97d3e",
+            "decisionReason": "partitioned"
+          },
+          {
+            "documentId": "vf-g2-mkdocs-9d65447e:docs/setup/setting-up-site-search.md",
+            "split": "validation",
+            "tokens": 2887,
+            "normalizedSha256": "04cb4776f4c9d831368f598e4926a9fb738ae6cfd3f71ca8f2cbc86ad96520ba",
+            "decisionReason": "partitioned"
+          },
+          {
+            "documentId": "vf-g2-mkdocs-9d65447e:docs/setup/setting-up-site-analytics.md",
+            "split": "quarantine",
+            "tokens": 6561,
+            "normalizedSha256": "cf7a635f45908a62296b93777c7761b3b73394d635bffb9d63dc9e3b4707472e",
+            "decisionReason": "near-duplicate"
+          }
+        ],
+        "trainingArtifactsInThisCandidateWorkflow": [],
+        "action": "report-only-no-deletion",
+        "sourceUseDecision": "data_governance\\source_expansion\\admission.v1.json"
+      }
+    }
+  ],
+  "candidateManifest": {
+    "path": "Voltforge_AI/corpus/pretraining-candidates/source-expansion-v1/733a4f704e7433f3d19f1f3c95e6109eceaf3f838be56acf6efff27322081f30/manifest.json",
+    "sha256": "122116042f3530449a1be77fba3f93228a34def66e134d5bef088044dd6eef44",
+    "bytes": 12209
+  },
+  "sourceDecision": {
+    "path": "Voltforge_AI/data_governance/source_expansion/admission.v1.json",
+    "sha256": "cbfa7ade4b32c16a796ea66eb485258a8ca771a12a99d20f90939c5156102763",
+    "bytes": 3491
+  },
+  "gen2FixtureArtifactsRecomputedUnchanged": true,
+  "precisionReviewVerifiedUnchanged": true,
+  "fullCandidateRecomputationEvidence": {
+    "path": "Voltforge_AI/evaluation/reports/llm-task-023-expansion-tests.xml",
+    "sha256": "a550d36ba4758348638f814d2d7fbf60013e650a0a9d1d4b6211a484814a8501",
+    "bytes": 17764
+  }
+}

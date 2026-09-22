@@ -124,11 +124,14 @@ class PcbDrcEngine:
             width = cls._float(footprint.get("width"), 10)
             height = cls._float(footprint.get("height"), 10)
 
+            rotation = math.radians(cls._float(footprint.get("rotation"), 0))
+            rotated_width = abs(width * math.cos(rotation)) + abs(height * math.sin(rotation))
+            rotated_height = abs(width * math.sin(rotation)) + abs(height * math.cos(rotation))
             if (
-                x - width / 2 < 0
-                or x + width / 2 > board_width_mm
-                or y - height / 2 < 0
-                or y + height / 2 > board_height_mm
+                x - rotated_width / 2 < 0
+                or x + rotated_width / 2 > board_width_mm
+                or y - rotated_height / 2 < 0
+                or y + rotated_height / 2 > board_height_mm
             ):
                 violations.append({
                     "id": f"drc_footprint_bounds_{footprint.get('id', name)}",
@@ -140,10 +143,7 @@ class PcbDrcEngine:
                 })
 
             for pad in footprint.get("pads", []):
-                pad_center = (
-                    x + cls._float(pad.get("x"), 0),
-                    y + cls._float(pad.get("y"), 0),
-                )
+                pad_center = cls._pad_center(footprint, pad)
                 pad_radius = max(cls._float(pad.get("width"), 1), cls._float(pad.get("height"), 1)) / 2
                 if not cls._inside_board(pad_center, board_width_mm, board_height_mm, pad_radius):
                     violations.append({
@@ -230,7 +230,7 @@ class PcbDrcEngine:
                     "kind": "pad",
                     "layer": pad.get("layer", "F.Cu"),
                     "net": pad.get("netId"),
-                    "point": (fx + cls._float(pad.get("x"), 0), fy + cls._float(pad.get("y"), 0)),
+                    "point": cls._pad_center(footprint, pad),
                     "radius": max(cls._float(pad.get("width"), 1), cls._float(pad.get("height"), 1)) / 2,
                 })
 
@@ -296,6 +296,18 @@ class PcbDrcEngine:
             (cls._float(point.get("x"), 0), cls._float(point.get("y"), 0))
             for point in raw_points
         ]
+
+    @classmethod
+    def _pad_center(cls, footprint: Dict[str, Any], pad: Dict[str, Any]) -> Point:
+        fx = cls._float(footprint.get("x"), 0)
+        fy = cls._float(footprint.get("y"), 0)
+        px = cls._float(pad.get("x"), 0)
+        py = cls._float(pad.get("y"), 0)
+        angle = math.radians(cls._float(footprint.get("rotation"), 0))
+        return (
+            fx + px * math.cos(angle) - py * math.sin(angle),
+            fy + px * math.sin(angle) + py * math.cos(angle),
+        )
 
     @staticmethod
     def _segments(points: List[Point]) -> List[Segment]:

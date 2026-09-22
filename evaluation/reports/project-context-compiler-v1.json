@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai020-project-context-compiler-v1",
+  "generatedAtUtc": "2026-09-09T14:01:57.342134Z",
+  "policyId": "vfai020-project-context-policy-v1",
+  "policySha256": "51760ccc3f5407a02bface5456ffaa069df2ffd05203ec0c8da3bb9397786aba",
+  "snapshotPath": "evaluation/snapshots/project-context-compiler-v1.json",
+  "snapshotSha256": "d090d475237c290df6ee01af8d8ccb2b0946ff5f2949841797f927877da3b113",
+  "artifactContextWindows": {
+    "vfdlm-g1-edge-v0.1.0-bootstrap": 128,
+    "vfdlm-g1-edge-v0.1.1-runtime": 128,
+    "vfdlm-g1-edge-v0.1.2-optimized": 128
+  },
+  "minimumSupportedContextWindowTokens": 768,
+  "currentArtifactCompatibility": "incompatible-context-window",
+  "checks": {
+    "policyChecksumVerified": true,
+    "networkDeniedDuringCompilation": true,
+    "exactTokenizerBudgetRespected": true,
+    "semanticReorderingIsByteStable": true,
+    "taskPreserved": true,
+    "safetyEvidencePreserved": true,
+    "activeSelectionPreserved": true,
+    "relevantNetPreserved": true,
+    "activeFirmwareBoundaryPreserved": true,
+    "strictPriorityTruncationObserved": true,
+    "lengthAndChecksumFramingVerified": true,
+    "currentArtifactFailsClosed": true,
+    "allCatalogedArtifactsBelowMinimum": true,
+    "activeNeuralArtifactRemainsNull": true,
+    "publicMetadataContainsNoRawFixture": true,
+    "rawContentNotStored": true
+  },
+  "rawPromptStored": false,
+  "rawProjectContextStored": false,
+  "neuralServingApproved": false,
+  "blockingReason": "The current 128-token experimental artifacts cannot hold the mandatory typed prompt. A future governed model revision needs at least the policy minimum and must independently pass training, generation-quality, and release gates.",
+  "reportSha256": "3eff5f228fe04ccedd57cf1822de1c4a66539a3994e08efd945dc045c490e164"
+}

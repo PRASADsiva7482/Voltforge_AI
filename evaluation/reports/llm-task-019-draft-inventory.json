@@ -1,0 +1,3650 @@
+{
+  "schemaVersion": 1,
+  "inventoryId": "vf-g2-source-inventory-v1",
+  "taskId": "LLM-TASK-019",
+  "status": "inventory-complete-no-gen2-corpus-release",
+  "sources": [
+    {
+      "sourceId": "vf-src-project-domain-generator-v1",
+      "name": "Project-authored electronics domain templates and generators",
+      "kind": "project-authored-synthetic-source",
+      "permission": {
+        "sourceId": "vf-src-project-domain-generator-v1",
+        "name": "Project-authored electronics domain templates and generators",
+        "kind": "project-authored-synthetic-source",
+        "origin": {
+          "type": "repository",
+          "path": "model/generate_domain_corpus.py",
+          "owner": "VoltForge",
+          "evidence": "The templates and generation logic are maintained in this repository and do not ingest web or user-project content."
+        },
+        "revision": "2.0.0",
+        "license": {
+          "status": "approved",
+          "identifier": "VoltForge-Proprietary",
+          "copyrightHolder": "VoltForge",
+          "evidence": "Project-authored repository source."
+        },
+        "privacy": {
+          "classification": "project-authored-non-user-data",
+          "containsPrivateUserData": false,
+          "trainingAllowed": true,
+          "consentRequired": false
+        },
+        "allowedUses": [
+          "synthetic-generation",
+          "training"
+        ],
+        "prohibitedUses": [
+          "external-redistribution"
+        ],
+        "approval": {
+          "status": "approved",
+          "approvedUses": [
+            "synthetic-generation",
+            "training"
+          ],
+          "basis": "VoltForge-owned deterministic source with no external or private inputs"
+        },
+        "preprocessing": {
+          "id": "vf-held-out-exclusion",
+          "version": "1.0.0",
+          "path": "evaluation/leakage.py"
+        },
+        "checksum": "233e8157019ec3bafdc4e130470c7c38369582ce20834526e4157e5e828a1293",
+        "retention": {
+          "class": "project-source",
+          "duration": "while referenced by an approved shard or artifact",
+          "reviewTrigger": "source revision or policy change"
+        },
+        "deletionProcedure": "Run tools/source_removal_impact.py for this source, deactivate affected approved artifacts, delete affected shards and manifests, then retrain and repeat release gates.",
+        "acquisitionMethod": "Existing repository source or retained historical input; verify its original registry evidence and bytes."
+      },
+      "permissionReceiptSha256": "f4ca9598895a7faaaad244ae409feb3b0a4f8119a037c513271bdcede6da7b2a",
+      "authority": {
+        "path": "data_governance/source-registry.v1.json",
+        "sha256": "d775e5c2c633fee61ed4553058ad356a83f9298388bb8b5b48cd4880fcadb506",
+        "bytes": 15196,
+        "selector": "sourceId=vf-src-project-domain-generator-v1"
+      },
+      "useDecisions": {
+        "training": {
+          "allowed": true,
+          "reasons": []
+        },
+        "runtime-retrieval": {
+          "allowed": false,
+          "reasons": [
+            "requested-use-not-allowed",
+            "use-not-approved"
+          ]
+        },
+        "redistribution": {
+          "allowed": false,
+          "reasons": [
+            "requested-use-not-allowed",
+            "use-not-approved"
+          ]
+        }
+      },
+      "approvalInheritedFromExistingRegistry": true,
+      "gen2CorpusReleased": false,
+      "newRightsGranted": false
+    },
+    {
+      "sourceId": "vf-src-project-multitask-generator-v1",
+      "name": "Project-authored multi-task synthetic generator",
+      "kind": "project-authored-synthetic-source",
+      "permission": {
+        "sourceId": "vf-src-project-multitask-generator-v1",
+        "name": "Project-authored multi-task synthetic generator",
+        "kind": "project-authored-synthetic-source",
+        "origin": {
+          "type": "repository",
+          "path": "model/generate_dataset.py",
+          "owner": "VoltForge",
+          "evidence": "Generation logic is maintained in this repository; its chat task additionally depends on the separately governed legacy seed file."
+        },
+        "revision": "2.0.0",
+        "license": {
+          "status": "approved",
+          "identifier": "VoltForge-Proprietary",
+          "copyrightHolder": "VoltForge",
+          "evidence": "Project-authored repository source."
+        },
+        "privacy": {
+          "classification": "project-authored-non-user-data",
+          "containsPrivateUserData": false,
+          "trainingAllowed": true,
+          "consentRequired": false
+        },
+        "allowedUses": [
+          "synthetic-generation",
+          "training"
+        ],
+        "prohibitedUses": [
+          "external-redistribution"
+        ],
+        "approval": {
+          "status": "approved",
+          "approvedUses": [
+            "synthetic-generation",
+            "training"
+          ],
+          "basis": "The generator code is VoltForge-owned; every input remains independently fail-closed"
+        },
+        "preprocessing": {
+          "id": "vf-held-out-exclusion",
+          "version": "1.0.0",
+          "path": "evaluation/leakage.py"
+        },
+        "checksum": "abbee153e1ee8408da91c6f7f92ed833c3534a88c93114c06ea1e9933063f24a",
+        "retention": {
+          "class": "project-source",
+          "duration": "while referenced by an approved shard or artifact",
+          "reviewTrigger": "source revision or policy change"
+        },
+        "deletionProcedure": "Run tools/source_removal_impact.py for this source, remove generated shards and manifests, and retrain all identified dependent artifacts.",
+        "acquisitionMethod": "Existing repository source or retained historical input; verify its original registry evidence and bytes."
+      },
+      "permissionReceiptSha256": "9b03ceede93cc2dfd79e9bfe859bc3fa3c5361c614c0612335cc3a63c6fed85b",
+      "authority": {
+        "path": "data_governance/source-registry.v1.json",
+        "sha256": "d775e5c2c633fee61ed4553058ad356a83f9298388bb8b5b48cd4880fcadb506",
+        "bytes": 15196,
+        "selector": "sourceId=vf-src-project-multitask-generator-v1"
+      },
+      "useDecisions": {
+        "training": {
+          "allowed": true,
+          "reasons": []
+        },
+        "runtime-retrieval": {
+          "allowed": false,
+          "reasons": [
+            "requested-use-not-allowed",
+            "use-not-approved"
+          ]
+        },
+        "redistribution": {
+          "allowed": false,
+          "reasons": [
+            "requested-use-not-allowed",
+            "use-not-approved"
+          ]
+        }
+      },
+      "approvalInheritedFromExistingRegistry": true,
+      "gen2CorpusReleased": false,
+      "newRightsGranted": false
+    },
+    {
+      "sourceId": "vf-src-curated-electronics-corpus-v1",
+      "name": "VoltForge curated electronics facts and deterministic pack builder",
+      "kind": "project-authored-curated-facts",
+      "permission": {
+        "sourceId": "vf-src-curated-electronics-corpus-v1",
+        "name": "VoltForge curated electronics facts and deterministic pack builder",
+        "kind": "project-authored-curated-facts",
+        "origin": {
+          "type": "repository",
+          "path": "electronics_corpus/builder.py",
+          "owner": "VoltForge",
+          "evidence": "The repository-owned builder contains normalized factual claims and bounded source references only; it retains no copied source prose, live web responses, model output, or private project data."
+        },
+        "revision": "1.1.0",
+        "license": {
+          "status": "approved",
+          "identifier": "VoltForge-Proprietary",
+          "copyrightHolder": "VoltForge",
+          "evidence": "The normalized schema, curation, conflict policy, records, and generated packs are authored and maintained by VoltForge. External references identify factual evidence without importing document prose."
+        },
+        "privacy": {
+          "classification": "project-authored-non-user-data",
+          "containsPrivateUserData": false,
+          "trainingAllowed": true,
+          "consentRequired": false
+        },
+        "allowedUses": [
+          "runtime-retrieval",
+          "synthetic-generation",
+          "training"
+        ],
+        "prohibitedUses": [
+          "external-redistribution-of-referenced-documents",
+          "silent-variant-substitution"
+        ],
+        "approval": {
+          "status": "approved",
+          "approvedUses": [
+            "runtime-retrieval",
+            "synthetic-generation",
+            "training"
+          ],
+          "basis": "VoltForge-owned normalized facts with per-record effective revisions, evidence references, exact variant identity, deterministic generation, and checksum-bound packs"
+        },
+        "preprocessing": {
+          "id": "vf-electronics-knowledge-contract",
+          "version": "1.0.0",
+          "path": "electronics_corpus/schema.py"
+        },
+        "checksum": "5a3080d1f22b927942492a19296405553a050b8daf5458234eac603be1343089",
+        "retention": {
+          "class": "project-curated-source",
+          "duration": "while referenced by an approved shard, runtime index, or model artifact",
+          "reviewTrigger": "manufacturer revision, evidence conflict, corpus contract change, or source removal request"
+        },
+        "deletionProcedure": "Run tools/source_removal_impact.py for this source, remove or deactivate dependent task shards, retrieval indexes, and model artifacts, delete generated packs/catalog/report, then rebuild and repeat release gates.",
+        "acquisitionMethod": "Existing repository source or retained historical input; verify its original registry evidence and bytes."
+      },
+      "permissionReceiptSha256": "1c13e5c769d43561bf9ffd57e6fcfc5f3573a454a2768ea4f65a59693c2099a5",
+      "authority": {
+        "path": "data_governance/source-registry.v1.json",
+        "sha256": "d775e5c2c633fee61ed4553058ad356a83f9298388bb8b5b48cd4880fcadb506",
+        "bytes": 15196,
+        "selector": "sourceId=vf-src-curated-electronics-corpus-v1"
+      },
+      "useDecisions": {
+        "training": {
+          "allowed": true,
+          "reasons": []
+        },
+        "runtime-retrieval": {
+          "allowed": true,
+          "reasons": []
+        },
+        "redistribution": {
+          "allowed": false,
+          "reasons": [
+            "requested-use-not-allowed",
+            "use-not-approved"
+          ]
+        }
+      },
+      "approvalInheritedFromExistingRegistry": true,
+      "gen2CorpusReleased": false,
+      "newRightsGranted": false
+    },
+    {
+      "sourceId": "vf-src-verified-synthetic-pipeline-v1",
+      "name": "VoltForge verified synthetic task pipeline v1",
+      "kind": "project-authored-verified-synthetic-source",
+      "permission": {
+        "sourceId": "vf-src-verified-synthetic-pipeline-v1",
+        "name": "VoltForge verified synthetic task pipeline v1",
+        "kind": "project-authored-verified-synthetic-source",
+        "origin": {
+          "type": "repository-pipeline-lock",
+          "path": "synthetic_data/pipeline-lock.v1.json",
+          "owner": "VoltForge",
+          "evidence": "The immutable lock binds VoltForge-owned grammars, deterministic corpus/netlist verifiers, task and leakage contracts, and a version-pinned compiler toolchain. No third-party model, web result, private project, or quarantined corpus is an input."
+        },
+        "revision": "1.3.0",
+        "license": {
+          "status": "approved",
+          "identifier": "VoltForge-Proprietary",
+          "copyrightHolder": "VoltForge",
+          "evidence": "VoltForge authors the task grammar, normalized outputs, generators, verifier contracts, and release pipeline."
+        },
+        "privacy": {
+          "classification": "project-authored-non-user-data",
+          "containsPrivateUserData": false,
+          "trainingAllowed": true,
+          "consentRequired": false
+        },
+        "allowedUses": [
+          "synthetic-generation",
+          "training"
+        ],
+        "prohibitedUses": [
+          "third-party-model-generation",
+          "live-web-content-ingestion",
+          "private-project-ingestion",
+          "unverified-label-inclusion"
+        ],
+        "approval": {
+          "status": "approved",
+          "approvedUses": [
+            "synthetic-generation",
+            "training"
+          ],
+          "basis": "Project-owned deterministic generation with exact corpus/netlist gates, source-bound compiler receipts, duplicate rejection, and held-out leakage exclusion"
+        },
+        "preprocessing": {
+          "id": "vf-held-out-exclusion",
+          "version": "1.0.0",
+          "path": "evaluation/leakage.py"
+        },
+        "checksum": "b25c61e7c5210af35e86df3b9d9c0519b18a583aacdea91a763b1d3ae2c15abd",
+        "retention": {
+          "class": "project-verified-training-source",
+          "duration": "while referenced by an approved shard or model artifact",
+          "reviewTrigger": "grammar, verifier, compiler, corpus, task schema, leakage gate, or source-policy revision"
+        },
+        "deletionProcedure": "Run tools/source_removal_impact.py for this source, deactivate and remove dependent shards and model artifacts, remove compile receipts and reports, then regenerate, retrain, and repeat release gates.",
+        "acquisitionMethod": "Existing repository source or retained historical input; verify its original registry evidence and bytes."
+      },
+      "permissionReceiptSha256": "57023ff71e377bcd3e8a9eafe3a6540355ec08b72e8f8fb4ec01bbf76eca37cf",
+      "authority": {
+        "path": "data_governance/source-registry.v1.json",
+        "sha256": "d775e5c2c633fee61ed4553058ad356a83f9298388bb8b5b48cd4880fcadb506",
+        "bytes": 15196,
+        "selector": "sourceId=vf-src-verified-synthetic-pipeline-v1"
+      },
+      "useDecisions": {
+        "training": {
+          "allowed": true,
+          "reasons": []
+        },
+        "runtime-retrieval": {
+          "allowed": false,
+          "reasons": [
+            "requested-use-not-allowed",
+            "use-not-approved"
+          ]
+        },
+        "redistribution": {
+          "allowed": false,
+          "reasons": [
+            "requested-use-not-allowed",
+            "use-not-approved"
+          ]
+        }
+      },
+      "approvalInheritedFromExistingRegistry": true,
+      "gen2CorpusReleased": false,
+      "newRightsGranted": false
+    },
+    {
+      "sourceId": "vf-src-legacy-dataset-txt-v0",
+      "name": "Legacy local Q/A seed file",
+      "kind": "legacy-origin-unverified",
+      "permission": {
+        "sourceId": "vf-src-legacy-dataset-txt-v0",
+        "name": "Legacy local Q/A seed file",
+        "kind": "legacy-origin-unverified",
+        "origin": {
+          "type": "repository-retained-file",
+          "path": "dataset.txt",
+          "owner": "unknown",
+          "evidence": "No immutable creation run, source citations, or ownership record predates VFAI-006."
+        },
+        "revision": "legacy-snapshot-2026-08-13",
+        "license": {
+          "status": "unverified",
+          "identifier": null,
+          "copyrightHolder": "unknown",
+          "evidence": "No license evidence is retained."
+        },
+        "privacy": {
+          "classification": "unknown-origin-no-observed-user-identifiers",
+          "containsPrivateUserData": false,
+          "trainingAllowed": false,
+          "consentRequired": false
+        },
+        "allowedUses": [
+          "audit-evidence"
+        ],
+        "prohibitedUses": [
+          "training",
+          "runtime-retrieval",
+          "redistribution"
+        ],
+        "approval": {
+          "status": "quarantined",
+          "approvedUses": [
+            "audit-evidence"
+          ],
+          "basis": "Origin and license cannot be proven"
+        },
+        "preprocessing": {
+          "id": "unknown-legacy-process",
+          "version": "unknown",
+          "path": null
+        },
+        "checksum": "db5b42f71e3fc74b7ba2514997865b2f653eb9c8623eb5ddb0bd8222577d1802",
+        "retention": {
+          "class": "quarantined-audit-evidence",
+          "duration": "until owner review or deletion",
+          "reviewTrigger": "license and origin evidence becomes available"
+        },
+        "deletionProcedure": "Run tools/source_removal_impact.py for this source, delete dataset.txt and every listed dependent shard/manifest, retain the impact report, and retrain any affected approved artifact.",
+        "acquisitionMethod": "Existing repository source or retained historical input; verify its original registry evidence and bytes."
+      },
+      "permissionReceiptSha256": "6af83195e93163172e2e9d4f8aff5ea12e4080083cc0aa70d531d5d9b8426d82",
+      "authority": {
+        "path": "data_governance/source-registry.v1.json",
+        "sha256": "d775e5c2c633fee61ed4553058ad356a83f9298388bb8b5b48cd4880fcadb506",
+        "bytes": 15196,
+        "selector": "sourceId=vf-src-legacy-dataset-txt-v0"
+      },
+      "useDecisions": {
+        "training": {
+          "allowed": false,
+          "reasons": [
+            "excluded-source-kind",
+            "license-evidence",
+            "license-not-approved",
+            "privacy-not-approved-for-training",
+            "requested-use-explicitly-prohibited",
+            "requested-use-not-allowed",
+            "source-kind-denied-for-training",
+            "source-not-approved",
+            "verified-origin"
+          ]
+        },
+        "runtime-retrieval": {
+          "allowed": false,
+          "reasons": [
+            "excluded-source-kind",
+            "license-evidence",
+            "license-not-approved",
+            "requested-use-explicitly-prohibited",
+            "requested-use-not-allowed",
+            "source-not-approved",
+            "verified-origin"
+          ]
+        },
+        "redistribution": {
+          "allowed": false,
+          "reasons": [
+            "excluded-source-kind",
+            "license-evidence",
+            "license-not-approved",
+            "requested-use-explicitly-prohibited",
+            "requested-use-not-allowed",
+            "source-not-approved",
+            "verified-origin"
+          ]
+        }
+      },
+      "approvalInheritedFromExistingRegistry": true,
+      "gen2CorpusReleased": false,
+      "newRightsGranted": false
+    },
+    {
+      "sourceId": "vf-src-retired-scale-generator-v0",
+      "name": "Retired scale-experiment dataset generator",
+      "kind": "legacy-origin-unverified",
+      "permission": {
+        "sourceId": "vf-src-retired-scale-generator-v0",
+        "name": "Retired scale-experiment dataset generator",
+        "kind": "legacy-origin-unverified",
+        "origin": {
+          "type": "repository-retired-code",
+          "path": "model/legacy/retired_scale_experiment/dataset_generator.py",
+          "owner": "VoltForge",
+          "evidence": "Retained only as VFAI-001 audit evidence; no immutable generation run exists."
+        },
+        "revision": "retired-v0",
+        "license": {
+          "status": "unverified",
+          "identifier": null,
+          "copyrightHolder": "VoltForge",
+          "evidence": "The retained output does not have complete input and run provenance."
+        },
+        "privacy": {
+          "classification": "legacy-synthetic-unknown-lineage",
+          "containsPrivateUserData": false,
+          "trainingAllowed": false,
+          "consentRequired": false
+        },
+        "allowedUses": [
+          "audit-evidence"
+        ],
+        "prohibitedUses": [
+          "training",
+          "runtime-retrieval",
+          "production-generation"
+        ],
+        "approval": {
+          "status": "retired",
+          "approvedUses": [
+            "audit-evidence"
+          ],
+          "basis": "Retired by the canonical VFDLM identity and artifact quarantine"
+        },
+        "preprocessing": {
+          "id": "unknown-legacy-process",
+          "version": "unknown",
+          "path": null
+        },
+        "checksum": "a48eb1605a9da458dad5306063dcea259fd7f5fee6bfc1dcef4d2452e47a9a0e",
+        "retention": {
+          "class": "retired-audit-evidence",
+          "duration": "until explicit cleanup approval",
+          "reviewTrigger": "legacy artifact cleanup"
+        },
+        "deletionProcedure": "Run the source impact analyzer, delete dataset_1b.jsonl and its manifest, and keep the retired label record or deletion audit.",
+        "acquisitionMethod": "Existing repository source or retained historical input; verify its original registry evidence and bytes."
+      },
+      "permissionReceiptSha256": "888353f66ca8af1404aedf0ed6ab1cb8af8ae41b60a13215bda5f6e77f39ca65",
+      "authority": {
+        "path": "data_governance/source-registry.v1.json",
+        "sha256": "d775e5c2c633fee61ed4553058ad356a83f9298388bb8b5b48cd4880fcadb506",
+        "bytes": 15196,
+        "selector": "sourceId=vf-src-retired-scale-generator-v0"
+      },
+      "useDecisions": {
+        "training": {
+          "allowed": false,
+          "reasons": [
+            "excluded-source-kind",
+            "license-evidence",
+            "license-not-approved",
+            "privacy-not-approved-for-training",
+            "requested-use-explicitly-prohibited",
+            "requested-use-not-allowed",
+            "source-kind-denied-for-training",
+            "source-not-approved"
+          ]
+        },
+        "runtime-retrieval": {
+          "allowed": false,
+          "reasons": [
+            "excluded-source-kind",
+            "license-evidence",
+            "license-not-approved",
+            "requested-use-explicitly-prohibited",
+            "requested-use-not-allowed",
+            "source-not-approved"
+          ]
+        },
+        "redistribution": {
+          "allowed": false,
+          "reasons": [
+            "excluded-source-kind",
+            "license-evidence",
+            "license-not-approved",
+            "requested-use-not-allowed",
+            "source-not-approved"
+          ]
+        }
+      },
+      "approvalInheritedFromExistingRegistry": true,
+      "gen2CorpusReleased": false,
+      "newRightsGranted": false
+    },
+    {
+      "sourceId": "vf-src-unknown-circuit-corpus-v0",
+      "name": "Unknown legacy circuit shard source",
+      "kind": "legacy-origin-unverified",
+      "permission": {
+        "sourceId": "vf-src-unknown-circuit-corpus-v0",
+        "name": "Unknown legacy circuit shard source",
+        "kind": "legacy-origin-unverified",
+        "origin": {
+          "type": "unknown",
+          "path": null,
+          "owner": "unknown",
+          "evidence": "chunk3_circuits.jsonl has no matching retained producer or source record."
+        },
+        "revision": "unknown",
+        "license": {
+          "status": "unverified",
+          "identifier": null,
+          "copyrightHolder": "unknown",
+          "evidence": "No license record exists."
+        },
+        "privacy": {
+          "classification": "unknown",
+          "containsPrivateUserData": false,
+          "trainingAllowed": false,
+          "consentRequired": false
+        },
+        "allowedUses": [
+          "audit-evidence"
+        ],
+        "prohibitedUses": [
+          "training",
+          "runtime-retrieval",
+          "redistribution"
+        ],
+        "approval": {
+          "status": "quarantined",
+          "approvedUses": [
+            "audit-evidence"
+          ],
+          "basis": "Unknown source and producer"
+        },
+        "preprocessing": {
+          "id": "unknown-legacy-process",
+          "version": "unknown",
+          "path": null
+        },
+        "checksum": null,
+        "retention": {
+          "class": "quarantined-audit-evidence",
+          "duration": "until deletion",
+          "reviewTrigger": "source evidence becomes available"
+        },
+        "deletionProcedure": "Delete chunk3_circuits.jsonl and its manifest after running and retaining a source-removal impact report.",
+        "acquisitionMethod": "Existing repository source or retained historical input; verify its original registry evidence and bytes."
+      },
+      "permissionReceiptSha256": "86552d62d5763c6a12b3ec43f32331d77e8d8a6df3dd1f57f2bcb2d48a748188",
+      "authority": {
+        "path": "data_governance/source-registry.v1.json",
+        "sha256": "d775e5c2c633fee61ed4553058ad356a83f9298388bb8b5b48cd4880fcadb506",
+        "bytes": 15196,
+        "selector": "sourceId=vf-src-unknown-circuit-corpus-v0"
+      },
+      "useDecisions": {
+        "training": {
+          "allowed": false,
+          "reasons": [
+            "checksum",
+            "excluded-source-kind",
+            "immutable-checksum",
+            "immutable-revision",
+            "license-evidence",
+            "license-not-approved",
+            "privacy-not-approved-for-training",
+            "requested-use-explicitly-prohibited",
+            "requested-use-not-allowed",
+            "source-kind-denied-for-training",
+            "source-not-approved",
+            "verified-origin"
+          ]
+        },
+        "runtime-retrieval": {
+          "allowed": false,
+          "reasons": [
+            "checksum",
+            "excluded-source-kind",
+            "immutable-checksum",
+            "immutable-revision",
+            "license-evidence",
+            "license-not-approved",
+            "requested-use-explicitly-prohibited",
+            "requested-use-not-allowed",
+            "source-not-approved",
+            "verified-origin"
+          ]
+        },
+        "redistribution": {
+          "allowed": false,
+          "reasons": [
+            "checksum",
+            "excluded-source-kind",
+            "immutable-checksum",
+            "immutable-revision",
+            "license-evidence",
+            "license-not-approved",
+            "requested-use-explicitly-prohibited",
+            "requested-use-not-allowed",
+            "source-not-approved",
+            "verified-origin"
+          ]
+        }
+      },
+      "approvalInheritedFromExistingRegistry": true,
+      "gen2CorpusReleased": false,
+      "newRightsGranted": false
+    },
+    {
+      "sourceId": "vf-src-live-web-results-v1",
+      "name": "Ephemeral live web search results",
+      "kind": "live-web-retrieval",
+      "permission": {
+        "sourceId": "vf-src-live-web-results-v1",
+        "name": "Ephemeral live web search results",
+        "kind": "live-web-retrieval",
+        "origin": {
+          "type": "dynamic-network-response",
+          "path": null,
+          "owner": "external publishers",
+          "evidence": "Results vary by request and publisher and are not a training corpus."
+        },
+        "revision": "per-request",
+        "license": {
+          "status": "not-cleared-for-training",
+          "identifier": null,
+          "copyrightHolder": "external publishers",
+          "evidence": "Runtime retrieval does not establish training rights."
+        },
+        "privacy": {
+          "classification": "external-public-web-unknown",
+          "containsPrivateUserData": false,
+          "trainingAllowed": false,
+          "consentRequired": false
+        },
+        "allowedUses": [],
+        "prohibitedUses": [
+          "training",
+          "persistent-corpus",
+          "model-evaluation-judging"
+        ],
+        "approval": {
+          "status": "restricted",
+          "approvedUses": [],
+          "basis": "VFAI-006 permits no web result to enter persistent datasets"
+        },
+        "preprocessing": {
+          "id": "runtime-only",
+          "version": "1.0.0",
+          "path": null
+        },
+        "checksum": null,
+        "retention": {
+          "class": "ephemeral",
+          "duration": "request scope only",
+          "reviewTrigger": "future VFAI-022 retrieval policy"
+        },
+        "deletionProcedure": "Do not persist raw results; discard request-scoped content and remove any accidental cache before it can be indexed or used for training.",
+        "acquisitionMethod": "Existing repository source or retained historical input; verify its original registry evidence and bytes."
+      },
+      "permissionReceiptSha256": "278142f0246fc492aa08f21224d0ada25543c115d0aa67b7425a52c1c4d80382",
+      "authority": {
+        "path": "data_governance/source-registry.v1.json",
+        "sha256": "d775e5c2c633fee61ed4553058ad356a83f9298388bb8b5b48cd4880fcadb506",
+        "bytes": 15196,
+        "selector": "sourceId=vf-src-live-web-results-v1"
+      },
+      "useDecisions": {
+        "training": {
+          "allowed": false,
+          "reasons": [
+            "allowedUses",
+            "checksum",
+            "excluded-source-kind",
+            "immutable-checksum",
+            "immutable-revision",
+            "license-evidence",
+            "license-not-approved",
+            "privacy-not-approved-for-training",
+            "requested-use-explicitly-prohibited",
+            "requested-use-not-allowed",
+            "source-kind-denied-for-training",
+            "source-not-approved",
+            "verified-origin"
+          ]
+        },
+        "runtime-retrieval": {
+          "allowed": false,
+          "reasons": [
+            "allowedUses",
+            "checksum",
+            "excluded-source-kind",
+            "immutable-checksum",
+            "immutable-revision",
+            "license-evidence",
+            "license-not-approved",
+            "requested-use-not-allowed",
+            "source-not-approved",
+            "verified-origin"
+          ]
+        },
+        "redistribution": {
+          "allowed": false,
+          "reasons": [
+            "allowedUses",
+            "checksum",
+            "excluded-source-kind",
+            "immutable-checksum",
+            "immutable-revision",
+            "license-evidence",
+            "license-not-approved",
+            "requested-use-not-allowed",
+            "source-not-approved",
+            "verified-origin"
+          ]
+        }
+      },
+      "approvalInheritedFromExistingRegistry": true,
+      "gen2CorpusReleased": false,
+      "newRightsGranted": false
+    }
+  ],
+  "proposals": [
+    {
+      "sourceId": "vf-proposed-wikipedia-en",
+      "name": "English Wikipedia text dumps",
+      "kind": "external-source-proposal",
+      "domains": [
+        "language",
+        "general-knowledge"
+      ],
+      "origin": "https://dumps.wikimedia.org/enwiki/",
+      "acquisitionMethod": "Later obtain an official dated text dump and checksum list; retain only individually cleared text records.",
+      "proposedReference": "Dated dump and page revisions not selected",
+      "revision": null,
+      "contentSha256": null,
+      "acquired": false,
+      "permissionStatus": "not-admitted",
+      "allowedUses": [
+        "audit-metadata"
+      ],
+      "trainingAllowed": false,
+      "runtimeRetrievalAllowed": false,
+      "redistributionAllowed": false,
+      "licenseObservation": {
+        "identifier": "CC-BY-SA-4.0 / GFDL with edition and content exceptions",
+        "primaryUrl": "https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use",
+        "checkedOn": "2026-09-07",
+        "summary": "Wikimedia's terms provide reuse licenses for contributor text with attribution and applicable share-alike requirements. Project editions and imported material can have exceptions.",
+        "evidenceScope": "Metadata observation, not a corpus license approval or evidence of acquired content."
+      },
+      "blockingReason": "No dump selected, acquired, checksummed or reviewed for training. Resolve per-page exceptions, attribution, source removals and obligations for the planned use.",
+      "obligations": [
+        "Retain page revision, contributor/history link, license and change notices.",
+        "Review imported or exceptional material separately; deny non-free media.",
+        "Carry source/page removal lineage through shards and dependent model releases."
+      ],
+      "deletionProcedure": "Do not ingest before clearance. If later acquired, retain source/file-to-shard lineage; stop affected use, produce an impact report, then carry out reviewed removal or restriction and re-evaluate dependent releases. No deletion or model rewrite is performed by this inventory."
+    },
+    {
+      "sourceId": "vf-proposed-gutenberg-en",
+      "name": "Individually cleared Project Gutenberg English books",
+      "kind": "external-source-proposal",
+      "domains": [
+        "language"
+      ],
+      "origin": "https://www.gutenberg.org/",
+      "acquisitionMethod": "Later select specific editions through the publisher's supported distribution mechanisms after per-book review.",
+      "proposedReference": "No title or edition selected",
+      "revision": null,
+      "contentSha256": null,
+      "acquired": false,
+      "permissionStatus": "not-admitted",
+      "allowedUses": [
+        "audit-metadata"
+      ],
+      "trainingAllowed": false,
+      "runtimeRetrievalAllowed": false,
+      "redistributionAllowed": false,
+      "licenseObservation": {
+        "identifier": "Per-work copyright status and Project Gutenberg terms",
+        "primaryUrl": "https://www.gutenberg.org/policy/license.html",
+        "checkedOn": "2026-09-07",
+        "summary": "Project Gutenberg distinguishes unrestricted US works from permission-based works and does not establish copyright status outside the United States.",
+        "evidenceScope": "Metadata observation, not a corpus license approval or evidence of acquired content."
+      },
+      "blockingReason": "No book-level copyright, edition or applicable-jurisdiction clearance. Public availability is insufficient for admission.",
+      "obligations": [
+        "Record each title, author, edition, copyright status and applicable-jurisdiction review.",
+        "Retain applicable notices and any work-specific permission restrictions.",
+        "Preserve per-book attribution/removal lineage and review the Gutenberg trademark terms."
+      ],
+      "deletionProcedure": "Do not ingest before clearance. If later acquired, retain source/file-to-shard lineage; stop affected use, produce an impact report, then carry out reviewed removal or restriction and re-evaluate dependent releases. No deletion or model rewrite is performed by this inventory."
+    },
+    {
+      "sourceId": "vf-proposed-openstax-physics",
+      "name": "OpenStax University Physics Volume 2",
+      "kind": "external-source-proposal",
+      "domains": [
+        "mathematics",
+        "physics",
+        "electronics"
+      ],
+      "origin": "https://openstax.org/books/university-physics-volume-2/",
+      "acquisitionMethod": "Permission-first proposal only; no book download, extraction, embedding or training in this task.",
+      "proposedReference": "Current web preface observed; no corpus revision acquired",
+      "revision": null,
+      "contentSha256": null,
+      "acquired": false,
+      "permissionStatus": "not-admitted",
+      "allowedUses": [
+        "audit-metadata"
+      ],
+      "trainingAllowed": false,
+      "runtimeRetrievalAllowed": false,
+      "redistributionAllowed": false,
+      "licenseObservation": {
+        "identifier": "CC-BY-NC-SA-4.0; page also states permission is required for LLM ingestion/training",
+        "primaryUrl": "https://openstax.org/books/university-physics-volume-2/pages/preface",
+        "checkedOn": "2026-09-07",
+        "summary": "The current preface states noncommercial share-alike terms and expressly requires OpenStax permission for LLM training or ingestion.",
+        "evidenceScope": "Metadata observation, not a corpus license approval or evidence of acquired content."
+      },
+      "blockingReason": "Publisher's LLM permission is absent. Do not acquire or ingest this text for the model on the strength of an open-license label.",
+      "obligations": [
+        "Obtain source-specific permission covering the actual training and product uses before any admission.",
+        "Review commercial use, share-alike, attribution, media exceptions and removal terms.",
+        "Do not substitute an assumed older license for the observed source version."
+      ],
+      "deletionProcedure": "Do not ingest before clearance. If later acquired, retain source/file-to-shard lineage; stop affected use, produce an impact report, then carry out reviewed removal or restriction and re-evaluate dependent releases. No deletion or model rewrite is performed by this inventory."
+    },
+    {
+      "sourceId": "vf-proposed-freertos-kernel",
+      "name": "FreeRTOS kernel C source",
+      "kind": "external-source-proposal",
+      "domains": [
+        "embedded-c-cpp",
+        "firmware"
+      ],
+      "origin": "https://github.com/FreeRTOS/FreeRTOS-Kernel",
+      "acquisitionMethod": "Later pin the reviewed tag to a commit; acquire a bounded archive and per-file license manifest, excluding unreviewed submodules.",
+      "proposedReference": "V11.1.0 proposed tag; resolved commit and source archive not acquired",
+      "revision": null,
+      "contentSha256": null,
+      "acquired": false,
+      "permissionStatus": "not-admitted",
+      "allowedUses": [
+        "audit-metadata"
+      ],
+      "trainingAllowed": false,
+      "runtimeRetrievalAllowed": false,
+      "redistributionAllowed": false,
+      "licenseObservation": {
+        "identifier": "MIT for the referenced kernel license file",
+        "primaryUrl": "https://raw.githubusercontent.com/FreeRTOS/FreeRTOS-Kernel/V11.1.0/LICENSE.md",
+        "checkedOn": "2026-09-07",
+        "summary": "The tagged kernel license grants broad software reuse under MIT with preservation of its notice and disclaimer. The reviewed file does not by itself clear every input in a training corpus.",
+        "evidenceScope": "Metadata observation, not a corpus license approval or evidence of acquired content."
+      },
+      "blockingReason": "Exact source commit/archive, individual file exceptions, attribution inventory and source-use review are pending.",
+      "obligations": [
+        "Retain copyright and permission notices in copies or substantial portions.",
+        "Audit per-file headers and excluded dependencies; do not inherit a license from a repository badge.",
+        "Trace selected files and downstream shards for later source removal."
+      ],
+      "deletionProcedure": "Do not ingest before clearance. If later acquired, retain source/file-to-shard lineage; stop affected use, produce an impact report, then carry out reviewed removal or restriction and re-evaluate dependent releases. No deletion or model rewrite is performed by this inventory."
+    },
+    {
+      "sourceId": "vf-proposed-arduino-avr",
+      "name": "Arduino AVR core C/C++ source",
+      "kind": "external-source-proposal",
+      "domains": [
+        "embedded-c-cpp",
+        "firmware",
+        "electronics"
+      ],
+      "origin": "https://github.com/arduino/ArduinoCore-avr",
+      "acquisitionMethod": "Later resolve tag 1.8.6 to an exact commit and inventory selected file licenses; do not copy the installed toolchain into training.",
+      "proposedReference": "1.8.6 proposed tag; only representative source header reviewed",
+      "revision": null,
+      "contentSha256": null,
+      "acquired": false,
+      "permissionStatus": "not-admitted",
+      "allowedUses": [
+        "audit-metadata"
+      ],
+      "trainingAllowed": false,
+      "runtimeRetrievalAllowed": false,
+      "redistributionAllowed": false,
+      "licenseObservation": {
+        "identifier": "LGPL-2.1-or-later in the representative wiring.c header; repository-wide clearance not established",
+        "primaryUrl": "https://raw.githubusercontent.com/arduino/ArduinoCore-avr/1.8.6/cores/arduino/wiring.c",
+        "checkedOn": "2026-09-07",
+        "summary": "The pinned wiring.c header declares LGPL version 2.1 or later. One header does not establish the license of every core, library, example or bundled file.",
+        "evidenceScope": "Metadata observation, not a corpus license approval or evidence of acquired content."
+      },
+      "blockingReason": "Repository/file license review, exact commit/archive and obligations for the proposed derived data remain pending.",
+      "obligations": [
+        "Retain per-file license, attribution and modification notices.",
+        "Review copyleft obligations and bundled third-party files for each proposed use.",
+        "Using this core as a compiler dependency does not authorize training on its source."
+      ],
+      "deletionProcedure": "Do not ingest before clearance. If later acquired, retain source/file-to-shard lineage; stop affected use, produce an impact report, then carry out reviewed removal or restriction and re-evaluate dependent releases. No deletion or model rewrite is performed by this inventory."
+    },
+    {
+      "sourceId": "vf-proposed-avr-libc",
+      "name": "AVR-LibC source and eligible documentation",
+      "kind": "external-source-proposal",
+      "domains": [
+        "embedded-c-cpp",
+        "firmware",
+        "documentation"
+      ],
+      "origin": "https://github.com/avrdudes/avr-libc",
+      "acquisitionMethod": "Later select a release/commit and bounded source archive with per-file permission evidence.",
+      "proposedReference": "Main-branch license observation only; no immutable source revision selected",
+      "revision": null,
+      "contentSha256": null,
+      "acquired": false,
+      "permissionStatus": "not-admitted",
+      "allowedUses": [
+        "audit-metadata"
+      ],
+      "trainingAllowed": false,
+      "runtimeRetrievalAllowed": false,
+      "redistributionAllowed": false,
+      "licenseObservation": {
+        "identifier": "Modified BSD with per-file details required",
+        "primaryUrl": "https://raw.githubusercontent.com/avrdudes/avr-libc/main/LICENSE",
+        "checkedOn": "2026-09-07",
+        "summary": "The project license describes modified BSD terms and directs readers to individual source files for details.",
+        "evidenceScope": "Metadata observation, not a corpus license approval or evidence of acquired content."
+      },
+      "blockingReason": "A mutable license observation is not a pinned training source; revision, file-level permissions, source bytes and exclusions are missing.",
+      "obligations": [
+        "Retain copyright, conditions and disclaimers for source/binary redistribution as applicable.",
+        "Do not imply endorsement by copyright holders or contributors.",
+        "Review documentation and individual file terms separately from the library summary."
+      ],
+      "deletionProcedure": "Do not ingest before clearance. If later acquired, retain source/file-to-shard lineage; stop affected use, produce an impact report, then carry out reviewed removal or restriction and re-evaluate dependent releases. No deletion or model rewrite is performed by this inventory."
+    },
+    {
+      "sourceId": "vf-proposed-gcc-manual",
+      "name": "GCC 14.2.0 C/C++ compiler manual",
+      "kind": "external-source-proposal",
+      "domains": [
+        "compiler",
+        "documentation",
+        "embedded-c-cpp"
+      ],
+      "origin": "https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/",
+      "acquisitionMethod": "Later obtain a versioned official manual snapshot after the planned extraction and use obligations are reviewed.",
+      "proposedReference": "Manual version 14.2.0; content archive not acquired",
+      "revision": null,
+      "contentSha256": null,
+      "acquired": false,
+      "permissionStatus": "not-admitted",
+      "allowedUses": [
+        "audit-metadata"
+      ],
+      "trainingAllowed": false,
+      "runtimeRetrievalAllowed": false,
+      "redistributionAllowed": false,
+      "licenseObservation": {
+        "identifier": "GFDL-1.3-or-later with declared invariant section and cover texts",
+        "primaryUrl": "https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/",
+        "checkedOn": "2026-09-07",
+        "summary": "The manual's copyright notice specifies GFDL 1.3 or later, an invariant section and cover-text obligations. Compiler software licensing is distinct from manual licensing.",
+        "evidenceScope": "Metadata observation, not a corpus license approval or evidence of acquired content."
+      },
+      "blockingReason": "No complete manual snapshot, document-level license inventory or review of normalization/redistribution obligations.",
+      "obligations": [
+        "Preserve declared invariant section, cover texts, attribution and license obligations as applicable.",
+        "Keep manual text permissions separate from compiler execution and project-authored diagnostic records.",
+        "Maintain document/revision/removal lineage."
+      ],
+      "deletionProcedure": "Do not ingest before clearance. If later acquired, retain source/file-to-shard lineage; stop affected use, produce an impact report, then carry out reviewed removal or restriction and re-evaluate dependent releases. No deletion or model rewrite is performed by this inventory."
+    }
+  ],
+  "excludedSources": [
+    {
+      "sourceId": "vf-excluded-private-projects-chats",
+      "kind": "private-user-project",
+      "trainingAllowed": false,
+      "contentRead": false,
+      "recordCount": null,
+      "reason": "No consented Gen2 training-source release; do not inspect private projects or conversations."
+    },
+    {
+      "sourceId": "vf-excluded-secrets",
+      "kind": "secret",
+      "trainingAllowed": false,
+      "contentRead": false,
+      "recordCount": null,
+      "reason": "Credentials and service configuration are never a corpus."
+    },
+    {
+      "sourceId": "vf-excluded-teacher-outputs",
+      "kind": "teacher-model-output",
+      "trainingAllowed": false,
+      "contentRead": false,
+      "recordCount": null,
+      "reason": "No external model-output source decision; synthetic data defaults to owned deterministic authorship."
+    },
+    {
+      "sourceId": "vf-excluded-evaluation-material",
+      "kind": "evaluation-material",
+      "trainingAllowed": false,
+      "contentRead": false,
+      "recordCount": null,
+      "reason": "Task-018 fixtures and all historical held-out records are excluded from training and tokenizer fitting."
+    }
+  ],
+  "units": [
+    {
+      "unitId": "vf-shard-db5b42f71e3fc74b7ba2",
+      "kind": "task-shard",
+      "path": "dataset.txt",
+      "recordCount": 362,
+      "bytes": 85787,
+      "sha256": "db5b42f71e3fc74b7ba2514997865b2f653eb9c8623eb5ddb0bd8222577d1802",
+      "manifest": {
+        "path": "data_governance/manifests/dataset.txt.manifest.json",
+        "sha256": "c9b8b69aa50ed8bc824a11ab5e7d7e75e02bb756936b9f04379a203a39e09f46",
+        "bytes": 2321
+      },
+      "sourceIds": [
+        "vf-src-legacy-dataset-txt-v0"
+      ],
+      "bytesMatchManifest": true,
+      "permissionStatus": "quarantined",
+      "reason": "SOURCE_PERMISSION_NOT_ACCEPTED",
+      "countedInExistingPool": false,
+      "gen2ReleaseApproved": false,
+      "rawContentStoredInInventory": false
+    },
+    {
+      "unitId": "vf-shard-73453d769400022f26eb",
+      "kind": "task-shard",
+      "path": "model/artifacts/chunk1_boards.jsonl",
+      "recordCount": 536,
+      "bytes": 295161,
+      "sha256": "73453d769400022f26eb84fa2750993d9140ae8378a9542205483ad1249ea422",
+      "manifest": {
+        "path": "data_governance/manifests/model__artifacts__chunk1_boards.jsonl.manifest.json",
+        "sha256": "16e9673e0782571f122f52ef3dc99de76f985c66f748780370f09a79b04fdb52",
+        "bytes": 2411
+      },
+      "sourceIds": [
+        "vf-src-project-domain-generator-v1"
+      ],
+      "bytesMatchManifest": true,
+      "permissionStatus": "quarantined",
+      "reason": "DATA_SHARD_USE_DENIED",
+      "countedInExistingPool": false,
+      "gen2ReleaseApproved": false,
+      "rawContentStoredInInventory": false
+    },
+    {
+      "unitId": "vf-shard-1a0b3257e6352fb0992f",
+      "kind": "task-shard",
+      "path": "model/artifacts/chunk2_physics.jsonl",
+      "recordCount": 865,
+      "bytes": 415458,
+      "sha256": "1a0b3257e6352fb0992f6a57839d989db7aedce787a7341f8fff97595a58c8d5",
+      "manifest": {
+        "path": "data_governance/manifests/model__artifacts__chunk2_physics.jsonl.manifest.json",
+        "sha256": "e27b847ae7e52b3cfb8d2a0c1e68ac06152b6616407149c119d52887983d72c7",
+        "bytes": 2412
+      },
+      "sourceIds": [
+        "vf-src-project-domain-generator-v1"
+      ],
+      "bytesMatchManifest": true,
+      "permissionStatus": "quarantined",
+      "reason": "DATA_SHARD_USE_DENIED",
+      "countedInExistingPool": false,
+      "gen2ReleaseApproved": false,
+      "rawContentStoredInInventory": false
+    },
+    {
+      "unitId": "vf-shard-88cc2c8ba437e28f8679",
+      "kind": "task-shard",
+      "path": "model/artifacts/chunk3_circuits.jsonl",
+      "recordCount": 14,
+      "bytes": 38589,
+      "sha256": "88cc2c8ba437e28f8679757838bf6407927cd6b4deea917f2b87d58e707984ab",
+      "manifest": {
+        "path": "data_governance/manifests/model__artifacts__chunk3_circuits.jsonl.manifest.json",
+        "sha256": "ef616435c431a05a68031911275b872d3bf334d77f08978e11e144e59da9d3de",
+        "bytes": 2076
+      },
+      "sourceIds": [
+        "vf-src-unknown-circuit-corpus-v0"
+      ],
+      "bytesMatchManifest": true,
+      "permissionStatus": "quarantined",
+      "reason": "SOURCE_PERMISSION_NOT_ACCEPTED",
+      "countedInExistingPool": false,
+      "gen2ReleaseApproved": false,
+      "rawContentStoredInInventory": false
+    },
+    {
+      "unitId": "vf-shard-1db59dd53d1c5c579fa2",
+      "kind": "task-shard",
+      "path": "model/artifacts/chunk3_components.jsonl",
+      "recordCount": 120,
+      "bytes": 60556,
+      "sha256": "1db59dd53d1c5c579fa26ea39f1359a117b3122ce8625beb1bb6d7916c827020",
+      "manifest": {
+        "path": "data_governance/manifests/model__artifacts__chunk3_components.jsonl.manifest.json",
+        "sha256": "f899205c1004855d2b8cbd75b03ba273fbd9abf406322221404bcb1801082dd8",
+        "bytes": 2414
+      },
+      "sourceIds": [
+        "vf-src-project-domain-generator-v1"
+      ],
+      "bytesMatchManifest": true,
+      "permissionStatus": "quarantined",
+      "reason": "DATA_SHARD_USE_DENIED",
+      "countedInExistingPool": false,
+      "gen2ReleaseApproved": false,
+      "rawContentStoredInInventory": false
+    },
+    {
+      "unitId": "vf-shard-f1b4a123bfc4ffab5611",
+      "kind": "task-shard",
+      "path": "model/artifacts/chunk4_firmware.jsonl",
+      "recordCount": 252,
+      "bytes": 250255,
+      "sha256": "f1b4a123bfc4ffab5611416142d7c55d272001bd8a96a0424674618754f3a324",
+      "manifest": {
+        "path": "data_governance/manifests/model__artifacts__chunk4_firmware.jsonl.manifest.json",
+        "sha256": "f7de854e211c2c5e557826dc4797629e7f66f3e46f5547cb6ff78ec542b8b9d6",
+        "bytes": 2413
+      },
+      "sourceIds": [
+        "vf-src-project-domain-generator-v1"
+      ],
+      "bytesMatchManifest": true,
+      "permissionStatus": "quarantined",
+      "reason": "DATA_SHARD_USE_DENIED",
+      "countedInExistingPool": false,
+      "gen2ReleaseApproved": false,
+      "rawContentStoredInInventory": false
+    },
+    {
+      "unitId": "vf-shard-c1be8f95948bcd5d0355",
+      "kind": "task-shard",
+      "path": "model/artifacts/chunk5_diagnostics.jsonl",
+      "recordCount": 336,
+      "bytes": 233071,
+      "sha256": "c1be8f95948bcd5d03557d98990ac3ea0fd0337305fb5c48e6178c3705a70472",
+      "manifest": {
+        "path": "data_governance/manifests/model__artifacts__chunk5_diagnostics.jsonl.manifest.json",
+        "sha256": "e5575845a1be8f81f4330ceb0fd692be5d12261beb9f8247b9eab039548c33d4",
+        "bytes": 2416
+      },
+      "sourceIds": [
+        "vf-src-project-domain-generator-v1"
+      ],
+      "bytesMatchManifest": true,
+      "permissionStatus": "quarantined",
+      "reason": "DATA_SHARD_USE_DENIED",
+      "countedInExistingPool": false,
+      "gen2ReleaseApproved": false,
+      "rawContentStoredInInventory": false
+    },
+    {
+      "unitId": "vf-shard-5abf553b8d55b62825a8",
+      "kind": "task-shard",
+      "path": "model/artifacts/chunk6_conversational.jsonl",
+      "recordCount": 80,
+      "bytes": 41669,
+      "sha256": "5abf553b8d55b62825a8446f999dedba514209494e24c4a46a2f3e775fe29f55",
+      "manifest": {
+        "path": "data_governance/manifests/model__artifacts__chunk6_conversational.jsonl.manifest.json",
+        "sha256": "2f1801b3ae32bcf502bfc283481e5b899e84a163ee01fb2afcc75d4c802f569e",
+        "bytes": 2417
+      },
+      "sourceIds": [
+        "vf-src-project-domain-generator-v1"
+      ],
+      "bytesMatchManifest": true,
+      "permissionStatus": "quarantined",
+      "reason": "DATA_SHARD_USE_DENIED",
+      "countedInExistingPool": false,
+      "gen2ReleaseApproved": false,
+      "rawContentStoredInInventory": false
+    },
+    {
+      "unitId": "vf-shard-7acc45d84d4649da8cbe",
+      "kind": "task-shard",
+      "path": "model/artifacts/chunk7_refusals.jsonl",
+      "recordCount": 30,
+      "bytes": 17619,
+      "sha256": "7acc45d84d4649da8cbea4187b63fabc7f33c1e659e34ff99256c11f9357df85",
+      "manifest": {
+        "path": "data_governance/manifests/model__artifacts__chunk7_refusals.jsonl.manifest.json",
+        "sha256": "dd1dbd14316207dae768822c92f5dccbd343f0fe05263596637b04284e8b884f",
+        "bytes": 2411
+      },
+      "sourceIds": [
+        "vf-src-project-domain-generator-v1"
+      ],
+      "bytesMatchManifest": true,
+      "permissionStatus": "quarantined",
+      "reason": "DATA_SHARD_USE_DENIED",
+      "countedInExistingPool": false,
+      "gen2ReleaseApproved": false,
+      "rawContentStoredInInventory": false
+    },
+    {
+      "unitId": "vf-shard-176effc2e25cd6d4c253",
+      "kind": "task-shard",
+      "path": "model/artifacts/dataset.jsonl",
+      "recordCount": 10500,
+      "bytes": 5457916,
+      "sha256": "176effc2e25cd6d4c2534a4d36f85d5a60607c20289e654d7c6ee71151e5db78",
+      "manifest": {
+        "path": "data_governance/manifests/model__artifacts__dataset.jsonl.manifest.json",
+        "sha256": "972d68c4c32cf224f90c47d1a19bb6b8922d0d73edabee4f9663f8d96a004928",
+        "bytes": 3280
+      },
+      "sourceIds": [
+        "vf-src-project-multitask-generator-v1",
+        "vf-src-legacy-dataset-txt-v0"
+      ],
+      "bytesMatchManifest": true,
+      "permissionStatus": "quarantined",
+      "reason": "SOURCE_PERMISSION_NOT_ACCEPTED",
+      "countedInExistingPool": false,
+      "gen2ReleaseApproved": false,
+      "rawContentStoredInInventory": false
+    },
+    {
+      "unitId": "vf-shard-f9a4a9c795baa288ef4f",
+      "kind": "task-shard",
+      "path": "model/artifacts/dataset_1b.jsonl",
+      "recordCount": 2500,
+      "bytes": 2348878,
+      "sha256": "f9a4a9c795baa288ef4fce8c4193ca19cff1b885c05a7a93bbc675d62c051013",
+      "manifest": {
+        "path": "data_governance/manifests/model__artifacts__dataset_1b.jsonl.manifest.json",
+        "sha256": "05faff68d6028996d1c731c1b23bcf95f993c6acd5dac21774c03a4170194616",
+        "bytes": 2373
+      },
+      "sourceIds": [
+        "vf-src-retired-scale-generator-v0"
+      ],
+      "bytesMatchManifest": true,
+      "permissionStatus": "quarantined",
+      "reason": "SOURCE_PERMISSION_NOT_ACCEPTED",
+      "countedInExistingPool": false,
+      "gen2ReleaseApproved": false,
+      "rawContentStoredInInventory": false
+    },
+    {
+      "unitId": "vf-shard-52ccd02a1d8d5120bd84",
+      "kind": "task-shard",
+      "path": "model/artifacts/master_domain_dataset.jsonl",
+      "recordCount": 2219,
+      "bytes": 1313789,
+      "sha256": "52ccd02a1d8d5120bd84b33c7887c61761a9ed6850a1926a3214e1b1b0a15113",
+      "manifest": {
+        "path": "data_governance/manifests/model__artifacts__master_domain_dataset.jsonl.manifest.json",
+        "sha256": "acedc3278e37cf09b383fe5d9821cce17165c052ecdcf0764c3d404a654b6938",
+        "bytes": 2424
+      },
+      "sourceIds": [
+        "vf-src-project-domain-generator-v1"
+      ],
+      "bytesMatchManifest": true,
+      "permissionStatus": "quarantined",
+      "reason": "DATA_SHARD_USE_DENIED",
+      "countedInExistingPool": false,
+      "gen2ReleaseApproved": false,
+      "rawContentStoredInInventory": false
+    },
+    {
+      "unitId": "vf-shard-4c809d3d579a478ec622",
+      "kind": "task-shard",
+      "path": "synthetic_data/shards/v1/circuit-safety.jsonl",
+      "recordCount": 74,
+      "bytes": 252122,
+      "sha256": "4c809d3d579a478ec62258801ddd9f1cef750d79b4850ac7dcd33fe853207a31",
+      "manifest": {
+        "path": "data_governance/manifests/synthetic_data__shards__v1__circuit-safety.jsonl.manifest.json",
+        "sha256": "7aa71d7685e45966fc9653deb42f1e1bc2dcd0d7bba562e9ef6257bca3f0f45f",
+        "bytes": 3654
+      },
+      "sourceIds": [
+        "vf-src-curated-electronics-corpus-v1",
+        "vf-src-verified-synthetic-pipeline-v1"
+      ],
+      "bytesMatchManifest": true,
+      "permissionStatus": "approved-existing-shard",
+      "reason": "existing-source-and-shard-permissions-verified",
+      "countedInExistingPool": true,
+      "gen2ReleaseApproved": false,
+      "rawContentStoredInInventory": false
+    },
+    {
+      "unitId": "vf-shard-efb854df4a1168b43fde",
+      "kind": "task-shard",
+      "path": "synthetic_data/shards/v1/compiler-repair.jsonl",
+      "recordCount": 22,
+      "bytes": 180422,
+      "sha256": "efb854df4a1168b43fded3addf67589146183a2eebd1869b475b19ff6d1be6f5",
+      "manifest": {
+        "path": "data_governance/manifests/synthetic_data__shards__v1__compiler-repair.jsonl.manifest.json",
+        "sha256": "1f16215c9ab4fab4f9f7288fae6fcb2a11d320472dc16a6d382783bdc3e8938c",
+        "bytes": 3655
+      },
+      "sourceIds": [
+        "vf-src-curated-electronics-corpus-v1",
+        "vf-src-verified-synthetic-pipeline-v1"
+      ],
+      "bytesMatchManifest": true,
+      "permissionStatus": "approved-existing-shard",
+      "reason": "existing-source-and-shard-permissions-verified",
+      "countedInExistingPool": true,
+      "gen2ReleaseApproved": false,
+      "rawContentStoredInInventory": false
+    },
+    {
+      "unitId": "vf-shard-2bc59ebc4ff1490018f0",
+      "kind": "task-shard",
+      "path": "synthetic_data/shards/v1/firmware.jsonl",
+      "recordCount": 44,
+      "bytes": 207010,
+      "sha256": "2bc59ebc4ff1490018f0fae34eea230ab47deb6c1ed382f5b005fea3419e488c",
+      "manifest": {
+        "path": "data_governance/manifests/synthetic_data__shards__v1__firmware.jsonl.manifest.json",
+        "sha256": "1515598f53b66395163b80e3a96a94ae9ece72ff595b5995f71a52338452bd2a",
+        "bytes": 3648
+      },
+      "sourceIds": [
+        "vf-src-curated-electronics-corpus-v1",
+        "vf-src-verified-synthetic-pipeline-v1"
+      ],
+      "bytesMatchManifest": true,
+      "permissionStatus": "approved-existing-shard",
+      "reason": "existing-source-and-shard-permissions-verified",
+      "countedInExistingPool": true,
+      "gen2ReleaseApproved": false,
+      "rawContentStoredInInventory": false
+    },
+    {
+      "unitId": "vf-shard-7fef589dc3b393001d9a",
+      "kind": "task-shard",
+      "path": "synthetic_data/shards/v1/grounded-electronics.jsonl",
+      "recordCount": 110,
+      "bytes": 305885,
+      "sha256": "7fef589dc3b393001d9a5f2221551eb9cb607a4e4ba392bf7edfcd6666e78c04",
+      "manifest": {
+        "path": "data_governance/manifests/synthetic_data__shards__v1__grounded-electronics.jsonl.manifest.json",
+        "sha256": "ed4e534b9db910e9e76ded5681f7d2f00b323c4ee5eb4060386740a7a8c41a01",
+        "bytes": 3661
+      },
+      "sourceIds": [
+        "vf-src-curated-electronics-corpus-v1",
+        "vf-src-verified-synthetic-pipeline-v1"
+      ],
+      "bytesMatchManifest": true,
+      "permissionStatus": "approved-existing-shard",
+      "reason": "existing-source-and-shard-permissions-verified",
+      "countedInExistingPool": true,
+      "gen2ReleaseApproved": false,
+      "rawContentStoredInInventory": false
+    },
+    {
+      "unitId": "vf-pack-board-v1",
+      "kind": "curated-fact-pack",
+      "path": "electronics_corpus/packs/v1/board.jsonl",
+      "sha256": "aba1e7fd07bec70f6166e523ca4dab466d74d6e5cd037e9136fccf20d61bbcd4",
+      "bytes": 40231,
+      "recordCount": 16,
+      "sourceIds": [
+        "vf-src-curated-electronics-corpus-v1"
+      ],
+      "permissionStatus": "approved-upstream-facts",
+      "manifest": {
+        "path": "electronics_corpus/catalog.v1.json",
+        "sha256": "db6c299f7b26ed50c42478a47ef5f163f1cb838db37ac131058f8fcc311d0c9b",
+        "bytes": 3235
+      },
+      "countedInExistingPool": false,
+      "gen2ReleaseApproved": false,
+      "reason": "Source permission verified; upstream facts are not added again to the derived synthetic training pool."
+    },
+    {
+      "unitId": "vf-pack-pin-map-v1",
+      "kind": "curated-fact-pack",
+      "path": "electronics_corpus/packs/v1/pin-map.jsonl",
+      "sha256": "a33803a512b507638c87974ddfde9a367a51212977f6a6f6d802491aa7e8e1e2",
+      "bytes": 24362,
+      "recordCount": 11,
+      "sourceIds": [
+        "vf-src-curated-electronics-corpus-v1"
+      ],
+      "permissionStatus": "approved-upstream-facts",
+      "manifest": {
+        "path": "electronics_corpus/catalog.v1.json",
+        "sha256": "db6c299f7b26ed50c42478a47ef5f163f1cb838db37ac131058f8fcc311d0c9b",
+        "bytes": 3235
+      },
+      "countedInExistingPool": false,
+      "gen2ReleaseApproved": false,
+      "reason": "Source permission verified; upstream facts are not added again to the derived synthetic training pool."
+    },
+    {
+      "unitId": "vf-pack-component-v1",
+      "kind": "curated-fact-pack",
+      "path": "electronics_corpus/packs/v1/component.jsonl",
+      "sha256": "8a6b3752a6af4eafa8448d5ec8334b6f87b170018ce677f15650993874b0bfae",
+      "bytes": 8988,
+      "recordCount": 4,
+      "sourceIds": [
+        "vf-src-curated-electronics-corpus-v1"
+      ],
+      "permissionStatus": "approved-upstream-facts",
+      "manifest": {
+        "path": "electronics_corpus/catalog.v1.json",
+        "sha256": "db6c299f7b26ed50c42478a47ef5f163f1cb838db37ac131058f8fcc311d0c9b",
+        "bytes": 3235
+      },
+      "countedInExistingPool": false,
+      "gen2ReleaseApproved": false,
+      "reason": "Source permission verified; upstream facts are not added again to the derived synthetic training pool."
+    },
+    {
+      "unitId": "vf-pack-wiring-recipe-v1",
+      "kind": "curated-fact-pack",
+      "path": "electronics_corpus/packs/v1/wiring-recipe.jsonl",
+      "sha256": "80275c4ccd564d250876c7203551719cda6fc9ae98788f3f5e0e7dbf81b5ca33",
+      "bytes": 36063,
+      "recordCount": 11,
+      "sourceIds": [
+        "vf-src-curated-electronics-corpus-v1"
+      ],
+      "permissionStatus": "approved-upstream-facts",
+      "manifest": {
+        "path": "electronics_corpus/catalog.v1.json",
+        "sha256": "db6c299f7b26ed50c42478a47ef5f163f1cb838db37ac131058f8fcc311d0c9b",
+        "bytes": 3235
+      },
+      "countedInExistingPool": false,
+      "gen2ReleaseApproved": false,
+      "reason": "Source permission verified; upstream facts are not added again to the derived synthetic training pool."
+    },
+    {
+      "unitId": "vf-pack-firmware-api-v1",
+      "kind": "curated-fact-pack",
+      "path": "electronics_corpus/packs/v1/firmware-api.jsonl",
+      "sha256": "823811120d80a9293589ab3c10d4e959c11a262e501bcddbc4237690aaa83a7e",
+      "bytes": 12483,
+      "recordCount": 4,
+      "sourceIds": [
+        "vf-src-curated-electronics-corpus-v1"
+      ],
+      "permissionStatus": "approved-upstream-facts",
+      "manifest": {
+        "path": "electronics_corpus/catalog.v1.json",
+        "sha256": "db6c299f7b26ed50c42478a47ef5f163f1cb838db37ac131058f8fcc311d0c9b",
+        "bytes": 3235
+      },
+      "countedInExistingPool": false,
+      "gen2ReleaseApproved": false,
+      "reason": "Source permission verified; upstream facts are not added again to the derived synthetic training pool."
+    },
+    {
+      "unitId": "vf-pack-compiler-diagnostic-v1",
+      "kind": "curated-fact-pack",
+      "path": "electronics_corpus/packs/v1/compiler-diagnostic.jsonl",
+      "sha256": "c4346f56665aadc2bbd8a58d5d866a64de2dc9782438a92fb006b9d631198f24",
+      "bytes": 8215,
+      "recordCount": 4,
+      "sourceIds": [
+        "vf-src-curated-electronics-corpus-v1"
+      ],
+      "permissionStatus": "approved-upstream-facts",
+      "manifest": {
+        "path": "electronics_corpus/catalog.v1.json",
+        "sha256": "db6c299f7b26ed50c42478a47ef5f163f1cb838db37ac131058f8fcc311d0c9b",
+        "bytes": 3235
+      },
+      "countedInExistingPool": false,
+      "gen2ReleaseApproved": false,
+      "reason": "Source permission verified; upstream facts are not added again to the derived synthetic training pool."
+    },
+    {
+      "unitId": "vf-pack-simulation-behavior-v1",
+      "kind": "curated-fact-pack",
+      "path": "electronics_corpus/packs/v1/simulation-behavior.jsonl",
+      "sha256": "5b256a8f061e5ee21754cc311dd48404c0e56cb4f83c2219bea9b9e4c5498ef1",
+      "bytes": 7468,
+      "recordCount": 4,
+      "sourceIds": [
+        "vf-src-curated-electronics-corpus-v1"
+      ],
+      "permissionStatus": "approved-upstream-facts",
+      "manifest": {
+        "path": "electronics_corpus/catalog.v1.json",
+        "sha256": "db6c299f7b26ed50c42478a47ef5f163f1cb838db37ac131058f8fcc311d0c9b",
+        "bytes": 3235
+      },
+      "countedInExistingPool": false,
+      "gen2ReleaseApproved": false,
+      "reason": "Source permission verified; upstream facts are not added again to the derived synthetic training pool."
+    },
+    {
+      "unitId": "vf-pack-safety-constraint-v1",
+      "kind": "curated-fact-pack",
+      "path": "electronics_corpus/packs/v1/safety-constraint.jsonl",
+      "sha256": "f73978bc082b3a78f250d0b1768b736910fdf84c7dc6aa318639aa990b4ea993",
+      "bytes": 13018,
+      "recordCount": 7,
+      "sourceIds": [
+        "vf-src-curated-electronics-corpus-v1"
+      ],
+      "permissionStatus": "approved-upstream-facts",
+      "manifest": {
+        "path": "electronics_corpus/catalog.v1.json",
+        "sha256": "db6c299f7b26ed50c42478a47ef5f163f1cb838db37ac131058f8fcc311d0c9b",
+        "bytes": 3235
+      },
+      "countedInExistingPool": false,
+      "gen2ReleaseApproved": false,
+      "reason": "Source permission verified; upstream facts are not added again to the derived synthetic training pool."
+    }
+  ],
+  "retainedCopies": [
+    {
+      "releaseId": "vf-synthetic-1.2.0-1594f89c93854f971d3a",
+      "releasePath": "synthetic_data/releases/1.2.0/1594f89c93854f971d3af6cb2275f558ee46015c4ca5b752a80a18461dd5167d",
+      "sourcePath": "synthetic_data/shards/v1/grounded-electronics.jsonl",
+      "sha256": "7fef589dc3b393001d9a5f2221551eb9cb607a4e4ba392bf7edfcd6666e78c04",
+      "recordCount": 110,
+      "isCurrent": false,
+      "countedAsAdditionalUniqueData": false
+    },
+    {
+      "releaseId": "vf-synthetic-1.2.0-1594f89c93854f971d3a",
+      "releasePath": "synthetic_data/releases/1.2.0/1594f89c93854f971d3af6cb2275f558ee46015c4ca5b752a80a18461dd5167d",
+      "sourcePath": "synthetic_data/shards/v1/circuit-safety.jsonl",
+      "sha256": "4c809d3d579a478ec62258801ddd9f1cef750d79b4850ac7dcd33fe853207a31",
+      "recordCount": 74,
+      "isCurrent": false,
+      "countedAsAdditionalUniqueData": false
+    },
+    {
+      "releaseId": "vf-synthetic-1.2.0-1594f89c93854f971d3a",
+      "releasePath": "synthetic_data/releases/1.2.0/1594f89c93854f971d3af6cb2275f558ee46015c4ca5b752a80a18461dd5167d",
+      "sourcePath": "synthetic_data/shards/v1/firmware.jsonl",
+      "sha256": "2bc59ebc4ff1490018f0fae34eea230ab47deb6c1ed382f5b005fea3419e488c",
+      "recordCount": 44,
+      "isCurrent": false,
+      "countedAsAdditionalUniqueData": false
+    },
+    {
+      "releaseId": "vf-synthetic-1.2.0-1594f89c93854f971d3a",
+      "releasePath": "synthetic_data/releases/1.2.0/1594f89c93854f971d3af6cb2275f558ee46015c4ca5b752a80a18461dd5167d",
+      "sourcePath": "synthetic_data/shards/v1/compiler-repair.jsonl",
+      "sha256": "efb854df4a1168b43fded3addf67589146183a2eebd1869b475b19ff6d1be6f5",
+      "recordCount": 22,
+      "isCurrent": false,
+      "countedAsAdditionalUniqueData": false
+    },
+    {
+      "releaseId": "vf-synthetic-1.3.0-e90691f629808e1478d8",
+      "releasePath": "synthetic_data/releases/1.3.0/e90691f629808e1478d8630c9718ee0e61f785bd7386615bc96b39ece9f9c80d",
+      "sourcePath": "synthetic_data/shards/v1/grounded-electronics.jsonl",
+      "sha256": "7fef589dc3b393001d9a5f2221551eb9cb607a4e4ba392bf7edfcd6666e78c04",
+      "recordCount": 110,
+      "isCurrent": true,
+      "countedAsAdditionalUniqueData": false
+    },
+    {
+      "releaseId": "vf-synthetic-1.3.0-e90691f629808e1478d8",
+      "releasePath": "synthetic_data/releases/1.3.0/e90691f629808e1478d8630c9718ee0e61f785bd7386615bc96b39ece9f9c80d",
+      "sourcePath": "synthetic_data/shards/v1/circuit-safety.jsonl",
+      "sha256": "4c809d3d579a478ec62258801ddd9f1cef750d79b4850ac7dcd33fe853207a31",
+      "recordCount": 74,
+      "isCurrent": true,
+      "countedAsAdditionalUniqueData": false
+    },
+    {
+      "releaseId": "vf-synthetic-1.3.0-e90691f629808e1478d8",
+      "releasePath": "synthetic_data/releases/1.3.0/e90691f629808e1478d8630c9718ee0e61f785bd7386615bc96b39ece9f9c80d",
+      "sourcePath": "synthetic_data/shards/v1/firmware.jsonl",
+      "sha256": "2bc59ebc4ff1490018f0fae34eea230ab47deb6c1ed382f5b005fea3419e488c",
+      "recordCount": 44,
+      "isCurrent": true,
+      "countedAsAdditionalUniqueData": false
+    },
+    {
+      "releaseId": "vf-synthetic-1.3.0-e90691f629808e1478d8",
+      "releasePath": "synthetic_data/releases/1.3.0/e90691f629808e1478d8630c9718ee0e61f785bd7386615bc96b39ece9f9c80d",
+      "sourcePath": "synthetic_data/shards/v1/compiler-repair.jsonl",
+      "sha256": "efb854df4a1168b43fded3addf67589146183a2eebd1869b475b19ff6d1be6f5",
+      "recordCount": 22,
+      "isCurrent": true,
+      "countedAsAdditionalUniqueData": false
+    }
+  ],
+  "sourceCounts": {
+    "existing": 8,
+    "approvedForExistingTrainingUse": 4,
+    "notApprovedForTraining": 4,
+    "proposedNotAdmitted": 7,
+    "excludedClasses": 4
+  },
+  "unitCounts": {
+    "quarantined": 12,
+    "approved-existing-shard": 4,
+    "approved-upstream-facts": 8
+  },
+  "existingPool": {
+    "inputRecords": 296,
+    "uniqueEligibleRecords": 227,
+    "proxyTokens": 112418,
+    "utf8Bytes": 787544,
+    "excluded": {
+      "historical-held-out": 69
+    },
+    "taskCounts": {
+      "structured_output": 20,
+      "circuit_validation": 30,
+      "refusal": 10,
+      "uncertainty": 7,
+      "compiler_repair": 20,
+      "firmware_generation": 40,
+      "pin_routing": 20,
+      "wiring": 40,
+      "domain_chat": 40
+    },
+    "recordFingerprints": [
+      {
+        "recordId": "vf-task-v1-4520ce9ac239b8cf4e1e38a6",
+        "payloadSha256": "7b473f28525fb32a3aaab0c5fc914c37455247285d007797d0e9c7ba49663f8d",
+        "task": "structured_output",
+        "utf8Bytes": 4916,
+        "proxyTokens": 622
+      },
+      {
+        "recordId": "vf-task-v1-f3a7941b6267cc12d6c63698",
+        "payloadSha256": "de125af5d5439e412ee3f6b4d27fb0817b838a3d86ff85803e382b72ae88cec4",
+        "task": "circuit_validation",
+        "utf8Bytes": 3291,
+        "proxyTokens": 395
+      },
+      {
+        "recordId": "vf-task-v1-c2f247c92bf72d81f213028f",
+        "payloadSha256": "2e246fbfb4256ee3cd586227437504801bf30c9a244b3ee80da84c4c21a179d8",
+        "task": "refusal",
+        "utf8Bytes": 2488,
+        "proxyTokens": 569
+      },
+      {
+        "recordId": "vf-task-v1-26c8790f36d7e9ed5092bd6f",
+        "payloadSha256": "51aa492b9ed4432db8648b742489e76c7e6162d51bf07706df1f61462153908b",
+        "task": "refusal",
+        "utf8Bytes": 2466,
+        "proxyTokens": 565
+      },
+      {
+        "recordId": "vf-task-v1-e8b4378d32b35b775889a520",
+        "payloadSha256": "7d14102b95fb8959909ccf03f800e5afdb9fd6ae3631c69791a13bc1db676845",
+        "task": "structured_output",
+        "utf8Bytes": 4907,
+        "proxyTokens": 615
+      },
+      {
+        "recordId": "vf-task-v1-1c58725155a5966dfcac1ffa",
+        "payloadSha256": "7eeea464715e61c48966cd377ee4d08d3d7d959cbe2f9a04e6ebf0066dcab588",
+        "task": "uncertainty",
+        "utf8Bytes": 1920,
+        "proxyTokens": 478
+      },
+      {
+        "recordId": "vf-task-v1-ebff75508593581fc73a946c",
+        "payloadSha256": "83d20ba77f43af0a3b8bb6bf2b06c75d45f3e0e7a459fa859ae39cd8f7bd811b",
+        "task": "circuit_validation",
+        "utf8Bytes": 2754,
+        "proxyTokens": 343
+      },
+      {
+        "recordId": "vf-task-v1-bd2feb46bf167bfebfb2791a",
+        "payloadSha256": "9a1931c43f3b764d9fb371b400adeb05f270efa5cce70891467b11e545e90d33",
+        "task": "structured_output",
+        "utf8Bytes": 3300,
+        "proxyTokens": 436
+      },
+      {
+        "recordId": "vf-task-v1-d613ccad94333c2ddd9267c2",
+        "payloadSha256": "e7c2d956a09c86baf5edbd978f5f771114b22e226148a81922e21f9eb5a892b7",
+        "task": "structured_output",
+        "utf8Bytes": 4924,
+        "proxyTokens": 632
+      },
+      {
+        "recordId": "vf-task-v1-09b6d463a77edef754b219ed",
+        "payloadSha256": "853c2935b24c44fb3bcd9d3de827753a72ec7cf73f3927155410c6b29f487abb",
+        "task": "structured_output",
+        "utf8Bytes": 4985,
+        "proxyTokens": 631
+      },
+      {
+        "recordId": "vf-task-v1-1d0536d65cb53a95cbfe8b06",
+        "payloadSha256": "abf9c298653bbd18e11bba3ca300426383654deb5b4d352360fa353e73cf3c54",
+        "task": "circuit_validation",
+        "utf8Bytes": 3172,
+        "proxyTokens": 381
+      },
+      {
+        "recordId": "vf-task-v1-f262341d5bc7871193d05a6c",
+        "payloadSha256": "f295f38b0928bf820f3ed800f2f9f0358473d7eb0fb4e8ab200606045a9dfde3",
+        "task": "circuit_validation",
+        "utf8Bytes": 2815,
+        "proxyTokens": 360
+      },
+      {
+        "recordId": "vf-task-v1-c787968e0f511290c5328451",
+        "payloadSha256": "4477714671ce089da6342d9782b4bba629f32903c5dfcdc8fe43f313edc1f1a4",
+        "task": "structured_output",
+        "utf8Bytes": 3269,
+        "proxyTokens": 428
+      },
+      {
+        "recordId": "vf-task-v1-2a2ee56c90a56ce85b4babb9",
+        "payloadSha256": "1e2dcc07f0de53139e7528ed35b9416c7ba5e56bf4efc84fc1e904e094fa27e2",
+        "task": "structured_output",
+        "utf8Bytes": 4961,
+        "proxyTokens": 664
+      },
+      {
+        "recordId": "vf-task-v1-64508ccb06951c8d8591e66d",
+        "payloadSha256": "00e856a21a1b2c6339e6153ac1149e5a981b9f03453175c7a1043bb4b7330201",
+        "task": "circuit_validation",
+        "utf8Bytes": 2781,
+        "proxyTokens": 322
+      },
+      {
+        "recordId": "vf-task-v1-7071f3ef8ee3d03d9d188d53",
+        "payloadSha256": "4e05de5d6c3be2b446a9a62a51d62ebe6da07425acc6331965e12b5c71ae1b8c",
+        "task": "circuit_validation",
+        "utf8Bytes": 3252,
+        "proxyTokens": 388
+      },
+      {
+        "recordId": "vf-task-v1-576205c78907a425136cedf1",
+        "payloadSha256": "87c38ff287bebf06e366d71c7a1048807dd35ce100234b671a78c688ca7beb3b",
+        "task": "circuit_validation",
+        "utf8Bytes": 2783,
+        "proxyTokens": 323
+      },
+      {
+        "recordId": "vf-task-v1-5e382cd47f2df22be3e8ae8c",
+        "payloadSha256": "43ae48871db706704bd9a653c64de44d9ef5eaed1b57c347dc334e9ecc080c54",
+        "task": "structured_output",
+        "utf8Bytes": 3240,
+        "proxyTokens": 420
+      },
+      {
+        "recordId": "vf-task-v1-cecc538759bf1944cdba60f5",
+        "payloadSha256": "1fd319c923d15de6ebd67a7b1cbc9ffba37aa5689d9a129374e48618021a857b",
+        "task": "structured_output",
+        "utf8Bytes": 4905,
+        "proxyTokens": 658
+      },
+      {
+        "recordId": "vf-task-v1-09e24d726d6656a71e80ae0f",
+        "payloadSha256": "7bad94df3741b604c2d1d4e453813b5c881745eded2981552d98d59254d14d8b",
+        "task": "circuit_validation",
+        "utf8Bytes": 2770,
+        "proxyTokens": 345
+      },
+      {
+        "recordId": "vf-task-v1-2eefc9156732425bade77201",
+        "payloadSha256": "e9bdc9d4ac02948d24d1cf18e81a9184724f3d846bd05b425dbc3b84bb9b33c2",
+        "task": "circuit_validation",
+        "utf8Bytes": 2793,
+        "proxyTokens": 327
+      },
+      {
+        "recordId": "vf-task-v1-e49344c2903261f3fb60a949",
+        "payloadSha256": "8f9b33fea991c1e07c9d92c036a279d83909565a2cff8f2b983cdd084b8285c6",
+        "task": "circuit_validation",
+        "utf8Bytes": 2779,
+        "proxyTokens": 352
+      },
+      {
+        "recordId": "vf-task-v1-9ccdf79da37be9172b024a65",
+        "payloadSha256": "866b44154ef9f29f1797a858326a94d1b1ffe2092d508e01755627aa334d172d",
+        "task": "uncertainty",
+        "utf8Bytes": 1920,
+        "proxyTokens": 479
+      },
+      {
+        "recordId": "vf-task-v1-4f160756497bcdc49ac563c4",
+        "payloadSha256": "711eb1675229d4beaa9e124d83f22605c3500e493a8ece59b9ea8502ecc60197",
+        "task": "circuit_validation",
+        "utf8Bytes": 3228,
+        "proxyTokens": 397
+      },
+      {
+        "recordId": "vf-task-v1-093f7ae1d1b39fc448e0a157",
+        "payloadSha256": "207562b7d77daafad9298128d59df187f6ac4239c725bcfda6397736f2d10fbf",
+        "task": "circuit_validation",
+        "utf8Bytes": 2745,
+        "proxyTokens": 332
+      },
+      {
+        "recordId": "vf-task-v1-4cc414faf53df21c293ffa4d",
+        "payloadSha256": "7c37087163bea569c1567901e2892e024b9d82c2e47c0cd404e28b178be50038",
+        "task": "circuit_validation",
+        "utf8Bytes": 3183,
+        "proxyTokens": 378
+      },
+      {
+        "recordId": "vf-task-v1-fb4b1ec9abaf4b88cda5d3e9",
+        "payloadSha256": "efc0e2ac8b93985f8d279074076a4cd6e1153e1220192bd27dbb50b89d0cd3e1",
+        "task": "structured_output",
+        "utf8Bytes": 4917,
+        "proxyTokens": 651
+      },
+      {
+        "recordId": "vf-task-v1-0e6540434d3bc16c1c46ab8f",
+        "payloadSha256": "8a78ad4b651a1465f74148c62bc49839276aca2317c5d056ad0ffb8e56ae1080",
+        "task": "refusal",
+        "utf8Bytes": 2461,
+        "proxyTokens": 581
+      },
+      {
+        "recordId": "vf-task-v1-eb1327dd7393386bd453e318",
+        "payloadSha256": "f157be033e57229d8fce6612e9d4aa3fd07873475852acefb2dd2cd435f8413b",
+        "task": "circuit_validation",
+        "utf8Bytes": 3174,
+        "proxyTokens": 369
+      },
+      {
+        "recordId": "vf-task-v1-887814904910d62fc5e33c8a",
+        "payloadSha256": "651b8dc36468277b43c2e4278ad3fa39efcb2622aa9a194d04822df02bdadc0a",
+        "task": "refusal",
+        "utf8Bytes": 2477,
+        "proxyTokens": 573
+      },
+      {
+        "recordId": "vf-task-v1-0a30fc6e70a47ae641b14936",
+        "payloadSha256": "63905bf85143227b0eaf7ed3db77d3e1bc1633e2e01b8d68d4efaf1c28e2149b",
+        "task": "uncertainty",
+        "utf8Bytes": 1848,
+        "proxyTokens": 415
+      },
+      {
+        "recordId": "vf-task-v1-3d32d2f2fc5046d6f1d5473a",
+        "payloadSha256": "4374ea0a5b51c2297d07b4cfb279a631336e69f2bff975ff6f539226f6a661b4",
+        "task": "structured_output",
+        "utf8Bytes": 4905,
+        "proxyTokens": 637
+      },
+      {
+        "recordId": "vf-task-v1-0adb869109e7a42e9a4e8a21",
+        "payloadSha256": "d8f985d1d3da6671d0dd084162036a346bf938628fce14ec09a2740b20b11015",
+        "task": "circuit_validation",
+        "utf8Bytes": 2769,
+        "proxyTokens": 342
+      },
+      {
+        "recordId": "vf-task-v1-00d76e91d42e4921272eb920",
+        "payloadSha256": "70fc57d9cca89fc775bc1cb32f886af43319d81d670c68697bf6c4550dc16af8",
+        "task": "structured_output",
+        "utf8Bytes": 3248,
+        "proxyTokens": 407
+      },
+      {
+        "recordId": "vf-task-v1-73f51e3eb1b143557f31a40b",
+        "payloadSha256": "d717f50389719d3ec23bd06ba6ccd66ee020a0edc0a697780c32f60043983743",
+        "task": "structured_output",
+        "utf8Bytes": 4869,
+        "proxyTokens": 642
+      },
+      {
+        "recordId": "vf-task-v1-d77616b88a14e09994f6176e",
+        "payloadSha256": "ca45cca7b7ac53fb37bf7aa28626333077221e70644ba47276502281fdcba6b1",
+        "task": "circuit_validation",
+        "utf8Bytes": 2767,
+        "proxyTokens": 342
+      },
+      {
+        "recordId": "vf-task-v1-84954b0f603e5666cfa11c3f",
+        "payloadSha256": "d436fe3a371de42ffd269a13326a876b054ef92213437352f4bd7c3e75ec3677",
+        "task": "structured_output",
+        "utf8Bytes": 3237,
+        "proxyTokens": 409
+      },
+      {
+        "recordId": "vf-task-v1-76c1f429a74933c58499ec08",
+        "payloadSha256": "d863d9e58a86821f9d1e6bd3588531e5a86dd999cb60173391d619be1bd5ca83",
+        "task": "structured_output",
+        "utf8Bytes": 3239,
+        "proxyTokens": 409
+      },
+      {
+        "recordId": "vf-task-v1-98a51d5236274c1956e4fa98",
+        "payloadSha256": "dad996ece0f3e4db750a89b067d30e08ed97bda66394f25099f07c5d831899fa",
+        "task": "refusal",
+        "utf8Bytes": 2467,
+        "proxyTokens": 573
+      },
+      {
+        "recordId": "vf-task-v1-228b6c5f846d96d8ef02cd93",
+        "payloadSha256": "a2261f8b85c683bc6c0665f551b7e8cbb69f9fc82444f95e5fd25fcfcbac502a",
+        "task": "circuit_validation",
+        "utf8Bytes": 3191,
+        "proxyTokens": 374
+      },
+      {
+        "recordId": "vf-task-v1-9d04dab092a7ffebb13e8378",
+        "payloadSha256": "5cd1ed13ea3cded83ab0d1ff6d7a2871be046bad49511b2708065189c368b1d0",
+        "task": "circuit_validation",
+        "utf8Bytes": 2773,
+        "proxyTokens": 346
+      },
+      {
+        "recordId": "vf-task-v1-1736237d1b2891fe1aa7ec7a",
+        "payloadSha256": "97ca21b406d12fda6a4d73a109d8fb33ab4790a7e0e797a08e51e549d8e1b10a",
+        "task": "circuit_validation",
+        "utf8Bytes": 2830,
+        "proxyTokens": 357
+      },
+      {
+        "recordId": "vf-task-v1-f108933a716fbb10d2868fe7",
+        "payloadSha256": "70ee7d4598ac562c9e4a9c12305570a76edf7811157cfa24246e912420ca18f8",
+        "task": "uncertainty",
+        "utf8Bytes": 1922,
+        "proxyTokens": 474
+      },
+      {
+        "recordId": "vf-task-v1-e933a66297346ebbd75ac56d",
+        "payloadSha256": "cf439309ccb408c434e2199c80842e1711dcc13614a62dbd07f151be57265df4",
+        "task": "circuit_validation",
+        "utf8Bytes": 2799,
+        "proxyTokens": 367
+      },
+      {
+        "recordId": "vf-task-v1-2c2cf7077dc71b5756d40be6",
+        "payloadSha256": "6c44874ce13c6e3a08b8d3147667d639edf33bb11470bb1db0a4c82ea1e74375",
+        "task": "uncertainty",
+        "utf8Bytes": 1892,
+        "proxyTokens": 466
+      },
+      {
+        "recordId": "vf-task-v1-0ebd34ce75eb611f8368b162",
+        "payloadSha256": "fecc17155053ef7c8a34953dd648e8f59e47730afc6a100f68b71359c1c33e97",
+        "task": "circuit_validation",
+        "utf8Bytes": 2813,
+        "proxyTokens": 349
+      },
+      {
+        "recordId": "vf-task-v1-ac85fb8eef57266e3a84c096",
+        "payloadSha256": "4e16021fee9a49b5ca1cb1dc103a6784ad9b2d3c98a7645a9ae07eb48e779b5a",
+        "task": "circuit_validation",
+        "utf8Bytes": 2759,
+        "proxyTokens": 353
+      },
+      {
+        "recordId": "vf-task-v1-99852f833b2d83424111b21d",
+        "payloadSha256": "3f531fffbf3013ca7a451202bbed788ca85afdeab828fc56f05e931789cf68e8",
+        "task": "circuit_validation",
+        "utf8Bytes": 2784,
+        "proxyTokens": 336
+      },
+      {
+        "recordId": "vf-task-v1-077c1ecc6f46985372b9c557",
+        "payloadSha256": "795afc2e2ad703b425525de2708afdd907a17c2e5ed3b6540d32ef9de5f284ff",
+        "task": "circuit_validation",
+        "utf8Bytes": 2792,
+        "proxyTokens": 329
+      },
+      {
+        "recordId": "vf-task-v1-300d0a5fd3c2836a0abeb212",
+        "payloadSha256": "0a98a61ae15fd06c9369f64ab7be52e05deda9820df635ef44bfbf426264ea68",
+        "task": "structured_output",
+        "utf8Bytes": 5024,
+        "proxyTokens": 639
+      },
+      {
+        "recordId": "vf-task-v1-798c582390bc33c6bacad3ae",
+        "payloadSha256": "89b626cab5ed413800e401e6f0d550582e75868b0f9cbb7e44cdc4e965e5cd84",
+        "task": "circuit_validation",
+        "utf8Bytes": 2768,
+        "proxyTokens": 325
+      },
+      {
+        "recordId": "vf-task-v1-e0bf4891dd5c0af28ba18eee",
+        "payloadSha256": "3e404f6736f2c30db5ec409524f2ce7438a63ae79c078649f185808dafd416b3",
+        "task": "structured_output",
+        "utf8Bytes": 4892,
+        "proxyTokens": 629
+      },
+      {
+        "recordId": "vf-task-v1-ccb25a4143cce000a2f453c0",
+        "payloadSha256": "8ff4e14caf7218e99284360fcff25cd111c0ab0b12dcc675e8b03658488775a5",
+        "task": "refusal",
+        "utf8Bytes": 2479,
+        "proxyTokens": 579
+      },
+      {
+        "recordId": "vf-task-v1-0fc545b57924eb6ba4091105",
+        "payloadSha256": "dfeb47563ff97ecd82ed5eda8747fec5654c1c5d96283744e3a4a7e0a20c8064",
+        "task": "circuit_validation",
+        "utf8Bytes": 2778,
+        "proxyTokens": 343
+      },
+      {
+        "recordId": "vf-task-v1-91cf2cf57e501f405a4db007",
+        "payloadSha256": "e07a30e2b6200074cbf5097633162e67ab889896fa87ef2574dc733dc8086861",
+        "task": "circuit_validation",
+        "utf8Bytes": 2844,
+        "proxyTokens": 354
+      },
+      {
+        "recordId": "vf-task-v1-ab3a26aa931aca3b9e95fe3b",
+        "payloadSha256": "cf344cc48799b92207036d4d0b791fb41b24038a28e39fbd9b936cd6396c272f",
+        "task": "refusal",
+        "utf8Bytes": 2481,
+        "proxyTokens": 579
+      },
+      {
+        "recordId": "vf-task-v1-72a6f903a297a0bb8017c8eb",
+        "payloadSha256": "9c5981d6f5fb085a93e55ea9b618a32af934000f17be9c88856e2218d20d065b",
+        "task": "uncertainty",
+        "utf8Bytes": 1848,
+        "proxyTokens": 425
+      },
+      {
+        "recordId": "vf-task-v1-3d8673c400a318fc48836b5b",
+        "payloadSha256": "18cd3ee9df639234f6d093426944ca6b2da89faa7bef13f3dcd6448d3f55a639",
+        "task": "uncertainty",
+        "utf8Bytes": 1850,
+        "proxyTokens": 420
+      },
+      {
+        "recordId": "vf-task-v1-dcccec73c2ee0646efe32349",
+        "payloadSha256": "2644400b73e445d36710834de86d5a760f126365d7acab3ad243d81dae12e33d",
+        "task": "circuit_validation",
+        "utf8Bytes": 3159,
+        "proxyTokens": 379
+      },
+      {
+        "recordId": "vf-task-v1-87170985c30240c22f071cf1",
+        "payloadSha256": "3f0af485e8646c4ad754082d641f6972cb95fcbd05a9ba44dd5a8ff19004d1b6",
+        "task": "structured_output",
+        "utf8Bytes": 3224,
+        "proxyTokens": 417
+      },
+      {
+        "recordId": "vf-task-v1-9b381fce759730bc4605bdb7",
+        "payloadSha256": "7c2a6ef656ffa15ac650dc7a3086c90e5af9b193e0245e9aa2ba75dd62696bc3",
+        "task": "circuit_validation",
+        "utf8Bytes": 2731,
+        "proxyTokens": 339
+      },
+      {
+        "recordId": "vf-task-v1-f46bd1ec6371adb6df1794c5",
+        "payloadSha256": "e538442929b07760443d628be738f5e9592ce286c0f9b821d638001813749254",
+        "task": "refusal",
+        "utf8Bytes": 2456,
+        "proxyTokens": 567
+      },
+      {
+        "recordId": "vf-task-v1-a9165b5d19b59fc466afabf3",
+        "payloadSha256": "9461c33126de2ea85bade7c1980f8a9ebf570f2a1e62000354b11e64d6386321",
+        "task": "structured_output",
+        "utf8Bytes": 3201,
+        "proxyTokens": 411
+      },
+      {
+        "recordId": "vf-task-v1-aa59b2dc6bf5949dccf19362",
+        "payloadSha256": "321200328162de35a040cdc4d96d833bf8aa64012210cf9f73e43cac2da6b59c",
+        "task": "refusal",
+        "utf8Bytes": 2465,
+        "proxyTokens": 577
+      },
+      {
+        "recordId": "vf-task-v1-b9fe24ceaa19dd53d9e6d38f",
+        "payloadSha256": "5b78a62cbefce657f48835031f2b7277a0d7e7517d0d8471cf83534337f44f4e",
+        "task": "structured_output",
+        "utf8Bytes": 3229,
+        "proxyTokens": 426
+      },
+      {
+        "recordId": "vf-task-v1-bff37407008a156296d254bc",
+        "payloadSha256": "5b14ad6c9c682c8fc8d062fed001622a9ad80a72016af50ea558c1203b83f2d8",
+        "task": "refusal",
+        "utf8Bytes": 2464,
+        "proxyTokens": 569
+      },
+      {
+        "recordId": "vf-task-v1-0865948bda3c0ce977dc58c7",
+        "payloadSha256": "85bc76c91d57f1c3d4bb2ae5830ae5b40046ed2e9451be9e065aed0527dc7170",
+        "task": "circuit_validation",
+        "utf8Bytes": 2829,
+        "proxyTokens": 340
+      },
+      {
+        "recordId": "vf-task-v1-6a5719dd75e18f2e2503a449",
+        "payloadSha256": "4c84331149fb675da1e621f7f229917c80d2df171c7b23a9f6a3cfa2345f2d40",
+        "task": "compiler_repair",
+        "utf8Bytes": 7514,
+        "proxyTokens": 671
+      },
+      {
+        "recordId": "vf-task-v1-ab843598157a1c7f551379ba",
+        "payloadSha256": "c01706d358c544f53928bec84455861efcfc91e04e25afe577ebdbd250fc6305",
+        "task": "compiler_repair",
+        "utf8Bytes": 7750,
+        "proxyTokens": 1480
+      },
+      {
+        "recordId": "vf-task-v1-7acd92caeef7b129a82e23d6",
+        "payloadSha256": "12e6aa820de04a7cb481b9b9dff666f7800643d3d671ff0599cb43a6f683018e",
+        "task": "compiler_repair",
+        "utf8Bytes": 7469,
+        "proxyTokens": 663
+      },
+      {
+        "recordId": "vf-task-v1-358a11fb96333c098c7fa41f",
+        "payloadSha256": "21dc77a50e90ff968a0edd01a4d837a1466cc85f2283bf38d8d5b544672b2a37",
+        "task": "compiler_repair",
+        "utf8Bytes": 7445,
+        "proxyTokens": 681
+      },
+      {
+        "recordId": "vf-task-v1-a7b5ef86ccd6e2ff97145d6d",
+        "payloadSha256": "af192aa1f6444545ffd008e28c722f89b37e86a02950e3e6f8f35d989913d3d4",
+        "task": "compiler_repair",
+        "utf8Bytes": 7490,
+        "proxyTokens": 667
+      },
+      {
+        "recordId": "vf-task-v1-43d4afe3f3792d65ec1fa602",
+        "payloadSha256": "cc49c522c999667f356cb2397d416bba1edc67c7a74d540f7f88d1662b935313",
+        "task": "compiler_repair",
+        "utf8Bytes": 7739,
+        "proxyTokens": 1511
+      },
+      {
+        "recordId": "vf-task-v1-55b8f8cf682d30e5653efd2e",
+        "payloadSha256": "be7eabfad93d9aa7579cc6a11ce1c0d0be4e938dad32be1ae7a987b0a9a83d38",
+        "task": "compiler_repair",
+        "utf8Bytes": 7650,
+        "proxyTokens": 1217
+      },
+      {
+        "recordId": "vf-task-v1-3223f7df59bec2a87e7afdca",
+        "payloadSha256": "6df6c183d4f056ba08b9dc65ab5ebc471f74199d6d16f526806ba78c5b445afe",
+        "task": "compiler_repair",
+        "utf8Bytes": 7580,
+        "proxyTokens": 699
+      },
+      {
+        "recordId": "vf-task-v1-09931fdb6efbbf19069ff20c",
+        "payloadSha256": "f1e5dbb7592cfb4dc2d3cccdf1364a372bdd189f56dd18caa9ee63935203fd96",
+        "task": "compiler_repair",
+        "utf8Bytes": 9039,
+        "proxyTokens": 1500
+      },
+      {
+        "recordId": "vf-task-v1-00195afb9eb2da767b7d7f6c",
+        "payloadSha256": "65bafcf70e16325eddada71d8cef53f9418e47a1f5bb920bba765b958140047f",
+        "task": "compiler_repair",
+        "utf8Bytes": 9045,
+        "proxyTokens": 1514
+      },
+      {
+        "recordId": "vf-task-v1-4f61ea0506d9cbf48280c5bb",
+        "payloadSha256": "9a890bc6157813246bc7a382475d32558da8c348c12f0e977568ecd6eebe06fd",
+        "task": "compiler_repair",
+        "utf8Bytes": 7674,
+        "proxyTokens": 1221
+      },
+      {
+        "recordId": "vf-task-v1-23555249bdb9092b79785c90",
+        "payloadSha256": "99982c779f37e1340784179f2fd09f9c723e604627d7b7a46356bd6df58d58c7",
+        "task": "compiler_repair",
+        "utf8Bytes": 7463,
+        "proxyTokens": 662
+      },
+      {
+        "recordId": "vf-task-v1-96bb8db75d6bd5de42d98873",
+        "payloadSha256": "624af24479cbeeb7cced8a8d4402e94e5d55d8e9c763f7663d717cec5646e037",
+        "task": "compiler_repair",
+        "utf8Bytes": 7478,
+        "proxyTokens": 667
+      },
+      {
+        "recordId": "vf-task-v1-06d60ea61fb9cda56f6c4a21",
+        "payloadSha256": "aba81db92c3325538b39d4d92d5a253055e83347d5a8360e1430a986b4bd484b",
+        "task": "compiler_repair",
+        "utf8Bytes": 7726,
+        "proxyTokens": 1494
+      },
+      {
+        "recordId": "vf-task-v1-033b637216d60a7630bdc20c",
+        "payloadSha256": "c15615774236c1fe5dad384fc409f7e12e1d9b4ab1d16820bf9a27f3795567be",
+        "task": "compiler_repair",
+        "utf8Bytes": 7763,
+        "proxyTokens": 1493
+      },
+      {
+        "recordId": "vf-task-v1-dba3ebd3f7373d066798882a",
+        "payloadSha256": "1e251e16570755be56562a6528a011270168e79206eece3a745d92d42f747b97",
+        "task": "compiler_repair",
+        "utf8Bytes": 9021,
+        "proxyTokens": 1504
+      },
+      {
+        "recordId": "vf-task-v1-95d6fa4d29dd7300e1abc8f8",
+        "payloadSha256": "d978e63638246f743c9155d15dd120282610fd1bb1636bf02939b25b7e0b182e",
+        "task": "compiler_repair",
+        "utf8Bytes": 9063,
+        "proxyTokens": 1497
+      },
+      {
+        "recordId": "vf-task-v1-f924f443a0de6075775d5c38",
+        "payloadSha256": "b357582c091b80e4507a66753a3dfa2a26392e05d8b903323ed33e6a1e899b63",
+        "task": "compiler_repair",
+        "utf8Bytes": 7987,
+        "proxyTokens": 1472
+      },
+      {
+        "recordId": "vf-task-v1-10e63882ffa2100517800bf9",
+        "payloadSha256": "ee71cf6ed2241c1fab58d134467912be5f523bdb9f758fbec2c00770d349be7b",
+        "task": "compiler_repair",
+        "utf8Bytes": 7454,
+        "proxyTokens": 674
+      },
+      {
+        "recordId": "vf-task-v1-d4f0236bdce7822966067858",
+        "payloadSha256": "ee19826b80d0149af70cb295e074f8a9d721865dfe1d0fc2628804d9f5671149",
+        "task": "compiler_repair",
+        "utf8Bytes": 7556,
+        "proxyTokens": 721
+      },
+      {
+        "recordId": "vf-task-v1-1cfd77363c4e52e70aabcf36",
+        "payloadSha256": "f377f495ebb00a487f1b6497ec68e1581f1df1583cef50e78575586465861855",
+        "task": "firmware_generation",
+        "utf8Bytes": 4285,
+        "proxyTokens": 477
+      },
+      {
+        "recordId": "vf-task-v1-b452c534027bc8662b215704",
+        "payloadSha256": "3f3c371c3c4fed895fe4e6debb532d4a6b06bd34eb6d5e2c35a53e9623597608",
+        "task": "firmware_generation",
+        "utf8Bytes": 4556,
+        "proxyTokens": 873
+      },
+      {
+        "recordId": "vf-task-v1-1658d34e90267e9ceda8aeeb",
+        "payloadSha256": "df4a48c6e56b5a3807c7769faf80a2e205fbfccb423ddbfae63cd564e767dd7c",
+        "task": "firmware_generation",
+        "utf8Bytes": 4252,
+        "proxyTokens": 816
+      },
+      {
+        "recordId": "vf-task-v1-49a49e0bfe3cd552e7b6d7f6",
+        "payloadSha256": "df66d7709afa28069a5aee54d656db803bea701e9621186adf9bb414d82b33fd",
+        "task": "firmware_generation",
+        "utf8Bytes": 4310,
+        "proxyTokens": 468
+      },
+      {
+        "recordId": "vf-task-v1-db8b1f288894232fb3e00109",
+        "payloadSha256": "b4b0969cac5c2affa0a2a1f21178ba8cbacd442844d7934e3dc4f218742d088d",
+        "task": "firmware_generation",
+        "utf8Bytes": 4090,
+        "proxyTokens": 395
+      },
+      {
+        "recordId": "vf-task-v1-c9303b24cb25041407e7a151",
+        "payloadSha256": "b8fbbd47f4ec2feee424372447ec62e6db7009da2400fec53e5e3cf9f03910e9",
+        "task": "firmware_generation",
+        "utf8Bytes": 4264,
+        "proxyTokens": 822
+      },
+      {
+        "recordId": "vf-task-v1-36ab93dc6610f91eb7a370bf",
+        "payloadSha256": "0c05fc2bf95c5379523458901ba925684fae2ceb865a747322bb8ad0a345555a",
+        "task": "firmware_generation",
+        "utf8Bytes": 4157,
+        "proxyTokens": 424
+      },
+      {
+        "recordId": "vf-task-v1-c173f25cce61587688ea6669",
+        "payloadSha256": "7edf840293bc81460d96902bd3c2a016eeefb1efb906b2240c4e96274f51ecee",
+        "task": "firmware_generation",
+        "utf8Bytes": 5125,
+        "proxyTokens": 912
+      },
+      {
+        "recordId": "vf-task-v1-3a8c02e167ccfad023a04312",
+        "payloadSha256": "66ef7cd7783aaf1a3c9d227ed6c7d99d72713b297464adf06301915ae086c46c",
+        "task": "firmware_generation",
+        "utf8Bytes": 4422,
+        "proxyTokens": 870
+      },
+      {
+        "recordId": "vf-task-v1-5cac692405fc273c73ef3030",
+        "payloadSha256": "2ccfe451fcc4932234e4ff34e2a418c975e82b5c58d44b89a4eb025e48beff35",
+        "task": "firmware_generation",
+        "utf8Bytes": 4936,
+        "proxyTokens": 838
+      },
+      {
+        "recordId": "vf-task-v1-e048bb17f5087a32915efdbd",
+        "payloadSha256": "477d8fa7ad99e6c494766d5981409ab471b3feeff5af8a8105fc095ac373abc6",
+        "task": "firmware_generation",
+        "utf8Bytes": 4286,
+        "proxyTokens": 477
+      },
+      {
+        "recordId": "vf-task-v1-dc75cc32e3fca2d769dd5b31",
+        "payloadSha256": "9a99deccbd870e91f21d3ec36f0ff78e6e4d133b8688611dbb8607a8f6a34ce4",
+        "task": "firmware_generation",
+        "utf8Bytes": 4172,
+        "proxyTokens": 425
+      },
+      {
+        "recordId": "vf-task-v1-f382b5cde7858c405febed34",
+        "payloadSha256": "5c8931806a9cc4cdb57075c9ad6bd764c7dfb6a7845a2b41e73b4e34fce38044",
+        "task": "firmware_generation",
+        "utf8Bytes": 4428,
+        "proxyTokens": 826
+      },
+      {
+        "recordId": "vf-task-v1-69ff569df40b032eef7738c3",
+        "payloadSha256": "a7a7be22eb624b1abf4cda6ea6976f30228699e22a32614a8d2d3d73970b735e",
+        "task": "firmware_generation",
+        "utf8Bytes": 4957,
+        "proxyTokens": 836
+      },
+      {
+        "recordId": "vf-task-v1-1bf43c1174f0458f81388f2a",
+        "payloadSha256": "a019235ca38a8ab6fa1205278297b8b49418e680e966e1e633663d6ff5d4b334",
+        "task": "firmware_generation",
+        "utf8Bytes": 4185,
+        "proxyTokens": 431
+      },
+      {
+        "recordId": "vf-task-v1-6c5a457302b52c862f9a6ef7",
+        "payloadSha256": "a460e3af8f73c178796f615d275950325d40555cfd5ed67badfffc3857cd0b39",
+        "task": "firmware_generation",
+        "utf8Bytes": 4398,
+        "proxyTokens": 753
+      },
+      {
+        "recordId": "vf-task-v1-4cde6ef572beba4c99cefe84",
+        "payloadSha256": "1f2f280a3707d519e200bcef389e95ad6d0a4077cc80d0294821a69e3ab07d97",
+        "task": "firmware_generation",
+        "utf8Bytes": 4950,
+        "proxyTokens": 835
+      },
+      {
+        "recordId": "vf-task-v1-15911deda6d7d26845fae28d",
+        "payloadSha256": "e0239e83b61265dd68d78f0dd650ef64f943a0277d5f99530daaa4f30ee82d35",
+        "task": "firmware_generation",
+        "utf8Bytes": 4304,
+        "proxyTokens": 833
+      },
+      {
+        "recordId": "vf-task-v1-1cbe8f4993372b9d9a516792",
+        "payloadSha256": "ae82a114d3e70d996c7502df55c69bf4c2da6f9b907042909b8c93cb9f80f3cd",
+        "task": "firmware_generation",
+        "utf8Bytes": 4368,
+        "proxyTokens": 794
+      },
+      {
+        "recordId": "vf-task-v1-86dbeaa6e8ffaa730bfdb7fc",
+        "payloadSha256": "69ffb98e54da12b6c6f966edce183d65a9c7a939883671c28fbc627bbf935c0a",
+        "task": "firmware_generation",
+        "utf8Bytes": 4232,
+        "proxyTokens": 440
+      },
+      {
+        "recordId": "vf-task-v1-a2ec366d0d9a3e07df349316",
+        "payloadSha256": "c7aa483a24e1a08131fdb3efe43ce93aabb1f7e8bd191393aad1fa410ce466f6",
+        "task": "firmware_generation",
+        "utf8Bytes": 4122,
+        "proxyTokens": 396
+      },
+      {
+        "recordId": "vf-task-v1-044d1a108bf18003b6abd2fa",
+        "payloadSha256": "704a4a81dd4bfc45fbe7f87e96a956b7a29e13e2bc9020f19d7b0e281fb29250",
+        "task": "firmware_generation",
+        "utf8Bytes": 4182,
+        "proxyTokens": 413
+      },
+      {
+        "recordId": "vf-task-v1-86713e3b666f6492538f68e0",
+        "payloadSha256": "fd0b7081a2b6f74e8e87b389d883df03bbdddc2887816a9cd313ae04b94f1ace",
+        "task": "firmware_generation",
+        "utf8Bytes": 4265,
+        "proxyTokens": 812
+      },
+      {
+        "recordId": "vf-task-v1-e8bef55bd65e23abc8da49b4",
+        "payloadSha256": "0a65bdd9ca3c9685d8ebd8f3222ca75a058e89ef73cdeb2a4d3784588f0ea9fc",
+        "task": "firmware_generation",
+        "utf8Bytes": 4434,
+        "proxyTokens": 879
+      },
+      {
+        "recordId": "vf-task-v1-faf4b1e90bb6127a7eba4e95",
+        "payloadSha256": "44cf520dbd6518eb5a7a358002e35f0a270da3b684c36b04f517a7e2b5a35607",
+        "task": "firmware_generation",
+        "utf8Bytes": 4158,
+        "proxyTokens": 424
+      },
+      {
+        "recordId": "vf-task-v1-f6507732f4471b482eb65647",
+        "payloadSha256": "ca82c0e35b8a0fd517e1f379ad3ea725b5603dd614ffded167f4d32e5bc3edd1",
+        "task": "firmware_generation",
+        "utf8Bytes": 4265,
+        "proxyTokens": 474
+      },
+      {
+        "recordId": "vf-task-v1-781921ab2e16ed7c9404a3e4",
+        "payloadSha256": "6dfa77ce2baf2f0a53d7ae99c94e24e05b7633619788221b80a701d344f1aff8",
+        "task": "firmware_generation",
+        "utf8Bytes": 4210,
+        "proxyTokens": 688
+      },
+      {
+        "recordId": "vf-task-v1-877eec34f8c63ad4f3213ef7",
+        "payloadSha256": "68b0746405f2610a44c4e0a2583fce4feb0c66ab06b0ed7dc93e4f9ecaed0aac",
+        "task": "firmware_generation",
+        "utf8Bytes": 5105,
+        "proxyTokens": 906
+      },
+      {
+        "recordId": "vf-task-v1-46309780e34c064f1a6af9c7",
+        "payloadSha256": "33bf1b285282d6bdabe79d720854779fa5e426c80b97c60aaf147bcd6507dc76",
+        "task": "firmware_generation",
+        "utf8Bytes": 4223,
+        "proxyTokens": 692
+      },
+      {
+        "recordId": "vf-task-v1-72e4ed36012e228fcf32de51",
+        "payloadSha256": "0edb2f5411c05209ad94e31a47ef88401cc8b87c8c927ea0accc8b9bb6b398cf",
+        "task": "firmware_generation",
+        "utf8Bytes": 4277,
+        "proxyTokens": 836
+      },
+      {
+        "recordId": "vf-task-v1-fb8fc496245aee62f9198256",
+        "payloadSha256": "7256bca01fbb55d1640d69eb3705d5a827fba4026e9515e623bbb6a74a608c00",
+        "task": "firmware_generation",
+        "utf8Bytes": 4111,
+        "proxyTokens": 402
+      },
+      {
+        "recordId": "vf-task-v1-e940b645fd518980ce9b0983",
+        "payloadSha256": "bd5a82a3e5dc3d2c72ab126b05a7238ee2bea47d09b8e063a68fbda1a76272c4",
+        "task": "firmware_generation",
+        "utf8Bytes": 4110,
+        "proxyTokens": 419
+      },
+      {
+        "recordId": "vf-task-v1-48f8461c289431514f393b5c",
+        "payloadSha256": "e6b6a054c261ab60d784e28b8aa622589a09444ddbdc70b028fb1b4b007788cb",
+        "task": "firmware_generation",
+        "utf8Bytes": 4360,
+        "proxyTokens": 489
+      },
+      {
+        "recordId": "vf-task-v1-832f012c599798ee8a661a74",
+        "payloadSha256": "0e17a6711d1d89f98c45cb1d9d86f07da6cf3f7fa92932ec6d5558a5b32fa6f6",
+        "task": "firmware_generation",
+        "utf8Bytes": 5007,
+        "proxyTokens": 858
+      },
+      {
+        "recordId": "vf-task-v1-74b91bd1cd3672ac30648aec",
+        "payloadSha256": "61c8ca2e0690c9d3fd06df7d50b74668725c187497639bd2ba16944bdc341455",
+        "task": "firmware_generation",
+        "utf8Bytes": 4135,
+        "proxyTokens": 401
+      },
+      {
+        "recordId": "vf-task-v1-ae9fc2c606270b3994b8cf36",
+        "payloadSha256": "8574b01d9f30d7d8ba2b6b0eda3cf8cbb4307e056063046c20eba3e82e18e97f",
+        "task": "firmware_generation",
+        "utf8Bytes": 4970,
+        "proxyTokens": 849
+      },
+      {
+        "recordId": "vf-task-v1-b5f74dcb00475b7b9e6e39f2",
+        "payloadSha256": "a214705bd3e2f9633fd44b94c283b3dde6249a07e46e4ed625dffe93b4df7561",
+        "task": "firmware_generation",
+        "utf8Bytes": 4381,
+        "proxyTokens": 811
+      },
+      {
+        "recordId": "vf-task-v1-154ceb393b62b6144555c281",
+        "payloadSha256": "8c89c7d746eb9d6f0badecdaf7360a59583d2711486a42510b980dc2803ffec1",
+        "task": "firmware_generation",
+        "utf8Bytes": 4316,
+        "proxyTokens": 846
+      },
+      {
+        "recordId": "vf-task-v1-3a90193d0c2fb07149259d2d",
+        "payloadSha256": "e7568f2395f1fd58e7366add40458b8ed02f10264953be94c566b89598c2d17d",
+        "task": "firmware_generation",
+        "utf8Bytes": 4077,
+        "proxyTokens": 404
+      },
+      {
+        "recordId": "vf-task-v1-b16c18dd5b87add306682df2",
+        "payloadSha256": "a686fe802a5dc4a7be8818c22e1c44160f61ba42d251902ea8ac9e7a0535af01",
+        "task": "firmware_generation",
+        "utf8Bytes": 4098,
+        "proxyTokens": 399
+      },
+      {
+        "recordId": "vf-task-v1-7158eeebaec79f66e25f8eb7",
+        "payloadSha256": "712995876b07d4765c20a1f69dd308ed2ee3e094297e0b9af8f116c3e7d6a492",
+        "task": "pin_routing",
+        "utf8Bytes": 2100,
+        "proxyTokens": 389
+      },
+      {
+        "recordId": "vf-task-v1-8ca209c220153d8daa03f48f",
+        "payloadSha256": "93977ae5fec46341f2d5b6a857f5a25c6499d63ab218cc1c859a73c1d2388978",
+        "task": "wiring",
+        "utf8Bytes": 2844,
+        "proxyTokens": 301
+      },
+      {
+        "recordId": "vf-task-v1-9695f18b3f486086afc3bb52",
+        "payloadSha256": "c366f077ee75532b175a49e37bc805380195af084ec4bb9bbae470b8e737e98d",
+        "task": "wiring",
+        "utf8Bytes": 2861,
+        "proxyTokens": 309
+      },
+      {
+        "recordId": "vf-task-v1-286c8ef7306cb679d69f5ab7",
+        "payloadSha256": "a68a65617c58ff984fae9fd6b7c61bb63bd65d457531b50c6aa25181b2780085",
+        "task": "wiring",
+        "utf8Bytes": 2801,
+        "proxyTokens": 293
+      },
+      {
+        "recordId": "vf-task-v1-2f6fcace78a3e078ef15e2c9",
+        "payloadSha256": "8a5ad060fcdfd2d71a77e94c9a6b54575a329f0b7ccaa8dac2b2067125d43031",
+        "task": "wiring",
+        "utf8Bytes": 2808,
+        "proxyTokens": 312
+      },
+      {
+        "recordId": "vf-task-v1-7272e19b73d09d36c157cacc",
+        "payloadSha256": "9879be5883ed842b26969f51d957bf99ac1416463cede6fa149883629ffdc2f5",
+        "task": "domain_chat",
+        "utf8Bytes": 2458,
+        "proxyTokens": 415
+      },
+      {
+        "recordId": "vf-task-v1-a838038af55f58f033834891",
+        "payloadSha256": "2c349ea9d79dd6e81a0a4c3f2b5d4d26500f953b77b76baed580a59afeff6448",
+        "task": "wiring",
+        "utf8Bytes": 2838,
+        "proxyTokens": 329
+      },
+      {
+        "recordId": "vf-task-v1-e3880cc471857d78d1d62785",
+        "payloadSha256": "555f58c016b36b32f6a2b584aacecd23e39089bd1ca1b57b7498e5dab966f50b",
+        "task": "pin_routing",
+        "utf8Bytes": 1946,
+        "proxyTokens": 356
+      },
+      {
+        "recordId": "vf-task-v1-4f4389ab865c2cf29a4f4b24",
+        "payloadSha256": "149558e1f4d9ade4483a81df41e4f34a3d9bdc57dd60ed1a64339e4ee827207b",
+        "task": "wiring",
+        "utf8Bytes": 2822,
+        "proxyTokens": 313
+      },
+      {
+        "recordId": "vf-task-v1-3fd1282be96d417306f18c87",
+        "payloadSha256": "32b69eeaf522d4f1c102d61b283c2a1d7f5fed04a2447eeca0723acb3844a8df",
+        "task": "pin_routing",
+        "utf8Bytes": 1975,
+        "proxyTokens": 362
+      },
+      {
+        "recordId": "vf-task-v1-d2e19723e97f0bc98ba8c140",
+        "payloadSha256": "d0431fabd52e320b9ead539a2912cdb19c40a9b63077de57b42d74b5d0bbc442",
+        "task": "wiring",
+        "utf8Bytes": 2882,
+        "proxyTokens": 332
+      },
+      {
+        "recordId": "vf-task-v1-feec884e258a85b9f6a97ae8",
+        "payloadSha256": "b8d6e2d35b5b0b4f74a5ef8093166e17487fe60a7a704991bfcca46a5ac80b0f",
+        "task": "domain_chat",
+        "utf8Bytes": 2241,
+        "proxyTokens": 321
+      },
+      {
+        "recordId": "vf-task-v1-634152c1dd7388239284b528",
+        "payloadSha256": "7a8a33e92ec392a3c137bc87dd3ecc64496d9f6e83bfa7e1d3541ad7d90d0b07",
+        "task": "pin_routing",
+        "utf8Bytes": 2016,
+        "proxyTokens": 358
+      },
+      {
+        "recordId": "vf-task-v1-a74dd5a1b34231814c68bf5a",
+        "payloadSha256": "4728e2b727b465daf924d50c9725e1ad50f672319dc882971ecbf4ddde10b018",
+        "task": "domain_chat",
+        "utf8Bytes": 2214,
+        "proxyTokens": 330
+      },
+      {
+        "recordId": "vf-task-v1-1211e43f0998b5b1e03bd96a",
+        "payloadSha256": "3fbe848287901a0f34207d08a77a7d476c3e71d8d245e9d45ce17fb3919f737d",
+        "task": "pin_routing",
+        "utf8Bytes": 2043,
+        "proxyTokens": 356
+      },
+      {
+        "recordId": "vf-task-v1-db9249df7242c007451fb849",
+        "payloadSha256": "41d6f4aa2bd2b4658b60f8534c687dcaeb72c75c62a6508f645a40c4a43cfc54",
+        "task": "wiring",
+        "utf8Bytes": 2839,
+        "proxyTokens": 292
+      },
+      {
+        "recordId": "vf-task-v1-1e353eab68074cf183d4e718",
+        "payloadSha256": "8a6caf3df116afc7563d3bc54097310ffe4edbd7c6e0ffe265a3265b6c8d11e6",
+        "task": "wiring",
+        "utf8Bytes": 2825,
+        "proxyTokens": 302
+      },
+      {
+        "recordId": "vf-task-v1-a4b2d8132644d633ac3c63d2",
+        "payloadSha256": "e8a5102b478915e6011b55142b8b01e32bf6033e3f75825cfb1e3cb6d954502e",
+        "task": "domain_chat",
+        "utf8Bytes": 2436,
+        "proxyTokens": 414
+      },
+      {
+        "recordId": "vf-task-v1-a10b3a0dd7166dced94b91f7",
+        "payloadSha256": "0f6a55137d0ab422abb2ef0c220e522b37ee9c00d3dc791d86768839b0c5f024",
+        "task": "domain_chat",
+        "utf8Bytes": 2266,
+        "proxyTokens": 331
+      },
+      {
+        "recordId": "vf-task-v1-98fc2fa9618092e491f41029",
+        "payloadSha256": "0268b9e62713508dc4100ffd08634dde0ebb64660ea8935dd42b8947b4b8414c",
+        "task": "domain_chat",
+        "utf8Bytes": 2269,
+        "proxyTokens": 371
+      },
+      {
+        "recordId": "vf-task-v1-19d59836f6ef564137f243c4",
+        "payloadSha256": "b340d227fa9f145ceec5f7f62a3b97f3890e0f3f01c174c52e7917302c9ac87f",
+        "task": "wiring",
+        "utf8Bytes": 2815,
+        "proxyTokens": 299
+      },
+      {
+        "recordId": "vf-task-v1-b2ccf00be38bc02af7b84c38",
+        "payloadSha256": "b02119e5b3a82cf30c00331eb53225cac6903b619790e73599fe222a28d94d04",
+        "task": "pin_routing",
+        "utf8Bytes": 1973,
+        "proxyTokens": 360
+      },
+      {
+        "recordId": "vf-task-v1-1c4174c8fc486ebd6e1e0772",
+        "payloadSha256": "46f56057d4cf91e66b2d13ef578e49ef389094b70d707c7903c8712c588d738f",
+        "task": "pin_routing",
+        "utf8Bytes": 2027,
+        "proxyTokens": 362
+      },
+      {
+        "recordId": "vf-task-v1-aee0bfb21c278b998a157a71",
+        "payloadSha256": "ad0e0604575896dce45b37e9bad1c218964ee2c3b1e55ad4c2a1c4a11e73c582",
+        "task": "wiring",
+        "utf8Bytes": 2833,
+        "proxyTokens": 298
+      },
+      {
+        "recordId": "vf-task-v1-dd73ecf0ecaa5d98ba8a3caf",
+        "payloadSha256": "57533ddb54658599c55abfc02a748fe3ab9b34a2c6e94e23ac235c94c350b49e",
+        "task": "wiring",
+        "utf8Bytes": 2854,
+        "proxyTokens": 291
+      },
+      {
+        "recordId": "vf-task-v1-d2a4ecc93d6ee417d102c250",
+        "payloadSha256": "a39ecbecbcfe86457f6352a1c0e6827a8d8789dab356eb256a6957d6bfa00d39",
+        "task": "pin_routing",
+        "utf8Bytes": 1981,
+        "proxyTokens": 358
+      },
+      {
+        "recordId": "vf-task-v1-d1b356df81e2142796a8e01f",
+        "payloadSha256": "241d996f38adaa1491f47e7dd9c346711be5acde6f5e9e59c5dc2c3379c79437",
+        "task": "wiring",
+        "utf8Bytes": 2875,
+        "proxyTokens": 308
+      },
+      {
+        "recordId": "vf-task-v1-2ba3c0700c66e0c0a9d56b9e",
+        "payloadSha256": "c61bb02c6c9ff81d02e27caccee7165f2b1e9e4cb1ca2ba9d516b2455bf3b38f",
+        "task": "domain_chat",
+        "utf8Bytes": 2479,
+        "proxyTokens": 441
+      },
+      {
+        "recordId": "vf-task-v1-1e3987bf65a289debfa3e85b",
+        "payloadSha256": "db3e809f1dc90553d4c361c2b0dbc9a76d9ce8c503f716d63ce3b70f723bc279",
+        "task": "wiring",
+        "utf8Bytes": 2830,
+        "proxyTokens": 300
+      },
+      {
+        "recordId": "vf-task-v1-309061cdd4a39a6e8c7febd4",
+        "payloadSha256": "751f4832506574565774d8797d1ea1d7801a8de497eb9e53f5e5dc37cd9b7aa7",
+        "task": "domain_chat",
+        "utf8Bytes": 2173,
+        "proxyTokens": 333
+      },
+      {
+        "recordId": "vf-task-v1-78c5f1ec2146877cb32295bf",
+        "payloadSha256": "b572a29a6c965038b95e77399071210d717bb0280cfd6d2941885f3a8fda8e34",
+        "task": "pin_routing",
+        "utf8Bytes": 2043,
+        "proxyTokens": 365
+      },
+      {
+        "recordId": "vf-task-v1-f67aeec031c4234578391452",
+        "payloadSha256": "74d33e7cdee306ab32c12c930158870b21d04c1e3d93be8def2d365a50be55e3",
+        "task": "wiring",
+        "utf8Bytes": 2846,
+        "proxyTokens": 300
+      },
+      {
+        "recordId": "vf-task-v1-dade0d38e2d31d5967a9b09d",
+        "payloadSha256": "d446d1e8b7ced312bd9adfdde0ecfb8baa19f57be6bcdb11f01e92b85ca5d524",
+        "task": "wiring",
+        "utf8Bytes": 2851,
+        "proxyTokens": 323
+      },
+      {
+        "recordId": "vf-task-v1-bc151d924660d005089a69dd",
+        "payloadSha256": "95a5ede9b019472e7bd39f03401891b3030f3f60cee4168dabef20a3e6e5f730",
+        "task": "pin_routing",
+        "utf8Bytes": 2054,
+        "proxyTokens": 367
+      },
+      {
+        "recordId": "vf-task-v1-f898b9181ddd8e9facf20e69",
+        "payloadSha256": "835dad76823e434bd7122ff84dc06da8c0792aac8a45f0248ef8cdb745c4ee58",
+        "task": "wiring",
+        "utf8Bytes": 2856,
+        "proxyTokens": 314
+      },
+      {
+        "recordId": "vf-task-v1-21f6bccc927bf7eb4a9c7b2a",
+        "payloadSha256": "d7b244c979f5f776ed070ba4a2979f5f5a5a72e0756ffc6ebaf86dff02dd3f68",
+        "task": "pin_routing",
+        "utf8Bytes": 2057,
+        "proxyTokens": 367
+      },
+      {
+        "recordId": "vf-task-v1-c52475aba008fa995e1630ec",
+        "payloadSha256": "b4bca08c551945f5ca2bf088545c6de177c2c7bf0c0680c2707b53998d89e4de",
+        "task": "domain_chat",
+        "utf8Bytes": 2189,
+        "proxyTokens": 338
+      },
+      {
+        "recordId": "vf-task-v1-305ce49c526b828684fb6075",
+        "payloadSha256": "4fc7aeb8cdd886e7adb250f63bd17361a3c37cdda04b7cfd8fa273553ec54c8b",
+        "task": "domain_chat",
+        "utf8Bytes": 2300,
+        "proxyTokens": 333
+      },
+      {
+        "recordId": "vf-task-v1-0a78b72c798789501c293f8b",
+        "payloadSha256": "0ab0ae546886c20e7130bcb5aff400080d33eb51c72d69797591ba074379005c",
+        "task": "wiring",
+        "utf8Bytes": 2831,
+        "proxyTokens": 292
+      },
+      {
+        "recordId": "vf-task-v1-663b041521ba7922813ca438",
+        "payloadSha256": "eb79925e585e358e53b9cc97dffbdeca65891af191fc114272c3847a871a4be6",
+        "task": "domain_chat",
+        "utf8Bytes": 2433,
+        "proxyTokens": 402
+      },
+      {
+        "recordId": "vf-task-v1-8f1189c559d759be0bc0f46c",
+        "payloadSha256": "7d43ab688b26952b86285f15ed2e357901e5df45a58e7f0307d827492ec8c4c4",
+        "task": "wiring",
+        "utf8Bytes": 2902,
+        "proxyTokens": 338
+      },
+      {
+        "recordId": "vf-task-v1-001b982a5676e445ea490f99",
+        "payloadSha256": "52e26934fd05fc8c341529fb243794325ac4b20ff5285ee72839a40e5426f2d4",
+        "task": "domain_chat",
+        "utf8Bytes": 2266,
+        "proxyTokens": 367
+      },
+      {
+        "recordId": "vf-task-v1-2529adffad9ee46882411fa2",
+        "payloadSha256": "7e0b857f1a4df9dc5e5598df051945743d59731521d95d3d438391e074a06706",
+        "task": "domain_chat",
+        "utf8Bytes": 2291,
+        "proxyTokens": 384
+      },
+      {
+        "recordId": "vf-task-v1-5fbb28672a8dc6d60923a9b7",
+        "payloadSha256": "29d850f1ef6a182fabd67eb7189f1663059f9bb9cce4bdaedc4623ccc7d7742e",
+        "task": "wiring",
+        "utf8Bytes": 2933,
+        "proxyTokens": 340
+      },
+      {
+        "recordId": "vf-task-v1-051246d6212a18a65d6f3839",
+        "payloadSha256": "8b64ebb9215769fd05c27e238acf324ce6ae115f7642e1b558f6257c53521b83",
+        "task": "domain_chat",
+        "utf8Bytes": 2260,
+        "proxyTokens": 326
+      },
+      {
+        "recordId": "vf-task-v1-855b893fbacdd5594587cd93",
+        "payloadSha256": "792f0222be8f32e52fdb1633432a5ab13c9b2b7fd6d1949f49b0d5ef5887b5f9",
+        "task": "wiring",
+        "utf8Bytes": 2800,
+        "proxyTokens": 304
+      },
+      {
+        "recordId": "vf-task-v1-e42057bb7960e5f6517810e8",
+        "payloadSha256": "98b91cc09765e63a3304a9830ee7a2da0ea4301702fdcd8994d20b261f726dcd",
+        "task": "domain_chat",
+        "utf8Bytes": 2306,
+        "proxyTokens": 405
+      },
+      {
+        "recordId": "vf-task-v1-4d99aad630f6953373796b11",
+        "payloadSha256": "89328cb473ab110a7ae8e63ff173cc0efcdd4850cb0a96da0e75844606ff39d1",
+        "task": "domain_chat",
+        "utf8Bytes": 2235,
+        "proxyTokens": 368
+      },
+      {
+        "recordId": "vf-task-v1-af96c5ee17f938072759f23c",
+        "payloadSha256": "6d4388dac92ceecbf1a309fc731e288d604dfeffa625386bd266c0ad6fe54fbb",
+        "task": "wiring",
+        "utf8Bytes": 2849,
+        "proxyTokens": 289
+      },
+      {
+        "recordId": "vf-task-v1-14189822f8e437a6200fd6b5",
+        "payloadSha256": "0ecd280c2a0eb14f80aae174cd2fcd1eca14c000582dc0d83b52a519134d4c6e",
+        "task": "domain_chat",
+        "utf8Bytes": 2257,
+        "proxyTokens": 368
+      },
+      {
+        "recordId": "vf-task-v1-ea3c4149895d19784a148827",
+        "payloadSha256": "7ebba24592bc3cbcfcf9bf7bc06131bb5b5cdeaff982e82b502275a9fc00ae21",
+        "task": "domain_chat",
+        "utf8Bytes": 2170,
+        "proxyTokens": 329
+      },
+      {
+        "recordId": "vf-task-v1-03760448f1e7e2384fb3c44d",
+        "payloadSha256": "d31541a16152e364dbecebca4ea9acbdfa1a3520315684c98a177204fbee156f",
+        "task": "domain_chat",
+        "utf8Bytes": 2266,
+        "proxyTokens": 329
+      },
+      {
+        "recordId": "vf-task-v1-8fadaf00bd8d8c05dd5e8dc3",
+        "payloadSha256": "a9eef3da1ccd530dc2b5041402114170e8e15de78a8f0b58159e86ef20030ef3",
+        "task": "wiring",
+        "utf8Bytes": 2900,
+        "proxyTokens": 329
+      },
+      {
+        "recordId": "vf-task-v1-ef0976cfb340ebeae73c7ba0",
+        "payloadSha256": "addc4d785e6c8384aba8fe623f3682b48515e5b8825f5984945a0c73068b88cc",
+        "task": "pin_routing",
+        "utf8Bytes": 2002,
+        "proxyTokens": 362
+      },
+      {
+        "recordId": "vf-task-v1-37a23fbfc748d3c0c4302bf4",
+        "payloadSha256": "534ce03fe5f07cefd6d2d5c1efeacb458ae30900f92cadd8050b99b4364bb61d",
+        "task": "wiring",
+        "utf8Bytes": 2825,
+        "proxyTokens": 316
+      },
+      {
+        "recordId": "vf-task-v1-05627b13c473772e0b6a00b7",
+        "payloadSha256": "751328611b98608ff96a159efd0b5f03333bd2ca99db5ffc6213de26f5f33adf",
+        "task": "wiring",
+        "utf8Bytes": 2831,
+        "proxyTokens": 308
+      },
+      {
+        "recordId": "vf-task-v1-033996d1065065956914cd0c",
+        "payloadSha256": "351c0f10c0e645aee9b762c377b6519d93a15399552863555e313e9e9dc4fe76",
+        "task": "domain_chat",
+        "utf8Bytes": 2275,
+        "proxyTokens": 384
+      },
+      {
+        "recordId": "vf-task-v1-49c6a17aab264c74f5607927",
+        "payloadSha256": "a674fd12df0639f2003e14310dbcd22b5cadeda065b569caaee6fcefa60961f8",
+        "task": "domain_chat",
+        "utf8Bytes": 2251,
+        "proxyTokens": 369
+      },
+      {
+        "recordId": "vf-task-v1-eaac674ef7575ea9c5398ae9",
+        "payloadSha256": "68c05e540c0ab89759874df202dc6c3458268dfcd81bde9d4ba3b26945b40684",
+        "task": "domain_chat",
+        "utf8Bytes": 2284,
+        "proxyTokens": 338
+      },
+      {
+        "recordId": "vf-task-v1-6a8be18727b422154ff7b127",
+        "payloadSha256": "033184f223c4c48510bf0b5df344f8e6b1eb76991410c4b70a441b74b3bfc509",
+        "task": "domain_chat",
+        "utf8Bytes": 2328,
+        "proxyTokens": 408
+      },
+      {
+        "recordId": "vf-task-v1-645c84a3c3abddea1b6b27ec",
+        "payloadSha256": "9b017ade30fb49ff6fda2afdb254e3965302ba3b71323f807e8a3d561e9ef34b",
+        "task": "wiring",
+        "utf8Bytes": 2818,
+        "proxyTokens": 293
+      },
+      {
+        "recordId": "vf-task-v1-c4e4d51a74899bbdedfae9ae",
+        "payloadSha256": "70e5a2a7a49bbf93c398514489012c5156615cb476a0ed3ae9d911648576d711",
+        "task": "wiring",
+        "utf8Bytes": 2840,
+        "proxyTokens": 303
+      },
+      {
+        "recordId": "vf-task-v1-19075beea7fc19102d3f903d",
+        "payloadSha256": "aee7926820368a78349f4c26104943e6d85697a2c458df54f2591aadb282141e",
+        "task": "pin_routing",
+        "utf8Bytes": 2008,
+        "proxyTokens": 362
+      },
+      {
+        "recordId": "vf-task-v1-617d91900296541a6e4d318d",
+        "payloadSha256": "856c6ba5cc196d0cf93873aec4ccfe67af52d6402dcb89153f414053ef16540c",
+        "task": "domain_chat",
+        "utf8Bytes": 2281,
+        "proxyTokens": 330
+      },
+      {
+        "recordId": "vf-task-v1-a25dea1e234579c0b67aff04",
+        "payloadSha256": "d7d988940411a5e81bb75f85b1431e3af142ae66441fa6541ca7f87f0e40f435",
+        "task": "domain_chat",
+        "utf8Bytes": 2244,
+        "proxyTokens": 327
+      },
+      {
+        "recordId": "vf-task-v1-290f062fe55a8bb5ebb7c584",
+        "payloadSha256": "8c4724fef1a918c364694d3d6ead85061ed61213aef6cd726c020a59f90cf4c6",
+        "task": "wiring",
+        "utf8Bytes": 2777,
+        "proxyTokens": 304
+      },
+      {
+        "recordId": "vf-task-v1-2e0f6921de807d829ecfb701",
+        "payloadSha256": "c278ee1d4f6d226418f58fa66bbc2ca27838923706a2ed6d942f3e506704e253",
+        "task": "domain_chat",
+        "utf8Bytes": 2285,
+        "proxyTokens": 374
+      },
+      {
+        "recordId": "vf-task-v1-46229e6dde66daed4542fa29",
+        "payloadSha256": "e1590c237644f409615a1832d96df3080438e7265ea541b8b3b81e6074af59d8",
+        "task": "domain_chat",
+        "utf8Bytes": 2272,
+        "proxyTokens": 376
+      },
+      {
+        "recordId": "vf-task-v1-1c5dc0d9135d22922416886a",
+        "payloadSha256": "67790715ebf4d25354c3b90a8795bfe79ad743799cbb28d3156282024fd707c0",
+        "task": "wiring",
+        "utf8Bytes": 2920,
+        "proxyTokens": 327
+      },
+      {
+        "recordId": "vf-task-v1-6d231245f0268c4a3c1860fa",
+        "payloadSha256": "858018e2bf4c64b22930df55576d432ded2ca050c66a5f2f49ea0810109e98a4",
+        "task": "domain_chat",
+        "utf8Bytes": 2457,
+        "proxyTokens": 437
+      },
+      {
+        "recordId": "vf-task-v1-ec3d31f0360f2105fcef10d9",
+        "payloadSha256": "56a3a717a87d2f7fe00d90fd8a39dac5ed5e28c4900dd792a5f22c6215d01985",
+        "task": "pin_routing",
+        "utf8Bytes": 1979,
+        "proxyTokens": 368
+      },
+      {
+        "recordId": "vf-task-v1-bc3179787223f20f6887e400",
+        "payloadSha256": "df075a8ce2a5183c6b3964d48eadfbc2cd4e806ed3b173cbcd27afb547351111",
+        "task": "wiring",
+        "utf8Bytes": 2848,
+        "proxyTokens": 286
+      },
+      {
+        "recordId": "vf-task-v1-f1474747af8b0bb350306aa7",
+        "payloadSha256": "d1a7e4322038597715bf1b52edc8eea8a81c3f30ce77319b905d3752cbd924ed",
+        "task": "domain_chat",
+        "utf8Bytes": 2322,
+        "proxyTokens": 400
+      },
+      {
+        "recordId": "vf-task-v1-2e6e2cb4671a16f8a1a7d6fa",
+        "payloadSha256": "b19a7b54a1dfd24ce98b7f0c83d05908b3cc24b99409d878f7845ad8152fdec5",
+        "task": "pin_routing",
+        "utf8Bytes": 2070,
+        "proxyTokens": 379
+      },
+      {
+        "recordId": "vf-task-v1-5fe5e0d757034a1c1e125b22",
+        "payloadSha256": "f8e5b0bcf0ed1b4aba697c43c81535038b4722ffc96c3f4bb62b3c7b2a85a20c",
+        "task": "pin_routing",
+        "utf8Bytes": 2030,
+        "proxyTokens": 367
+      },
+      {
+        "recordId": "vf-task-v1-db38b82ea3650d6648b9b92f",
+        "payloadSha256": "cd88a80426dbb55b58cf17cef6f350a8bd37665316a52093561be633f92aa303",
+        "task": "domain_chat",
+        "utf8Bytes": 2282,
+        "proxyTokens": 332
+      },
+      {
+        "recordId": "vf-task-v1-4c98f8d4459e549382bedd8a",
+        "payloadSha256": "e566026f64136e5ab68c9b7ec7155b843a109ba25ce7fc2c97075bd311b17668",
+        "task": "wiring",
+        "utf8Bytes": 2807,
+        "proxyTokens": 319
+      },
+      {
+        "recordId": "vf-task-v1-b7cdac3edb2c6cea70644ecc",
+        "payloadSha256": "4f36b6a8ca265dc2ea3694a73cab472262cd3006f50fc7b4b2d1c3cbe127c61a",
+        "task": "domain_chat",
+        "utf8Bytes": 2263,
+        "proxyTokens": 329
+      },
+      {
+        "recordId": "vf-task-v1-d17a3f858a62939326b17f56",
+        "payloadSha256": "2bd2512717867027d0153263333f9dd8dc5abed5bfd979ea082821e86cc31af6",
+        "task": "domain_chat",
+        "utf8Bytes": 2230,
+        "proxyTokens": 323
+      },
+      {
+        "recordId": "vf-task-v1-b26bd410bbf3b7d1da10046c",
+        "payloadSha256": "0e8dd970deabde4c5eb65351604012b66cf4dfb13cc97ffa74548f1cbcab91bf",
+        "task": "domain_chat",
+        "utf8Bytes": 2236,
+        "proxyTokens": 336
+      },
+      {
+        "recordId": "vf-task-v1-1e414b299ba91e3b391e8c20",
+        "payloadSha256": "b3f26cf6faed490d31eb882ab82d1ef5c44551b779e8f055c99d23e119c5e138",
+        "task": "pin_routing",
+        "utf8Bytes": 2002,
+        "proxyTokens": 360
+      },
+      {
+        "recordId": "vf-task-v1-9c2b95d195852f5af8098892",
+        "payloadSha256": "29296df7eae9416f113ff26f17733a1dbbec2f1418bbe47b8dc4994d25e8c331",
+        "task": "wiring",
+        "utf8Bytes": 2887,
+        "proxyTokens": 309
+      },
+      {
+        "recordId": "vf-task-v1-5be681de665503456e5f27cc",
+        "payloadSha256": "b8f1124412f5fe5478bf6dc3ee155d89cb94f613644e4e32958fe2dd4a81b54c",
+        "task": "wiring",
+        "utf8Bytes": 2824,
+        "proxyTokens": 295
+      },
+      {
+        "recordId": "vf-task-v1-7a358ef45285cfa25c07acc6",
+        "payloadSha256": "a28f91e77a02b4067038621edc4a92daecc587426cf6937b6a933bff63dc1f57",
+        "task": "domain_chat",
+        "utf8Bytes": 2454,
+        "proxyTokens": 429
+      },
+      {
+        "recordId": "vf-task-v1-ce8d111b84a5126e29301a2a",
+        "payloadSha256": "3918cedd6ce2778b97b24437d0368978a09f7ba05f1278a770823e7a3d79555f",
+        "task": "wiring",
+        "utf8Bytes": 2869,
+        "proxyTokens": 326
+      },
+      {
+        "recordId": "vf-task-v1-c921c372bf1ea6ac3e8eb598",
+        "payloadSha256": "9068c78d319012f24719752978ea049239798cc535d533f56a5740a574395807",
+        "task": "pin_routing",
+        "utf8Bytes": 2016,
+        "proxyTokens": 358
+      },
+      {
+        "recordId": "vf-task-v1-648c7ca748ff0d7acf9e808a",
+        "payloadSha256": "4dea0859119fd928ef01b924c33e179405e7303ce837b75a539074757d47d2d7",
+        "task": "domain_chat",
+        "utf8Bytes": 2211,
+        "proxyTokens": 320
+      },
+      {
+        "recordId": "vf-task-v1-2e4b0938ef5196d8f2bb2130",
+        "payloadSha256": "9e212ec31ea2427fb1dbaa23df48f2643ceb0b10d129537d9c112562cec363e8",
+        "task": "pin_routing",
+        "utf8Bytes": 2043,
+        "proxyTokens": 374
+      },
+      {
+        "recordId": "vf-task-v1-b7e059c4d60b5e1c1df1d694",
+        "payloadSha256": "c757e6825217583ceb090d9857da05d8aecb82d8fdfc5a5be55e8811eb6eb179",
+        "task": "domain_chat",
+        "utf8Bytes": 2291,
+        "proxyTokens": 385
+      },
+      {
+        "recordId": "vf-task-v1-648973709970858c791a9939",
+        "payloadSha256": "2c89fd3c37ba07153a0c72a802eae7b0b25d8629e1ef005bb7ece065b48f2d2a",
+        "task": "wiring",
+        "utf8Bytes": 2795,
+        "proxyTokens": 295
+      },
+      {
+        "recordId": "vf-task-v1-e7258d0da4adead5e0f6dd4d",
+        "payloadSha256": "9f04199f644572540aea5ad41941c96c8beeb45c447080336087f4ba510b129d",
+        "task": "domain_chat",
+        "utf8Bytes": 2297,
+        "proxyTokens": 388
+      },
+      {
+        "recordId": "vf-task-v1-ff5b4c97fd62425e3c3e65a2",
+        "payloadSha256": "17f299f6ba53651ad7e87a87495416a8449ebea7ce9faeffc21ad0c270e3b9e3",
+        "task": "wiring",
+        "utf8Bytes": 2846,
+        "proxyTokens": 311
+      },
+      {
+        "recordId": "vf-task-v1-8798bb433f2c55cee67ab4d8",
+        "payloadSha256": "1925e10d623e8520b4e1792cb1aead579dad40a9c03db5275f78b1f37e67ba35",
+        "task": "wiring",
+        "utf8Bytes": 2813,
+        "proxyTokens": 299
+      },
+      {
+        "recordId": "vf-task-v1-d73a401e53338359142f1294",
+        "payloadSha256": "f65c9e5f92b479d7359a5bb149cbc102fce0a7ab0a7522e5e3114624bc618bbd",
+        "task": "pin_routing",
+        "utf8Bytes": 2006,
+        "proxyTokens": 364
+      },
+      {
+        "recordId": "vf-task-v1-27255aa1752a29be77e74e4f",
+        "payloadSha256": "020cf9fdada81518787fe793ce7866d0a9dd5abff3f65f95fdc3dcffe1b3c91a",
+        "task": "domain_chat",
+        "utf8Bytes": 2452,
+        "proxyTokens": 413
+      },
+      {
+        "recordId": "vf-task-v1-f4f678ba1c6b2e754b25cc0e",
+        "payloadSha256": "15c0a96bcec3c555c1268809b382f06bcdb5552099626452aa7b6656110eb4b6",
+        "task": "domain_chat",
+        "utf8Bytes": 2195,
+        "proxyTokens": 343
+      },
+      {
+        "recordId": "vf-task-v1-459eeb939eda1a93714ba44c",
+        "payloadSha256": "ea58fb6977b9b6245095716c57fb0b36d76b2c4c34a34d09836338add1c0b402",
+        "task": "wiring",
+        "utf8Bytes": 2843,
+        "proxyTokens": 297
+      },
+      {
+        "recordId": "vf-task-v1-c58c6df89e7d13536af65800",
+        "payloadSha256": "20aa242f5b59fa5a86cd3005297bfd151c50987e2bc8a4fc00c9cf2a5fdada77",
+        "task": "wiring",
+        "utf8Bytes": 2893,
+        "proxyTokens": 311
+      },
+      {
+        "recordId": "vf-task-v1-27245ae647c65bf6570a5741",
+        "payloadSha256": "d9989bad3c94ec226fc61a09e3735b07f08f9fc44c2f2e59cf0da9b20c59f9b3",
+        "task": "domain_chat",
+        "utf8Bytes": 2306,
+        "proxyTokens": 340
+      },
+      {
+        "recordId": "vf-task-v1-4fde4038786147031525079d",
+        "payloadSha256": "89e803fe8491f972b577324810d30d35baf29727cf3347668ee4dbaf3d3507be",
+        "task": "wiring",
+        "utf8Bytes": 2926,
+        "proxyTokens": 321
+      }
+    ],
+    "semanticDeduplicationClaimed": false,
+    "gen2ReleaseReadyTokens": 0,
+    "currentApprovedShardRecords": 250,
+    "retainedHeldOutGuardRecords": 46
+  },
+  "tokenizer": {
+    "path": "model/tokenizers/vfdlm-byte-bpe-v1.1.0",
+    "version": "1.1.0",
+    "gen2ExactCounts": false
+  },
+  "tokenizerHistory": [
+    {
+      "version": "1.0.0",
+      "manifest": {
+        "path": "model/tokenizers/vfdlm-byte-bpe-v1.0.0/tokenizer_manifest.json",
+        "sha256": "0753d3f475bf935783525f4ee353a9477bd5cc85790498a3796f88a8b27bca6d",
+        "bytes": 6147
+      },
+      "declaredTrainingRecords": 138,
+      "evaluationRecordCount": 16,
+      "unresolvedHistoricalShardIds": [
+        "vf-shard-714b767d2e7f90b2e975",
+        "vf-shard-552700494266b48956af",
+        "vf-shard-dfa00394be4430d7dc31",
+        "vf-shard-af68248a3cb692c98afc"
+      ],
+      "historicalBytesSubstituted": false
+    },
+    {
+      "version": "1.1.0",
+      "manifest": {
+        "path": "model/tokenizers/vfdlm-byte-bpe-v1.1.0/tokenizer_manifest.json",
+        "sha256": "8af7baf2412a0f93be4cec70583a4a2386ec3ba41dab8554c05722a201d3d400",
+        "bytes": 6478
+      },
+      "declaredTrainingRecords": 227,
+      "evaluationRecordCount": 23,
+      "unresolvedHistoricalShardIds": [],
+      "historicalBytesSubstituted": false
+    }
+  ],
+  "tokenGap": [
+    {
+      "stage": "pilot",
+      "plannedExposures": 2000000000,
+      "availableExistingPoolProxyTokens": 112418,
+      "additionalUniqueProxyTokensAtOnePass": 1999887582,
+      "passesOverExistingPoolToReachExposures": 17790.745254318703,
+      "gen2ReleasedTokens": 0,
+      "gen2ReleaseTokenGap": 2000000000,
+      "repeatSensitivity": [
+        {
+          "passes": 1,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 112418,
+          "remainingExposures": 1999887582
+        },
+        {
+          "passes": 3,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 337254,
+          "remainingExposures": 1999662746
+        },
+        {
+          "passes": 10,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 1124180,
+          "remainingExposures": 1998875820
+        }
+      ]
+    },
+    {
+      "stage": "pilot",
+      "plannedExposures": 6000000000,
+      "availableExistingPoolProxyTokens": 112418,
+      "additionalUniqueProxyTokensAtOnePass": 5999887582,
+      "passesOverExistingPoolToReachExposures": 53372.23576295611,
+      "gen2ReleasedTokens": 0,
+      "gen2ReleaseTokenGap": 6000000000,
+      "repeatSensitivity": [
+        {
+          "passes": 1,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 112418,
+          "remainingExposures": 5999887582
+        },
+        {
+          "passes": 3,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 337254,
+          "remainingExposures": 5999662746
+        },
+        {
+          "passes": 10,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 1124180,
+          "remainingExposures": 5998875820
+        }
+      ]
+    },
+    {
+      "stage": "base",
+      "plannedExposures": 20000000000,
+      "availableExistingPoolProxyTokens": 112418,
+      "additionalUniqueProxyTokensAtOnePass": 19999887582,
+      "passesOverExistingPoolToReachExposures": 177907.45254318704,
+      "gen2ReleasedTokens": 0,
+      "gen2ReleaseTokenGap": 20000000000,
+      "repeatSensitivity": [
+        {
+          "passes": 1,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 112418,
+          "remainingExposures": 19999887582
+        },
+        {
+          "passes": 3,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 337254,
+          "remainingExposures": 19999662746
+        },
+        {
+          "passes": 10,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 1124180,
+          "remainingExposures": 19998875820
+        }
+      ]
+    },
+    {
+      "stage": "base",
+      "plannedExposures": 60000000000,
+      "availableExistingPoolProxyTokens": 112418,
+      "additionalUniqueProxyTokensAtOnePass": 59999887582,
+      "passesOverExistingPoolToReachExposures": 533722.3576295611,
+      "gen2ReleasedTokens": 0,
+      "gen2ReleaseTokenGap": 60000000000,
+      "repeatSensitivity": [
+        {
+          "passes": 1,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 112418,
+          "remainingExposures": 59999887582
+        },
+        {
+          "passes": 3,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 337254,
+          "remainingExposures": 59999662746
+        },
+        {
+          "passes": 10,
+          "uniqueTokensUnchanged": 112418,
+          "exposuresIfRepeated": 1124180,
+          "remainingExposures": 59998875820
+        }
+      ]
+    }
+  ],
+  "inputs": [
+    {
+      "path": "data_governance/source-registry.v1.json",
+      "sha256": "d775e5c2c633fee61ed4553058ad356a83f9298388bb8b5b48cd4880fcadb506",
+      "bytes": 15196
+    },
+    {
+      "path": "data_governance/policy.v1.json",
+      "sha256": "55a5dc48db247648f60780cec27fb20132a4eec0720052b0e940e0ab07b30e84",
+      "bytes": 866
+    },
+    {
+      "path": "data_governance/governance.py",
+      "sha256": "6cc04f54db18577f82d7171e4082771bdf434a85374e6ee62f01b0807772a08e",
+      "bytes": 34282
+    },
+    {
+      "path": "electronics_corpus/catalog.v1.json",
+      "sha256": "db6c299f7b26ed50c42478a47ef5f163f1cb838db37ac131058f8fcc311d0c9b",
+      "bytes": 3235
+    },
+    {
+      "path": "synthetic_data/releases/CURRENT.json",
+      "sha256": "d74259ebf1106072058e525f7c6f267d035870f2e5933c06aa50ce425a1357a5",
+      "bytes": 533
+    },
+    {
+      "path": "model/tokenizer.py",
+      "sha256": "39f0a3773f044eb9934222cf9c5dbc22212a155fe886a2e195a1175761a84e35",
+      "bytes": 25163
+    },
+    {
+      "path": "evaluation/foundation/manifest.v1.json",
+      "sha256": "105b72302a38cf14e2711525113ecc0d9f3ed31957731f742470426ab185056b",
+      "bytes": 102802
+    },
+    {
+      "path": "foundation/evaluation-binding.v1.json",
+      "sha256": "255e7ef77e5bcfe136ee2cc9116bb83d571943068ff6463ca4deceaafa47d641",
+      "bytes": 1502
+    },
+    {
+      "path": "data_governance/manifests/dataset.txt.manifest.json",
+      "sha256": "c9b8b69aa50ed8bc824a11ab5e7d7e75e02bb756936b9f04379a203a39e09f46",
+      "bytes": 2321
+    },
+    {
+      "path": "data_governance/manifests/model__artifacts__chunk1_boards.jsonl.manifest.json",
+      "sha256": "16e9673e0782571f122f52ef3dc99de76f985c66f748780370f09a79b04fdb52",
+      "bytes": 2411
+    },
+    {
+      "path": "data_governance/manifests/model__artifacts__chunk2_physics.jsonl.manifest.json",
+      "sha256": "e27b847ae7e52b3cfb8d2a0c1e68ac06152b6616407149c119d52887983d72c7",
+      "bytes": 2412
+    },
+    {
+      "path": "data_governance/manifests/model__artifacts__chunk3_circuits.jsonl.manifest.json",
+      "sha256": "ef616435c431a05a68031911275b872d3bf334d77f08978e11e144e59da9d3de",
+      "bytes": 2076
+    },
+    {
+      "path": "data_governance/manifests/model__artifacts__chunk3_components.jsonl.manifest.json",
+      "sha256": "f899205c1004855d2b8cbd75b03ba273fbd9abf406322221404bcb1801082dd8",
+      "bytes": 2414
+    },
+    {
+      "path": "data_governance/manifests/model__artifacts__chunk4_firmware.jsonl.manifest.json",
+      "sha256": "f7de854e211c2c5e557826dc4797629e7f66f3e46f5547cb6ff78ec542b8b9d6",
+      "bytes": 2413
+    },
+    {
+      "path": "data_governance/manifests/model__artifacts__chunk5_diagnostics.jsonl.manifest.json",
+      "sha256": "e5575845a1be8f81f4330ceb0fd692be5d12261beb9f8247b9eab039548c33d4",
+      "bytes": 2416
+    },
+    {
+      "path": "data_governance/manifests/model__artifacts__chunk6_conversational.jsonl.manifest.json",
+      "sha256": "2f1801b3ae32bcf502bfc283481e5b899e84a163ee01fb2afcc75d4c802f569e",
+      "bytes": 2417
+    },
+    {
+      "path": "data_governance/manifests/model__artifacts__chunk7_refusals.jsonl.manifest.json",
+      "sha256": "dd1dbd14316207dae768822c92f5dccbd343f0fe05263596637b04284e8b884f",
+      "bytes": 2411
+    },
+    {
+      "path": "data_governance/manifests/model__artifacts__dataset.jsonl.manifest.json",
+      "sha256": "972d68c4c32cf224f90c47d1a19bb6b8922d0d73edabee4f9663f8d96a004928",
+      "bytes": 3280
+    },
+    {
+      "path": "data_governance/manifests/model__artifacts__dataset_1b.jsonl.manifest.json",
+      "sha256": "05faff68d6028996d1c731c1b23bcf95f993c6acd5dac21774c03a4170194616",
+      "bytes": 2373
+    },
+    {
+      "path": "data_governance/manifests/model__artifacts__master_domain_dataset.jsonl.manifest.json",
+      "sha256": "acedc3278e37cf09b383fe5d9821cce17165c052ecdcf0764c3d404a654b6938",
+      "bytes": 2424
+    },
+    {
+      "path": "data_governance/manifests/synthetic_data__shards__v1__circuit-safety.jsonl.manifest.json",
+      "sha256": "7aa71d7685e45966fc9653deb42f1e1bc2dcd0d7bba562e9ef6257bca3f0f45f",
+      "bytes": 3654
+    },
+    {
+      "path": "data_governance/manifests/synthetic_data__shards__v1__compiler-repair.jsonl.manifest.json",
+      "sha256": "1f16215c9ab4fab4f9f7288fae6fcb2a11d320472dc16a6d382783bdc3e8938c",
+      "bytes": 3655
+    },
+    {
+      "path": "data_governance/manifests/synthetic_data__shards__v1__firmware.jsonl.manifest.json",
+      "sha256": "1515598f53b66395163b80e3a96a94ae9ece72ff595b5995f71a52338452bd2a",
+      "bytes": 3648
+    },
+    {
+      "path": "data_governance/manifests/synthetic_data__shards__v1__grounded-electronics.jsonl.manifest.json",
+      "sha256": "ed4e534b9db910e9e76ded5681f7d2f00b323c4ee5eb4060386740a7a8c41a01",
+      "bytes": 3661
+    },
+    {
+      "path": "model/tokenizers/vfdlm-byte-bpe-v1.1.0/evaluation-report.json",
+      "sha256": "f47b8a089be39f1eb25a0d14f13a541ca063d3eed58899cb16d992583801dfad",
+      "bytes": 8302
+    },
+    {
+      "path": "model/tokenizers/vfdlm-byte-bpe-v1.1.0/merges.json",
+      "sha256": "0838d05b8c5439e7c53865f8789aac79c8ba8163ceb6da1c5adb84840e40ca5c",
+      "bytes": 239850
+    },
+    {
+      "path": "model/tokenizers/vfdlm-byte-bpe-v1.1.0/tokenizer_config.json",
+      "sha256": "4c16b3afd1bf54025e7784a998ccee69245da873f1dc98c60e2fc86677ff5e42",
+      "bytes": 1682
+    },
+    {
+      "path": "model/tokenizers/vfdlm-byte-bpe-v1.1.0/tokenizer_manifest.json",
+      "sha256": "8af7baf2412a0f93be4cec70583a4a2386ec3ba41dab8554c05722a201d3d400",
+      "bytes": 6478
+    },
+    {
+      "path": "model/tokenizers/vfdlm-byte-bpe-v1.1.0/vocab.json",
+      "sha256": "70b6431dfb292dcf81db88fe52d3e7e516a7c7cc75def13d46f5868d22376114",
+      "bytes": 143901
+    }
+  ],
+  "foundationSuite": {
+    "status": "passed",
+    "suiteSha256": "2fdd61cbc4cecbc20b364f7825b63bae2382ba784ca993a901839d2515985cc6",
+    "policySha256": "35c9a2ce79922beb3ec1c36e41ce61eeafcb351e6a3365851d20aa6bb4b20618",
+    "counts": {
+      "development": 100,
+      "validation": 100,
+      "acceptance": 500,
+      "adversarial": 100,
+      "compile": 100
+    },
+    "acceptanceCategories": {
+      "concepts": 50,
+      "diagnostics": 50,
+      "firmware_review": 50,
+      "numerical": 50,
+      "grounding": 50,
+      "multi_turn": 50,
+      "long_context": 50,
+      "project_actions": 50,
+      "instruction_scope": 50,
+      "uncertainty_safety": 50
+    },
+    "coreScenarioFamilies": 100,
+    "coreTemplateFamilies": 73,
+    "trainingUseAllowed": false,
+    "confidentialSealingClaimed": false
+  },
+  "networkAccessed": false,
+  "rawContentStored": false,
+  "gen2TrainingAllowed": false,
+  "modelReleaseApproved": false,
+  "limits": [
+    "Existing permission records are inherited repository declarations, not new rights grants or external legal opinions.",
+    "The existing pool is structured synthetic task data, not a diverse base-pretraining corpus. Upstream facts and retained copies add no independent token credit.",
+    "Proxy counts use the existing Gen1 tokenizer. The owned Gen2 tokenizer, family splits, semantic deduplication and normalized corpus release are later tasks.",
+    "Historical tokenizer v1.0.0 has unresolved source bytes; its known evaluation IDs remain excluded and no current bytes are substituted.",
+    "External sources are proposals only; permission observations and webpage hashes do not establish acquired corpus bytes or training approval.",
+    "Before training: evaluation-only custody, source/use review, task-020 ingestion and task-021 split/leakage gates remain mandatory."
+  ]
+}

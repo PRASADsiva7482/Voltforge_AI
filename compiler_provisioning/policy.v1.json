@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai-fu-014-compiler-provisioning-readiness-v1",
+  "sourceFollowup": "VFAI-FU-014",
+  "status": "accepted-for-later",
+  "asOfDate": "2026-09-01",
+  "scope": {
+    "requiredProfileCount": 5,
+    "requiredExactFqbnCount": 11,
+    "requiredCompileReceiptCount": 88,
+    "requiredSuccessfulCompileCount": 66,
+    "requiredExpectedFailureCount": 22,
+    "supportedHost": "windows-x86_64",
+    "networkPolicyAfterProvisioning": "offline-no-network"
+  },
+  "inputClosure": {
+    "provisioningInputManifestPath": null,
+    "requiredInputs": [
+      "arduino-cli-archive-url-size-sha256-and-executable-member-sha256",
+      "signed-or-checksum-bound-package-index-revisions",
+      "every-host-specific-platform-and-tool-dependency-archive",
+      "pico-source-fallback-bundle-and-all-submodule-revisions",
+      "license-and-source-url-for-every-input",
+      "post-install-file-and-source-identity-contract"
+    ],
+    "partialInstalledFileHashesAreProvisioningClosure": false,
+    "mutableDownloadDirectoryIsProvisioningClosure": false
+  },
+  "cacheContract": {
+    "manifestKind": "vfai-fu-014-compiler-cache-export-v1",
+    "cacheExportManifestPaths": [],
+    "requiredProfileIds": [
+      "arduino-avr-1.8.6",
+      "arduino-megaavr-1.8.8",
+      "arduino-renesas-uno-1.6.0",
+      "esp32-3.3.11",
+      "pico-6.0.0"
+    ],
+    "cliCommandContract": [
+      "arduino-cli",
+      "--config-file",
+      "<CONFIG>",
+      "compile",
+      "--jobs",
+      "0",
+      "--fqbn",
+      "<EXACT_FQBN>",
+      "--warnings",
+      "all",
+      "--build-path",
+      "<ISOLATED_BUILD_PATH>",
+      "<SKETCH_PATH>"
+    ],
+    "keyFields": [
+      "toolchain-manifest-sha256",
+      "profile-id-core-id-and-version",
+      "all-exact-fqbns",
+      "host-identity",
+      "arduino-cli-version-and-executable-sha256",
+      "complete-cli-command-contract",
+      "package-index-sha256-values",
+      "complete-dependency-archive-name-size-and-sha256-set",
+      "source-revision-and-submodule-set"
+    ],
+    "exactFileSetRequired": true,
+    "missingPartialExtraOrStaleCacheFailsClosed": true,
+    "cacheKeyMayBeRelabeled": false,
+    "draftKeysAuthorizeExport": false
+  },
+  "authorization": {
+    "ownerBudgetReceiptPath": null,
+    "requiredPositiveBudgets": [
+      "maximumDownloadBytes",
+      "maximumInstalledBytes",
+      "maximumRetainedCacheBytes",
+      "maximumProvisioningMinutes",
+      "maximumCleanHostVerificationMinutes",
+      "cacheRetentionDays"
+    ],
+    "approvedCleanHostIdentityRequired": true,
+    "networkAccessMustBeExplicitlyApproved": true
+  },
+  "completionInputs": {
+    "cleanHostProvisioningReceiptPath": null,
+    "offlineCacheRestoreReceiptPath": null,
+    "requiredReceiptReproductionCount": 88,
+    "requiredNetworkAccessDuringCompilation": false,
+    "requiredCacheFailureCases": [
+      "missing-file",
+      "partial-file",
+      "checksum-mismatch",
+      "extra-file",
+      "stale-key",
+      "host-mismatch",
+      "fqbn-mismatch",
+      "command-mismatch"
+    ]
+  },
+  "mutationBoundary": {
+    "existingToolchainDirectoriesMayBeRewrittenByReadinessAudit": false,
+    "existingCompileReceiptsMayBeRewritten": false,
+    "syntheticShardsMayBeRewritten": false,
+    "compilerCacheMayBeExportedWithoutBudget": false,
+    "cleanHostMayBeProvisionedWithoutInputClosure": false
+  },
+  "forbidden": [
+    "download-before-owner-budget-approval",
+    "unchecksummed-or-cleartext-input",
+    "reuse-partial-or-stale-cache",
+    "cache-key-without-host-fqbn-command-and-dependency-closure",
+    "compile-with-network-access",
+    "rewrite-retained-receipts-to-match-new-toolchain-state",
+    "external-ai-model-or-inference-service"
+  ]
+}

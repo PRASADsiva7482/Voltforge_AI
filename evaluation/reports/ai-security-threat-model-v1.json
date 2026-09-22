@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai030-ai-security-threat-model-v1",
+  "generatedOn": "2026-08-31",
+  "contractVersion": "1.0.0",
+  "checkCount": 15,
+  "passedCheckCount": 15,
+  "checks": {
+    "allPythonRoutesHaveServiceDependency": true,
+    "productionTokenFailsClosed": true,
+    "productionOriginsAndRuntimeScopeAreBounded": true,
+    "productionDocsAreDisabled": true,
+    "artifactIntegrityAndSafeLoading": true,
+    "retrievalBoundaryIsFixedAndUntrusted": true,
+    "memoryIsAuthenticatedScopedAndBounded": true,
+    "feedbackDoesNotPersistRawContent": true,
+    "pythonErrorsAreContentFree": true,
+    "springBrowserAndServiceBoundaries": true,
+    "springUpstreamErrorsAreContentFree": true,
+    "requestAndStreamLimitsRemainPresent": true,
+    "adversarialSecurityTestsPresent": true,
+    "threatModelDocumentsOwnersAndResiduals": true,
+    "noThirdPartyGenerationProvider": true
+  },
+  "controls": {
+    "serviceAuthentication": "production-token-required",
+    "artifactLoading": "signed-checksum-verified-safe-formats-and-affected-torch-serving-block",
+    "memory": "authenticated-bounded-redacted-project-session-scope",
+    "retrieval": "fixed-provider-no-ssrf-no-redirect-no-training",
+    "proposalMutation": "revision-guarded-explicit-review-only"
+  },
+  "residualOwners": {
+    "VFAI-031": "privacy-safe telemetry and capacity/rate visibility",
+    "VFAI-032": "cross-repository security pipeline",
+    "VFAI-033": "release, rollback, signing-key, and token rotation",
+    "VFAI-034": "governed feedback and retraining admission",
+    "VFAI-035": "deployment and incident runbook"
+  },
+  "networkAccessed": false,
+  "rawPromptStored": false,
+  "rawProjectContextStored": false,
+  "rawModelOutputStored": false,
+  "thirdPartyGenerationProvider": false,
+  "threatModelSha256": "1134e5670c897bd6d887e3997a39ad84729fff5e1a5de4f4a9079e797875bfc5",
+  "evaluatorSha256": "f841b954dc2c18b7c744db1d57e1aa536f66591d95b7cc833f56c6dfc221002f",
+  "reportSha256": "3956de71eb3cfa03b03fed19d89d3b7e72014a526094fd083077b1e66089b020"
+}

@@ -9,7 +9,29 @@ Generates 10,000+ multi-task training examples covering:
 import json
 import os
 import random
+import sys
 from typing import Any, Dict, List, Tuple
+
+
+AI_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if AI_ROOT not in sys.path:
+    sys.path.insert(0, AI_ROOT)
+
+from data_governance.governance import (
+    require_approved_shard,
+    write_approved_shard_manifest,
+)
+from evaluation.leakage import exclude_held_out_records
+from task_schema.adapters import legacy_example_to_task_record
+from task_schema.io import write_task_shard
+
+
+GENERATOR_ID = "vf-multitask-dataset-generator"
+GENERATOR_VERSION = "2.0.0"
+GENERATOR_SOURCE_IDS = (
+    "vf-src-project-multitask-generator-v1",
+    "vf-src-legacy-dataset-txt-v0",
+)
 
 
 ALL_BOARDS = [
@@ -89,6 +111,7 @@ def load_dataset_txt_pairs() -> List[Tuple[str, str]]:
     dataset_txt_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "dataset.txt")
     pairs: List[Tuple[str, str]] = []
     if os.path.exists(dataset_txt_path):
+        require_approved_shard(dataset_txt_path, "training")
         with open(dataset_txt_path, "r", encoding="utf-8") as f:
             chunks = f.read().split("[Q]")
             for chunk in chunks:
@@ -304,7 +327,7 @@ def generate_code_review_examples(count: int = 1500) -> List[Dict[str, str]]:
     return examples
 
 
-def build_full_dataset(total_target: int = 10000) -> List[Dict[str, str]]:
+def build_full_dataset(total_target: int = 10000) -> List[Dict[str, Any]]:
     dataset = []
     dataset.extend(generate_chat_qa_examples(3500))
     dataset.extend(generate_refusal_examples(500))
@@ -312,7 +335,16 @@ def build_full_dataset(total_target: int = 10000) -> List[Dict[str, str]]:
     dataset.extend(generate_schematic_to_code_examples(2500))
     dataset.extend(generate_code_review_examples(1500))
     random.shuffle(dataset)
-    return dataset
+    accepted, _rejected = exclude_held_out_records(dataset)
+    return [
+        legacy_example_to_task_record(
+            item,
+            source_ids=GENERATOR_SOURCE_IDS,
+            generator_id=GENERATOR_ID,
+            generator_version=GENERATOR_VERSION,
+        )
+        for item in accepted
+    ]
 
 
 if __name__ == "__main__":
@@ -320,8 +352,13 @@ if __name__ == "__main__":
     os.makedirs(out_dir, exist_ok=True)
     data = build_full_dataset(10500)
     out_file = os.path.join(out_dir, "dataset.jsonl")
-    with open(out_file, "w", encoding="utf-8") as f:
-        for item in data:
-            f.write(json.dumps(item, ensure_ascii=False) + "\n")
+    write_task_shard(out_file, data)
+    write_approved_shard_manifest(
+        out_file,
+        source_ids=GENERATOR_SOURCE_IDS,
+        producer_id=GENERATOR_ID,
+        producer_version=GENERATOR_VERSION,
+        producer_path="model/generate_dataset.py",
+        record_format="vf-task-record-jsonl-v1",
+    )
     print(f"Generated {len(data)} training examples -> {out_file}")
-

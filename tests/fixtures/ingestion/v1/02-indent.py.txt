@@ -1,0 +1,3 @@
+def current(voltage, resistance):
+	if resistance > 0:
+		return voltage / resistance

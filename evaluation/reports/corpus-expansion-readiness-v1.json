@@ -1,0 +1,410 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai-fu-006-corpus-expansion-readiness-v1",
+  "generatedOn": "2026-09-01",
+  "followup": {
+    "id": "VFAI-FU-006",
+    "recordedStatus": "accepted_for_later"
+  },
+  "policy": {
+    "policyId": "vfai-fu-006-governed-corpus-expansion-v1",
+    "status": "readiness-contract-only",
+    "countingUnit": "unique-packed-next-token-prediction"
+  },
+  "current": {
+    "datasetId": "vfai009-approved-packed-v1",
+    "tokenizerVersion": "1.1.0",
+    "packedCorpusFingerprint": "6ec99dfbe4246fee68d4781aa9d3ce54a9d9f8b68af1e1455ff2f549e0142718",
+    "trainingRecordCount": 227,
+    "modelValidationRecords": 23,
+    "uniqueTrainingPredictedTokens": 155690,
+    "approvedSourceFamilies": 2,
+    "approvedSourceIds": [
+      "vf-src-curated-electronics-corpus-v1",
+      "vf-src-verified-synthetic-pipeline-v1"
+    ],
+    "sourceAdmissionReady": true,
+    "exactBoardVariants": 11,
+    "exactComponentVariants": 1,
+    "compilerToolchains": 5,
+    "globalHeldOutCases": 26,
+    "retrievalHeldOutCases": 27,
+    "adversarialSafetyCases": 2,
+    "manualAuditRecords": 0,
+    "acceptedExactDuplicateCount": 0,
+    "trainingHeldOutCollisionCount": 0,
+    "heldOutCollisionCandidatesRejected": 0,
+    "deterministicLabelReceiptCoveragePercent": 100.0,
+    "compilerLabelReceiptCoveragePercent": 100.0,
+    "semanticDeduplicationEnforced": false,
+    "unsupportedClaimUncertaintyCoveragePercent": null,
+    "criticalManualAuditErrorCount": null,
+    "forbiddenInputsDisabled": true,
+    "privateConsentWorkflowImplemented": false,
+    "electronicsKnowledgeRecords": 61,
+    "taskPercent": {
+      "circuit_validation": 13.2,
+      "compiler_repair": 8.8,
+      "domain_chat": 17.6,
+      "firmware_generation": 17.6,
+      "pin_routing": 8.8,
+      "refusal": 4.4,
+      "structured_output": 8.8,
+      "uncertainty": 3.2,
+      "wiring": 17.6
+    }
+  },
+  "taskBalance": {
+    "groups": [
+      {
+        "groupId": "circuit-and-simulation",
+        "tasks": [
+          "circuit_validation",
+          "simulation_interpretation"
+        ],
+        "actualPercent": 13.2,
+        "minimumPercent": 18.0,
+        "maximumPercent": 24.0,
+        "passed": false
+      },
+      {
+        "groupId": "firmware-generation",
+        "tasks": [
+          "firmware_generation",
+          "firmware_review"
+        ],
+        "actualPercent": 17.6,
+        "minimumPercent": 18.0,
+        "maximumPercent": 24.0,
+        "passed": false
+      },
+      {
+        "groupId": "grounded-domain-explanation",
+        "tasks": [
+          "domain_chat",
+          "search_grounding",
+          "retrieval_grounding"
+        ],
+        "actualPercent": 17.6,
+        "minimumPercent": 12.0,
+        "maximumPercent": 18.0,
+        "passed": true
+      },
+      {
+        "groupId": "wiring-and-pin-routing",
+        "tasks": [
+          "wiring",
+          "pin_routing",
+          "board_pins"
+        ],
+        "actualPercent": 26.4,
+        "minimumPercent": 12.0,
+        "maximumPercent": 18.0,
+        "passed": false
+      },
+      {
+        "groupId": "structured-output-and-actions",
+        "tasks": [
+          "structured_output",
+          "tool_action"
+        ],
+        "actualPercent": 8.8,
+        "minimumPercent": 8.0,
+        "maximumPercent": 12.0,
+        "passed": true
+      },
+      {
+        "groupId": "diagnosis-and-repair",
+        "tasks": [
+          "compiler_repair",
+          "diagnostic",
+          "runtime_failure_repair"
+        ],
+        "actualPercent": 8.8,
+        "minimumPercent": 8.0,
+        "maximumPercent": 12.0,
+        "passed": true
+      },
+      {
+        "groupId": "refusal-safety-and-privacy",
+        "tasks": [
+          "refusal",
+          "memory_isolation",
+          "adversarial_safety",
+          "privacy"
+        ],
+        "actualPercent": 4.4,
+        "minimumPercent": 8.0,
+        "maximumPercent": 12.0,
+        "passed": false
+      },
+      {
+        "groupId": "uncertainty-conflict-and-malformed-input",
+        "tasks": [
+          "uncertainty",
+          "conflict_resolution",
+          "malformed_input"
+        ],
+        "actualPercent": 3.2,
+        "minimumPercent": 6.0,
+        "maximumPercent": 10.0,
+        "passed": false
+      }
+    ],
+    "passed": false
+  },
+  "commonGates": {
+    "masterBacklogComplete": true,
+    "ownerStorageAndComputeBudgetApproved": false,
+    "immutableReleaseRetentionReady": false,
+    "allCurrentSourcesApprovedForTraining": true,
+    "privateAndExternalInputsRemainDisabled": true,
+    "exactDuplicatesRejected": true,
+    "trainingHeldOutLeakageRejected": true,
+    "deterministicReceiptCoverageComplete": true,
+    "compilerReceiptCoverageComplete": true,
+    "semanticDeduplicationEnforced": false,
+    "unsupportedClaimsRepresentedAsUncertainty": false,
+    "criticalManualAuditErrorsZero": false,
+    "taskBalanceWithinBounds": false
+  },
+  "stages": [
+    {
+      "stageId": "edge-stage-1-1m",
+      "metrics": {
+        "uniqueTrainingPredictedTokens": {
+          "actual": 155690,
+          "required": 1000000,
+          "passed": false
+        },
+        "approvedSourceFamilies": {
+          "actual": 2,
+          "required": 3,
+          "passed": false
+        },
+        "exactBoardVariants": {
+          "actual": 11,
+          "required": 11,
+          "passed": true
+        },
+        "exactComponentVariants": {
+          "actual": 1,
+          "required": 10,
+          "passed": false
+        },
+        "compilerToolchains": {
+          "actual": 5,
+          "required": 5,
+          "passed": true
+        },
+        "modelValidationRecords": {
+          "actual": 23,
+          "required": 500,
+          "passed": false
+        },
+        "globalHeldOutCases": {
+          "actual": 26,
+          "required": 260,
+          "passed": false
+        },
+        "retrievalHeldOutCases": {
+          "actual": 27,
+          "required": 100,
+          "passed": false
+        },
+        "adversarialSafetyCases": {
+          "actual": 2,
+          "required": 50,
+          "passed": false
+        },
+        "manualAuditRecords": {
+          "actual": 0,
+          "required": 200,
+          "passed": false
+        }
+      },
+      "commonGates": {
+        "masterBacklogComplete": true,
+        "ownerStorageAndComputeBudgetApproved": false,
+        "immutableReleaseRetentionReady": false,
+        "allCurrentSourcesApprovedForTraining": true,
+        "privateAndExternalInputsRemainDisabled": true,
+        "exactDuplicatesRejected": true,
+        "trainingHeldOutLeakageRejected": true,
+        "deterministicReceiptCoverageComplete": true,
+        "compilerReceiptCoverageComplete": true,
+        "semanticDeduplicationEnforced": false,
+        "unsupportedClaimsRepresentedAsUncertainty": false,
+        "criticalManualAuditErrorsZero": false,
+        "taskBalanceWithinBounds": false
+      },
+      "readyForThreeSeedLearningCurve": false
+    },
+    {
+      "stageId": "edge-stage-2-10m",
+      "metrics": {
+        "uniqueTrainingPredictedTokens": {
+          "actual": 155690,
+          "required": 10000000,
+          "passed": false
+        },
+        "approvedSourceFamilies": {
+          "actual": 2,
+          "required": 5,
+          "passed": false
+        },
+        "exactBoardVariants": {
+          "actual": 11,
+          "required": 16,
+          "passed": false
+        },
+        "exactComponentVariants": {
+          "actual": 1,
+          "required": 30,
+          "passed": false
+        },
+        "compilerToolchains": {
+          "actual": 5,
+          "required": 7,
+          "passed": false
+        },
+        "modelValidationRecords": {
+          "actual": 23,
+          "required": 5000,
+          "passed": false
+        },
+        "globalHeldOutCases": {
+          "actual": 26,
+          "required": 1300,
+          "passed": false
+        },
+        "retrievalHeldOutCases": {
+          "actual": 27,
+          "required": 500,
+          "passed": false
+        },
+        "adversarialSafetyCases": {
+          "actual": 2,
+          "required": 250,
+          "passed": false
+        },
+        "manualAuditRecords": {
+          "actual": 0,
+          "required": 1000,
+          "passed": false
+        }
+      },
+      "commonGates": {
+        "masterBacklogComplete": true,
+        "ownerStorageAndComputeBudgetApproved": false,
+        "immutableReleaseRetentionReady": false,
+        "allCurrentSourcesApprovedForTraining": true,
+        "privateAndExternalInputsRemainDisabled": true,
+        "exactDuplicatesRejected": true,
+        "trainingHeldOutLeakageRejected": true,
+        "deterministicReceiptCoverageComplete": true,
+        "compilerReceiptCoverageComplete": true,
+        "semanticDeduplicationEnforced": false,
+        "unsupportedClaimsRepresentedAsUncertainty": false,
+        "criticalManualAuditErrorsZero": false,
+        "taskBalanceWithinBounds": false
+      },
+      "readyForThreeSeedLearningCurve": false
+    },
+    {
+      "stageId": "edge-stage-3-100m",
+      "metrics": {
+        "uniqueTrainingPredictedTokens": {
+          "actual": 155690,
+          "required": 100000000,
+          "passed": false
+        },
+        "approvedSourceFamilies": {
+          "actual": 2,
+          "required": 7,
+          "passed": false
+        },
+        "exactBoardVariants": {
+          "actual": 11,
+          "required": 25,
+          "passed": false
+        },
+        "exactComponentVariants": {
+          "actual": 1,
+          "required": 100,
+          "passed": false
+        },
+        "compilerToolchains": {
+          "actual": 5,
+          "required": 10,
+          "passed": false
+        },
+        "modelValidationRecords": {
+          "actual": 23,
+          "required": 50000,
+          "passed": false
+        },
+        "globalHeldOutCases": {
+          "actual": 26,
+          "required": 6500,
+          "passed": false
+        },
+        "retrievalHeldOutCases": {
+          "actual": 27,
+          "required": 2000,
+          "passed": false
+        },
+        "adversarialSafetyCases": {
+          "actual": 2,
+          "required": 1000,
+          "passed": false
+        },
+        "manualAuditRecords": {
+          "actual": 0,
+          "required": 5000,
+          "passed": false
+        }
+      },
+      "commonGates": {
+        "masterBacklogComplete": true,
+        "ownerStorageAndComputeBudgetApproved": false,
+        "immutableReleaseRetentionReady": false,
+        "allCurrentSourcesApprovedForTraining": true,
+        "privateAndExternalInputsRemainDisabled": true,
+        "exactDuplicatesRejected": true,
+        "trainingHeldOutLeakageRejected": true,
+        "deterministicReceiptCoverageComplete": true,
+        "compilerReceiptCoverageComplete": true,
+        "semanticDeduplicationEnforced": false,
+        "unsupportedClaimsRepresentedAsUncertainty": false,
+        "criticalManualAuditErrorsZero": false,
+        "taskBalanceWithinBounds": false
+      },
+      "readyForThreeSeedLearningCurve": false
+    }
+  ],
+  "currentApprovedStage": null,
+  "nextStage": "edge-stage-1-1m",
+  "nextStageTokenCoveragePercent": 15.569,
+  "nextStageTokenGap": 844310,
+  "decision": "await-immutable-retention-and-owner-budget",
+  "completionClaimed": false,
+  "corpusRecordsGeneratedByEvaluator": 0,
+  "modelRunsExecuted": 0,
+  "governedCorpusExported": false,
+  "networkAccessed": false,
+  "sourceSha256": {
+    "AI_MASTER_BACKLOG.json": "7b0befd8d631a3bbc64300da195484e91d6e87cfdeddf511048aa0007905a99b",
+    "AI_FOLLOWUP_BACKLOG.json": "f723a4b37ff7ad18b77130b9a8c1ad4132ef5af4a8781ee3fd47630fdaa649b3",
+    "corpus_expansion/policy.v1.json": "1ef02ad46a43e3271804c07741f985f7851271f023a2197b4b58ffd2da174bd7",
+    "data_governance/policy.v1.json": "55a5dc48db247648f60780cec27fb20132a4eec0720052b0e940e0ab07b30e84",
+    "data_governance/source-registry.v1.json": "d775e5c2c633fee61ed4553058ad356a83f9298388bb8b5b48cd4880fcadb506",
+    "synthetic_data/reports/current-generation-report.json": "66c20e3b14ba5a94455a0e6c3d18e90940ec01336d99b9846837c694855d6d1c",
+    "electronics_corpus/reports/current-corpus-report.json": "51d1116ae7dac8fe6f4df11457591db6121b95c2f59ab1cd68a2901deb0e6dda",
+    "evaluation/reports/curated-local-retrieval-v1.json": "8e4f80ce2e2624a0deb9aae7ea0ee762d473257c3169540435f57903f48adbb1",
+    "evaluation/fixtures/v1/suite.jsonl": "ea74e74d5a2c0eee02922841d2e964d136d1136c282602c430a33b56663200f0",
+    "model/tokenizers/vfdlm-byte-bpe-v1.1.0/tokenizer_manifest.json": "8af7baf2412a0f93be4cec70583a4a2386ec3ba41dab8554c05722a201d3d400",
+    "tools/evaluate_corpus_expansion_readiness.py": "a1c69c00fdddcb539c05070613a21096f8607ef10e5e9d3718e3ff4c3a687383"
+  },
+  "reportSha256": "c0a09aee0109b552c4997560c898a50e7d386992109e01eb98ecf7aedb56464a"
+}

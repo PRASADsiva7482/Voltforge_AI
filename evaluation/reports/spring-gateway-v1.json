@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai027-spring-gateway-v1",
+  "generatedOn": "2026-08-30",
+  "contractVersion": "1.0.0",
+  "checkCount": 18,
+  "passedCheckCount": 18,
+  "checks": {
+    "jwtProjectAccessBeforeAiCall": true,
+    "crossProjectStructuredContextRejected": true,
+    "staleRevisionRejected": true,
+    "currentRevisionServiceIsAccessBound": true,
+    "requestLimitConfigured": true,
+    "perUserAndProjectAdmissionConfigured": true,
+    "admissionIsNonBlocking": true,
+    "namedSseRelayDoesNotBuffer": true,
+    "browserCancellationReleasesLease": true,
+    "upstreamRequestReceivesCorrelationId": true,
+    "credentialIsServerSideOnly": true,
+    "upstreamErrorTextIsNotReturned": true,
+    "typedGatewayErrorsAreSafe": true,
+    "relayTestsCoverTypedOrdering": true,
+    "authorizationAndRevisionTestsPresent": true,
+    "cancellationAndLimitTestsPresent": true,
+    "gatewayDoesNotMutateProjects": true,
+    "noThirdPartyGenerationProvider": true
+  },
+  "limits": {
+    "maximumRequestBytes": 2000000,
+    "maximumConcurrentStreamsPerUser": 2,
+    "maximumConcurrentStreamsPerProject": 1,
+    "maximumStreamingTimeoutSeconds": 120
+  },
+  "networkAccessed": false,
+  "rawPromptStored": false,
+  "rawProjectContextStored": false,
+  "rawModelOutputStored": false,
+  "credentialsExposedToBrowser": false,
+  "evaluatorSha256": "43b72c989110475d60285a1699ecf8b6cd33dafaf8aa915b5f038a5bd4899f2f",
+  "reportSha256": "b92a3d684ede1e6cca5264bf56b4364e9653d4f6bf8446daa1a4f2ebaeadb0e9"
+}

@@ -1,0 +1,149 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "command": [
+        ".toolchains/gen1/Scripts/python.exe",
+        "-B",
+        "tools/verify_llm_foundation.py",
+        "--check-preserved-history"
+      ],
+      "exitCode": 0,
+      "result": {
+        "status": "passed",
+        "contractId": "voltforge-owned-foundation-v1",
+        "familyNamespace": "vfdlm-g2",
+        "releaseStages": [
+          "base-model",
+          "instruction-model",
+          "integrated-assistant"
+        ],
+        "moduleCount": 9,
+        "mappedFollowups": 15,
+        "historicalBindings": 12,
+        "preservationChecked": true,
+        "preservedHistoricalFiles": 12,
+        "compatiblePythonRoutes": 13,
+        "scope": "design consistency only; no decoder, training, runtime or release acceptance",
+        "modelReleaseApproved": false,
+        "networkAccessed": false,
+        "nativeModelImported": false,
+        "inputs": [
+          {
+            "path": "foundation/contract.v1.json",
+            "sha256": "8641606ed74fd4f7c8887277aa3ae533de41adce0dbbd05a994bcd961441924f"
+          },
+          {
+            "path": "foundation/release-policy.v1.json",
+            "sha256": "e4225f92557972eea373ec4264466ab4a83371d6744ee51ee766cf8ea2992046"
+          },
+          {
+            "path": "foundation/compatibility-map.v1.json",
+            "sha256": "d049c37c9920aa6a76c8c8baf10697752b90c705a397f0f243d5d558b19ef22d"
+          },
+          {
+            "path": "docs/LLM_FOUNDATION_DESIGN.v1.md",
+            "sha256": "88f8d4b9cf5fd0118a3a25b07adadcf1213067453002c51daea5cb14fa7adaec"
+          },
+          {
+            "path": "tools/verify_llm_foundation.py",
+            "sha256": "300bafea8f1a2b7a04dadab93e70258231d5b31b7356295b3f5cfcc3734fbe0b"
+          }
+        ],
+        "thresholds": "pending LLM-TASK-018",
+        "nextTask": "LLM-TASK-018"
+      }
+    },
+    {
+      "command": [
+        ".toolchains/gen1/Scripts/python.exe",
+        "-B",
+        "tools/verify_runbook.py"
+      ],
+      "exitCode": 0,
+      "result": {
+        "contractId": "vfai035-runbook-v1",
+        "contractSha256": "f898e0cc48e1003e5548833f1f22065285ed447051188dbffe207f8c373f0555",
+        "forbiddenClaimCount": 0,
+        "networkAccessed": false,
+        "ok": true,
+        "rawContentStored": false,
+        "requiredCommandCount": 22,
+        "requiredSectionCount": 15,
+        "requiredSourceFileCount": 27,
+        "runbookSha256": "a6db6b8152c7368fc7667bfb2f40bd5e914038ff7fa170458c4b59674af38c9a"
+      }
+    },
+    {
+      "command": [
+        ".toolchains/gen1/Scripts/python.exe",
+        "-B",
+        "tools/scan_quality_boundaries.py",
+        "--check"
+      ],
+      "exitCode": 0,
+      "result": {
+        "schemaVersion": 1,
+        "scanId": "vfai032-quality-boundaries-v1",
+        "passed": true,
+        "filesScanned": 230,
+        "violations": [],
+        "networkAccessed": false,
+        "rawContentStored": false,
+        "scanSha256": "b1f645e2c92a8c42ae7efa8cbdcf08e7bad7dc17d708241597dc81d937ec8f7b"
+      }
+    },
+    {
+      "command": [
+        ".toolchains/gen1/Scripts/python.exe",
+        "-B",
+        "tools/snapshot_llm_cleanup.py",
+        "--verify",
+        "../backlog_history/llm-task-016-before-20260906T054449Z"
+      ],
+      "exitCode": 0,
+      "result": {
+        "snapshot": "D:\\Project\\voltforge\\backlog_history\\llm-task-016-before-20260906T054449Z",
+        "verified_sources": 83,
+        "unchanged_protected_files": 131
+      }
+    }
+  ],
+  "binding": {
+    "status": "passed",
+    "thresholdState": "frozen-independent-suite",
+    "bindingSha256": "7ef69cb85d9b57691cb56eeec819e6a34b5cc1cf8f8d7f335b94a97c9a47ee47",
+    "suite": {
+      "status": "passed",
+      "suiteSha256": "2fdd61cbc4cecbc20b364f7825b63bae2382ba784ca993a901839d2515985cc6",
+      "policySha256": "35c9a2ce79922beb3ec1c36e41ce61eeafcb351e6a3365851d20aa6bb4b20618",
+      "counts": {
+        "development": 100,
+        "validation": 100,
+        "acceptance": 500,
+        "adversarial": 100,
+        "compile": 100
+      },
+      "acceptanceCategories": {
+        "concepts": 50,
+        "diagnostics": 50,
+        "firmware_review": 50,
+        "numerical": 50,
+        "grounding": 50,
+        "multi_turn": 50,
+        "long_context": 50,
+        "project_actions": 50,
+        "instruction_scope": 50,
+        "uncertainty_safety": 50
+      },
+      "coreScenarioFamilies": 100,
+      "coreTemplateFamilies": 73,
+      "trainingUseAllowed": false,
+      "confidentialSealingClaimed": false
+    },
+    "historicalDesignFilesPreserved": 4,
+    "modelReleaseApproved": false,
+    "activationAllowed": false,
+    "scope": "Satisfies task-017 pending threshold/suite reference only; every training, lineage and release gate remains required."
+  }
+}

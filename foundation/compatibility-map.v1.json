@@ -1,0 +1,378 @@
+{
+  "schemaVersion": 1,
+  "mappingId": "voltforge-owned-foundation-compatibility-v1",
+  "version": "1.0.0",
+  "scope": "Gen2 design only; all Gen1 source policies and follow-up statuses remain unchanged.",
+  "followupBacklogPath": "AI_FOLLOWUP_BACKLOG.json",
+  "backlogPath": "../VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.json",
+  "followups": [
+    {
+      "id": "VFAI-FU-001",
+      "observedStatus": "done",
+      "tasks": [
+        "LLM-TASK-022",
+        "LLM-TASK-046",
+        "LLM-TASK-049",
+        "LLM-TASK-052"
+      ],
+      "decision": "Reuse exact board facts and evidence; expand only through independently validated corpus releases.",
+      "statusChangedByThisMapping": false
+    },
+    {
+      "id": "VFAI-FU-002",
+      "observedStatus": "done",
+      "tasks": [
+        "LLM-TASK-022",
+        "LLM-TASK-023",
+        "LLM-TASK-036",
+        "LLM-TASK-049",
+        "LLM-TASK-052"
+      ],
+      "decision": "Reuse immutable exact-FQBN compiler receipts and tokenizer lineage; do not treat them as base-pretraining completion.",
+      "statusChangedByThisMapping": false
+    },
+    {
+      "id": "VFAI-FU-003",
+      "observedStatus": "promoted",
+      "tasks": [
+        "LLM-TASK-028",
+        "LLM-TASK-029",
+        "LLM-TASK-042",
+        "LLM-TASK-054"
+      ],
+      "decision": "Keep checkpoint serving blocked and the verified Gen1 pin until clean native imports, numerical parity and server runtime checks establish a new pinned environment.",
+      "statusChangedByThisMapping": false
+    },
+    {
+      "id": "VFAI-FU-004",
+      "observedStatus": "accepted_for_later",
+      "tasks": [
+        "LLM-TASK-027",
+        "LLM-TASK-028",
+        "LLM-TASK-029",
+        "LLM-TASK-030"
+      ],
+      "decision": "Validate mixed precision and scaler/optimizer/RNG resume on the selected private training server.",
+      "statusChangedByThisMapping": false
+    },
+    {
+      "id": "VFAI-FU-005",
+      "observedStatus": "accepted_for_later",
+      "tasks": [
+        "LLM-TASK-024",
+        "LLM-TASK-025",
+        "LLM-TASK-026",
+        "LLM-TASK-031",
+        "LLM-TASK-032"
+      ],
+      "decision": "Replace Gen1 vocabulary/scale sweep limits only for Gen2; freeze corpus exposure and compare controlled owned tokenizers/configurations.",
+      "statusChangedByThisMapping": false
+    },
+    {
+      "id": "VFAI-FU-006",
+      "observedStatus": "accepted_for_later",
+      "tasks": [
+        "LLM-TASK-019",
+        "LLM-TASK-020",
+        "LLM-TASK-021",
+        "LLM-TASK-022",
+        "LLM-TASK-023",
+        "LLM-TASK-031",
+        "LLM-TASK-033"
+      ],
+      "decision": "Replace edge-only source/token targets for Gen2 with diverse language/code/domain corpus and measured pilots; preserve rights, unique/exposure distinction, dedup and sealed splits.",
+      "statusChangedByThisMapping": false
+    },
+    {
+      "id": "VFAI-FU-007",
+      "observedStatus": "accepted_for_later",
+      "tasks": [
+        "LLM-TASK-042",
+        "LLM-TASK-045",
+        "LLM-TASK-054"
+      ],
+      "decision": "Measure the selected private server's real token throughput, memory and concurrency. Apple Silicon and workstation parity are optional additional profiles, not prerequisites.",
+      "statusChangedByThisMapping": false
+    },
+    {
+      "id": "VFAI-FU-008",
+      "observedStatus": "accepted_for_later",
+      "tasks": [
+        "LLM-TASK-024",
+        "LLM-TASK-026",
+        "LLM-TASK-027",
+        "LLM-TASK-030",
+        "LLM-TASK-033",
+        "LLM-TASK-035",
+        "LLM-TASK-046"
+      ],
+      "decision": "Train context from owned random-root lineage; use a new tokenizer-bound compiler policy and prove context occupancy and input/output budgets. Never stretch or relabel old 128-token weights.",
+      "statusChangedByThisMapping": false
+    },
+    {
+      "id": "VFAI-FU-009",
+      "observedStatus": "accepted_for_later",
+      "tasks": [
+        "LLM-TASK-036",
+        "LLM-TASK-037",
+        "LLM-TASK-038",
+        "LLM-TASK-048",
+        "LLM-TASK-055"
+      ],
+      "decision": "Retain consent, isolation and offline candidate-only feedback rules. A general feedback executor remains a deferred follow-up; this mapping does not authorize live-chat learning.",
+      "statusChangedByThisMapping": false
+    },
+    {
+      "id": "VFAI-FU-010",
+      "observedStatus": "accepted_for_later",
+      "tasks": [
+        "LLM-TASK-041",
+        "LLM-TASK-054",
+        "LLM-TASK-055"
+      ],
+      "decision": "Retain owner/operations backup, secret rotation and independent restore evidence before deployment acceptance.",
+      "statusChangedByThisMapping": false
+    },
+    {
+      "id": "VFAI-FU-011",
+      "observedStatus": "accepted_for_later",
+      "tasks": [
+        "LLM-TASK-022",
+        "LLM-TASK-046",
+        "LLM-TASK-049",
+        "LLM-TASK-052"
+      ],
+      "decision": "Retain exact manufacturer/revision evidence and unknown generic variants; expand reviewed component coverage.",
+      "statusChangedByThisMapping": false
+    },
+    {
+      "id": "VFAI-FU-012",
+      "observedStatus": "accepted_for_later",
+      "tasks": [
+        "LLM-TASK-046",
+        "LLM-TASK-049",
+        "LLM-TASK-052",
+        "LLM-TASK-053"
+      ],
+      "decision": "Retain geometry/source revision mapping and real browser fixtures; circuit artwork cannot establish electrical or mechanical correctness.",
+      "statusChangedByThisMapping": false
+    },
+    {
+      "id": "VFAI-FU-013",
+      "observedStatus": "accepted_for_later",
+      "tasks": [
+        "LLM-TASK-023",
+        "LLM-TASK-024",
+        "LLM-TASK-027",
+        "LLM-TASK-030",
+        "LLM-TASK-033",
+        "LLM-TASK-034",
+        "LLM-TASK-041"
+      ],
+      "decision": "Replace fixed Gen1 tokenizer 1.1.0 and legacy stage namespace only for Gen2. Preserve fresh run identity, immutable split/shard lineage and independent multi-seed evaluation.",
+      "statusChangedByThisMapping": false
+    },
+    {
+      "id": "VFAI-FU-014",
+      "observedStatus": "accepted_for_later",
+      "tasks": [
+        "LLM-TASK-022",
+        "LLM-TASK-029",
+        "LLM-TASK-036",
+        "LLM-TASK-049",
+        "LLM-TASK-054"
+      ],
+      "decision": "Retain checksum-pinned toolchains, exact FQBN, clean-host provisioning and compiler-cache provenance.",
+      "statusChangedByThisMapping": false
+    },
+    {
+      "id": "VFAI-FU-015",
+      "observedStatus": "accepted_for_later",
+      "tasks": [
+        "LLM-TASK-019",
+        "LLM-TASK-020",
+        "LLM-TASK-023",
+        "LLM-TASK-024",
+        "LLM-TASK-030",
+        "LLM-TASK-041",
+        "LLM-TASK-054",
+        "LLM-TASK-055"
+      ],
+      "decision": "Retain immutable content-addressed data/tokenizer history and owner backup/restore requirements; repository-side preservation does not complete external retention.",
+      "statusChangedByThisMapping": false
+    }
+  ],
+  "policyOverrides": [
+    {
+      "path": "gen1_decision/policy.v1.json",
+      "oldScope": "Gen1 edge/core/server parameter ranges, CPU-first selection and smaller-profile prerequisite",
+      "newRule": "Gen2 has no inherited 150M ceiling or workstation gate; 100-300M pilots and 1-3B candidates remain planning hypotheses until server measurements.",
+      "tasks": [
+        "LLM-TASK-025",
+        "LLM-TASK-026",
+        "LLM-TASK-031",
+        "LLM-TASK-032"
+      ],
+      "replacementPath": "foundation/contract.v1.json",
+      "appliesTo": "vfdlm-g2-only",
+      "changesHistoricalPolicy": false,
+      "implementationRequired": true
+    },
+    {
+      "path": "corpus_expansion/policy.v1.json",
+      "oldScope": "Gen1 edge-stage counts and domain-only task mixture",
+      "newRule": "Gen2 freezes a new broad language/code/domain mixture and scale policy; source rights, semantic dedup, split integrity and unique-vs-repeated accounting remain mandatory.",
+      "tasks": [
+        "LLM-TASK-019",
+        "LLM-TASK-020",
+        "LLM-TASK-021",
+        "LLM-TASK-022",
+        "LLM-TASK-023",
+        "LLM-TASK-031"
+      ],
+      "replacementPath": "foundation/contract.v1.json",
+      "appliesTo": "vfdlm-g2-only",
+      "changesHistoricalPolicy": false,
+      "implementationRequired": true
+    },
+    {
+      "path": "gen1_sweep/joint-tokenizer-model-policy.v1.json",
+      "oldScope": "Gen1 vocabulary candidates and 100M-stage prerequisite",
+      "newRule": "Gen2 tokenizer and architecture sweeps use their own immutable pilot plan and new tokenizer namespace.",
+      "tasks": [
+        "LLM-TASK-024",
+        "LLM-TASK-025",
+        "LLM-TASK-026",
+        "LLM-TASK-031",
+        "LLM-TASK-032"
+      ],
+      "replacementPath": "foundation/contract.v1.json",
+      "appliesTo": "vfdlm-g2-only",
+      "changesHistoricalPolicy": false,
+      "implementationRequired": true
+    },
+    {
+      "path": "gen1_training/context-revision-policy.v1.json",
+      "oldScope": "Gen1 tokenizer/compiler binding and old context experiment gates",
+      "newRule": "Gen2 starts with a 4096-token total trained budget; 8192 is a separate experiment. Exact tokenizer counting, evidence-backed context and immutable history remain required.",
+      "tasks": [
+        "LLM-TASK-026",
+        "LLM-TASK-030",
+        "LLM-TASK-035",
+        "LLM-TASK-046"
+      ],
+      "replacementPath": "foundation/contract.v1.json",
+      "appliesTo": "vfdlm-g2-only",
+      "changesHistoricalPolicy": false,
+      "implementationRequired": true
+    },
+    {
+      "path": "gen1_training/tokenizer-v1.1-revision-policy.v1.json",
+      "oldScope": "Fixed Gen1 tokenizer 1.1.0 and historical run namespace",
+      "newRule": "Gen2 uses vfdlm-g2-byte-bpe with fresh random initialization and fresh run/checkpoint namespaces; no inherited optimizer or weight tensors.",
+      "tasks": [
+        "LLM-TASK-023",
+        "LLM-TASK-024",
+        "LLM-TASK-027",
+        "LLM-TASK-030",
+        "LLM-TASK-033"
+      ],
+      "replacementPath": "foundation/contract.v1.json",
+      "appliesTo": "vfdlm-g2-only",
+      "changesHistoricalPolicy": false,
+      "implementationRequired": true
+    },
+    {
+      "path": "gen1_optimization/accelerator-policy.v1.json",
+      "oldScope": "Multi-device historical benchmark matrix",
+      "newRule": "Gen2 deployment acceptance targets the chosen private server; additional workstation/Apple profiles are optional. Preserve historical CPU receipts and actual-token measurement.",
+      "tasks": [
+        "LLM-TASK-029",
+        "LLM-TASK-042",
+        "LLM-TASK-045",
+        "LLM-TASK-054"
+      ],
+      "replacementPath": "foundation/release-policy.v1.json",
+      "appliesTo": "vfdlm-g2-only",
+      "changesHistoricalPolicy": false,
+      "implementationRequired": true
+    },
+    {
+      "path": "model/release-policy.v1.json",
+      "oldScope": "Single Gen1 package/release lifecycle and historical numeric canary limits",
+      "newRule": "Gen2 separates base, instruction and assistant acceptance; task 018 must freeze numerical acceptance before candidates. Signed immutable records, compatibility, canary/rollback and revision-guarded activation remain required.",
+      "tasks": [
+        "LLM-TASK-018",
+        "LLM-TASK-041",
+        "LLM-TASK-054",
+        "LLM-TASK-055"
+      ],
+      "replacementPath": "foundation/release-policy.v1.json",
+      "appliesTo": "vfdlm-g2-only",
+      "changesHistoricalPolicy": false,
+      "implementationRequired": true
+    }
+  ],
+  "retainedBoundaries": [
+    "No imported pretrained weights or vocabulary",
+    "No hosted generation or private-data export",
+    "Source licenses and permitted uses remain separately governed",
+    "No automatic live-chat training",
+    "Exact compiler/hardware and project-revision evidence",
+    "Checkpoint safety and exact runtime compatibility",
+    "Immutable signed artifact/data/tokenizer history",
+    "Finite compute/storage budget before allocation",
+    "Independent backup/restore and release review"
+  ],
+  "protectedFiles": [
+    {
+      "path": "gen1_decision/policy.v1.json",
+      "sha256": "a64b2c4d1ac2f6b2e734eff30ff784c78febc929b7fbcdfad311813880a1d53b"
+    },
+    {
+      "path": "gen1_training/context-revision-policy.v1.json",
+      "sha256": "cb559b4fe4e50b2ae1bb4c8dfb0c478c1f905ebf92b6893fb489bb22ebaee89f"
+    },
+    {
+      "path": "gen1_training/tokenizer-v1.1-revision-policy.v1.json",
+      "sha256": "a9eebe360d25f014f0673b8697018bf7dc09e86703bec4b395d4c24669a134c4"
+    },
+    {
+      "path": "gen1_sweep/joint-tokenizer-model-policy.v1.json",
+      "sha256": "e11c37a383d4910d4338162b449556b641d5a191baae2aa7d570d279f51b75f6"
+    },
+    {
+      "path": "gen1_optimization/accelerator-policy.v1.json",
+      "sha256": "11d548e18f67c5b1d07cb7d65d058b1fe018dd181a4a1a6f1e87aa9111d946cf"
+    },
+    {
+      "path": "corpus_expansion/policy.v1.json",
+      "sha256": "1ef02ad46a43e3271804c07741f985f7851271f023a2197b4b58ffd2da174bd7"
+    },
+    {
+      "path": "model/release-policy.v1.json",
+      "sha256": "81689095e98f380398c735bbdb662dd1fd0b2ab35607ce1b4bc146433bec6134"
+    },
+    {
+      "path": "model/registry/active_model.json",
+      "sha256": "0d6058fe34a103ba8d03150c05eed04e616e5397c70cf1d04efeb07b916c662c"
+    },
+    {
+      "path": "model/identity.py",
+      "sha256": "5bcba182e5c63d7d12a9173722ba990eb3f919e1024454e5a7d9054bc03563c8"
+    },
+    {
+      "path": "api_contract/policy.v1.json",
+      "sha256": "bcbdef3deaccdf3e155fcf0209662c8fda3ae62d1989e2c9d1a6a02edcdba27d"
+    },
+    {
+      "path": "AI_FOLLOWUP_BACKLOG.json",
+      "sha256": "f723a4b37ff7ad18b77130b9a8c1ad4132ef5af4a8781ee3fd47630fdaa649b3"
+    },
+    {
+      "path": "synthetic_data/retention-policy.v1.json",
+      "sha256": "93156c156e86c2588328ce60fb33da689c06123c7ca301264ba9d8f192ce530b"
+    }
+  ]
+}
+

@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai-fu-010-deployment-continuity-readiness-v1",
+  "generatedOn": "2026-09-01",
+  "followup": {
+    "id": "VFAI-FU-010",
+    "recordedStatus": "accepted_for_later"
+  },
+  "policy": {
+    "policyId": "vfai-fu-010-deployment-continuity-v1",
+    "status": "application-verifier-ready-deployment-unselected"
+  },
+  "sourceInventory": {
+    "path": "evaluation/reports/continuity-source-inventory-v1.json",
+    "manifestSha256": "6b9251bb54f56d933bca01c1667a96aab3f2517918cf44452f8c8b6609f43830",
+    "checksumValid": true,
+    "matchesCurrentSignedRegistry": true,
+    "entryCount": 57,
+    "totalBytes": 171940147,
+    "verifiedArtifactCount": 3,
+    "registryHistoryEntryCount": 3,
+    "signedReleaseEntryCount": 0,
+    "backupCreated": false,
+    "encryptionApplied": false,
+    "restoreTestExecuted": false,
+    "contentFree": true
+  },
+  "registry": {
+    "signatureValid": true,
+    "revision": 3,
+    "registrySha256": "3188ec3f52de6904094fff67f9b38ab089ae879b44eefd8f405654ad78289e90",
+    "activeArtifactId": null,
+    "registeredArtifactCount": 3
+  },
+  "deploymentTemplate": {
+    "path": "Dockerfile",
+    "baseImage": "python:3.11-slim-bookworm",
+    "nonRootUserDeclared": false,
+    "healthcheckDeclared": false,
+    "bindsAllInterfaces": true,
+    "approvedDeploymentTarget": false,
+    "classification": "development-container-template-not-approved-deployment"
+  },
+  "assignedInputs": {
+    "deploymentTargetId": null,
+    "deploymentTargetAssigned": false,
+    "ownerObjectivesApproved": false,
+    "ownerObjectivesReceiptSha256": null,
+    "serviceManagerAssigned": false,
+    "serviceDefinitionReady": false,
+    "privateNetworkPolicyReady": false,
+    "resourceLimitPolicyReady": false,
+    "healthProbePolicyReady": false,
+    "leastPrivilegeAccountApproved": false,
+    "encryptedBackupProviderAssigned": false,
+    "encryptedDestinationAssigned": false,
+    "backupSchedulerReady": false,
+    "backupReceiptPath": null,
+    "disposableRestoreTargetAssigned": false,
+    "restoreSchedulerReady": false,
+    "restoreReceiptPath": null,
+    "secretManagerProviderAssigned": false,
+    "serviceTokenRotationDefinitionReady": false,
+    "signingTrustRotationDefinitionReady": false,
+    "serviceTokenRotationReceiptPath": null,
+    "signingTrustRotationReceiptPath": null
+  },
+  "receipts": {
+    "backup": {
+      "path": null,
+      "assigned": false,
+      "valid": false,
+      "receiptSha256": null,
+      "configurationBindingsValid": false
+    },
+    "restore": {
+      "path": null,
+      "assigned": false,
+      "valid": false,
+      "receiptSha256": null,
+      "configurationBindingsValid": false
+    },
+    "serviceTokenRotation": {
+      "path": null,
+      "assigned": false,
+      "valid": false,
+      "receiptSha256": null,
+      "configurationBindingsValid": false
+    },
+    "signingTrustRotation": {
+      "path": null,
+      "assigned": false,
+      "valid": false,
+      "receiptSha256": null,
+      "configurationBindingsValid": false
+    }
+  },
+  "gates": {
+    "masterBacklogComplete": true,
+    "sourceInventoryReady": true,
+    "deploymentTargetAndOwnerObjectivesReady": false,
+    "leastPrivilegeServiceTargetReady": false,
+    "encryptedBackupScheduleAndReceiptReady": false,
+    "cleanRestoreScheduleAndReceiptReady": false,
+    "secretManagerRotationDefinitionsReady": false,
+    "tokenAndTrustRotationReceiptsReady": false
+  },
+  "decision": "await-deployment-target-and-owner-objectives",
+  "completionClaimed": false,
+  "backupDataCopiedByEvaluator": false,
+  "encryptionPerformedByEvaluator": false,
+  "restoreExecutedByEvaluator": false,
+  "secretManagerAccessedByEvaluator": false,
+  "credentialsRotatedByEvaluator": false,
+  "hostTaskScheduledByEvaluator": false,
+  "liveStateMutated": false,
+  "networkAccessed": false,
+  "sourceSha256": {
+    "AI_MASTER_BACKLOG.json": "7b0befd8d631a3bbc64300da195484e91d6e87cfdeddf511048aa0007905a99b",
+    "AI_FOLLOWUP_BACKLOG.json": "f723a4b37ff7ad18b77130b9a8c1ad4132ef5af4a8781ee3fd47630fdaa649b3",
+    "operations/deployment-continuity-policy.v1.json": "58c74ad6b934a1bd5a5433fca58fa7683edb23ca98d201a6910ee455bc772014",
+    "evaluation/reports/continuity-source-inventory-v1.json": "8810302605b864e4d13171ada9c1392f329bf3cc52200e56a332731cba566639",
+    "model/registry/active_model.json": "9ae71d3d13a5b05c90b45e2ad9ef9150abac4a70715840b2d08e9b9db75c897b",
+    "model/registry/trust/trusted-keys.json": "62e03b6dc6f156b1e71b5f62f26cae8de80f1c14e14312c546fcabde1ee6bf34",
+    "operations/continuity.py": "2d1bcfb009d634ebefcdcb95dbe2b7a5379cd9766f19a594c5bbde892964cc8d",
+    "tools/manage_continuity.py": "0c7685d5f1c682a9d69664d0a75ead17e46bb3c902da928c84d1f861f89ce505",
+    "Dockerfile": "1112529df0052f57b57e5989cf47c6135c9bb530cc984be28b192cdb255ebf9f",
+    "tools/evaluate_deployment_continuity_readiness.py": "03a3e241eefbf4f176f7164c27623dd5ed78a78e1db53a2b880cde681f884d52"
+  },
+  "reportSha256": "4271bc9a32f06fa828102bdb592c296fcb9b6e158b8b3b9d3ed60dd979f91599"
+}

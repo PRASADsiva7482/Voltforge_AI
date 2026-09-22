@@ -233,6 +233,101 @@ class HealthChecker:
         return checks
 
 
+class ElectronicsSafetyGuard:
+    """Enforces electrical safety constraints and prompt injection guardrails."""
+
+    # Direct mains hazard patterns (110V-240V directly to GPIO, microcontroller, breadboard, without isolation)
+    MAINS_HAZARDS = [
+        re.compile(r"\b(?:110|120|220|230|240)\s*v(?:ac)?\b.*?\b(?:pin|gpio|arduino|esp32|pico|stm32|mcu|microcontroller|breadboard)\b", re.IGNORECASE),
+        re.compile(r"\b(?:pin|gpio|arduino|esp32|pico|stm32|mcu|microcontroller|breadboard)\b.*?\b(?:110|120|220|230|240)\s*v(?:ac)?\b", re.IGNORECASE),
+        re.compile(r"\b(?:connect|wire|plug|hook up)\b.*?\b(?:mains|wall outlet|220v|110v|240v)\b.*?\b(?:directly|direct|without isolation|without relay)\b", re.IGNORECASE),
+        re.compile(r"\b(?:directly|direct|without isolation)\b.*?\b(?:mains|220v|110v|240v)\b", re.IGNORECASE),
+    ]
+
+    # Dead shorts on supply rails
+    SHORT_CIRCUIT_HAZARDS = [
+        re.compile(r"\b(?:short|bridge|connect directly)\b.*?\b(?:vcc|5v|3\.3v)\b.*?\b(?:gnd|ground)\b", re.IGNORECASE),
+        re.compile(r"\b(?:connect|wire)\b.*?\b(?:vcc|5v|3\.3v)\b.*?\b(?:directly|straight)\b.*?\b(?:to|into)\b.*?\b(?:gnd|ground)\b", re.IGNORECASE),
+    ]
+
+    # Prompt injection and instruction override patterns
+    INJECTION_PATTERNS = [
+        re.compile(r"\bignore\s+(?:all\s+)?(?:previous|prior)\s+(?:instructions|prompts|rules)\b", re.IGNORECASE),
+        re.compile(r"\bdisregard\s+(?:all\s+)?(?:safety\s+)?(?:rules|guidelines|instructions)\b", re.IGNORECASE),
+        re.compile(r"\b(?:dan\s+mode|jailbreak|developer\s+mode|unrestricted\s+mode)\b", re.IGNORECASE),
+        re.compile(r"\byou\s+are\s+no\s+longer\s+voltforge\b", re.IGNORECASE),
+        re.compile(r"\bbypass\s+(?:safety|security|policy)\b", re.IGNORECASE),
+        re.compile(r"\bunfiltered\s+(?:ai|mode|response)\b", re.IGNORECASE),
+    ]
+
+    # Safe isolation indicators (if present, user is asking how to safely isolate mains)
+    SAFE_ISOLATION_INDICATORS = [
+        "relay", "optocoupler", "opto-isolator", "solid state relay", "ssr",
+        "galvanic isolation", "isolated driver", "isolation module", "safely control",
+        "how to safely", "isolated gate", "flyback diode"
+    ]
+
+    @classmethod
+    def check_prompt_safety(cls, prompt: str) -> Dict[str, Any]:
+        """Inspect prompt for electrical hazards and prompt injection attempts."""
+        if not prompt or not isinstance(prompt, str):
+            return {"safe": True, "hazard_type": None, "refusal_message": None}
+
+        lower = prompt.lower().strip()
+
+        # Check prompt injection first
+        for pattern in cls.INJECTION_PATTERNS:
+            if pattern.search(lower):
+                return {
+                    "safe": False,
+                    "hazard_type": "PROMPT_INJECTION",
+                    "refusal_message": (
+                        "### Security Policy Notice\n\n"
+                        "Instruction overrides, safety bypass requests, and jailbreak attempts are restricted. "
+                        "VoltForge AI operates exclusively as an authoritative electronics engineering assistant, "
+                        "grounded in verified physics, schematic analysis, and safe circuit design."
+                    ),
+                }
+
+        # Check short circuit hazards
+        for pattern in cls.SHORT_CIRCUIT_HAZARDS:
+            if pattern.search(lower):
+                return {
+                    "safe": False,
+                    "hazard_type": "SHORT_CIRCUIT_HAZARD",
+                    "refusal_message": (
+                        "### Critical Electrical Hazard: Direct Rail Short Circuit\n\n"
+                        "**Safety Refusal**: Connecting a power rail (5V/3.3V/VCC) directly to Ground (GND) creates a zero-resistance dead short. "
+                        "This will immediately trigger overcurrent shutdown, damage your power regulator or USB host port, and generate severe thermal stress.\n\n"
+                        "**Correct Practice**: Current must always flow through an appropriate load impedance or active component (e.g. resistor, IC, sensor) before returning to GND."
+                    ),
+                }
+
+        # Check mains hazard
+        is_safe_query = any(ind in lower for ind in cls.SAFE_ISOLATION_INDICATORS)
+        for pattern in cls.MAINS_HAZARDS:
+            if pattern.search(lower):
+                if is_safe_query and not any(term in lower for term in ("directly", "without isolation", "without relay", "raw mains")):
+                    continue
+
+                return {
+                    "safe": False,
+                    "hazard_type": "HIGH_VOLTAGE_MAINS_HAZARD",
+                    "refusal_message": (
+                        "### Critical Electrical Hazard: Direct Mains Voltage Exposure\n\n"
+                        "**Safety Refusal**: Connecting 110V/220V/240V AC mains directly to microcontroller GPIO pins, breadboards, or unisolated circuits "
+                        "poses immediate danger of fatal electric shock, catastrophic component explosion, and electrical fire.\n\n"
+                        "**Mandatory Safety Architecture**:\n"
+                        "1. **Galvanic Isolation**: Low-voltage logic (3.3V/5V) must be electrically decoupled from mains using optocoupler-isolated relays or solid-state relays (SSR) certified to UL508 or IEC 62368-1.\n"
+                        "2. **Creepage & Clearance**: Maintain $\\ge 6.3\\text{mm}$ clearance between high-voltage AC traces and low-voltage DC signals on any PCB.\n"
+                        "3. **Enclosure**: Mains connections must reside inside a non-conductive, grounded, fuse-protected enclosure."
+                    ),
+                }
+
+        return {"safe": True, "hazard_type": None, "refusal_message": None}
+
+
+
 if __name__ == "__main__":
     import json
 

@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai019-generation-quality-policy-v1",
+  "domain": "voltforge-electronics",
+  "candidateEnvelope": {
+    "encoding": "utf-8-json",
+    "maximumBytes": 64000,
+    "maximumVisibleCharacters": 8000,
+    "maximumSegments": 16,
+    "maximumStructuredActions": 8,
+    "requiredExactFields": [
+      "schemaVersion",
+      "domain",
+      "finishReason",
+      "confidence",
+      "segments",
+      "structuredActions",
+      "citationEvidenceIds"
+    ],
+    "acceptedFinishReasons": ["stop", "eos"],
+    "segmentTypes": ["grounded-claim", "safety-warning", "uncertainty"]
+  },
+  "requiredGatesInOrder": [
+    "bounded-utf8-json-schema",
+    "electronics-domain-scope",
+    "dangerous-instruction-and-prompt-injection",
+    "typed-evidence-existence-and-status",
+    "lexical-claim-support",
+    "exact-citation-coverage",
+    "confidence-evidence-cap",
+    "proposal-only-action-contract",
+    "repetition",
+    "completion-and-truncation"
+  ],
+  "evidencePolicy": {
+    "acceptedStatuses": ["complete", "reported"],
+    "claimEvidenceRequired": true,
+    "exactCitationCoverageRequired": true,
+    "unknownEvidenceRejected": true,
+    "failedEvidenceRejected": true,
+    "uncertaintyMustHaveNoCitation": true,
+    "unsupportedClaimBehavior": "reject-to-deterministic-fallback"
+  },
+  "confidencePolicy": {
+    "deterministicEvidenceMaximum": 0.95,
+    "retrievedEvidenceMaximum": 0.75,
+    "clientReportedEvidenceMaximum": 0.65,
+    "uncertaintyMaximum": 0.6,
+    "actionsMinimum": 0.7
+  },
+  "structuredActionPolicy": {
+    "createdOnlyAfterAllGatesPass": true,
+    "applicationMode": "proposal-only",
+    "requiresUserConfirmation": true,
+    "exactProjectRevisionRequired": true,
+    "deterministicEvidenceRequired": true,
+    "exactDeterministicToolProposalRequired": true,
+    "compiledEvidenceRequiredForCodeFix": true,
+    "hiddenExecutionControlsRejected": true
+  },
+  "fallbackPolicy": {
+    "source": "voltforge-deterministic-tools",
+    "onModelUnavailable": true,
+    "onContextUnavailable": true,
+    "onAnyGateRejection": true,
+    "rawCandidateMayBeReturned": false,
+    "rawCandidateMayCreateTypedOutput": false,
+    "unavailableModelMayBeReportedAsNeural": false
+  },
+  "observabilityPolicy": {
+    "sseFields": [
+      "mode",
+      "fallbackUsed",
+      "fallbackReasonCode",
+      "fallbackSource",
+      "neuralAttempted",
+      "neuralArtifactId",
+      "qualityGate"
+    ],
+    "processCounters": [
+      "evaluatedCandidates",
+      "acceptedCandidates",
+      "rejectedCandidates",
+      "deterministicFallbacks",
+      "neuralAttempts",
+      "rejectionCodes",
+      "fallbackReasons"
+    ],
+    "rawPromptStored": false,
+    "rawOutputStored": false
+  },
+  "currentReleaseBoundary": {
+    "neuralServingApproved": false,
+    "activeNeuralArtifactRequired": true,
+    "projectContextCompilerRequired": true,
+    "experimentalArtifactMayServeChat": false,
+    "deterministicFallbackRemainsAvailable": true
+  },
+  "policySha256": "da7a4b29a65ef51e1483a6323309a6908b2b5444ee46affe5b906dcf6b8e00ed"
+}

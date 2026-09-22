@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "decisionId": "vf-g2-reviewed-source-inputs-20260909-v1",
+  "recordedOn": "2026-09-09",
+  "reviewer": {"kind": "coding-agent", "name": "Codex"},
+  "authorizationBasis": "User authorized building the owned LLM and continuing corpus preparation. This is a recorded source-evidence review; no separate owner signature or legal opinion is asserted.",
+  "acquisitionPath": "corpus/source-expansion/acquisition-v1/6d8a00721ddcb89a037c75282cabbd417300a19672a8706cfc474780baf40328",
+  "acquisitionManifestSha256": "43843cac7bf495608790f610ff4b0f1dbe48983bae4dc4c2cf92e6e321d1f4a4",
+  "decision": "approved-exact-source-input-uses",
+  "sources": [
+    {"sourceId": "vf-g2-lgwt-4675d96a", "licenseBasis": "Root MIT grant and README MIT link cover the selected documentation; no nested ancestor license or selected-file exception detected.", "allowedUses": ["corpus-candidate-review", "tokenizer-fitting-input", "pretraining-input"]},
+    {"sourceId": "vf-g2-rust-book-1500248d", "licenseBasis": "The root LICENSE-MIT independently grants use of software and associated documentation; select that grant and retain both root license files. README identifies the repository as the book source; no nested ancestor exception applies to selected src chapters.", "allowedUses": ["corpus-candidate-review", "tokenizer-fitting-input", "pretraining-input"]},
+    {"sourceId": "vf-g2-mkdocs-9d65447e", "licenseBasis": "Root LICENSE, README license section and docs/license.md supply the MIT grant for selected documentation. Images, icons, linked content and private Insiders sources are excluded.", "allowedUses": ["corpus-candidate-review", "validation-input"]},
+    {"sourceId": "vf-g2-cjson-fb16e5cf", "licenseBasis": "Root MIT grant and README license section cover the four selected C/header files; their copyright and grant notices are retained. Tests and vendored code are excluded.", "allowedUses": ["corpus-candidate-review", "tokenizer-fitting-input", "pretraining-input"]},
+    {"sourceId": "vf-g2-logc-f9ea3499", "licenseBasis": "Root MIT grant and README licensing statement cover the two selected C/header files. Exact source notices are retained.", "allowedUses": ["corpus-candidate-review", "validation-input"]}
+  ],
+  "conditions": [
+    "Only the selected file bytes in the bound acquisition manifest are approved; no new revision, linked document, asset, include, submodule or vendor input inherits this decision.",
+    "Retain complete copyright/permission notices with copied source and derived data lineage; redistribution and deployment are outside this source-input decision.",
+    "Reserved validation families cannot enter tokenizer fitting or pretraining, regardless of the license's broader permission.",
+    "Unknown source rights, new exceptions, privacy findings, source-removal requests or changed bytes block use pending a new recorded review.",
+    "Source-input approval does not approve a corpus, model, tokenizer release, training run or activation; their separate gates remain mandatory.",
+    "External encrypted backup, restore and retention acceptance remain open for later artifact release; no historical receipt is changed."
+  ],
+  "privacy": {"scope": "Public maintainer technical prose and C source only", "privateUserDataUsed": false, "secretPatternChecks": "passed on exact selected bytes; heuristic rather than universal proof"},
+  "corpusTrainingAllowed": false,
+  "modelReleaseApproved": false,
+  "historicalApprovalsChanged": false
+}

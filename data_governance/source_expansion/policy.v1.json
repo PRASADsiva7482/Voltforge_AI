@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vf-g2-source-expansion-review-v1",
+  "taskId": "LLM-TASK-023",
+  "maximumAcquisitionBytes": 8388608,
+  "maximumMetadataBytesPerRepository": 2097152,
+  "maximumFileBytes": 524288,
+  "maximumSelectedFiles": 32,
+  "maximumNormalizedDocumentBytes": 524288,
+  "networkHosts": ["api.github.com", "raw.githubusercontent.com"],
+  "candidateOnly": true,
+  "trainingAllowed": false,
+  "allowedUses": ["source-review", "corpus-candidate-review"],
+  "sourceReview": "Exact MIT grant, maintainer scope, selected-file exceptions, Git blob identity, privacy checks and retention/removal lineage; source approval requires a separate recorded decision after packet review",
+  "excludedContent": ["assets", "external-includes", "submodules", "vendored-code", "customer-data", "chat", "model-teacher-outputs", "remote-agent-instructions"],
+  "sourceApprovalInherited": false,
+  "priorQuarantinesMayBeReadmitted": false,
+  "matcherThresholdsChanged": false,
+  "retention": "Retain this bounded immutable source/notice packet while referenced; later archival/removal needs impact review. External backup/restore acceptance remains open.",
+  "deletionProcedure": "Block source use, report exact source-file/document/split/tokenizer/model dependencies, then perform separately reviewed retention or removal; never rewrite immutable artifacts."
+}

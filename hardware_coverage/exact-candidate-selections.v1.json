@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "selectionId": "vfai-fu-011-exact-candidate-selections-v1",
+  "policyId": "vfai-fu-011-component-coverage-v1",
+  "asOfDate": "2026-09-06",
+  "candidates": [
+    {
+      "componentType": "OLED_DISPLAY",
+      "exactCandidateId": "ADAFRUIT_SSD1306_STEMMA_128X64",
+      "manufacturer": "Adafruit Industries",
+      "orderablePartNumber": "PID 326",
+      "packageOrModuleRevision": "0.96-inch 128x64 Monochrome OLED Breakout with STEMMA QT",
+      "terminals": ["VIN", "GND", "SCL", "SDA"],
+      "electricalRatings": {
+        "supplyVoltageMin": 3.0,
+        "supplyVoltageMax": 5.5,
+        "logicVoltageMin": 3.0,
+        "logicVoltageMax": 5.5,
+        "i2cDefaultAddress": "0x3C",
+        "i2cAlternateAddress": "0x3D",
+        "currentConsumptionMa": 20.0
+      },
+      "sourceDoc": "https://learn.adafruit.com/monochrome-oled-breakouts/wiring-128x64-oleds"
+    },
+    {
+      "componentType": "IC_555_TIMER",
+      "exactCandidateId": "TI_NE555P",
+      "manufacturer": "Texas Instruments",
+      "orderablePartNumber": "NE555P",
+      "packageOrModuleRevision": "PDIP-8 (P0008A)",
+      "terminals": ["GND", "TRIG", "OUT", "RESET", "CTRL", "THRESH", "DISCH", "VCC"],
+      "electricalRatings": {
+        "supplyVoltageMin": 4.5,
+        "supplyVoltageMax": 16.0,
+        "outputCurrentSinkSourceMaxMa": 200.0,
+        "quiescentCurrentMa": 10.0,
+        "timingAccuracyPercent": 1.0
+      },
+      "sourceDoc": "https://www.ti.com/lit/ds/symlink/ne555.pdf"
+    },
+    {
+      "componentType": "OPAMP_LM358",
+      "exactCandidateId": "TI_LM358N",
+      "manufacturer": "Texas Instruments",
+      "orderablePartNumber": "LM358N",
+      "packageOrModuleRevision": "PDIP-8",
+      "terminals": ["1OUT", "1IN-", "1IN+", "GND", "2IN+", "2IN-", "2OUT", "VCC"],
+      "electricalRatings": {
+        "supplyVoltageMin": 3.0,
+        "supplyVoltageMax": 32.0,
+        "splitSupplyVoltageMax": 16.0,
+        "inputOffsetVoltageMaxMv": 7.0,
+        "gainBandwidthProductMhz": 1.0,
+        "outputCurrentMa": 40.0
+      },
+      "sourceDoc": "https://www.ti.com/lit/ds/symlink/lm358.pdf"
+    },
+    {
+      "componentType": "RELAY_SINGLE",
+      "exactCandidateId": "SONGLE_SRD_05VDC_MODULE",
+      "manufacturer": "Songle / Keyestudio",
+      "orderablePartNumber": "SRD-05VDC-SL-C",
+      "packageOrModuleRevision": "1-Channel 5V Relay Breakout with PC817 Optocoupler",
+      "terminals": ["VCC", "GND", "IN", "NO", "COM", "NC"],
+      "electricalRatings": {
+        "coilVoltageVdc": 5.0,
+        "coilCurrentMa": 71.4,
+        "triggerCurrentMa": 5.0,
+        "maxAcSwitchingVoltage": 250.0,
+        "maxAcCurrentA": 10.0,
+        "maxDcSwitchingVoltage": 30.0,
+        "maxDcCurrentA": 10.0,
+        "isolationVoltageV": 1500.0
+      },
+      "sourceDoc": "https://www.songle.com/en/pdf/2008417937402660.pdf"
+    },
+    {
+      "componentType": "LED_STANDARD",
+      "exactCandidateId": "BROADCOM_HLMP_3301",
+      "manufacturer": "Broadcom / Avago",
+      "orderablePartNumber": "HLMP-3301",
+      "packageOrModuleRevision": "T-1 3/4 (5mm) Diffused Red LED",
+      "terminals": ["Anode (+)", "Cathode (-)"],
+      "electricalRatings": {
+        "forwardVoltageTypicalV": 2.0,
+        "forwardVoltageMaxV": 2.4,
+        "forwardCurrentNominalMa": 20.0,
+        "forwardCurrentMaxMa": 30.0,
+        "reverseBreakdownVoltageV": 5.0,
+        "dominantWavelengthNm": 626.0
+      },
+      "sourceDoc": "https://docs.broadcom.com/doc/AV02-1558EN"
+    }
+  ],
+  "verification": {
+    "totalExactCandidates": 5,
+    "allCandidatesHaveDatasheets": true,
+    "allCandidatesHaveBoundedRatings": true,
+    "allTerminalNamesVerified": true
+  }
+}

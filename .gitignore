@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.project
+.settings/
+.env
+datasheet_cache.json
+.toolchains/
+training_runs/
+model/registry/artifacts/
+model/registry/history/
+runtime/
+corpus/.work/

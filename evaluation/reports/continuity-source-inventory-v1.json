@@ -1,0 +1,387 @@
+{
+  "schemaVersion": 1,
+  "manifestKind": "vfai-fu-010-continuity-source-inventory-v1",
+  "generatedOn": "2026-09-01",
+  "registry": {
+    "revision": 3,
+    "registrySha256": "3188ec3f52de6904094fff67f9b38ab089ae879b44eefd8f405654ad78289e90",
+    "activeArtifactId": null
+  },
+  "verifiedArtifacts": [
+    {
+      "artifactId": "vfdlm-g1-edge-v0.1.0-bootstrap",
+      "manifestSha256": "93508d7ecbbdd482982794ac9be8ffcf884a736d406f9a89616d6a59cc76cf61",
+      "releaseStatus": "experimental",
+      "activationEligible": false
+    },
+    {
+      "artifactId": "vfdlm-g1-edge-v0.1.1-runtime",
+      "manifestSha256": "6e62cda425423bc64b7f12aa6c0965261c9fc9f162bc5e2f99b76531cdaa1efb",
+      "releaseStatus": "experimental",
+      "activationEligible": false
+    },
+    {
+      "artifactId": "vfdlm-g1-edge-v0.1.2-optimized",
+      "manifestSha256": "fc97eae9340d725d0e6511524e8e2c81b199eef01d35d774ecf185df39288c77",
+      "releaseStatus": "experimental",
+      "activationEligible": false
+    }
+  ],
+  "entries": [
+    {
+      "path": "model/registry/active_model.json",
+      "category": "signed-registry",
+      "bytes": 2995,
+      "sha256": "9ae71d3d13a5b05c90b45e2ad9ef9150abac4a70715840b2d08e9b9db75c897b"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.0-bootstrap/artifact-manifest.json",
+      "category": "immutable-artifact",
+      "bytes": 5127,
+      "sha256": "f0a546ada7beffe2ce9e7ae6262c99a9b0073ed0fa02362508283e1c678d4b75"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.0-bootstrap/compatibility.json",
+      "category": "immutable-artifact",
+      "bytes": 756,
+      "sha256": "fab1e47cc48d5d8e6d9a43dbba4b495397846d570b82a60adb5d85dfa1826cc0"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.0-bootstrap/evaluation/gen1-bootstrap-heldout-v1.json",
+      "category": "immutable-artifact",
+      "bytes": 68139,
+      "sha256": "924eaa3579d47400db27c13d642d2a08251895ea9733215d41bd29a4dc7f4ec9"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.0-bootstrap/evaluation/gen1-scale-decision-v1.json",
+      "category": "immutable-artifact",
+      "bytes": 13791,
+      "sha256": "d01052f688b8fc592b3176861013b9635bcf1a8d272c6ce51582932d6e4943c6"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.0-bootstrap/generation-policy.json",
+      "category": "immutable-artifact",
+      "bytes": 608,
+      "sha256": "3ee6f8d63ec1f27761ac0053a9690ce871597af0cba9956f1a99340453b46735"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.0-bootstrap/model/checkpoint-manifest.json",
+      "category": "immutable-artifact",
+      "bytes": 632,
+      "sha256": "9654300f7405c09f0d913d35937fe7232f6d65494e909374c850b7a0fa5744aa"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.0-bootstrap/model/config.json",
+      "category": "immutable-artifact",
+      "bytes": 276,
+      "sha256": "57f029670823c4dbd4817af42e0c29ae4c128cfbe10f50f0725892982e98c1ca"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.0-bootstrap/model/weights.pt",
+      "category": "immutable-artifact",
+      "bytes": 56811323,
+      "sha256": "aab2474dd3263202e5aa2497fb5cc49f654c10b8d71ef74293764281b9e4711f"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.0-bootstrap/provenance.json",
+      "category": "immutable-artifact",
+      "bytes": 2668,
+      "sha256": "d279f6612715c8f5893476f2edb51e706b808d23273c9088fed0ef0c1b0cfdf3"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.0-bootstrap/provenance/gen1-bootstrap-best-v1.json",
+      "category": "immutable-artifact",
+      "bytes": 1799,
+      "sha256": "90a10f65b3feca8122ff440e8c302c55671f6cf61216f6a68e0317f8f282a098"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.0-bootstrap/provenance/gen1-scale-policy-v1.json",
+      "category": "immutable-artifact",
+      "bytes": 4266,
+      "sha256": "9c0343cc565f5699b4c48d91434db7462be0bc6245400a977275d7db5bb73397"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.0-bootstrap/tokenizer/evaluation-report.json",
+      "category": "immutable-artifact",
+      "bytes": 7986,
+      "sha256": "dd649d94e7e2f2654d16c9004ff11c1cb25597917a2f2b4103489fe8974dcba0"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.0-bootstrap/tokenizer/merges.json",
+      "category": "immutable-artifact",
+      "bytes": 239768,
+      "sha256": "3921d8cdf957f2218160c6fdb7e00da6c4cbd47a0d99fc4f18065fd2225b95a4"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.0-bootstrap/tokenizer/tokenizer-config.json",
+      "category": "immutable-artifact",
+      "bytes": 1682,
+      "sha256": "9c205ab5aaa51488ef1bd11da9833da493000ff332abfb1a119ef637586d00fd"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.0-bootstrap/tokenizer/tokenizer-manifest.json",
+      "category": "immutable-artifact",
+      "bytes": 6147,
+      "sha256": "fb236061ccabf07560ca764c37e6f1bd4b0c0a5b7c333c4cd6c156c2ab1b1c43"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.0-bootstrap/tokenizer/vocab.json",
+      "category": "immutable-artifact",
+      "bytes": 127051,
+      "sha256": "fdaeaba167223060739e685e775c4adf160fa40f13159a0290b4d2f79b16a3b2"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.1-runtime/artifact-manifest.json",
+      "category": "immutable-artifact",
+      "bytes": 5239,
+      "sha256": "66fb6e8c6a2993c73855e4044f7e2410c017996faec2d7deb3c632b88d690432"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.1-runtime/compatibility.json",
+      "category": "immutable-artifact",
+      "bytes": 756,
+      "sha256": "fab1e47cc48d5d8e6d9a43dbba4b495397846d570b82a60adb5d85dfa1826cc0"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.1-runtime/evaluation/gen1-bootstrap-heldout-v1.json",
+      "category": "immutable-artifact",
+      "bytes": 68139,
+      "sha256": "924eaa3579d47400db27c13d642d2a08251895ea9733215d41bd29a4dc7f4ec9"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.1-runtime/evaluation/gen1-scale-decision-v1.json",
+      "category": "immutable-artifact",
+      "bytes": 13791,
+      "sha256": "d01052f688b8fc592b3176861013b9635bcf1a8d272c6ce51582932d6e4943c6"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.1-runtime/generation-policy.json",
+      "category": "immutable-artifact",
+      "bytes": 888,
+      "sha256": "08433cddaae8882eaa72900fd4ed913e4c6fa970819f39f8ef8746dff1674014"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.1-runtime/model/config.json",
+      "category": "immutable-artifact",
+      "bytes": 276,
+      "sha256": "57f029670823c4dbd4817af42e0c29ae4c128cfbe10f50f0725892982e98c1ca"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.1-runtime/model/manifest.json",
+      "category": "immutable-artifact",
+      "bytes": 632,
+      "sha256": "9654300f7405c09f0d913d35937fe7232f6d65494e909374c850b7a0fa5744aa"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.1-runtime/model/weights.pt",
+      "category": "immutable-artifact",
+      "bytes": 56811323,
+      "sha256": "aab2474dd3263202e5aa2497fb5cc49f654c10b8d71ef74293764281b9e4711f"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.1-runtime/provenance.json",
+      "category": "immutable-artifact",
+      "bytes": 3244,
+      "sha256": "4948f1e4f2e3a39cbb6419517e071ceda2dad56bc3185e07cf9fc5b146a1f71e"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.1-runtime/provenance/gen1-bootstrap-best-v1.json",
+      "category": "immutable-artifact",
+      "bytes": 1799,
+      "sha256": "90a10f65b3feca8122ff440e8c302c55671f6cf61216f6a68e0317f8f282a098"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.1-runtime/provenance/gen1-scale-policy-v1.json",
+      "category": "immutable-artifact",
+      "bytes": 4266,
+      "sha256": "9c0343cc565f5699b4c48d91434db7462be0bc6245400a977275d7db5bb73397"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.1-runtime/tokenizer/evaluation-report.json",
+      "category": "immutable-artifact",
+      "bytes": 7986,
+      "sha256": "dd649d94e7e2f2654d16c9004ff11c1cb25597917a2f2b4103489fe8974dcba0"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.1-runtime/tokenizer/merges.json",
+      "category": "immutable-artifact",
+      "bytes": 239768,
+      "sha256": "3921d8cdf957f2218160c6fdb7e00da6c4cbd47a0d99fc4f18065fd2225b95a4"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.1-runtime/tokenizer/tokenizer_config.json",
+      "category": "immutable-artifact",
+      "bytes": 1682,
+      "sha256": "9c205ab5aaa51488ef1bd11da9833da493000ff332abfb1a119ef637586d00fd"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.1-runtime/tokenizer/tokenizer_manifest.json",
+      "category": "immutable-artifact",
+      "bytes": 6147,
+      "sha256": "fb236061ccabf07560ca764c37e6f1bd4b0c0a5b7c333c4cd6c156c2ab1b1c43"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.1-runtime/tokenizer/vocab.json",
+      "category": "immutable-artifact",
+      "bytes": 127051,
+      "sha256": "fdaeaba167223060739e685e775c4adf160fa40f13159a0290b4d2f79b16a3b2"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.2-optimized/artifact-manifest.json",
+      "category": "immutable-artifact",
+      "bytes": 5782,
+      "sha256": "8856829cdaaab3799f468529c65b131498f7fc81a14b7b19c8ae3cdd2fec5e19"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.2-optimized/benchmarks/reports/gen1-inference-optimization-v1.json",
+      "category": "immutable-artifact",
+      "bytes": 45339,
+      "sha256": "e639d96a05096ec5658ad72e8fe43df41824d58de41881a6b7cd42ccc14ae247"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.2-optimized/compatibility.json",
+      "category": "immutable-artifact",
+      "bytes": 756,
+      "sha256": "fab1e47cc48d5d8e6d9a43dbba4b495397846d570b82a60adb5d85dfa1826cc0"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.2-optimized/evaluation/gen1-bootstrap-heldout-v1.json",
+      "category": "immutable-artifact",
+      "bytes": 68139,
+      "sha256": "924eaa3579d47400db27c13d642d2a08251895ea9733215d41bd29a4dc7f4ec9"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.2-optimized/evaluation/gen1-scale-decision-v1.json",
+      "category": "immutable-artifact",
+      "bytes": 13791,
+      "sha256": "d01052f688b8fc592b3176861013b9635bcf1a8d272c6ce51582932d6e4943c6"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.2-optimized/generation-policy.json",
+      "category": "immutable-artifact",
+      "bytes": 905,
+      "sha256": "a2a1705025cc7552f5bc902289a213c17606ff09533911ce0516866dfe8264d2"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.2-optimized/model/config.json",
+      "category": "immutable-artifact",
+      "bytes": 276,
+      "sha256": "57f029670823c4dbd4817af42e0c29ae4c128cfbe10f50f0725892982e98c1ca"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.2-optimized/model/manifest.json",
+      "category": "immutable-artifact",
+      "bytes": 632,
+      "sha256": "9654300f7405c09f0d913d35937fe7232f6d65494e909374c850b7a0fa5744aa"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.2-optimized/model/weights.pt",
+      "category": "immutable-artifact",
+      "bytes": 56811323,
+      "sha256": "aab2474dd3263202e5aa2497fb5cc49f654c10b8d71ef74293764281b9e4711f"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.2-optimized/optimization-policy.json",
+      "category": "immutable-artifact",
+      "bytes": 1197,
+      "sha256": "6be912e609c94a51deaf41c70269333624b076e46e14054e63ef8ae9f19e20c7"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.2-optimized/provenance.json",
+      "category": "immutable-artifact",
+      "bytes": 3688,
+      "sha256": "84f458500b10bc55d36672844c47898598927e8baa9a30407cd310e46ba78f6f"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.2-optimized/provenance/gen1-bootstrap-best-v1.json",
+      "category": "immutable-artifact",
+      "bytes": 1799,
+      "sha256": "90a10f65b3feca8122ff440e8c302c55671f6cf61216f6a68e0317f8f282a098"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.2-optimized/provenance/gen1-scale-policy-v1.json",
+      "category": "immutable-artifact",
+      "bytes": 4266,
+      "sha256": "9c0343cc565f5699b4c48d91434db7462be0bc6245400a977275d7db5bb73397"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.2-optimized/tokenizer/evaluation-report.json",
+      "category": "immutable-artifact",
+      "bytes": 7986,
+      "sha256": "dd649d94e7e2f2654d16c9004ff11c1cb25597917a2f2b4103489fe8974dcba0"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.2-optimized/tokenizer/merges.json",
+      "category": "immutable-artifact",
+      "bytes": 239768,
+      "sha256": "3921d8cdf957f2218160c6fdb7e00da6c4cbd47a0d99fc4f18065fd2225b95a4"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.2-optimized/tokenizer/tokenizer_config.json",
+      "category": "immutable-artifact",
+      "bytes": 1682,
+      "sha256": "9c205ab5aaa51488ef1bd11da9833da493000ff332abfb1a119ef637586d00fd"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.2-optimized/tokenizer/tokenizer_manifest.json",
+      "category": "immutable-artifact",
+      "bytes": 6147,
+      "sha256": "fb236061ccabf07560ca764c37e6f1bd4b0c0a5b7c333c4cd6c156c2ab1b1c43"
+    },
+    {
+      "path": "model/registry/artifacts/vfdlm-g1-edge-v0.1.2-optimized/tokenizer/vocab.json",
+      "category": "immutable-artifact",
+      "bytes": 127051,
+      "sha256": "fdaeaba167223060739e685e775c4adf160fa40f13159a0290b4d2f79b16a3b2"
+    },
+    {
+      "path": "model/registry/history/legacy-schema1-d32cbc3f6fb3fe53.json",
+      "category": "registry-history",
+      "bytes": 500,
+      "sha256": "d32cbc3f6fb3fe5367dd8263aaeefecabc5760cd62a9cc043fa2e0a34ee66093"
+    },
+    {
+      "path": "model/registry/history/revision-00000001-62a61fdd624a30aa.json",
+      "category": "registry-history",
+      "bytes": 1811,
+      "sha256": "b495dccb65782f75ed242ac3e4fec2f5441d0469ed6b9b6d0983735da600c9c3"
+    },
+    {
+      "path": "model/registry/history/revision-00000002-6a21728327ef2b24.json",
+      "category": "registry-history",
+      "bytes": 2399,
+      "sha256": "7a94635f70172d541ffc424e237dd922df4ee46092c4e26f422e6f25d5beb1a1"
+    },
+    {
+      "path": "model/registry/trust/trusted-keys.json",
+      "category": "public-trust",
+      "bytes": 416,
+      "sha256": "62e03b6dc6f156b1e71b5f62f26cae8de80f1c14e14312c546fcabde1ee6bf34"
+    },
+    {
+      "path": "model/release-policy.v1.json",
+      "category": "release-policy",
+      "bytes": 2674,
+      "sha256": "81689095e98f380398c735bbdb662dd1fd0b2ab35607ce1b4bc146433bec6134"
+    },
+    {
+      "path": "operations/deployment-continuity-policy.v1.json",
+      "category": "continuity-policy",
+      "bytes": 3819,
+      "sha256": "58c74ad6b934a1bd5a5433fca58fa7683edb23ca98d201a6910ee455bc772014"
+    }
+  ],
+  "entryCount": 57,
+  "totalBytes": 171940147,
+  "registryHistoryEntryCount": 3,
+  "signedReleaseEntryCount": 0,
+  "backupCreated": false,
+  "encryptionApplied": false,
+  "restoreTestExecuted": false,
+  "runtimeDatabasesIncluded": false,
+  "environmentFileIncluded": false,
+  "privateSigningKeyIncluded": false,
+  "sourceRootStored": false,
+  "rawSecretStored": false,
+  "manifestSha256": "6b9251bb54f56d933bca01c1667a96aab3f2517918cf44452f8c8b6609f43830"
+}

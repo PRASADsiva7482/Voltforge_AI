@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "parserVersion": "vf-ingestion-v1",
+  "maxDocumentBytes": 1048576,
+  "maxPdfBytes": 8388608,
+  "maxPdfPages": 100,
+  "maxPdfStreamBytes": 1048576,
+  "pdfTimeoutSeconds": 20,
+  "maxNormalizedBytes": 2097152,
+  "shardRecords": 64,
+  "shardBytes": 4194304,
+  "sqliteCacheKiB": 2048,
+  "unicodeNormalization": "NFC",
+  "pypdfVersion": "6.17.0",
+  "trainingAllowed": false,
+  "externalAcquisitionAllowed": false,
+  "boilerplateLines": ["Accept all cookies", "Manage cookie preferences", "Skip to main content"],
+  "scope": "Immutable ingestion staging; task 021 owns semantic deduplication/family splits and task 023 owns training corpus admission."
+}

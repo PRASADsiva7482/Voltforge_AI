@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="8.438" timestamp="2026-09-09T19:26:19.623341+05:30" hostname="PRASAD"><testcase classname="tests.test_api.TestFastAPIEndpoints" name="test_chat_endpoint" time="5.020" /></testsuite></testsuites>

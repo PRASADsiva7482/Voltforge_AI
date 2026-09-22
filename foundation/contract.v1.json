@@ -1,0 +1,394 @@
+{
+  "schemaVersion": 1,
+  "contractId": "voltforge-owned-foundation-v1",
+  "version": "1.0.0",
+  "status": "frozen-design-not-runtime",
+  "taskId": "LLM-TASK-017",
+  "designPath": "docs/LLM_FOUNDATION_DESIGN.v1.md",
+  "releasePolicyPath": "foundation/release-policy.v1.json",
+  "compatibilityMapPath": "foundation/compatibility-map.v1.json",
+  "decisions": {
+    "weightOrigin": "project-owned-random-initialization",
+    "importedPretrainedWeightsAllowed": false,
+    "thirdPartyTokenizerAllowed": false,
+    "openSourceLibrariesAllowed": true,
+    "hostedGenerationAllowed": false,
+    "servingBoundary": "private-owner-controlled-server",
+    "workstationGpuIsArchitectureLimit": false,
+    "liveChatTrainingAllowed": false,
+    "sourceRightsSeparateFromWeightOwnership": true
+  },
+  "identity": {
+    "familyNamespace": "vfdlm-g2",
+    "generation": 2,
+    "architectureId": "vfdlm-gen2-decoder-v1",
+    "deploymentProfile": "server",
+    "tokenizerNamespace": "vfdlm-g2-byte-bpe",
+    "initialTokenizerVersion": "0.1.0",
+    "baseExample": "vfdlm-g2-server-v0.1.0-base.1",
+    "instructionExample": "vfdlm-g2-server-v0.1.0-instruction.1",
+    "assistantBundleExample": "vf-assistant-g2-v0.1.0",
+    "examplesAreReservedNotExistingArtifacts": true,
+    "releaseKindIsManifestField": true,
+    "relabelGen1Allowed": false,
+    "legacyIdentityParserPath": "model/identity.py",
+    "newLoaderImplemented": false
+  },
+  "scope": {
+    "primaryLanguage": "en",
+    "supportedIntents": [
+      "electronics-explanation",
+      "embedded-c-cpp-firmware",
+      "project-circuit-and-simulation-assistance",
+      "evidenced-hardware-lookup",
+      "numerical-tool-use",
+      "greeting",
+      "clarification",
+      "unsupported-topic-handling"
+    ],
+    "otherLanguagesRequireDataAndEvaluation": true,
+    "unknownVariantPolicy": "ask-for-exact-variant-or-report-unknown",
+    "unsupportedTopicPolicy": "brief-boundary-explanation-with-relevant-next-step",
+    "capabilityNotYetAccepted": true
+  },
+  "architecture": {
+    "kind": "causal-decoder-only-transformer",
+    "normalization": "pre-norm-rmsnorm",
+    "positions": "rotary",
+    "feedForward": "swiglu",
+    "attention": "grouped-query-causal",
+    "embeddings": "tied-input-output",
+    "tokenizer": "owned-byte-level-bpe-with-byte-fallback",
+    "pretrainingObjective": "next-token-cross-entropy-with-padding-and-document-boundary-masks",
+    "instructionObjective": "assistant-response-and-tool-call-targets-only-with-context-masked",
+    "sequenceBudget": {
+      "initialTotalTokens": 4096,
+      "extensionTotalTokens": 8192,
+      "inputPlusOutputMustFit": true,
+      "extensionRequiresTrainingAndEvaluation": true
+    },
+    "shapeSelectionTasks": [
+      "LLM-TASK-024",
+      "LLM-TASK-025",
+      "LLM-TASK-026",
+      "LLM-TASK-031",
+      "LLM-TASK-032"
+    ],
+    "precisionAndFrameworkSelectionTask": "LLM-TASK-028",
+    "scalesAreHypotheses": true,
+    "allocationRequiresFiniteRunBudget": true,
+    "defaultGen1AllocationCeilingInherited": false
+  },
+  "lineage": {
+    "commonBindings": [
+      "contract-sha256",
+      "release-policy-sha256",
+      "run-id",
+      "code-snapshot-sha256",
+      "environment-lock-sha256",
+      "architecture-config-sha256",
+      "tokenizer-manifest-sha256",
+      "immutable-data-release-sha256",
+      "split-manifest-sha256",
+      "initialization-receipt-sha256",
+      "checkpoint-sha256",
+      "evaluation-policy-sha256",
+      "evaluation-suite-sha256",
+      "evaluation-report-sha256"
+    ],
+    "initializationReceipt": [
+      "method=random",
+      "seed-and-rng-algorithm",
+      "source-and-config-digests",
+      "initial-tensor-digest",
+      "imported-checkpoint=null"
+    ],
+    "resumeReceipt": [
+      "same-run-lineage",
+      "step-and-token-counts",
+      "optimizer-and-scheduler-state",
+      "rng-per-rank-and-dataloader-cursor",
+      "precision-scaler-and-world-size",
+      "checkpoint-and-parent-digests"
+    ],
+    "instructionParent": "accepted-owned-g2-base-checkpoint",
+    "continuationParent": "owned-g2-checkpoint-with-traceable-random-root",
+    "assistantParent": "accepted-owned-g2-instruction-checkpoint",
+    "gen1OrExternalWeightParentAllowed": false,
+    "silentTokenizerOrContextChangeAllowed": false
+  },
+  "modules": [
+    {
+      "id": "data",
+      "target": "foundation_data/ (proposed)",
+      "reuse": [
+        "data_governance/",
+        "electronics_corpus/",
+        "synthetic_data/"
+      ],
+      "input": "SourceReceipt: origin, rights, allowed uses, revision, digest, source family.",
+      "output": "CorpusRelease: immutable shards, tokenizer-bound unique counts, exposure counts, split/dedup lineage.",
+      "ownerTasks": [
+        "LLM-TASK-019",
+        "LLM-TASK-020",
+        "LLM-TASK-021",
+        "LLM-TASK-022",
+        "LLM-TASK-023"
+      ],
+      "forbidden": "No private chat ingestion or source-use inference from public availability."
+    },
+    {
+      "id": "tokenizer",
+      "target": "model/tokenizers/vfdlm-g2-byte-bpe-v0.1.0/ (proposed)",
+      "reuse": [
+        "model/tokenizer.py"
+      ],
+      "input": "Approved training split and tokenizer config; no held-out fitting.",
+      "output": "TokenizerRelease: version, special IDs, merges/vocab, file hashes and byte-roundtrip receipt.",
+      "ownerTasks": [
+        "LLM-TASK-024"
+      ],
+      "forbidden": "No imported vocabulary or silent replacement of Gen1 token IDs."
+    },
+    {
+      "id": "model",
+      "target": "model/gen2/ (proposed)",
+      "reuse": [
+        "model/gen1/model.py",
+        "model/gen1/config.py"
+      ],
+      "input": "Gen2Config plus token IDs, attention mask, positions and optional KV state.",
+      "output": "Logits and KV state; actual tensor-derived parameter count.",
+      "ownerTasks": [
+        "LLM-TASK-025",
+        "LLM-TASK-026"
+      ],
+      "forbidden": "No retrieval, rules, API calls, training data downloads or keyword answer generation."
+    },
+    {
+      "id": "trainer",
+      "target": "foundation_training/ (proposed)",
+      "reuse": [
+        "gen1_training/"
+      ],
+      "input": "Immutable run plan, masks, initialization or validated owned parent, finite compute/storage budget.",
+      "output": "Loss/token metrics, initialization lineage, checkpoints and complete resume state.",
+      "ownerTasks": [
+        "LLM-TASK-027",
+        "LLM-TASK-028",
+        "LLM-TASK-029",
+        "LLM-TASK-030",
+        "LLM-TASK-031",
+        "LLM-TASK-032",
+        "LLM-TASK-033",
+        "LLM-TASK-034",
+        "LLM-TASK-035",
+        "LLM-TASK-037",
+        "LLM-TASK-038"
+      ],
+      "forbidden": "No activation, production-chat training or mutable source aliases."
+    },
+    {
+      "id": "inference",
+      "target": "model/gen2/runtime.py (proposed)",
+      "reuse": [
+        "model/runtime_service.py",
+        "model/registry_manager.py"
+      ],
+      "input": "Verified release bundle, prompt token IDs, generation bounds, cancellation and deadline.",
+      "output": "Actual token IDs/deltas, usage counts, finish reason, verified loaded identity.",
+      "ownerTasks": [
+        "LLM-TASK-041",
+        "LLM-TASK-042",
+        "LLM-TASK-043",
+        "LLM-TASK-044",
+        "LLM-TASK-045"
+      ],
+      "forbidden": "No arbitrary checkpoint deserialization, training or neural-labelled deterministic substitution."
+    },
+    {
+      "id": "context",
+      "target": "context_compiler/ (new versioned Gen2 policy)",
+      "reuse": [
+        "context_compiler/",
+        "memory_store/",
+        "local_retrieval/",
+        "grounding/"
+      ],
+      "input": "Authenticated user/project/session, authoritative project revision, code, history and evidence.",
+      "output": "Bounded PromptEnvelope: exact tokenizer/config binding, source IDs, input/output reservations and trusted/untrusted sections.",
+      "ownerTasks": [
+        "LLM-TASK-046",
+        "LLM-TASK-047",
+        "LLM-TASK-048"
+      ],
+      "forbidden": "No project mutation, silent board substitution, unbounded history or cloud-generated answers."
+    },
+    {
+      "id": "tools",
+      "target": "engineering_tools/ and typed tool adapter",
+      "reuse": [
+        "engineering_tools/",
+        "engine/deterministic_tools.py"
+      ],
+      "input": "Typed operation, explicit operands, exact variant and source revision.",
+      "output": "ToolResult: status, units, assumptions, evidence/compile/simulation receipts and authority.",
+      "ownerTasks": [
+        "LLM-TASK-022",
+        "LLM-TASK-049"
+      ],
+      "forbidden": "No guessed ratings, fabricated compiler/simulator success or automatic apply."
+    },
+    {
+      "id": "application",
+      "target": "existing FastAPI, Spring and React routes",
+      "reuse": [
+        "api/",
+        "api_contract/",
+        "../Voltforge_BL/src/main/java/in/voltforge/api/ai/",
+        "../Voltforge_UI/src/features/ai/"
+      ],
+      "input": "Existing bounded authenticated chat request and current project revision.",
+      "output": "Compatible response/SSE with inference source, artifact identity and reviewable proposals.",
+      "ownerTasks": [
+        "LLM-TASK-044",
+        "LLM-TASK-045",
+        "LLM-TASK-050",
+        "LLM-TASK-051",
+        "LLM-TASK-052",
+        "LLM-TASK-053"
+      ],
+      "forbidden": "No API secrets in browser, stale auto-apply or fallback appended after partial neural output."
+    },
+    {
+      "id": "evaluation-release",
+      "target": "evaluation/foundation/ (proposed) and signed release registry",
+      "reuse": [
+        "evaluation/",
+        "model/release-policy.v1.json"
+      ],
+      "input": "Frozen independent suite, exact checkpoint/bundle and all lineage bindings.",
+      "output": "Separate numerical, raw-neural, tool-assisted, integration, browser and server receipts.",
+      "ownerTasks": [
+        "LLM-TASK-018",
+        "LLM-TASK-034",
+        "LLM-TASK-039",
+        "LLM-TASK-040",
+        "LLM-TASK-041",
+        "LLM-TASK-052",
+        "LLM-TASK-053",
+        "LLM-TASK-054",
+        "LLM-TASK-055"
+      ],
+      "forbidden": "No policy tuning after seeing candidate results, prompt-echo credit or promotion from fixture tests."
+    }
+  ],
+  "api": {
+    "pythonPrefix": "/voltForge-ai/api/v1/model",
+    "springPrefix": "/api/v1/ai",
+    "schemaVersion": 1,
+    "contractVersion": "1.0.0",
+    "legacyModelRoutingLabel": "voltforge-local-engine-v1",
+    "identityField": "artifact.artifactId",
+    "pythonRoutes": [
+      [
+        "POST",
+        "/chat"
+      ],
+      [
+        "POST",
+        "/chat/stream"
+      ],
+      [
+        "DELETE",
+        "/chat/requests/{request_id}"
+      ],
+      [
+        "GET",
+        "/health"
+      ],
+      [
+        "GET",
+        "/contract"
+      ],
+      [
+        "GET",
+        "/hardware-coverage"
+      ],
+      [
+        "GET",
+        "/component-coverage"
+      ],
+      [
+        "GET",
+        "/memory"
+      ],
+      [
+        "PUT",
+        "/memory/preferences"
+      ],
+      [
+        "POST",
+        "/memory/entries"
+      ],
+      [
+        "PATCH",
+        "/memory/entries/{memory_id}"
+      ],
+      [
+        "DELETE",
+        "/memory/entries/{memory_id}"
+      ],
+      [
+        "DELETE",
+        "/memory"
+      ]
+    ],
+    "springRoutes": [
+      [
+        "POST",
+        "/chat"
+      ],
+      [
+        "POST",
+        "/chat/stream"
+      ]
+    ],
+    "revisionFields": [
+      "projectRevision",
+      "sourceProjectRevision"
+    ],
+    "revisionPolicy": "Bind the server-validated source revision to context, tool results, every event and proposal; reject stale apply, allow review and undo, never auto-apply.",
+    "terminalEvents": [
+      "complete",
+      "error"
+    ],
+    "generationModes": [
+      "neural-quality-gated",
+      "deterministic-fallback",
+      "unavailable"
+    ],
+    "streamPolicy": "Token deltas are provisional until final validation; one terminal outcome; failure/cancel never becomes successful fallback.",
+    "migrationPolicy": "Keep existing route and schema/event contracts. New internal fields stay in internal envelopes; any public incompatible change requires explicit versioned migration and coordinated client/gateway/API tests.",
+    "pythonBindHostIsModelEndpoint": false
+  },
+  "acceptance": {
+    "policyId": "voltforge-owned-release-policy-v1",
+    "thresholdFreezeTask": "LLM-TASK-018",
+    "thresholdState": "pending-independent-suite",
+    "trainingAllowedByThisContract": false,
+    "activationAllowedByThisContract": false,
+    "designValidationIsReleaseEvidence": false,
+    "evaluationLanes": [
+      "numerical-and-training",
+      "raw-neural",
+      "neural-with-tools",
+      "http-integration",
+      "browser",
+      "server-performance-and-rollback"
+    ],
+    "missingEvidenceDecision": "blocked",
+    "releaseOwnerTask": "LLM-TASK-055"
+  }
+}
+

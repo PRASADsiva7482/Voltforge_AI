@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 1,
+  "sweepId": "vfai013-gen1-architecture-sweep-v1",
+  "purpose": "Select one CPU-first Gen1 bootstrap architecture from controlled small runs; this is not release evaluation or a trained release model.",
+  "referenceTier": "cpu-development-reference",
+  "controls": {
+    "approvedDatasetId": "vfai009-approved-packed-v1",
+    "tokenizerId": "vfdlm-byte-bpe",
+    "vocabSize": 3072,
+    "packingBlockSize": 128,
+    "optimizerSteps": 16,
+    "microBatchSize": 4,
+    "gradientAccumulationSteps": 1,
+    "expectedPredictedTokens": 8128,
+    "seed": 13013,
+    "peakLearningRate": 0.0005,
+    "minimumLearningRate": 0.00005,
+    "warmupSteps": 2,
+    "maxGradientNorm": 1.0,
+    "precision": "float32",
+    "device": "cpu",
+    "torchNumThreads": 4,
+    "torchNumInteropThreads": 1,
+    "validationProtocol": "Complete immutable vf-tokenizer-split-v1 validation records packed at 128 tokens; report token-weighted next-token loss, perplexity, and top-1 token accuracy.",
+    "inferencePromptTokens": 32,
+    "generatedTokens": 12,
+    "inferenceWarmupRuns": 2,
+    "inferenceMeasuredRuns": 5
+  },
+  "selectionPolicy": {
+    "paretoObjectives": [
+      "minimize validation loss",
+      "maximize validation token accuracy",
+      "minimize training wall time",
+      "minimize first-token latency",
+      "maximize cached decode tokens per second",
+      "minimize peak working set",
+      "minimize checkpoint artifact bytes",
+      "minimize process CPU seconds"
+    ],
+    "edgeQualityTolerancePercent": 0.5,
+    "coreMinimumMaterialLossImprovementPercent": 1.0,
+    "rule": "Select only from the measured Pareto frontier. Prefer edge unless the best core loss improves on the best edge by at least the material threshold. Among quality-eligible frontier candidates, minimize a normalized quality-and-runtime cost with no reward for parameter count."
+  },
+  "candidates": [
+    {
+      "id": "edge-deep-gqa",
+      "deploymentProfile": "edge",
+      "dimensions": ["depth", "width", "grouped-query-attention"],
+      "weightDecay": 0.1,
+      "model": {
+        "schemaVersion": 1,
+        "architectureId": "vfdlm-gen1-decoder-v1",
+        "vocabSize": 3072,
+        "maxSequenceLength": 128,
+        "dModel": 320,
+        "nLayers": 12,
+        "nHeads": 8,
+        "nKvHeads": 2,
+        "dFf": 864,
+        "ropeTheta": 10000.0,
+        "normEpsilon": 0.00001,
+        "dropout": 0.0,
+        "tieEmbeddings": true,
+        "initializationStd": 0.02,
+        "seed": 13013
+      }
+    },
+    {
+      "id": "edge-wide-gqa",
+      "deploymentProfile": "edge",
+      "dimensions": ["depth", "width", "grouped-query-attention"],
+      "weightDecay": 0.1,
+      "model": {
+        "schemaVersion": 1,
+        "architectureId": "vfdlm-gen1-decoder-v1",
+        "vocabSize": 3072,
+        "maxSequenceLength": 128,
+        "dModel": 448,
+        "nLayers": 6,
+        "nHeads": 8,
+        "nKvHeads": 2,
+        "dFf": 1216,
+        "ropeTheta": 10000.0,
+        "normEpsilon": 0.00001,
+        "dropout": 0.0,
+        "tieEmbeddings": true,
+        "initializationStd": 0.02,
+        "seed": 13013
+      }
+    },
+    {
+      "id": "edge-wide-mha",
+      "deploymentProfile": "edge",
+      "dimensions": ["kv-heads", "full-multi-head-attention"],
+      "weightDecay": 0.1,
+      "model": {
+        "schemaVersion": 1,
+        "architectureId": "vfdlm-gen1-decoder-v1",
+        "vocabSize": 3072,
+        "maxSequenceLength": 128,
+        "dModel": 448,
+        "nLayers": 6,
+        "nHeads": 8,
+        "nKvHeads": 8,
+        "dFf": 1216,
+        "ropeTheta": 10000.0,
+        "normEpsilon": 0.00001,
+        "dropout": 0.0,
+        "tieEmbeddings": true,
+        "initializationStd": 0.02,
+        "seed": 13013
+      }
+    },
+    {
+      "id": "edge-heads-ffn",
+      "deploymentProfile": "edge",
+      "dimensions": ["query-heads", "kv-heads", "ffn-ratio"],
+      "weightDecay": 0.1,
+      "model": {
+        "schemaVersion": 1,
+        "architectureId": "vfdlm-gen1-decoder-v1",
+        "vocabSize": 3072,
+        "maxSequenceLength": 128,
+        "dModel": 384,
+        "nLayers": 8,
+        "nHeads": 12,
+        "nKvHeads": 3,
+        "dFf": 768,
+        "ropeTheta": 10000.0,
+        "normEpsilon": 0.00001,
+        "dropout": 0.0,
+        "tieEmbeddings": true,
+        "initializationStd": 0.02,
+        "seed": 13013
+      }
+    },
+    {
+      "id": "edge-context-regularized",
+      "deploymentProfile": "edge",
+      "dimensions": ["context", "dropout", "weight-decay", "ffn-ratio"],
+      "weightDecay": 0.05,
+      "model": {
+        "schemaVersion": 1,
+        "architectureId": "vfdlm-gen1-decoder-v1",
+        "vocabSize": 3072,
+        "maxSequenceLength": 256,
+        "dModel": 384,
+        "nLayers": 8,
+        "nHeads": 8,
+        "nKvHeads": 2,
+        "dFf": 1024,
+        "ropeTheta": 10000.0,
+        "normEpsilon": 0.00001,
+        "dropout": 0.1,
+        "tieEmbeddings": true,
+        "initializationStd": 0.02,
+        "seed": 13013
+      }
+    },
+    {
+      "id": "core-balanced",
+      "deploymentProfile": "core",
+      "dimensions": ["profile", "depth", "width", "context", "regularization"],
+      "weightDecay": 0.1,
+      "model": {
+        "schemaVersion": 1,
+        "architectureId": "vfdlm-gen1-decoder-v1",
+        "vocabSize": 3072,
+        "maxSequenceLength": 256,
+        "dModel": 512,
+        "nLayers": 10,
+        "nHeads": 8,
+        "nKvHeads": 2,
+        "dFf": 1376,
+        "ropeTheta": 10000.0,
+        "normEpsilon": 0.00001,
+        "dropout": 0.1,
+        "tieEmbeddings": true,
+        "initializationStd": 0.02,
+        "seed": 13013
+      }
+    }
+  ],
+  "nonExecutableControls": [
+    {
+      "id": "vocabulary-4096-control",
+      "dimension": "vocabulary",
+      "status": "rejected-before-training",
+      "reason": "The approved project-owned tokenizer has exactly 3,072 IDs. Expanding or truncating it would change the frozen tokenizer/data contract and would make this an uncontrolled comparison; no pretrained or legacy vocabulary may substitute for it.",
+      "owner": "A future tokenizer release item must train and independently approve any alternative project-owned vocabulary before it can enter a model sweep."
+    }
+  ]
+}

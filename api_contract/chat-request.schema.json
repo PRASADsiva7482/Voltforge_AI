@@ -1,0 +1,277 @@
+{
+  "$defs": {
+    "ChatMessage": {
+      "additionalProperties": false,
+      "properties": {
+        "role": {
+          "enum": [
+            "user",
+            "assistant"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "content": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        }
+      },
+      "required": [
+        "role",
+        "content"
+      ],
+      "title": "ChatMessage",
+      "type": "object"
+    },
+    "FirmwareSource": {
+      "additionalProperties": false,
+      "properties": {
+        "filename": {
+          "maxLength": 255,
+          "minLength": 1,
+          "title": "Filename",
+          "type": "string"
+        },
+        "language": {
+          "maxLength": 32,
+          "minLength": 1,
+          "title": "Language",
+          "type": "string"
+        },
+        "content": {
+          "maxLength": 200000,
+          "title": "Content",
+          "type": "string"
+        }
+      },
+      "required": [
+        "filename",
+        "language",
+        "content"
+      ],
+      "title": "FirmwareSource",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "default": 1,
+      "title": "Schemaversion",
+      "type": "integer"
+    },
+    "contractVersion": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Contractversion",
+      "type": "string"
+    },
+    "message": {
+      "maxLength": 6000,
+      "minLength": 1,
+      "title": "Message",
+      "type": "string"
+    },
+    "sessionId": {
+      "anyOf": [
+        {
+          "maxLength": 80,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Sessionid"
+    },
+    "projectId": {
+      "anyOf": [
+        {
+          "maxLength": 80,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Projectid"
+    },
+    "projectRevision": {
+      "anyOf": [
+        {
+          "maxLength": 160,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Projectrevision"
+    },
+    "context": {
+      "anyOf": [
+        {
+          "maxLength": 60000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "",
+      "title": "Context"
+    },
+    "canvasContext": {
+      "anyOf": [
+        {
+          "maxLength": 60000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "",
+      "title": "Canvascontext"
+    },
+    "boardType": {
+      "anyOf": [
+        {
+          "maxLength": 80,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "ARDUINO_UNO",
+      "title": "Boardtype"
+    },
+    "components": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "maxItems": 500,
+      "title": "Components",
+      "type": "array"
+    },
+    "wires": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "maxItems": 1000,
+      "title": "Wires",
+      "type": "array"
+    },
+    "netlist": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Netlist"
+    },
+    "code": {
+      "anyOf": [
+        {
+          "maxLength": 200000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "",
+      "title": "Code"
+    },
+    "canvasData": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Canvasdata"
+    },
+    "simulationState": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Simulationstate"
+    },
+    "history": {
+      "items": {
+        "$ref": "#/$defs/ChatMessage"
+      },
+      "maxItems": 20,
+      "title": "History",
+      "type": "array"
+    },
+    "files": {
+      "items": {
+        "$ref": "#/$defs/FirmwareSource"
+      },
+      "maxItems": 20,
+      "title": "Files",
+      "type": "array"
+    },
+    "diagnostics": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "maxItems": 100,
+      "title": "Diagnostics",
+      "type": "array"
+    },
+    "memory": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "maxItems": 50,
+      "title": "Memory",
+      "type": "array"
+    },
+    "retrievedEvidence": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "maxItems": 50,
+      "title": "Retrievedevidence",
+      "type": "array"
+    }
+  },
+  "required": [
+    "message"
+  ],
+  "title": "ChatRequest",
+  "type": "object"
+}

@@ -1,0 +1,148 @@
+{
+  "$defs": {
+    "ArtifactIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "artifactId": {
+          "anyOf": [
+            {
+              "maxLength": 160,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Artifactid"
+        },
+        "artifactVersion": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Artifactversion",
+          "type": "string"
+        },
+        "registryRevision": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Registryrevision"
+        },
+        "runtimeState": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Runtimestate",
+          "type": "string"
+        },
+        "ready": {
+          "title": "Ready",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "artifactVersion",
+        "runtimeState",
+        "ready"
+      ],
+      "title": "ArtifactIdentity",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "default": 1,
+      "title": "Schemaversion",
+      "type": "integer"
+    },
+    "contractVersion": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Contractversion",
+      "type": "string"
+    },
+    "type": {
+      "enum": [
+        "start",
+        "tool",
+        "citation",
+        "uncertainty",
+        "delta",
+        "proposal",
+        "complete",
+        "error"
+      ],
+      "title": "Type",
+      "type": "string"
+    },
+    "eventId": {
+      "pattern": "^event:v1:[A-Za-z0-9._:-]{3,160}:[0-9]{1,4}$",
+      "title": "Eventid",
+      "type": "string"
+    },
+    "sequence": {
+      "maximum": 383,
+      "minimum": 0,
+      "title": "Sequence",
+      "type": "integer"
+    },
+    "requestId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{2,159}$",
+      "title": "Requestid",
+      "type": "string"
+    },
+    "sessionId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{2,159}$",
+      "title": "Sessionid",
+      "type": "string"
+    },
+    "projectRevision": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@/+\\-]{0,159}$",
+      "title": "Projectrevision",
+      "type": "string"
+    },
+    "model": {
+      "const": "voltforge-local-engine-v1",
+      "default": "voltforge-local-engine-v1",
+      "title": "Model",
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "neural-quality-gated",
+        "deterministic-fallback",
+        "unavailable"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "artifact": {
+      "$ref": "#/$defs/ArtifactIdentity"
+    },
+    "payload": {
+      "additionalProperties": true,
+      "title": "Payload",
+      "type": "object"
+    }
+  },
+  "required": [
+    "type",
+    "eventId",
+    "sequence",
+    "requestId",
+    "sessionId",
+    "projectRevision",
+    "mode",
+    "artifact"
+  ],
+  "title": "SseEvent",
+  "type": "object"
+}

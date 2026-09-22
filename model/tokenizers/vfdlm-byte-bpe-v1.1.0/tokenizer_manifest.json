@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "artifactKind": "voltforge-tokenizer",
+  "tokenizerId": "vfdlm-byte-bpe",
+  "version": "1.1.0",
+  "contractVersion": "1.0.0",
+  "releaseStatus": "approved",
+  "algorithm": "voltforge-byte-bpe",
+  "vocabSize": 3072,
+  "mergeCount": 2800,
+  "specialTokenContractSha256": "a81bdccd5350b64f2e9063d35c20f09ea66c97721cb21457561efa084f6f0200",
+  "files": {
+    "vocab": {
+      "path": "vocab.json",
+      "sha256": "70b6431dfb292dcf81db88fe52d3e7e516a7c7cc75def13d46f5868d22376114"
+    },
+    "merges": {
+      "path": "merges.json",
+      "sha256": "0838d05b8c5439e7c53865f8789aac79c8ba8163ceb6da1c5adb84840e40ca5c"
+    },
+    "config": {
+      "path": "tokenizer_config.json",
+      "sha256": "4c16b3afd1bf54025e7784a998ccee69245da873f1dc98c60e2fc86677ff5e42"
+    },
+    "evaluationReport": {
+      "path": "evaluation-report.json",
+      "sha256": "f47b8a089be39f1eb25a0d14f13a541ca063d3eed58899cb16d992583801dfad"
+    }
+  },
+  "lineage": {
+    "sourceIds": [
+      "vf-src-curated-electronics-corpus-v1",
+      "vf-src-verified-synthetic-pipeline-v1"
+    ],
+    "shardIds": [
+      "vf-shard-7fef589dc3b393001d9a",
+      "vf-shard-4c809d3d579a478ec622",
+      "vf-shard-2bc59ebc4ff1490018f0",
+      "vf-shard-efb854df4a1168b43fde"
+    ],
+    "shards": [
+      {
+        "shardId": "vf-shard-7fef589dc3b393001d9a",
+        "path": "synthetic_data/shards/v1/grounded-electronics.jsonl",
+        "sha256": "7fef589dc3b393001d9a5f2221551eb9cb607a4e4ba392bf7edfcd6666e78c04",
+        "recordCount": 110,
+        "manifestPath": "data_governance/manifests/synthetic_data__shards__v1__grounded-electronics.jsonl.manifest.json",
+        "manifestSha256": "85cfef4683df8ebe15c6b5f3935a91370f64522c0cea2c915ddec335708de41c",
+        "sourceIds": [
+          "vf-src-curated-electronics-corpus-v1",
+          "vf-src-verified-synthetic-pipeline-v1"
+        ]
+      },
+      {
+        "shardId": "vf-shard-4c809d3d579a478ec622",
+        "path": "synthetic_data/shards/v1/circuit-safety.jsonl",
+        "sha256": "4c809d3d579a478ec62258801ddd9f1cef750d79b4850ac7dcd33fe853207a31",
+        "recordCount": 74,
+        "manifestPath": "data_governance/manifests/synthetic_data__shards__v1__circuit-safety.jsonl.manifest.json",
+        "manifestSha256": "01659314fd8fa5b1ffd80eb50f1f0f31f3307d6d0b0d819fb6d61d8ca2bff1b6",
+        "sourceIds": [
+          "vf-src-curated-electronics-corpus-v1",
+          "vf-src-verified-synthetic-pipeline-v1"
+        ]
+      },
+      {
+        "shardId": "vf-shard-2bc59ebc4ff1490018f0",
+        "path": "synthetic_data/shards/v1/firmware.jsonl",
+        "sha256": "2bc59ebc4ff1490018f0fae34eea230ab47deb6c1ed382f5b005fea3419e488c",
+        "recordCount": 44,
+        "manifestPath": "data_governance/manifests/synthetic_data__shards__v1__firmware.jsonl.manifest.json",
+        "manifestSha256": "204eb66f4378b1c746a5afcfcae6b1af4d5c7d8bf962cae2e985be002d9be5d8",
+        "sourceIds": [
+          "vf-src-curated-electronics-corpus-v1",
+          "vf-src-verified-synthetic-pipeline-v1"
+        ]
+      },
+      {
+        "shardId": "vf-shard-efb854df4a1168b43fde",
+        "path": "synthetic_data/shards/v1/compiler-repair.jsonl",
+        "sha256": "efb854df4a1168b43fded3addf67589146183a2eebd1869b475b19ff6d1be6f5",
+        "recordCount": 22,
+        "manifestPath": "data_governance/manifests/synthetic_data__shards__v1__compiler-repair.jsonl.manifest.json",
+        "manifestSha256": "374f06bc9d1fd88f024e6ab5d7a1b5672445e7b1e5ee0f7ebd43f2e6a597a5ba",
+        "sourceIds": [
+          "vf-src-curated-electronics-corpus-v1",
+          "vf-src-verified-synthetic-pipeline-v1"
+        ]
+      }
+    ],
+    "split": {
+      "id": "vf-tokenizer-split-v1",
+      "seed": "vfai-010-split-20260828",
+      "method": "per-task SHA-256 rank with approximately 10 percent evaluation",
+      "trainingRecordCount": 227,
+      "evaluationRecordCount": 23,
+      "trainingRecordIdsSha256": "a360f1a5e329b6d252c0e87bd40957bdf6c25a138facfb9854a3ab08961fef21",
+      "evaluationRecordIds": [
+        "vf-task-v1-017d7bc35d39f9778e8ed4fc",
+        "vf-task-v1-03f15dd30ad2b8cb264c1ae5",
+        "vf-task-v1-045bb4918761ff517afb9fd9",
+        "vf-task-v1-12795f3e811142291ca23974",
+        "vf-task-v1-19967786ecd49b26914c65e0",
+        "vf-task-v1-1f8f1f46aac9d15f3d259d2f",
+        "vf-task-v1-282f0cef9a3ddf01f2033457",
+        "vf-task-v1-298d1a55cfa4cc2da5ecb5ef",
+        "vf-task-v1-3897eb748d0d34d8225afcdf",
+        "vf-task-v1-395f1fff7e4344b5efabf463",
+        "vf-task-v1-3ce1febaaa2925caf80ce856",
+        "vf-task-v1-464a66df195cc132679d5a06",
+        "vf-task-v1-4778ea1037d0503876fc4c78",
+        "vf-task-v1-6269b58fda7e880175fa5984",
+        "vf-task-v1-7ea0da6cf3b2c310c1141eb7",
+        "vf-task-v1-8cf89cafb64b377638550cd9",
+        "vf-task-v1-a0fd0e62933ae6efbb59ba36",
+        "vf-task-v1-c5b2f703d58323f0a55c5ab9",
+        "vf-task-v1-cffd70ee37f78680fa11a764",
+        "vf-task-v1-e6017fe6073fa8848fa4ff4d",
+        "vf-task-v1-f1f8a356afdd356ee0de7cfa",
+        "vf-task-v1-f6d562191c1286f9b9098772",
+        "vf-task-v1-f9922da1b2a507014ededcd9"
+      ],
+      "trainingCorpusSha256": "b64ed41f43be0100863b75ac8ec62f16d4128bd3aaa4bd07c4b00c6bd407b188",
+      "evaluationCorpusSha256": "82cd690509c6cc660f62a973b9566b5bb418ee83f52d97b1ffc3d3609adce253",
+      "taskBalance": {
+        "circuit_validation": 3,
+        "compiler_repair": 2,
+        "domain_chat": 4,
+        "firmware_generation": 4,
+        "pin_routing": 2,
+        "refusal": 1,
+        "structured_output": 2,
+        "uncertainty": 1,
+        "wiring": 4
+      }
+    }
+  },
+  "trainer": [
+    {
+      "path": "model/tokenizer.py",
+      "sha256": "39f0a3773f044eb9934222cf9c5dbc22212a155fe886a2e195a1175761a84e35"
+    },
+    {
+      "path": "tokenizer_training/pipeline.py",
+      "sha256": "a56b786179e43b6da30f3ee100fcdf62e549e37f8ee8877510fbba70f4e434ca"
+    },
+    {
+      "path": "tokenizer_training/legacy_baseline.py",
+      "sha256": "4ad4ea2ca5f652358db7629f9422419dc0035ac26a2fe18e26b93243de9956bb"
+    },
+    {
+      "path": "task_schema/compiler.py",
+      "sha256": "679663525f214ebab2d40ada78f6c41b0c0640ffafe77e38d4c47d12b0541236"
+    }
+  ],
+  "modelArtifactDependencyContract": {
+    "requiredRegistryFileKey": "tokenizerManifest",
+    "manifestFilename": "tokenizer_manifest.json",
+    "gate": "model.artifact_registry._validate_tokenizer"
+  },
+  "artifactSha256": "1858abfc83a469a48f9b2bfef65d484fe24bd4a553a3cc05030cfcfd2cdc76c4"
+}

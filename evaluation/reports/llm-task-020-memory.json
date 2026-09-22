@@ -1,0 +1,59 @@
+{
+  "taskId": "LLM-TASK-020",
+  "status": "passed",
+  "runs": [
+    {
+      "inputDocuments": 1000,
+      "acceptedDocuments": 1000,
+      "quarantinedDocuments": 0,
+      "inputSha256": "adfdd0068df47c6074b9862b8854beb401f40273992a9cecaa33c5f0ba3b134b",
+      "manifestSha256": "9fe8770dd610d1b4e407f7f36a4a223cb8b071ea40eae81ec93e329e45d033f6",
+      "performance": {
+        "elapsedSeconds": 11.199054299999261,
+        "inputBytes": 1059000,
+        "documentsPerSecond": 89.29325398485352,
+        "pythonPeakAllocatedBytes": 2159297,
+        "memoryScope": "Parent Python traced allocations; excludes OS/native memory and PDF child processes.",
+        "sqliteCacheKiB": 2048,
+        "pdfInputLimitBytes": 8388608
+      },
+      "parentProcessPeakWorkingSetBytes": 81272832,
+      "shards": 32,
+      "largestShardBytes": 124032,
+      "fixtureOnly": true,
+      "trainingAllowed": false
+    },
+    {
+      "inputDocuments": 10000,
+      "acceptedDocuments": 10000,
+      "quarantinedDocuments": 0,
+      "inputSha256": "8d8c4cf13c105ca964dae009d0083b402a237a7eb56814e35c3d3c97a099edd0",
+      "manifestSha256": "81c4ee5741f623df0fad3c99aae24685c82f92aefddf6532d93b47ef97a93102",
+      "performance": {
+        "elapsedSeconds": 113.09117820000392,
+        "inputBytes": 10590000,
+        "documentsPerSecond": 88.42422688633421,
+        "pythonPeakAllocatedBytes": 2143428,
+        "memoryScope": "Parent Python traced allocations; excludes OS/native memory and PDF child processes.",
+        "sqliteCacheKiB": 2048,
+        "pdfInputLimitBytes": 8388608
+      },
+      "parentProcessPeakWorkingSetBytes": 81510400,
+      "shards": 314,
+      "largestShardBytes": 124096,
+      "fixtureOnly": true,
+      "trainingAllowed": false
+    }
+  ],
+  "checks": {
+    "allUniqueDocumentsAccepted": true,
+    "tenfoldInput": true,
+    "boundedPythonAllocation": true,
+    "boundedShards": true
+  },
+  "largeRunPythonAllocationLimitBytes": 6415746,
+  "measurementScope": "Fresh-process, end-to-end JSONL staging including hashing, normalization, SQLite journal, exact dedup, shard publication and verification.",
+  "limits": "Synthetic development throughput only. Parent peak working set is observed, not a hard limit. No server capacity or PDF-child RSS claim.",
+  "trainingAllowed": false,
+  "networkAccessed": false
+}

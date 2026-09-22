@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai017-gen1-runtime-smoke-v1",
+  "generatedAtUtc": "2026-08-29T01:25:03.934086Z",
+  "artifactId": "vfdlm-g1-edge-v0.1.1-runtime",
+  "artifactManifestSha256": "6e62cda425423bc64b7f12aa6c0965261c9fc9f162bc5e2f99b76531cdaa1efb",
+  "artifactManifestFileSha256": "66fb6e8c6a2993c73855e4044f7e2410c017996faec2d7deb3c632b88d690432",
+  "releaseStatus": "experimental",
+  "activationEligible": false,
+  "serviceActive": false,
+  "device": "cpu",
+  "dtype": "float32",
+  "parameterCount": 14198464,
+  "contextLength": 128,
+  "prompt": {
+    "stored": false,
+    "characters": 53,
+    "sha256": "fbdb56e5adac600ed6e3fd2c10640a9f7381f2d36f676df9771092c6d635323e",
+    "tokens": 30
+  },
+  "lifecycle": {
+    "firstLoadMs": 1897.9401999968104,
+    "restartLoadMs": 442.7337999950396,
+    "loadCountAfterRestart": 2,
+    "statesImplemented": [
+      "unavailable",
+      "loading",
+      "ready",
+      "degraded",
+      "failed"
+    ],
+    "actualExperimentalStates": [
+      "degraded",
+      "unavailable",
+      "degraded"
+    ]
+  },
+  "greedy": {
+    "maximumNewTokens": 8,
+    "completionTokens": 8,
+    "finishReason": "length",
+    "elapsedMs": 96.6362999897683,
+    "firstTokenMs": 20.095499989110976,
+    "outputStored": false,
+    "outputSha256": "8b6fa01313ce51afc09e610f819250da501778ad363cba4f9e312a6ec823d42a",
+    "tokenIdsSha256": "9f68e1e2688cd38c528fb3be1ef33fa29d9bd4df7fbadf3496e74f93323ebd00"
+  },
+  "sampling": {
+    "maximumNewTokens": 8,
+    "temperature": 0.7,
+    "topK": 40,
+    "topP": 0.9,
+    "seed": 17017,
+    "completionTokens": 1,
+    "finishReason": "eos",
+    "outputStored": false,
+    "outputSha256": "e3ee915a8e8c7aa02d2fced443314522b20824abd2535d5959c41dc8ab8a09e4",
+    "tokenIdsSha256": "cd4a6fea32ad7c5e6ceef717d99598b534ef6fa95a39f8169723d606850f57fa"
+  },
+  "checks": {
+    "signedArtifactVerified": true,
+    "networkDeniedDuringLifecycle": true,
+    "loadedAsExperimentalDegraded": true,
+    "boundedGreedyGenerated": true,
+    "streamMatchesGenerate": true,
+    "boundedSamplingGenerated": true,
+    "samplingSeedReproducible": true,
+    "preCancellationStoppedAtZeroTokens": true,
+    "expiredDeadlineStoppedAtZeroTokens": true,
+    "unloadReportedUnavailable": true,
+    "restartGreedyReproducible": true,
+    "restartUsedSameArtifact": true,
+    "serviceServingRemainsDisabled": true
+  },
+  "privacy": {
+    "rawPromptStored": false,
+    "generatedTextStored": false,
+    "promptLoggingAllowed": false
+  },
+  "boundary": "This is offline experimental runtime evidence only. It grants no release, activation, service-serving, or output-quality approval.",
+  "reportSha256": "13794acb1de0007921d5786c3a428aee6aaf05a9eb69c9d2744c7f3d6cc31b4a"
+}

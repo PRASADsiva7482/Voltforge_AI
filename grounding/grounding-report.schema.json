@@ -1,0 +1,336 @@
+{
+  "$defs": {
+    "EvidenceConflict": {
+      "additionalProperties": false,
+      "properties": {
+        "conflictId": {
+          "pattern": "^conflict:grounding:[a-f0-9]{24}$",
+          "title": "Conflictid",
+          "type": "string"
+        },
+        "claimType": {
+          "enum": [
+            "datasheet-rating",
+            "pin-capability",
+            "library-api",
+            "current-web"
+          ],
+          "title": "Claimtype",
+          "type": "string"
+        },
+        "subject": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Subject",
+          "type": "string"
+        },
+        "property": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Property",
+          "type": "string"
+        },
+        "valueHashes": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 2,
+          "title": "Valuehashes",
+          "type": "array"
+        },
+        "citationIds": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 2,
+          "title": "Citationids",
+          "type": "array"
+        },
+        "evidenceRefs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Evidencerefs",
+          "type": "array"
+        },
+        "resolution": {
+          "const": "visible-uncertainty-required",
+          "default": "visible-uncertainty-required",
+          "title": "Resolution",
+          "type": "string"
+        }
+      },
+      "required": [
+        "conflictId",
+        "claimType",
+        "subject",
+        "property",
+        "valueHashes",
+        "citationIds"
+      ],
+      "title": "EvidenceConflict",
+      "type": "object"
+    },
+    "GroundedClaim": {
+      "additionalProperties": false,
+      "properties": {
+        "claimId": {
+          "pattern": "^claim:grounding:[a-f0-9]{24}$",
+          "title": "Claimid",
+          "type": "string"
+        },
+        "claimTypes": {
+          "items": {
+            "enum": [
+              "datasheet-rating",
+              "pin-capability",
+              "library-api",
+              "current-web"
+            ],
+            "type": "string"
+          },
+          "maxItems": 4,
+          "minItems": 1,
+          "title": "Claimtypes",
+          "type": "array"
+        },
+        "supportStatus": {
+          "enum": [
+            "supported",
+            "unsupported",
+            "conflicted",
+            "unknown"
+          ],
+          "title": "Supportstatus",
+          "type": "string"
+        },
+        "reasonCode": {
+          "pattern": "^[A-Z][A-Z0-9_]{2,99}$",
+          "title": "Reasoncode",
+          "type": "string"
+        },
+        "citationIds": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 2,
+          "title": "Citationids",
+          "type": "array"
+        },
+        "evidenceRefs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "title": "Evidencerefs",
+          "type": "array"
+        },
+        "visibleTextTransformed": {
+          "default": false,
+          "title": "Visibletexttransformed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "claimId",
+        "claimTypes",
+        "supportStatus",
+        "reasonCode"
+      ],
+      "title": "GroundedClaim",
+      "type": "object"
+    },
+    "GroundingUncertainty": {
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "enum": [
+            "none",
+            "medium",
+            "high"
+          ],
+          "title": "Level",
+          "type": "string"
+        },
+        "reasonCode": {
+          "pattern": "^[A-Z][A-Z0-9_]{2,99}$",
+          "title": "Reasoncode",
+          "type": "string"
+        },
+        "missingEvidence": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 12,
+          "title": "Missingevidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "level",
+        "reasonCode"
+      ],
+      "title": "GroundingUncertainty",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "default": 1,
+      "title": "Schemaversion",
+      "type": "integer"
+    },
+    "contractVersion": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Contractversion",
+      "type": "string"
+    },
+    "policyId": {
+      "const": "vfai024-claim-grounding-v1",
+      "default": "vfai024-claim-grounding-v1",
+      "title": "Policyid",
+      "type": "string"
+    },
+    "policySha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Policysha256",
+      "type": "string"
+    },
+    "reportId": {
+      "pattern": "^vf-grounding-report-v1-[a-f0-9]{24}$",
+      "title": "Reportid",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "grounded",
+        "uncertain",
+        "conflicted",
+        "no-high-risk-claims"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "claims": {
+      "items": {
+        "$ref": "#/$defs/GroundedClaim"
+      },
+      "maxItems": 24,
+      "title": "Claims",
+      "type": "array"
+    },
+    "conflicts": {
+      "items": {
+        "$ref": "#/$defs/EvidenceConflict"
+      },
+      "maxItems": 12,
+      "title": "Conflicts",
+      "type": "array"
+    },
+    "claimCount": {
+      "maximum": 24,
+      "minimum": 0,
+      "title": "Claimcount",
+      "type": "integer"
+    },
+    "supportedClaimCount": {
+      "maximum": 24,
+      "minimum": 0,
+      "title": "Supportedclaimcount",
+      "type": "integer"
+    },
+    "unsupportedClaimCount": {
+      "maximum": 24,
+      "minimum": 0,
+      "title": "Unsupportedclaimcount",
+      "type": "integer"
+    },
+    "conflictedClaimCount": {
+      "maximum": 24,
+      "minimum": 0,
+      "title": "Conflictedclaimcount",
+      "type": "integer"
+    },
+    "citationCount": {
+      "maximum": 25,
+      "minimum": 0,
+      "title": "Citationcount",
+      "type": "integer"
+    },
+    "usedEvidenceRefs": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 100,
+      "title": "Usedevidencerefs",
+      "type": "array"
+    },
+    "uncertainty": {
+      "$ref": "#/$defs/GroundingUncertainty"
+    },
+    "maximumConfidence": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Maximumconfidence",
+      "type": "number"
+    },
+    "allCitationIdsResolved": {
+      "const": true,
+      "default": true,
+      "title": "Allcitationidsresolved",
+      "type": "boolean"
+    },
+    "exactModelPayloadHashesVerified": {
+      "const": true,
+      "default": true,
+      "title": "Exactmodelpayloadhashesverified",
+      "type": "boolean"
+    },
+    "rawPromptStored": {
+      "const": false,
+      "default": false,
+      "title": "Rawpromptstored",
+      "type": "boolean"
+    },
+    "rawProjectContextStored": {
+      "const": false,
+      "default": false,
+      "title": "Rawprojectcontextstored",
+      "type": "boolean"
+    },
+    "rawModelOutputStored": {
+      "const": false,
+      "default": false,
+      "title": "Rawmodeloutputstored",
+      "type": "boolean"
+    },
+    "claimTextStoredInMetadata": {
+      "const": false,
+      "default": false,
+      "title": "Claimtextstoredinmetadata",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "policySha256",
+    "reportId",
+    "status",
+    "claimCount",
+    "supportedClaimCount",
+    "unsupportedClaimCount",
+    "conflictedClaimCount",
+    "citationCount",
+    "uncertainty",
+    "maximumConfidence"
+  ],
+  "title": "VoltForge claim grounding report v1",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:voltforge-ai:claim-grounding-report:v1"
+}

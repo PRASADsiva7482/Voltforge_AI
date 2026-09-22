@@ -1,0 +1,229 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai-fu-006-governed-corpus-expansion-v1",
+  "status": "readiness-contract-only",
+  "sourceFollowup": "VFAI-FU-006",
+  "countingContract": {
+    "unit": "unique-packed-next-token-prediction",
+    "tokenizerBindingRequired": true,
+    "repeatedEpochsCountAsNewCoverage": false,
+    "exactDuplicateRecordsCountAsNewCoverage": false,
+    "semanticNearDuplicateRecordsCountAsNewCoverage": false,
+    "mechanicallyParaphrasedRecordsCountAsNewCoverage": false
+  },
+  "releaseStages": [
+    {
+      "stageId": "edge-stage-1-1m",
+      "minimumUniqueTrainingPredictedTokens": 1000000,
+      "minimumApprovedSourceFamilies": 3,
+      "minimumExactBoardVariants": 11,
+      "minimumExactComponentVariants": 10,
+      "minimumCompilerToolchains": 5,
+      "minimumModelValidationRecords": 500,
+      "minimumGlobalHeldOutCases": 260,
+      "minimumRetrievalHeldOutCases": 100,
+      "minimumAdversarialSafetyCases": 50,
+      "minimumManualAuditRecords": 200
+    },
+    {
+      "stageId": "edge-stage-2-10m",
+      "minimumUniqueTrainingPredictedTokens": 10000000,
+      "minimumApprovedSourceFamilies": 5,
+      "minimumExactBoardVariants": 16,
+      "minimumExactComponentVariants": 30,
+      "minimumCompilerToolchains": 7,
+      "minimumModelValidationRecords": 5000,
+      "minimumGlobalHeldOutCases": 1300,
+      "minimumRetrievalHeldOutCases": 500,
+      "minimumAdversarialSafetyCases": 250,
+      "minimumManualAuditRecords": 1000
+    },
+    {
+      "stageId": "edge-stage-3-100m",
+      "minimumUniqueTrainingPredictedTokens": 100000000,
+      "minimumApprovedSourceFamilies": 7,
+      "minimumExactBoardVariants": 25,
+      "minimumExactComponentVariants": 100,
+      "minimumCompilerToolchains": 10,
+      "minimumModelValidationRecords": 50000,
+      "minimumGlobalHeldOutCases": 6500,
+      "minimumRetrievalHeldOutCases": 2000,
+      "minimumAdversarialSafetyCases": 1000,
+      "minimumManualAuditRecords": 5000
+    }
+  ],
+  "taskBalance": {
+    "groups": [
+      {
+        "groupId": "circuit-and-simulation",
+        "tasks": [
+          "circuit_validation",
+          "simulation_interpretation"
+        ],
+        "minimumPercent": 18.0,
+        "maximumPercent": 24.0
+      },
+      {
+        "groupId": "firmware-generation",
+        "tasks": [
+          "firmware_generation",
+          "firmware_review"
+        ],
+        "minimumPercent": 18.0,
+        "maximumPercent": 24.0
+      },
+      {
+        "groupId": "grounded-domain-explanation",
+        "tasks": [
+          "domain_chat",
+          "search_grounding",
+          "retrieval_grounding"
+        ],
+        "minimumPercent": 12.0,
+        "maximumPercent": 18.0
+      },
+      {
+        "groupId": "wiring-and-pin-routing",
+        "tasks": [
+          "wiring",
+          "pin_routing",
+          "board_pins"
+        ],
+        "minimumPercent": 12.0,
+        "maximumPercent": 18.0
+      },
+      {
+        "groupId": "structured-output-and-actions",
+        "tasks": [
+          "structured_output",
+          "tool_action"
+        ],
+        "minimumPercent": 8.0,
+        "maximumPercent": 12.0
+      },
+      {
+        "groupId": "diagnosis-and-repair",
+        "tasks": [
+          "compiler_repair",
+          "diagnostic",
+          "runtime_failure_repair"
+        ],
+        "minimumPercent": 8.0,
+        "maximumPercent": 12.0
+      },
+      {
+        "groupId": "refusal-safety-and-privacy",
+        "tasks": [
+          "refusal",
+          "memory_isolation",
+          "adversarial_safety",
+          "privacy"
+        ],
+        "minimumPercent": 8.0,
+        "maximumPercent": 12.0
+      },
+      {
+        "groupId": "uncertainty-conflict-and-malformed-input",
+        "tasks": [
+          "uncertainty",
+          "conflict_resolution",
+          "malformed_input"
+        ],
+        "minimumPercent": 6.0,
+        "maximumPercent": 10.0
+      }
+    ],
+    "everyRecordAssignedExactlyOnce": true,
+    "balanceMeasuredAfterDeduplication": true
+  },
+  "sourceAdmission": {
+    "requiredFields": [
+      "source-id",
+      "owner-or-copyright-holder",
+      "license-or-project-ownership-basis",
+      "approved-revision",
+      "immutable-source-checksum",
+      "generator-and-preprocessor-checksums",
+      "retention-and-deletion-procedure"
+    ],
+    "allowedCurrentSourceIds": [
+      "vf-src-curated-electronics-corpus-v1",
+      "vf-src-verified-synthetic-pipeline-v1"
+    ],
+    "candidateOwnedSources": [
+      {
+        "sourceId": "vf-src-project-authored-instructional-v1",
+        "state": "design-and-curation-required"
+      },
+      {
+        "sourceId": "vf-src-deterministic-simulation-scenarios-v1",
+        "state": "generator-and-receipt-contract-required"
+      },
+      {
+        "sourceId": "vf-src-runtime-failure-repair-v1",
+        "state": "redaction-and-verification-contract-required"
+      },
+      {
+        "sourceId": "vf-src-consented-reviewed-feedback-v1",
+        "state": "blocked-private-consent-workflow"
+      },
+      {
+        "sourceId": "vf-src-project-authored-adversarial-safety-v1",
+        "state": "independent-heldout-first-required"
+      }
+    ],
+    "privateProjectOrFeedbackTrainingEnabled": false,
+    "liveWebTrainingEnabled": false,
+    "thirdPartyModelGeneratedCorpusEnabled": false,
+    "unlicensedTextEnabled": false
+  },
+  "qualityGates": {
+    "acceptedExactDuplicateCount": 0,
+    "acceptedSemanticNearDuplicateCount": 0,
+    "trainingHeldOutCollisionCount": 0,
+    "deterministicLabelReceiptCoveragePercent": 100.0,
+    "compilerLabelReceiptCoveragePercent": 100.0,
+    "unsupportedClaimUncertaintyCoveragePercent": 100.0,
+    "criticalManualAuditErrorCount": 0,
+    "semanticDeduplicationRequired": true,
+    "independentHeldOutFrozenBeforeCandidateGeneration": true,
+    "manualAuditSamplingSeedRequired": true,
+    "rejectionReasonsPublished": true
+  },
+  "immutableRelease": {
+    "requiredFollowup": "VFAI-FU-015",
+    "contentAddressedOrVersionedShardPathsRequired": true,
+    "mutableCurrentAliasesMayBeTrainingLineage": false,
+    "sourceRemovalImpactRequired": true,
+    "backupRestoreTestRequired": true
+  },
+  "budgetApproval": {
+    "status": "pending-owner-approval",
+    "maximumRetainedBytes": null,
+    "maximumGenerationCpuHours": null,
+    "maximumCompilerCpuHours": null,
+    "maximumTrainingGpuHours": null,
+    "approvedHardwareBoundary": null
+  },
+  "stageLearningCurve": {
+    "minimumIndependentSeeds": 3,
+    "sameTokenizerAndModelContractWithinStage": true,
+    "heldOutAndGlobalImprovementRequired": true,
+    "criticalRegressionAllowed": false,
+    "largerStageAllowedBeforePriorStageReview": false,
+    "automaticModelActivationAllowed": false
+  },
+  "stopGates": [
+    "owner-budget-not-approved",
+    "immutable-release-retention-not-ready",
+    "source-license-or-consent-unresolved",
+    "source-or-shard-checksum-mismatch",
+    "semantic-deduplication-not-enforced",
+    "heldout-suite-not-frozen-before-generation",
+    "task-or-hardware-balance-outside-policy",
+    "deterministic-or-compiler-receipt-missing",
+    "manual-audit-critical-error",
+    "three-seed-learning-curve-regression",
+    "secret-or-non-consensual-private-data-detected"
+  ]
+}

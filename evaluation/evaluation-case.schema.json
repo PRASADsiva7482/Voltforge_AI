@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:voltforge-ai:evaluation-case:v1",
+  "title": "VoltForge AI frozen evaluation case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "suiteVersion",
+    "id",
+    "metricId",
+    "task",
+    "adapter",
+    "critical",
+    "input",
+    "assertions"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "suiteVersion": { "const": "1.0.0" },
+    "id": { "type": "string", "pattern": "^vf-eval-v1-[a-z0-9-]+$" },
+    "metricId": { "type": "string", "minLength": 1 },
+    "task": {
+      "enum": [
+        "domain_chat",
+        "circuit_validation",
+        "wiring",
+        "board_pins",
+        "firmware_review",
+        "firmware_generation",
+        "compiler_repair",
+        "simulation_interpretation",
+        "search_grounding",
+        "memory_isolation",
+        "refusal",
+        "malformed_input",
+        "adversarial_safety"
+      ]
+    },
+    "adapter": { "type": "string", "minLength": 1 },
+    "critical": { "type": "boolean" },
+    "input": { "type": "object" },
+    "assertions": { "type": "array", "minItems": 1 }
+  }
+}

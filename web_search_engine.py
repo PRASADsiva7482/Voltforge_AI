@@ -1,182 +1,242 @@
+"""Compatibility adapter over the VFAI-023 secure internet evidence service.
+
+New code should import :mod:`internet_retrieval` directly. This class preserves
+the historical datasheet endpoints and reasoning-engine call surface without
+retaining the former unrestricted HTML scraper or disk cache.
+"""
+
+from __future__ import annotations
+
 import json
 import logging
-import os
 import re
-import urllib.parse
 from typing import Any, Dict, List, Optional
-import requests
-from bs4 import BeautifulSoup
 
-logger = logging.getLogger("voltforge-ai.web_search")
+from config import get_settings
+from internet_retrieval import (
+    InternetRetrievalQuery,
+    InternetRetrievalService,
+    citations_from_response,
+    response_metadata,
+    service_from_settings,
+)
 
-CACHE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "datasheet_cache.json")
+
+logger = logging.getLogger("voltforge-ai.web-search-compatibility")
 
 
 class ComponentSpecExtractor:
-    """Extracts electrical specs (voltage, interfaces, addresses, pinouts) from text snippets."""
+    """Extract only bounded values that occur in accepted evidence snippets."""
 
     VOLTAGE_PATTERN = re.compile(
-        r'(\b\d+(?:\.\d+)?\s*(?:V|volts|VDC)\b(?:\s*-\s*\d+(?:\.\d+)?\s*(?:V|volts|VDC)\b)?)',
+        r"(\b\d+(?:\.\d+)?\s*(?:V|volts|VDC)\b(?:\s*(?:-|to)\s*\d+(?:\.\d+)?\s*(?:V|volts|VDC)\b)?)",
         re.IGNORECASE,
     )
-    I2C_ADDR_PATTERN = re.compile(r'\b(0x[0-9a-fA-F]{2})\b')
+    I2C_ADDR_PATTERN = re.compile(r"\b(0x[0-9a-fA-F]{2})\b")
     BUS_INTERFACE_PATTERNS = {
-        "I2C": re.compile(r'\b(I2C|I^2C|TWI|SMBus)\b', re.IGNORECASE),
-        "SPI": re.compile(r'\b(SPI|Serial Peripheral Interface)\b', re.IGNORECASE),
-        "UART": re.compile(r'\b(UART|USART|Serial|TX/RX)\b', re.IGNORECASE),
-        "PWM": re.compile(r'\b(PWM|Pulse Width Modulation)\b', re.IGNORECASE),
-        "ADC": re.compile(r'\b(ADC|Analog|Analog-to-Digital)\b', re.IGNORECASE),
-        "CAN": re.compile(r'\b(CAN bus|Controller Area Network)\b', re.IGNORECASE),
+        "I2C": re.compile(r"\b(I2C|I\^2C|TWI|SMBus)\b", re.IGNORECASE),
+        "SPI": re.compile(r"\b(SPI|Serial Peripheral Interface)\b", re.IGNORECASE),
+        "UART": re.compile(r"\b(UART|USART|Serial|TX/RX)\b", re.IGNORECASE),
+        "PWM": re.compile(r"\b(PWM|Pulse Width Modulation)\b", re.IGNORECASE),
+        "ADC": re.compile(r"\b(ADC|Analog-to-Digital)\b", re.IGNORECASE),
+        "CAN": re.compile(r"\b(CAN bus|Controller Area Network)\b", re.IGNORECASE),
     }
 
     @classmethod
     def extract_specs(cls, query: str, snippets: List[Dict[str, str]]) -> Dict[str, Any]:
-        combined_text = " ".join([f"{s.get('title', '')} {s.get('snippet', '')}" for s in snippets])
-
-        voltages = list(set(cls.VOLTAGE_PATTERN.findall(combined_text)))
-        i2c_addresses = list(set(cls.I2C_ADDR_PATTERN.findall(combined_text)))
-
+        combined_text = " ".join(
+            f"{item.get('title', '')} {item.get('snippet', '')}" for item in snippets[:4]
+        )
+        voltages = sorted(set(cls.VOLTAGE_PATTERN.findall(combined_text)), key=str.casefold)[:5]
+        addresses = sorted(set(cls.I2C_ADDR_PATTERN.findall(combined_text)), key=str.casefold)[:4]
         interfaces = [
-            name for name, pattern in cls.BUS_INTERFACE_PATTERNS.items() if pattern.search(combined_text)
+            name
+            for name, pattern in cls.BUS_INTERFACE_PATTERNS.items()
+            if pattern.search(combined_text)
         ]
-
-        operating_voltage = None
-        if voltages:
-            # Pick standard voltage ranges if available
-            preferred = [v for v in voltages if any(term in v for term in ["3.3", "5", "3.3V", "5V", "1.8"])]
-            operating_voltage = preferred[0] if preferred else voltages[0]
-
+        preferred = [
+            voltage
+            for voltage in voltages
+            if any(term in voltage.casefold() for term in ("1.8", "3.3", "5v", "5 v"))
+        ]
         return {
             "query": query,
-            "operatingVoltage": operating_voltage or "3.3V / 5V (Standard)",
-            "voltagesFound": voltages[:5],
-            "i2cAddresses": i2c_addresses[:4],
+            "operatingVoltage": (preferred[0] if preferred else voltages[0]) if voltages else None,
+            "voltagesFound": voltages,
+            "i2cAddresses": addresses,
             "supportedInterfaces": interfaces,
-            "summarySnippet": combined_text[:300] + "..." if len(combined_text) > 300 else combined_text,
+            "summarySnippet": (
+                f"{combined_text[:300]}..." if len(combined_text) > 300 else combined_text
+            ),
         }
 
 
 class WebSearchEngine:
-    """Multi-source search engine with dynamic caching for electronic components."""
+    """Local-first compatibility facade with secure, opt-in internet fallback."""
 
-    def __init__(self, cache_file: str = CACHE_FILE):
-        self.cache_file = cache_file
-        self.cache: Dict[str, Dict[str, Any]] = self._load_cache()
+    def __init__(
+        self,
+        cache_file: str | None = None,
+        internet_enabled: Optional[bool] = None,
+        timeout_seconds: Optional[int] = None,
+        service: InternetRetrievalService | None = None,
+    ) -> None:
+        _ = cache_file  # Disk caching was intentionally removed by VFAI-023.
+        settings = get_settings()
+        if internet_enabled is not None or timeout_seconds is not None:
+            settings = settings.__class__(
+                **{
+                    **settings.__dict__,
+                    "internet_retrieval_enabled": (
+                        settings.internet_retrieval_enabled
+                        if internet_enabled is None
+                        else internet_enabled
+                    ),
+                    "internet_retrieval_timeout_seconds": (
+                        settings.internet_retrieval_timeout_seconds
+                        if timeout_seconds is None
+                        else timeout_seconds
+                    ),
+                }
+            )
+        self.service = service or service_from_settings(settings)
+        self.internet_enabled = self.service.enabled
+        self.timeout_seconds = self.service.timeout_seconds
 
-    def _load_cache(self) -> Dict[str, Dict[str, Any]]:
-        if os.path.exists(self.cache_file):
-            try:
-                with open(self.cache_file, "r", encoding="utf-8") as f:
-                    return json.load(f)
-            except Exception as e:
-                logger.warning(f"Could not load datasheet cache: {e}")
-        return {}
-
-    def _save_cache(self) -> None:
-        try:
-            with open(self.cache_file, "w", encoding="utf-8") as f:
-                json.dump(self.cache, f, indent=2)
-        except Exception as e:
-            logger.warning(f"Could not save datasheet cache: {e}")
+    def health(self) -> Dict[str, Any]:
+        return self.service.health()
 
     def search_duckduckgo(self, query: str, limit: int = 4) -> List[Dict[str, str]]:
-        results: List[Dict[str, str]] = []
-        try:
-            headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-            }
-            encoded = urllib.parse.quote(f"{query} datasheet pinout wiring specs")
-            url = f"https://html.duckduckgo.com/html/?q={encoded}"
-            resp = requests.get(url, headers=headers, timeout=1.5)
-            if resp.status_code == 200:
-                soup = BeautifulSoup(resp.text, "html.parser")
-                for element in soup.select(".result__body")[:limit]:
-                    title_elem = element.select_one(".result__title .result__a")
-                    snippet_elem = element.select_one(".result__snippet")
-                    if title_elem and snippet_elem:
-                        results.append({
-                            "title": title_elem.get_text(strip=True),
-                            "url": title_elem.get("href", ""),
-                            "snippet": snippet_elem.get_text(" ", strip=True),
-                            "source": "DuckDuckGo Web",
-                        })
-        except Exception as e:
-            logger.warning(f"DuckDuckGo search error for '{query}': {e}")
-        return results
+        response = self.service.search(
+            InternetRetrievalQuery(text=query[:1_000], maximumResults=max(1, min(limit, 4))),
+            trigger="direct-endpoint",
+        )
+        return self._legacy_results(response)
 
     def search_wikipedia(self, query: str) -> List[Dict[str, str]]:
-        results: List[Dict[str, str]] = []
-        try:
-            url = f"https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch={urllib.parse.quote(query)}&format=json"
-            resp = requests.get(url, timeout=1.5)
-            if resp.status_code == 200:
-                data = resp.json()
-                search_items = data.get("query", {}).get("search", [])
-                for item in search_items[:2]:
-                    snippet_clean = re.sub(r'<[^>]+>', '', item.get("snippet", ""))
-                    results.append({
-                        "title": item.get("title", ""),
-                        "url": f"https://en.wikipedia.org/wiki/{urllib.parse.quote(item.get('title', ''))}",
-                        "snippet": snippet_clean,
-                        "source": "Wikipedia API",
-                    })
-        except Exception as e:
-            logger.warning(f"Wikipedia search error for '{query}': {e}")
-        return results
+        """The former unapproved second network endpoint is no longer contacted."""
+        _ = query
+        return []
 
-    def get_component_info(self, component_name: str, force_refresh: bool = False) -> Dict[str, Any]:
-        key = component_name.lower().strip()
-        if not force_refresh and key in self.cache:
-            logger.info(f"Returning cached specs for '{component_name}'")
-            return self.cache[key]
-
-        # Check local offline knowledge graph first
-        try:
-            from engine.knowledge_graph import ComponentKnowledgeGraph
-            kg_info = ComponentKnowledgeGraph.get_component_info(component_name)
-            if kg_info:
-                return {
-                    "component": component_name,
-                    "searchResults": [{"title": kg_info.get("fullName", component_name), "snippet": f"{kg_info.get('fullName')}: {', '.join(kg_info.get('requiredExternalComponents', []))}", "source": "VoltForge Local Knowledge Graph", "url": "local://datasheet"}],
-
-                    "specs": {
-                        "query": component_name,
-                        "operatingVoltage": f"{kg_info.get('operatingVoltage', {}).get('min', 3.3)}V - {kg_info.get('operatingVoltage', {}).get('max', 5.0)}V",
-                        "supportedInterfaces": kg_info.get("interfaces", []),
-                        "i2cAddresses": kg_info.get("i2cAddress", []),
-                        "summarySnippet": f"{kg_info.get('fullName', '')} ({kg_info.get('category', '')}). Interfaces: {', '.join(kg_info.get('interfaces', []))}. Current: {kg_info.get('currentDraw_mA', 0)}mA.",
-                    },
-                    "citations": [{"title": kg_info.get("fullName", component_name), "url": "local://knowledge-base", "source": "VoltForge Offline Database"}],
-                }
-        except Exception as e:
-            logger.warning(f"Local KG lookup error: {e}")
-
-        logger.info(f"Searching web for component '{component_name}'...")
-        web_results = self.search_duckduckgo(component_name)
-        if not web_results:
-            web_results = self.search_wikipedia(component_name)
-
-
-        extracted = ComponentSpecExtractor.extract_specs(component_name, web_results)
-        result = {
+    def get_component_info(
+        self,
+        component_name: str,
+        force_refresh: bool = False,
+        retrieval_reason: str = "direct-endpoint",
+    ) -> Dict[str, Any]:
+        local = self._local_component_info(component_name)
+        if local is not None:
+            return local
+        if not self.internet_enabled:
+            return {
+                "component": component_name,
+                "searchResults": [],
+                "specs": ComponentSpecExtractor.extract_specs(component_name, []),
+                "citations": [],
+                "retrieval": {
+                    **self.health(),
+                    "mode": "offline-no-local-evidence",
+                    "internetUsed": False,
+                },
+            }
+        response = self.service.search(
+            InternetRetrievalQuery(text=component_name[:1_000], maximumResults=4),
+            trigger=retrieval_reason,
+            bypass_cache=force_refresh,
+        )
+        results = self._legacy_results(response)
+        return {
             "component": component_name,
-            "searchResults": web_results,
-            "specs": extracted,
-            "citations": [
-                {"title": r["title"], "url": r["url"], "source": r.get("source", "Web")}
-                for r in web_results
-            ],
+            "searchResults": results,
+            "specs": ComponentSpecExtractor.extract_specs(component_name, results),
+            "citations": citations_from_response(response),
+            "retrieval": {
+                **response_metadata(response),
+                "mode": {
+                    "complete": "internet-cache" if response.cacheHit else "internet-live",
+                    "no-results": "internet-no-evidence",
+                    "degraded": "internet-degraded",
+                    "disabled": "offline-no-local-evidence",
+                    "not-requested": "offline-no-local-evidence",
+                }[response.status],
+                "internetEnabled": self.internet_enabled,
+                "internetUsed": response.networkAccessed,
+            },
         }
 
-        if web_results:
-            self.cache[key] = result
-            self._save_cache()
+    def _local_component_info(self, component_name: str) -> Dict[str, Any] | None:
+        try:
+            from engine.knowledge_graph import ComponentKnowledgeGraph
 
-        return result
+            info = ComponentKnowledgeGraph.get_component_info(component_name)
+        except Exception as error:
+            logger.warning("Local component lookup failed (code=%s)", type(error).__name__)
+            return None
+        if not info:
+            return None
+        voltage = info.get("operatingVoltage") or {}
+        minimum = voltage.get("min")
+        maximum = voltage.get("max")
+        operating_voltage = (
+            f"{minimum}V - {maximum}V"
+            if minimum is not None and maximum is not None
+            else None
+        )
+        current_draw = info.get("currentDraw_mA")
+        full_name = info.get("fullName", component_name)
+        required = ", ".join(info.get("requiredExternalComponents", []))
+        return {
+            "component": component_name,
+            "searchResults": [
+                {
+                    "title": full_name,
+                    "snippet": f"{full_name}: {required}",
+                    "source": "VoltForge Local Knowledge Graph",
+                    "url": "local://datasheet",
+                }
+            ],
+            "specs": {
+                "query": component_name,
+                "operatingVoltage": operating_voltage,
+                "supportedInterfaces": info.get("interfaces", []),
+                "i2cAddresses": info.get("i2cAddress", []),
+                "summarySnippet": (
+                    f"{full_name} ({info.get('category', '')}). Interfaces: "
+                    f"{', '.join(info.get('interfaces', []))}."
+                    + (f" Current: {current_draw}mA." if current_draw is not None else "")
+                ),
+            },
+            "citations": [
+                {
+                    "title": full_name,
+                    "url": "local://knowledge-base",
+                    "source": "VoltForge Offline Database",
+                }
+            ],
+            "retrieval": {
+                "mode": "local",
+                "internetEnabled": self.internet_enabled,
+                "internetUsed": False,
+                "generationDependency": False,
+            },
+        }
+
+    @staticmethod
+    def _legacy_results(response: Any) -> List[Dict[str, str]]:
+        return [
+            {
+                "title": item.title,
+                "url": item.sourceUrl,
+                "snippet": item.snippet,
+                "source": item.sourceDomain,
+                "retrievedAt": item.retrievedAt,
+                "contentSha256": item.contentSha256,
+            }
+            for item in response.evidence
+        ]
 
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     engine = WebSearchEngine()
-    test_res = engine.get_component_info("MPU6050")
-    print("Extracted Specs for MPU6050:", json.dumps(test_res["specs"], indent=2))
+    print(json.dumps(engine.get_component_info("MPU6050")["specs"], indent=2))

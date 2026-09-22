@@ -1,0 +1,22 @@
+{
+  "status": "passed",
+  "inventorySha256": "6d87cb4ce72a226bcecbab91bd0e1b08f5453e05ff69438a760f0c8fbb9ae5b1",
+  "sourceCounts": {
+    "existing": 8,
+    "approvedForExistingTrainingUse": 4,
+    "notApprovedForTraining": 4,
+    "proposedNotAdmitted": 7,
+    "excludedClasses": 4
+  },
+  "unitCounts": {
+    "quarantined": 12,
+    "approved-existing-shard": 4,
+    "approved-upstream-facts": 8
+  },
+  "uniqueEligibleRecords": 227,
+  "existingPoolProxyTokens": 112418,
+  "gen2ReleaseReadyTokens": 0,
+  "recomputed": false,
+  "trainingAllowed": false,
+  "networkAccessed": false
+}

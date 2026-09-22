@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai025-bounded-memory-v1",
+  "contractVersion": "1.0.0",
+  "policySha256": "186045148c7a7a6afbae7aedaafe4aa961f16cd8bdf7f5066fb0dc3f4e92869d",
+  "defaultEnabled": false,
+  "identity": {
+    "authenticatedGatewayHeadersRequired": true,
+    "rawUserIdStored": false,
+    "rawProjectIdStored": false,
+    "rawSessionIdStored": false,
+    "scopeKeyAlgorithm": "sha256-domain-separated-v1"
+  },
+  "kinds": {
+    "fact": {"defaultTtlHours": 2160, "evictionPriority": 4},
+    "decision": {"defaultTtlHours": 2160, "evictionPriority": 3},
+    "summary": {"defaultTtlHours": 720, "evictionPriority": 2},
+    "recent-turn": {"defaultTtlHours": 168, "evictionPriority": 1}
+  },
+  "limits": {
+    "maximumContentCharacters": 1200,
+    "maximumContextContentCharacters": 800,
+    "maximumProjectEntries": 50,
+    "maximumSessionEntries": 12,
+    "maximumProjectBytes": 24576,
+    "maximumContextEntries": 12,
+    "maximumContextBytes": 6000,
+    "maximumTtlHours": 2160,
+    "minimumTtlHours": 1
+  },
+  "revisionPolicy": {
+    "exactProjectRevisionRequiredForContext": true,
+    "staleEntriesRemainInspectable": true,
+    "staleEntriesSelectedForModel": false,
+    "correctionCanRebaseRevision": true
+  },
+  "consent": {
+    "explicitEnableRequired": true,
+    "explicitApprovalRequiredForFactsDecisionsAndSummaries": true,
+    "enabledPreferenceApprovesBoundedRecentTurnSummaries": true,
+    "trainingUseAllowed": false,
+    "trainingConsentEndpointExists": false
+  },
+  "contentPolicy": {
+    "secretsRedacted": true,
+    "fullProjectSnapshotsAllowed": false,
+    "hiddenReasoningAllowed": false,
+    "webPromptInjectionAllowed": false,
+    "retrievedEvidenceAuthority": false,
+    "memoryCanSupportHighRiskGroundingClaims": false
+  },
+  "eviction": {
+    "expiredFirst": true,
+    "stableOrder": "eviction-priority-created-at-memory-id",
+    "leastDurableKindFirst": true
+  },
+  "privacy": {
+    "rawPromptStored": false,
+    "rawProjectContextStored": false,
+    "rawModelOutputStored": false,
+    "hiddenReasoningStored": false,
+    "publicTelemetryContainsContent": false
+  }
+}

@@ -1,0 +1,53 @@
+"""VFAI-026 stable FastAPI and SSE contract exports."""
+
+from api_contract.runtime import (
+    CancellationRegistry,
+    CancellationToken,
+    RequestStopped,
+    SseContractEmitter,
+    artifact_identity,
+    cancellation_registry,
+    contract_health,
+    error_response,
+    wait_for_stage,
+)
+from api_contract.schema import (
+    CONTRACT_VERSION,
+    POLICY_ID,
+    POLICY_SHA256,
+    SCHEMA_VERSION,
+    ApiContractError,
+    ArtifactIdentity,
+    ContractErrorResponse,
+    SseEvent,
+    build_event_json_schema,
+    checked_event_schema,
+    checked_request_schema,
+    checked_response_schema,
+    load_policy,
+)
+
+__all__ = [
+    "CONTRACT_VERSION",
+    "POLICY_ID",
+    "POLICY_SHA256",
+    "SCHEMA_VERSION",
+    "ApiContractError",
+    "ArtifactIdentity",
+    "CancellationRegistry",
+    "CancellationToken",
+    "ContractErrorResponse",
+    "RequestStopped",
+    "SseContractEmitter",
+    "SseEvent",
+    "artifact_identity",
+    "build_event_json_schema",
+    "cancellation_registry",
+    "checked_event_schema",
+    "checked_request_schema",
+    "checked_response_schema",
+    "contract_health",
+    "error_response",
+    "load_policy",
+    "wait_for_stage",
+]

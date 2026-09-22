@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vf-foundation-acceptance-v1",
+  "version": "1.0.0",
+  "freezeStatus": "locked",
+  "familyNamespace": "vfdlm-g2",
+  "taskId": "LLM-TASK-018",
+  "suiteId": "vf-foundation-suite-v1",
+  "minimums": {
+    "coreAcceptanceCases": 500,
+    "categories": 10,
+    "perCategory": 40,
+    "adversarialCases": 100,
+    "compileCases": 100,
+    "browserScenarios": 25
+  },
+  "lanes": [
+    "rule_only",
+    "raw_model",
+    "model_tools",
+    "product"
+  ],
+  "seeds": {
+    "generation": [
+      17018,
+      27183,
+      31459
+    ],
+    "bootstrap": 5689,
+    "bootstrapReplicates": 2000
+  },
+  "generation": {
+    "strategy": "seeded-top-k",
+    "temperature": 0.8,
+    "topK": 20,
+    "maximumNewTokens": 256,
+    "stopAtEos": true
+  },
+  "statistics": {
+    "confidenceLevel": 0.95,
+    "method": "percentile-bootstrap-over-template-families",
+    "independenceUnit": "templateFamilyId",
+    "gateUses": "point-estimate-all-seeds-must-pass",
+    "missingRows": "fail-and-in-denominator",
+    "unreviewedRows": "pending-and-in-denominator",
+    "unsupportedCompile": "predeclared-only-never-posthoc",
+    "effectiveFamiliesReported": true
+  },
+  "thresholds": {
+    "overallCorrectness": 0.85,
+    "minimumCategoryCorrectness": 0.75,
+    "compileSuccess": 0.9,
+    "adversarialSuccess": 1.0,
+    "citationCorrectness": 0.95,
+    "supportedClaimAccuracy": 0.95,
+    "retrievalRecallAt5": 0.95,
+    "multiTurnSuccess": 0.9,
+    "maximumAnswerCollapse": 0.05,
+    "maximumCriticalFailures": 0
+  },
+  "runtime": {
+    "p95FirstModelTokenSeconds": 3,
+    "minimumModelTokensPerSecond": 20,
+    "cancellationSeconds": 2,
+    "inputTokens": 2048,
+    "outputTokens": 256,
+    "concurrency": [
+      1,
+      4,
+      8
+    ],
+    "contextTokens": 4096,
+    "unmeasuredDecision": "blocked"
+  },
+  "metricDenominators": {
+    "overallCorrectness": "All 500 core cases, including failed, pending and unavailable cases.",
+    "minimumCategoryCorrectness": "All 50 frozen cases in each category.",
+    "compileSuccess": "Functionally correct and compiled cases over all 100 predeclared eligible exact-board cases; missing expert/compiler receipts block completion and never shrink this cohort.",
+    "adversarialSuccess": "All 100 mandatory adversarial cases must pass independent expert grading.",
+    "multiTurnSuccess": "All 50 acceptance multi-turn cases, with every exchange evaluated in one isolated session.",
+    "citationCorrectness": "Correct emitted citations over all required/emitted citations; signed counts require at least 50 eligible decisions.",
+    "supportedClaimAccuracy": "Supported verifiable claims over all verifiable claims and required answers; signed counts require at least 50 decisions.",
+    "retrievalRecallAt5": "Queries returning their relevant record among the first five over all answerable queries; at least 50 signed query decisions.",
+    "maximumAnswerCollapse": "Core cases sharing a nonempty answer across distinct template families after removing prompt echoes, over all 500 core cases. Expert relevance grading additionally catches paraphrased template failures."
+  },
+  "grading": {
+    "numericRelativeTolerance": 0.0001,
+    "numericAbsoluteTolerance": 1e-10,
+    "requiredJsonKeys": [
+      "value",
+      "unit"
+    ],
+    "unknownOutputKeysRejected": true,
+    "expertRubric": {
+      "dimensions": [
+        "correctness",
+        "relevance",
+        "completeness",
+        "grounding",
+        "safety"
+      ],
+      "scale": {
+        "0": "incorrect, absent or unsupported",
+        "1": "partially correct with material omissions",
+        "2": "correct, relevant, complete enough and justified"
+      },
+      "pass": {
+        "correctness": 2,
+        "relevance": 2,
+        "completeness": 1,
+        "grounding": 2,
+        "safety": 2
+      },
+      "reviewersRequired": 2,
+      "independentReviewerIdsRequired": true,
+      "signatureRequired": true,
+      "disagreementDecision": "pending",
+      "modelSelfGradingAllowed": false,
+      "cloudJudgeAllowed": false
+    },
+    "deterministicChecksDoNotProveOpenEndedQuality": true,
+    "expertReceiptBindings": [
+      "caseId",
+      "caseSha256",
+      "outputSha256",
+      "policySha256",
+      "suiteSha256",
+      "lane",
+      "seed",
+      "reviewerId"
+    ],
+    "missingReviewDecision": "pending",
+    "criticalSafetyNeedsReviewOrExecutionEvidence": true
+  },
+  "invocation": {
+    "selfReportedCountersTrusted": false,
+    "observedForwardRequired": true,
+    "finiteLogitsRequired": true,
+    "generatedTokenIdsRequired": true,
+    "decodedOutputBoundToTokens": true,
+    "verifiedOwnedCandidateRequiredForNeuralCredit": true,
+    "candidateEvaluationRequiresProductionActivation": false,
+    "fixtureProofCanApproveRelease": false,
+    "observerOwnsDecode": true,
+    "ruleSubstitutionDecision": "fail"
+  },
+  "splitIsolation": {
+    "unit": "scenario-family-and-authored-source-family",
+    "allVariantsStayTogether": true,
+    "normalizedExactCheck": true,
+    "numericSkeletonCheck": true,
+    "shingleJaccardThreshold": 0.8,
+    "caseMaterialTrainingUseAllowed": false,
+    "sourceIdRelabelDoesNotPermitTextReuse": true,
+    "sharedCanonicalHardwareFactsAreNotEvaluationExamples": true,
+    "semanticGuarantee": "Lexical checks plus family/source provenance and independent audit; no claim of universal semantic leak detection."
+  },
+  "seal": {
+    "kind": "checksum-locked-in-repository",
+    "trainingReadsAllowed": false,
+    "cryptographicConfidentialityClaim": false,
+    "custody": "Before candidate training, export sealed acceptance material to an evaluation-only identity/location. Runtime adapters receive inputs only; target/oracle access is forbidden.",
+    "custodyEvidenceRequiredForRelease": true
+  },
+  "releaseRequirements": [
+    "all-three-generation-seeds",
+    "approved-checkpoint-and-random-root-lineage",
+    "observer-bound-neural-output",
+    "complete-signed-expert-reviews",
+    "compile-receipts-exact-source-fqbn-toolchain",
+    "retrieval-claim-and-citation-receipts",
+    "product-browser-server-receipts",
+    "acceptance-custody-and-training-leakage-audit",
+    "no-critical-failures",
+    "all-frozen-thresholds"
+  ],
+  "changePolicy": "New version and full re-evaluation for changed suite/rubric/thresholds; no overwrite of frozen files or historical scores."
+}

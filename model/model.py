@@ -189,10 +189,11 @@ class VoltForgeTransformer:
     Default config: 6 layers, 256 d_model, 8 heads, SwiGLU FFN → ~9.3M parameters.
     """
 
-    def __init__(self, config: TransformerConfig):
+    def __init__(self, config: TransformerConfig, initialize_weights: bool = True):
         self.config = config
         self.weights: Dict[str, np.ndarray] = {}
-        self._init_weights()
+        if initialize_weights:
+            self._init_weights()
         self._rope_cos, self._rope_sin = build_rope_cache(
             config.head_dim, config.context_length, config.rope_theta
         )
@@ -502,11 +503,46 @@ class VoltForgeTransformer:
         np.savez_compressed(filepath, **self.weights)
 
     def load_weights(self, filepath: str) -> None:
-        """Load weights from .npz, matching by name and shape."""
-        data = np.load(filepath)
-        for k in data.files:
-            if k in self.weights and data[k].shape == self.weights[k].shape:
-                self.weights[k] = data[k].astype(np.float32)
+        """Load a complete, shape-compatible, non-pickled NPZ checkpoint."""
+        expected: Dict[str, Tuple[int, ...]] = {"wte": (self.config.vocab_size, self.config.d_model)}
+        for layer in range(self.config.n_layers):
+            prefix = f"l{layer}_"
+            expected.update({
+                f"{prefix}rms1": (self.config.d_model,),
+                f"{prefix}Wq": (self.config.d_model, self.config.d_model),
+                f"{prefix}Wk": (self.config.d_model, self.config.d_model),
+                f"{prefix}Wv": (self.config.d_model, self.config.d_model),
+                f"{prefix}Wo": (self.config.d_model, self.config.d_model),
+                f"{prefix}rms2": (self.config.d_model,),
+                f"{prefix}Wgate": (self.config.d_model, self.config.d_ff),
+                f"{prefix}Wup": (self.config.d_model, self.config.d_ff),
+                f"{prefix}Wdown": (self.config.d_ff, self.config.d_model),
+            })
+        expected["rms_f"] = (self.config.d_model,)
+        expected["lm_head"] = (self.config.d_model, self.config.vocab_size)
+
+        with np.load(filepath, allow_pickle=False) as data:
+            actual_names = set(data.files)
+            expected_names = set(expected)
+            if actual_names != expected_names:
+                missing = sorted(expected_names - actual_names)
+                unexpected = sorted(actual_names - expected_names)
+                raise ValueError(
+                    f"Checkpoint tensor mismatch: missing={missing}, unexpected={unexpected}"
+                )
+            loaded: Dict[str, np.ndarray] = {}
+            for name, shape in expected.items():
+                tensor = data[name]
+                if tuple(tensor.shape) != shape:
+                    raise ValueError(
+                        f"Checkpoint tensor {name} has shape {list(tensor.shape)}; expected {list(shape)}"
+                    )
+                if tensor.dtype != np.float32:
+                    raise ValueError(
+                        f"Checkpoint tensor {name} has dtype {tensor.dtype}; expected float32"
+                    )
+                loaded[name] = np.array(tensor, dtype=np.float32, copy=True)
+        self.weights = loaded
 
     def count_parameters(self) -> int:
         """Count actual parameters in the weight dictionary."""

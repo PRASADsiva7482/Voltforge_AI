@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai-fu-003-pytorch-windows-runtime-review-v1",
+  "generatedOn": "2026-08-31",
+  "host": {
+    "operatingSystem": "Windows",
+    "release": "11",
+    "architecture": "AMD64"
+  },
+  "upstream": {
+    "issue": "https://github.com/pytorch/pytorch/issues/166628",
+    "observedStatus": "open",
+    "candidateDistributionSource": "https://download.pytorch.org/whl/cpu"
+  },
+  "baseline": {
+    "pythonVersion": "3.12.13",
+    "implementation": "CPython",
+    "architecture": "AMD64",
+    "torchDistributionVersion": "2.8.0+cpu",
+    "interpreter": ".toolchains/gen1/Scripts/python.exe",
+    "cleanProcessImports": {
+      "attempted": 20,
+      "passed": 20,
+      "failed": 0,
+      "observedImportedVersions": [
+        "2.8.0+cpu"
+      ],
+      "failureCounts": {}
+    }
+  },
+  "candidate": {
+    "pythonVersion": "3.12.13",
+    "implementation": "CPython",
+    "architecture": "AMD64",
+    "torchDistributionVersion": "2.13.0+cpu",
+    "interpreter": ".toolchains/vfai-fu-003-torch-2.13.0/Scripts/python.exe",
+    "cleanProcessImports": {
+      "attempted": 20,
+      "passed": 0,
+      "failed": 20,
+      "observedImportedVersions": [],
+      "failureCounts": {
+        "WINERROR_1114_C10_DLL_INITIALIZATION_FAILED": 20
+      }
+    }
+  },
+  "security": {
+    "advisory": "GHSA-63cw-57p8-fm3p",
+    "advisoryUrl": "https://github.com/pytorch/pytorch/security/advisories/GHSA-63cw-57p8-fm3p",
+    "affectedVersions": "<=2.9.1",
+    "patchedVersions": ">=2.10.0",
+    "baselineAffected": true,
+    "minimumPatchedCandidate": {
+      "pythonVersion": "3.12.13",
+      "implementation": "CPython",
+      "architecture": "AMD64",
+      "torchDistributionVersion": "2.10.0+cpu",
+      "interpreter": ".toolchains/vfai-fu-003-torch-2.10.0/Scripts/python.exe",
+      "cleanProcessImports": {
+        "attempted": 20,
+        "passed": 0,
+        "failed": 20,
+        "observedImportedVersions": [],
+        "failureCounts": {
+          "WINERROR_1114_C10_DLL_INITIALIZATION_FAILED": 20
+        }
+      }
+    },
+    "minimumPatchedCandidateImportGatePassed": false,
+    "checkpointBackedServingContainmentImplemented": true,
+    "pinnedRuntimePermittedScope": "trusted-local-training-and-testing-only"
+  },
+  "gates": {
+    "masterBacklogComplete": true,
+    "windowsHost": true,
+    "upstreamWindowsIssueResolved": false,
+    "baselineFreshImportGatePassed": true,
+    "candidateFreshImportGatePassed": false,
+    "candidateDiffersFromBaseline": true,
+    "candidateArchitectureAndCheckpointSuite": "not-run-candidate-import-gate-failed",
+    "candidateFullAiSuite": "not-run-candidate-import-gate-failed",
+    "candidateCpuLatencyAndPeakMemoryComparison": "not-run-candidate-import-gate-failed"
+  },
+  "decision": "retain-pinned-runtime-with-serving-blocked",
+  "upgradeApplied": false,
+  "verifiedGen1ToolchainModified": false,
+  "pretrainedModelOrTokenizerAdded": false,
+  "hostedInferenceProviderAdded": false,
+  "externalGenerationApiAdded": false,
+  "reportSha256": "5d0fa066fc37963362503495b2ed36a21e27c4d2a2a40dc593148349311c22ff"
+}

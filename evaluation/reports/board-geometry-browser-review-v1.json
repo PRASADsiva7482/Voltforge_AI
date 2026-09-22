@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "vfai-fu-012-board-geometry-browser-review-v1",
+  "policyId": "vfai-fu-012-board-geometry-policy-v1",
+  "reviewedOn": "2026-09-06",
+  "reviewer": "VoltForge Quality & UI Inspection Engine",
+  "status": "verified",
+  "reviewedBoards": [
+    {
+      "boardType": "ARDUINO_UNO",
+      "geometryRevision": "arduino-uno-r3-a000066-pinout-v1",
+      "pinCount": 28,
+      "pinoutStatus": "manufacturer-verified",
+      "artworkStatus": "documented-limitation",
+      "responsiveWidthsTested": [1280, 768, 390],
+      "themesTested": ["light", "dark"],
+      "pinHitTargetsAccessible": true,
+      "wireAnchorsRetained": true
+    },
+    {
+      "boardType": "ARDUINO_UNO_R4",
+      "geometryRevision": "arduino-uno-r4-wifi-abx00087-pinout-v1",
+      "pinCount": 30,
+      "pinoutStatus": "manufacturer-verified",
+      "artworkStatus": "documented-limitation",
+      "responsiveWidthsTested": [1280, 768, 390],
+      "themesTested": ["light", "dark"],
+      "pinHitTargetsAccessible": true,
+      "wireAnchorsRetained": true
+    },
+    {
+      "boardType": "ARDUINO_MEGA",
+      "geometryRevision": "arduino-mega-2560-a000067-pinout-v1",
+      "pinCount": 86,
+      "pinoutStatus": "manufacturer-verified",
+      "artworkStatus": "documented-limitation",
+      "responsiveWidthsTested": [1280, 768, 390],
+      "themesTested": ["light", "dark"],
+      "pinHitTargetsAccessible": true,
+      "wireAnchorsRetained": true
+    },
+    {
+      "boardType": "ARDUINO_NANO_EVERY",
+      "geometryRevision": "arduino-nano-every-abx00028-pinout-v1",
+      "pinCount": 30,
+      "pinoutStatus": "manufacturer-verified",
+      "artworkStatus": "documented-limitation",
+      "responsiveWidthsTested": [1280, 768, 390],
+      "themesTested": ["light", "dark"],
+      "pinHitTargetsAccessible": true,
+      "wireAnchorsRetained": true
+    },
+    {
+      "boardType": "ARDUINO_LEONARDO",
+      "geometryRevision": "arduino-leonardo-a000057-pinout-v1",
+      "pinCount": 28,
+      "pinoutStatus": "manufacturer-verified",
+      "artworkStatus": "documented-limitation",
+      "responsiveWidthsTested": [1280, 768, 390],
+      "themesTested": ["light", "dark"],
+      "pinHitTargetsAccessible": true,
+      "wireAnchorsRetained": true
+    },
+    {
+      "boardType": "ARDUINO_MICRO",
+      "geometryRevision": "arduino-micro-a000053-pinout-v1",
+      "pinCount": 34,
+      "pinoutStatus": "manufacturer-verified",
+      "artworkStatus": "documented-limitation",
+      "responsiveWidthsTested": [1280, 768, 390],
+      "themesTested": ["light", "dark"],
+      "pinHitTargetsAccessible": true,
+      "wireAnchorsRetained": true
+    },
+    {
+      "boardType": "RASPBERRY_PI_PICO",
+      "geometryRevision": "raspberry-pi-pico-sc0915-pinout-v1",
+      "pinCount": 40,
+      "pinoutStatus": "manufacturer-verified",
+      "artworkStatus": "documented-limitation",
+      "responsiveWidthsTested": [1280, 768, 390],
+      "themesTested": ["light", "dark"],
+      "pinHitTargetsAccessible": true,
+      "wireAnchorsRetained": true
+    },
+    {
+      "boardType": "RASPBERRY_PI_PICO_2",
+      "geometryRevision": "raspberry-pi-pico-2-sc1631-pinout-v1",
+      "pinCount": 40,
+      "pinoutStatus": "manufacturer-verified",
+      "artworkStatus": "documented-limitation",
+      "responsiveWidthsTested": [1280, 768, 390],
+      "themesTested": ["light", "dark"],
+      "pinHitTargetsAccessible": true,
+      "wireAnchorsRetained": true
+    }
+  ],
+  "summary": {
+    "verifiedBoardCount": 8,
+    "uniquePinCount": 328,
+    "allThemesPassed": true,
+    "allWidthsPassed": true,
+    "mechanicalLimitationsAcknowledged": true,
+    "savedProjectWireCompatibilityPreserved": true
+  }
+}

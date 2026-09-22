@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai018-gen1-optimization-smoke-v1",
+  "generatedAtUtc": "2026-08-29T01:45:19.134831Z",
+  "artifactId": "vfdlm-g1-edge-v0.1.2-optimized",
+  "artifactManifestSha256": "fc97eae9340d725d0e6511524e8e2c81b199eef01d35d774ecf185df39288c77",
+  "benchmarkReportSha256": "5dcd29ce8b46f7a48c3e56d00cb02d5a2b4dc814fe0cd3737be198494bc8286d",
+  "selectedProfileId": "vfai018-fp32-sdpa-kv",
+  "fallbackProfileId": "vfai017-safe-fp32-manual-kv",
+  "device": "cpu",
+  "dtype": "float32",
+  "loadLatencyMs": 1746.2011,
+  "generation": {
+    "promptTokens": 22,
+    "completionTokens": 8,
+    "finishReason": "length",
+    "firstTokenMs": 16.44010000745766,
+    "elapsedMs": 80.35170000221115,
+    "outputTokenIdsSha256": "9f68e1e2688cd38c528fb3be1ef33fa29d9bd4df7fbadf3496e74f93323ebd00",
+    "rawPromptStored": false,
+    "rawOutputStored": false
+  },
+  "checks": {
+    "signedArtifactVerified": true,
+    "networkDeniedDuringLifecycle": true,
+    "selectedProfileApplied": true,
+    "noOptimizationFallbackUsed": true,
+    "experimentalStateRemainsDegraded": true,
+    "boundedGenerationCompleted": true,
+    "greedyGenerationReproducible": true,
+    "rawPromptNotInHealth": true,
+    "unloadCompleted": true,
+    "serviceActivationRemainsDisabled": true
+  },
+  "reportSha256": "a91c3bc59504cdc2a9c24b65e86eeeadebc908a41ea6313bac3b14a299a69880"
+}

@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai018-gen1-optimization-policy-v1",
+  "sourceArtifactId": "vfdlm-g1-edge-v0.1.1-runtime",
+  "benchmarkReportPath": "benchmarks/reports/gen1-inference-optimization-v1.json",
+  "benchmarkReportSha256": "5dcd29ce8b46f7a48c3e56d00cb02d5a2b4dc814fe0cd3737be198494bc8286d",
+  "selectedProfileId": "vfai018-fp32-sdpa-kv",
+  "fallbackProfileId": "vfai017-safe-fp32-manual-kv",
+  "profiles": [
+    {
+      "profileId": "vfai018-fp32-sdpa-kv",
+      "kvCacheEnabled": true,
+      "attentionBackend": "sdpa",
+      "torchThreads": 4,
+      "mmapWeights": false,
+      "quantization": "fp32",
+      "dynamicBatchMaxSize": 1
+    },
+    {
+      "profileId": "vfai017-safe-fp32-manual-kv",
+      "kvCacheEnabled": true,
+      "attentionBackend": "manual",
+      "torchThreads": 4,
+      "mmapWeights": false,
+      "quantization": "fp32",
+      "dynamicBatchMaxSize": 1
+    }
+  ],
+  "fallbackOnUnavailableOptimization": true,
+  "qualityRegressionFallbackRequired": true,
+  "artifactRollbackRequired": true,
+  "quantizedReleaseApproved": false,
+  "dynamicBatchServingApproved": false,
+  "policySha256": "3e43ca747fb5c2a6ad5dbb6aa6d56b499a6a12d4ba91a31db74efb6a7cac4f11"
+}

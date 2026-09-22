@@ -1,0 +1,262 @@
+{
+  "schemaVersion": 1,
+  "catalogId": "vf-g2-proposed-sources-v1",
+  "taskId": "LLM-TASK-019",
+  "sources": [
+    {
+      "sourceId": "vf-proposed-wikipedia-en",
+      "name": "English Wikipedia text dumps",
+      "kind": "external-source-proposal",
+      "domains": [
+        "language",
+        "general-knowledge"
+      ],
+      "origin": "https://dumps.wikimedia.org/enwiki/",
+      "acquisitionMethod": "Later obtain an official dated text dump and checksum list; retain only individually cleared text records.",
+      "proposedReference": "Dated dump and page revisions not selected",
+      "revision": null,
+      "contentSha256": null,
+      "acquired": false,
+      "permissionStatus": "not-admitted",
+      "allowedUses": [
+        "audit-metadata"
+      ],
+      "trainingAllowed": false,
+      "runtimeRetrievalAllowed": false,
+      "redistributionAllowed": false,
+      "licenseObservation": {
+        "identifier": "CC-BY-SA-4.0 / GFDL with edition and content exceptions",
+        "primaryUrl": "https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use",
+        "checkedOn": "2026-09-07",
+        "summary": "Wikimedia's terms provide reuse licenses for contributor text with attribution and applicable share-alike requirements. Project editions and imported material can have exceptions.",
+        "evidenceScope": "Metadata observation, not a corpus license approval or evidence of acquired content."
+      },
+      "blockingReason": "No dump selected, acquired, checksummed or reviewed for training. Resolve per-page exceptions, attribution, source removals and obligations for the planned use.",
+      "obligations": [
+        "Retain page revision, contributor/history link, license and change notices.",
+        "Review imported or exceptional material separately; deny non-free media.",
+        "Carry source/page removal lineage through shards and dependent model releases."
+      ],
+      "deletionProcedure": "Do not ingest before clearance. If later acquired, retain source/file-to-shard lineage; stop affected use, produce an impact report, then carry out reviewed removal or restriction and re-evaluate dependent releases. No deletion or model rewrite is performed by this inventory."
+    },
+    {
+      "sourceId": "vf-proposed-gutenberg-en",
+      "name": "Individually cleared Project Gutenberg English books",
+      "kind": "external-source-proposal",
+      "domains": [
+        "language"
+      ],
+      "origin": "https://www.gutenberg.org/",
+      "acquisitionMethod": "Later select specific editions through the publisher's supported distribution mechanisms after per-book review.",
+      "proposedReference": "No title or edition selected",
+      "revision": null,
+      "contentSha256": null,
+      "acquired": false,
+      "permissionStatus": "not-admitted",
+      "allowedUses": [
+        "audit-metadata"
+      ],
+      "trainingAllowed": false,
+      "runtimeRetrievalAllowed": false,
+      "redistributionAllowed": false,
+      "licenseObservation": {
+        "identifier": "Per-work copyright status and Project Gutenberg terms",
+        "primaryUrl": "https://www.gutenberg.org/policy/license.html",
+        "checkedOn": "2026-09-07",
+        "summary": "Project Gutenberg distinguishes unrestricted US works from permission-based works and does not establish copyright status outside the United States.",
+        "evidenceScope": "Metadata observation, not a corpus license approval or evidence of acquired content."
+      },
+      "blockingReason": "No book-level copyright, edition or applicable-jurisdiction clearance. Public availability is insufficient for admission.",
+      "obligations": [
+        "Record each title, author, edition, copyright status and applicable-jurisdiction review.",
+        "Retain applicable notices and any work-specific permission restrictions.",
+        "Preserve per-book attribution/removal lineage and review the Gutenberg trademark terms."
+      ],
+      "deletionProcedure": "Do not ingest before clearance. If later acquired, retain source/file-to-shard lineage; stop affected use, produce an impact report, then carry out reviewed removal or restriction and re-evaluate dependent releases. No deletion or model rewrite is performed by this inventory."
+    },
+    {
+      "sourceId": "vf-proposed-openstax-physics",
+      "name": "OpenStax University Physics Volume 2",
+      "kind": "external-source-proposal",
+      "domains": [
+        "mathematics",
+        "physics",
+        "electronics"
+      ],
+      "origin": "https://openstax.org/books/university-physics-volume-2/",
+      "acquisitionMethod": "Permission-first proposal only; no book download, extraction, embedding or training in this task.",
+      "proposedReference": "Current web preface observed; no corpus revision acquired",
+      "revision": null,
+      "contentSha256": null,
+      "acquired": false,
+      "permissionStatus": "not-admitted",
+      "allowedUses": [
+        "audit-metadata"
+      ],
+      "trainingAllowed": false,
+      "runtimeRetrievalAllowed": false,
+      "redistributionAllowed": false,
+      "licenseObservation": {
+        "identifier": "CC-BY-NC-SA-4.0; page also states permission is required for LLM ingestion/training",
+        "primaryUrl": "https://openstax.org/books/university-physics-volume-2/pages/preface",
+        "checkedOn": "2026-09-07",
+        "summary": "The current preface states noncommercial share-alike terms and expressly requires OpenStax permission for LLM training or ingestion.",
+        "evidenceScope": "Metadata observation, not a corpus license approval or evidence of acquired content."
+      },
+      "blockingReason": "Publisher's LLM permission is absent. Do not acquire or ingest this text for the model on the strength of an open-license label.",
+      "obligations": [
+        "Obtain source-specific permission covering the actual training and product uses before any admission.",
+        "Review commercial use, share-alike, attribution, media exceptions and removal terms.",
+        "Do not substitute an assumed older license for the observed source version."
+      ],
+      "deletionProcedure": "Do not ingest before clearance. If later acquired, retain source/file-to-shard lineage; stop affected use, produce an impact report, then carry out reviewed removal or restriction and re-evaluate dependent releases. No deletion or model rewrite is performed by this inventory."
+    },
+    {
+      "sourceId": "vf-proposed-freertos-kernel",
+      "name": "FreeRTOS kernel C source",
+      "kind": "external-source-proposal",
+      "domains": [
+        "embedded-c-cpp",
+        "firmware"
+      ],
+      "origin": "https://github.com/FreeRTOS/FreeRTOS-Kernel",
+      "acquisitionMethod": "Later pin the reviewed tag to a commit; acquire a bounded archive and per-file license manifest, excluding unreviewed submodules.",
+      "proposedReference": "V11.1.0 proposed tag; resolved commit and source archive not acquired",
+      "revision": null,
+      "contentSha256": null,
+      "acquired": false,
+      "permissionStatus": "not-admitted",
+      "allowedUses": [
+        "audit-metadata"
+      ],
+      "trainingAllowed": false,
+      "runtimeRetrievalAllowed": false,
+      "redistributionAllowed": false,
+      "licenseObservation": {
+        "identifier": "MIT for the referenced kernel license file",
+        "primaryUrl": "https://raw.githubusercontent.com/FreeRTOS/FreeRTOS-Kernel/V11.1.0/LICENSE.md",
+        "checkedOn": "2026-09-07",
+        "summary": "The tagged kernel license grants broad software reuse under MIT with preservation of its notice and disclaimer. The reviewed file does not by itself clear every input in a training corpus.",
+        "evidenceScope": "Metadata observation, not a corpus license approval or evidence of acquired content."
+      },
+      "blockingReason": "Exact source commit/archive, individual file exceptions, attribution inventory and source-use review are pending.",
+      "obligations": [
+        "Retain copyright and permission notices in copies or substantial portions.",
+        "Audit per-file headers and excluded dependencies; do not inherit a license from a repository badge.",
+        "Trace selected files and downstream shards for later source removal."
+      ],
+      "deletionProcedure": "Do not ingest before clearance. If later acquired, retain source/file-to-shard lineage; stop affected use, produce an impact report, then carry out reviewed removal or restriction and re-evaluate dependent releases. No deletion or model rewrite is performed by this inventory."
+    },
+    {
+      "sourceId": "vf-proposed-arduino-avr",
+      "name": "Arduino AVR core C/C++ source",
+      "kind": "external-source-proposal",
+      "domains": [
+        "embedded-c-cpp",
+        "firmware",
+        "electronics"
+      ],
+      "origin": "https://github.com/arduino/ArduinoCore-avr",
+      "acquisitionMethod": "Later resolve tag 1.8.6 to an exact commit and inventory selected file licenses; do not copy the installed toolchain into training.",
+      "proposedReference": "1.8.6 proposed tag; only representative source header reviewed",
+      "revision": null,
+      "contentSha256": null,
+      "acquired": false,
+      "permissionStatus": "not-admitted",
+      "allowedUses": [
+        "audit-metadata"
+      ],
+      "trainingAllowed": false,
+      "runtimeRetrievalAllowed": false,
+      "redistributionAllowed": false,
+      "licenseObservation": {
+        "identifier": "LGPL-2.1-or-later in the representative wiring.c header; repository-wide clearance not established",
+        "primaryUrl": "https://raw.githubusercontent.com/arduino/ArduinoCore-avr/1.8.6/cores/arduino/wiring.c",
+        "checkedOn": "2026-09-07",
+        "summary": "The pinned wiring.c header declares LGPL version 2.1 or later. One header does not establish the license of every core, library, example or bundled file.",
+        "evidenceScope": "Metadata observation, not a corpus license approval or evidence of acquired content."
+      },
+      "blockingReason": "Repository/file license review, exact commit/archive and obligations for the proposed derived data remain pending.",
+      "obligations": [
+        "Retain per-file license, attribution and modification notices.",
+        "Review copyleft obligations and bundled third-party files for each proposed use.",
+        "Using this core as a compiler dependency does not authorize training on its source."
+      ],
+      "deletionProcedure": "Do not ingest before clearance. If later acquired, retain source/file-to-shard lineage; stop affected use, produce an impact report, then carry out reviewed removal or restriction and re-evaluate dependent releases. No deletion or model rewrite is performed by this inventory."
+    },
+    {
+      "sourceId": "vf-proposed-avr-libc",
+      "name": "AVR-LibC source and eligible documentation",
+      "kind": "external-source-proposal",
+      "domains": [
+        "embedded-c-cpp",
+        "firmware",
+        "documentation"
+      ],
+      "origin": "https://github.com/avrdudes/avr-libc",
+      "acquisitionMethod": "Later select a release/commit and bounded source archive with per-file permission evidence.",
+      "proposedReference": "Main-branch license observation only; no immutable source revision selected",
+      "revision": null,
+      "contentSha256": null,
+      "acquired": false,
+      "permissionStatus": "not-admitted",
+      "allowedUses": [
+        "audit-metadata"
+      ],
+      "trainingAllowed": false,
+      "runtimeRetrievalAllowed": false,
+      "redistributionAllowed": false,
+      "licenseObservation": {
+        "identifier": "Modified BSD with per-file details required",
+        "primaryUrl": "https://raw.githubusercontent.com/avrdudes/avr-libc/main/LICENSE",
+        "checkedOn": "2026-09-07",
+        "summary": "The project license describes modified BSD terms and directs readers to individual source files for details.",
+        "evidenceScope": "Metadata observation, not a corpus license approval or evidence of acquired content."
+      },
+      "blockingReason": "A mutable license observation is not a pinned training source; revision, file-level permissions, source bytes and exclusions are missing.",
+      "obligations": [
+        "Retain copyright, conditions and disclaimers for source/binary redistribution as applicable.",
+        "Do not imply endorsement by copyright holders or contributors.",
+        "Review documentation and individual file terms separately from the library summary."
+      ],
+      "deletionProcedure": "Do not ingest before clearance. If later acquired, retain source/file-to-shard lineage; stop affected use, produce an impact report, then carry out reviewed removal or restriction and re-evaluate dependent releases. No deletion or model rewrite is performed by this inventory."
+    },
+    {
+      "sourceId": "vf-proposed-gcc-manual",
+      "name": "GCC 14.2.0 C/C++ compiler manual",
+      "kind": "external-source-proposal",
+      "domains": [
+        "compiler",
+        "documentation",
+        "embedded-c-cpp"
+      ],
+      "origin": "https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/",
+      "acquisitionMethod": "Later obtain a versioned official manual snapshot after the planned extraction and use obligations are reviewed.",
+      "proposedReference": "Manual version 14.2.0; content archive not acquired",
+      "revision": null,
+      "contentSha256": null,
+      "acquired": false,
+      "permissionStatus": "not-admitted",
+      "allowedUses": [
+        "audit-metadata"
+      ],
+      "trainingAllowed": false,
+      "runtimeRetrievalAllowed": false,
+      "redistributionAllowed": false,
+      "licenseObservation": {
+        "identifier": "GFDL-1.3-or-later with declared invariant section and cover texts",
+        "primaryUrl": "https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/",
+        "checkedOn": "2026-09-07",
+        "summary": "The manual's copyright notice specifies GFDL 1.3 or later, an invariant section and cover-text obligations. Compiler software licensing is distinct from manual licensing.",
+        "evidenceScope": "Metadata observation, not a corpus license approval or evidence of acquired content."
+      },
+      "blockingReason": "No complete manual snapshot, document-level license inventory or review of normalization/redistribution obligations.",
+      "obligations": [
+        "Preserve declared invariant section, cover texts, attribution and license obligations as applicable.",
+        "Keep manual text permissions separate from compiler execution and project-authored diagnostic records.",
+        "Maintain document/revision/removal lineage."
+      ],
+      "deletionProcedure": "Do not ingest before clearance. If later acquired, retain source/file-to-shard lineage; stop affected use, produce an impact report, then carry out reviewed removal or restriction and re-evaluate dependent releases. No deletion or model rewrite is performed by this inventory."
+    }
+  ]
+}

@@ -1,0 +1,408 @@
+{
+  "$defs": {
+    "Claim": {
+      "additionalProperties": false,
+      "properties": {
+        "claimId": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,159}$",
+          "title": "Claimid",
+          "type": "string"
+        },
+        "property": {
+          "pattern": "^[a-z][a-z0-9-]{1,79}$",
+          "title": "Property",
+          "type": "string"
+        },
+        "value": {
+          "default": null,
+          "title": "Value"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "bounded",
+            "conditional",
+            "unknown"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "conditions": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 30,
+          "title": "Conditions",
+          "type": "array"
+        },
+        "evidenceRefs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Evidencerefs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "claimId",
+        "property",
+        "status",
+        "evidenceRefs"
+      ],
+      "title": "Claim",
+      "type": "object"
+    },
+    "EffectiveRevision": {
+      "additionalProperties": false,
+      "properties": {
+        "revision": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,159}$",
+          "title": "Revision",
+          "type": "string"
+        },
+        "validFrom": {
+          "pattern": "^20[0-9]{2}-[01][0-9]-[0-3][0-9]$",
+          "title": "Validfrom",
+          "type": "string"
+        },
+        "validTo": {
+          "anyOf": [
+            {
+              "pattern": "^20[0-9]{2}-[01][0-9]-[0-3][0-9]$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Validto"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z0-9][a-z0-9._:-]{2,159}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Supersedes"
+        }
+      },
+      "required": [
+        "revision",
+        "validFrom"
+      ],
+      "title": "EffectiveRevision",
+      "type": "object"
+    },
+    "EvidenceReference": {
+      "additionalProperties": false,
+      "properties": {
+        "evidenceId": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,159}$",
+          "title": "Evidenceid",
+          "type": "string"
+        },
+        "evidenceKind": {
+          "enum": [
+            "manufacturer-documentation",
+            "maintainer-documentation",
+            "toolchain-documentation",
+            "project-engineering-rule"
+          ],
+          "title": "Evidencekind",
+          "type": "string"
+        },
+        "publisher": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Publisher",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "documentRevision": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Documentrevision",
+          "type": "string"
+        },
+        "locator": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Locator",
+          "type": "string"
+        },
+        "uri": {
+          "anyOf": [
+            {
+              "maxLength": 2000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "verifiedAt": {
+          "pattern": "^20[0-9]{2}-[01][0-9]-[0-3][0-9]$",
+          "title": "Verifiedat",
+          "type": "string"
+        },
+        "extractionPolicy": {
+          "const": "normalized-facts-only-no-source-prose",
+          "default": "normalized-facts-only-no-source-prose",
+          "title": "Extractionpolicy",
+          "type": "string"
+        }
+      },
+      "required": [
+        "evidenceId",
+        "evidenceKind",
+        "publisher",
+        "title",
+        "documentRevision",
+        "locator",
+        "verifiedAt"
+      ],
+      "title": "EvidenceReference",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "sourceId": {
+          "const": "vf-src-curated-electronics-corpus-v1",
+          "default": "vf-src-curated-electronics-corpus-v1",
+          "title": "Sourceid",
+          "type": "string"
+        },
+        "sourceRevision": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,159}$",
+          "title": "Sourcerevision",
+          "type": "string"
+        },
+        "curator": {
+          "const": "VoltForge",
+          "default": "VoltForge",
+          "title": "Curator",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EvidenceReference"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "sourceRevision",
+        "evidence"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "Relation": {
+      "additionalProperties": false,
+      "properties": {
+        "relationType": {
+          "enum": [
+            "describes",
+            "applies-to",
+            "requires",
+            "compatible-with",
+            "conflicts-with",
+            "supersedes"
+          ],
+          "title": "Relationtype",
+          "type": "string"
+        },
+        "targetRecordId": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,159}$",
+          "title": "Targetrecordid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "relationType",
+        "targetRecordId"
+      ],
+      "title": "Relation",
+      "type": "object"
+    },
+    "Subject": {
+      "additionalProperties": false,
+      "properties": {
+        "subjectId": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,159}$",
+          "title": "Subjectid",
+          "type": "string"
+        },
+        "familyId": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,159}$",
+          "title": "Familyid",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 300,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "variant": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Variant",
+          "type": "string"
+        },
+        "aliases": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 50,
+          "title": "Aliases",
+          "type": "array"
+        }
+      },
+      "required": [
+        "subjectId",
+        "familyId",
+        "name",
+        "variant"
+      ],
+      "title": "Subject",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "default": 1,
+      "title": "Schemaversion",
+      "type": "integer"
+    },
+    "contractVersion": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Contractversion",
+      "type": "string"
+    },
+    "recordId": {
+      "pattern": "^vf-knowledge-v1-[a-z0-9][a-z0-9.-]{2,119}$",
+      "title": "Recordid",
+      "type": "string"
+    },
+    "recordType": {
+      "enum": [
+        "board",
+        "pin-map",
+        "component",
+        "wiring-recipe",
+        "firmware-api",
+        "compiler-diagnostic",
+        "simulation-behavior",
+        "safety-constraint"
+      ],
+      "title": "Recordtype",
+      "type": "string"
+    },
+    "supportStatus": {
+      "enum": [
+        "supported",
+        "variant-required",
+        "reference-only"
+      ],
+      "title": "Supportstatus",
+      "type": "string"
+    },
+    "conflictGroup": {
+      "anyOf": [
+        {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,159}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Conflictgroup"
+    },
+    "subject": {
+      "$ref": "#/$defs/Subject"
+    },
+    "effectiveRevision": {
+      "$ref": "#/$defs/EffectiveRevision"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    },
+    "claims": {
+      "items": {
+        "$ref": "#/$defs/Claim"
+      },
+      "maxItems": 100,
+      "minItems": 1,
+      "title": "Claims",
+      "type": "array"
+    },
+    "relations": {
+      "items": {
+        "$ref": "#/$defs/Relation"
+      },
+      "maxItems": 100,
+      "title": "Relations",
+      "type": "array"
+    },
+    "tags": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 50,
+      "title": "Tags",
+      "type": "array"
+    }
+  },
+  "required": [
+    "recordId",
+    "recordType",
+    "supportStatus",
+    "subject",
+    "effectiveRevision",
+    "provenance",
+    "claims"
+  ],
+  "title": "VoltForge curated electronics knowledge record v1",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:voltforge-ai:electronics-knowledge-record:v1"
+}

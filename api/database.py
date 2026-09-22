@@ -9,6 +9,7 @@ import datetime
 import decimal
 import json
 import logging
+import json
 import time
 import uuid
 from contextlib import contextmanager
@@ -19,6 +20,7 @@ import pymysql.cursors
 import numpy as np
 
 import config
+from api.security import redact_sensitive_text
 
 logger = logging.getLogger("voltforge-ai.database")
 
@@ -70,31 +72,24 @@ class DatabaseManager:
         """Establish MySQL connection with timeout."""
         if not self.enabled:
             return None
-        
-        max_retries = 2
-        for attempt in range(max_retries + 1):
-            try:
-                conn = pymysql.connect(
-                    host=self.host,
-                    port=self.port,
-                    user=self.user,
-                    password=self.password,
-                    database=self.database,
-                    cursorclass=pymysql.cursors.DictCursor,
-                    connect_timeout=3,
-                    read_timeout=5,
-                    write_timeout=5,
-                    charset="utf8mb4",
-                    autocommit=False,
-                )
-                return conn
-            except Exception as exc:
-                if attempt < max_retries:
-                    time.sleep(0.1 * (attempt + 1))
-                else:
-                    logger.warning(f"Database connection attempt {attempt+1} failed ({self.host}:{self.port}): {exc}")
-                    return None
-        return None
+        try:
+            return pymysql.connect(
+                host=self.host,
+                port=self.port,
+                user=self.user,
+                password=self.password,
+                database=self.database,
+                cursorclass=pymysql.cursors.DictCursor,
+                connect_timeout=3,
+                charset="utf8mb4",
+                autocommit=False,
+            )
+        except Exception as exc:
+            logger.warning(
+                "Failed to connect to Voltforge_AI database (errorType=%s)",
+                type(exc).__name__,
+            )
+            return None
 
     @contextmanager
     def session_scope(self):
@@ -107,11 +102,10 @@ class DatabaseManager:
             yield conn
             conn.commit()
         except Exception as exc:
-            try:
-                conn.rollback()
-            except Exception:
-                pass
-            logger.error(f"DB Transaction error, rolled back: {exc}", exc_info=False)
+            conn.rollback()
+            logger.error(
+                "DB transaction rolled back (errorType=%s)", type(exc).__name__
+            )
             raise
         finally:
             try:
@@ -144,8 +138,8 @@ class DatabaseManager:
                         "tableCount": len(tables),
                         "tables": tables,
                     }
-        except Exception as exc:
-            return {"connected": False, "error": str(exc)}
+        except Exception:
+            return {"connected": False, "error": "Database health check failed."}
 
     # -------------------------------------------------------------------------
     # 1. Chat Sessions & Messages
@@ -237,11 +231,59 @@ class DatabaseManager:
 
                     return actual_session_id
         except Exception as exc:
-            logger.warning(f"Failed to save chat turn: {exc}")
+            logger.warning(
+                "Error persisting chat turn (errorType=%s)", type(exc).__name__
+            )
             return None
 
     # -------------------------------------------------------------------------
-    # 2. Circuit Validations & Issues
+    # 2. Canvas Snapshots
+    # -------------------------------------------------------------------------
+    def save_canvas_snapshot(
+        self,
+        project_id: str,
+        board_type: str,
+        components: List[Dict[str, Any]],
+        wires: List[Dict[str, Any]],
+        code: str = "",
+        diagnostics: Optional[List[str]] = None,
+    ) -> Optional[str]:
+        """Save active circuit topology and editor snapshot."""
+        if not self.enabled:
+            return None
+        snapshot_id = str(uuid.uuid4())
+        try:
+            with self.session_scope() as conn:
+                if conn is None:
+                    return None
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        INSERT INTO ai_canvas_snapshots
+                        (id, project_id, board_type, component_count, wire_count, components_json, wires_json, active_code_snapshot, compiler_diagnostics)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        """,
+                        (
+                            snapshot_id,
+                            project_id,
+                            board_type,
+                            len(components),
+                            len(wires),
+                            json.dumps(components),
+                            json.dumps(wires),
+                            code,
+                            json.dumps(diagnostics or []),
+                        ),
+                    )
+            return snapshot_id
+        except Exception as exc:
+            logger.warning(
+                "Error saving canvas snapshot (errorType=%s)", type(exc).__name__
+            )
+            return None
+
+    # -------------------------------------------------------------------------
+    # 3. Circuit Validations & Issues
     # -------------------------------------------------------------------------
     def save_circuit_validation(
         self,
@@ -325,7 +367,9 @@ class DatabaseManager:
 
                     return val_id
         except Exception as exc:
-            logger.warning(f"Failed to save circuit validation: {exc}")
+            logger.warning(
+                "Error saving circuit validation (errorType=%s)", type(exc).__name__
+            )
             return None
 
     # -------------------------------------------------------------------------
@@ -382,7 +426,7 @@ class DatabaseManager:
                     )
                     return code_id
         except Exception as exc:
-            logger.warning(f"Failed to save code generation: {exc}")
+            logger.warning("Error saving code generation: %s", type(exc).__name__)
             return None
 
     # -------------------------------------------------------------------------
@@ -472,8 +516,60 @@ class DatabaseManager:
                             "durationMs": row["solver_duration_ms"],
                         }
         except Exception as exc:
-            logger.warning(f"Failed to fetch cached SPICE result: {exc}")
+            logger.warning(
+                "Error fetching SPICE cache (errorType=%s)", type(exc).__name__
+            )
         return None
+
+    def save_spice_simulation(
+        self,
+        circuit_hash: str,
+        analysis_type: str,
+        netlist_content: str,
+        node_voltages: Dict[str, Any],
+        branch_currents: Dict[str, Any],
+        power_dissipation: Optional[Dict[str, Any]] = None,
+        converged: bool = True,
+        duration_ms: int = 0,
+    ) -> bool:
+        """Cache SPICE simulation results."""
+        if not self.enabled:
+            return False
+        sim_id = str(uuid.uuid4())
+        try:
+            with self.session_scope() as conn:
+                if conn is None:
+                    return False
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        INSERT INTO ai_spice_simulations
+                        (id, circuit_hash, analysis_type, netlist_content, node_voltages_json, branch_currents_json, power_dissipation_json, converged, solver_duration_ms)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        ON DUPLICATE KEY UPDATE
+                            node_voltages_json = VALUES(node_voltages_json),
+                            branch_currents_json = VALUES(branch_currents_json),
+                            converged = VALUES(converged),
+                            solver_duration_ms = VALUES(solver_duration_ms)
+                        """,
+                        (
+                            sim_id,
+                            circuit_hash,
+                            analysis_type,
+                            netlist_content,
+                            json.dumps(node_voltages),
+                            json.dumps(branch_currents),
+                            json.dumps(power_dissipation or {}),
+                            1 if converged else 0,
+                            duration_ms,
+                        ),
+                    )
+            return True
+        except Exception as exc:
+            logger.warning(
+                "Error caching SPICE simulation (errorType=%s)", type(exc).__name__
+            )
+            return False
 
     # -------------------------------------------------------------------------
     # 5. Prompt Rules & Active Rules Retrieval
@@ -497,7 +593,9 @@ class DatabaseManager:
                     )
                     return cur.fetchall()
         except Exception as exc:
-            logger.warning(f"Failed to load active rules from DB: {exc}")
+            logger.warning(
+                "Error fetching active rules from DB (errorType=%s)", type(exc).__name__
+            )
             return []
 
     def get_prompt_rules(self, board_type: Optional[str] = None) -> List[Dict[str, Any]]:
@@ -530,12 +628,22 @@ class DatabaseManager:
                         (id, message_id, user_id, rating, feedback_comment, user_corrected_code)
                         VALUES (%s, %s, %s, %s, %s, %s)
                         """,
-                        (fb_id, message_id, user_id, rating, feedback_text, corrected_code),
+                        (
+                            log_id,
+                            endpoint,
+                            client_ip,
+                            http_status,
+                            tokens_consumed,
+                            duration_ms,
+                            engine,
+                            redact_sensitive_text(error_trace, 500) if error_trace else None,
+                        ),
                     )
                     return fb_id
         except Exception as exc:
-            logger.warning(f"Failed to record feedback: {exc}")
-            return None
+            logger.debug(
+                "Telemetry logging skipped (errorType=%s)", type(exc).__name__
+            )
 
 
 # Global Singleton Instance

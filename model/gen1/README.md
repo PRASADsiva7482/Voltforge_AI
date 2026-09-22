@@ -1,0 +1,113 @@
+# VoltForge Domain Language Model — Gen1 architecture
+
+This package is the production architecture contract for the project-owned
+VoltForge model. It does not download or load pretrained weights, pretrained
+tokenizers, hosted inference clients, or third-party model APIs. PyTorch is used
+only as the tensor/autograd framework.
+
+The decoder uses pre-normalized RMSNorm blocks, rotary positional embeddings,
+causal grouped-query self-attention, SwiGLU feed-forward layers, and tied token
+embedding/output weights. KV caches retain only unexpanded key/value heads.
+
+`Gen1Config()` is deliberately a 289,088-parameter executable contract model
+using the released 3,072-token vocabulary. It is not the Gen1 release profile;
+VFAI-013 must select that profile from measured quality and runtime sweeps.
+Construction performs exact analytical parameter accounting before allocating.
+The default 75,000,000-parameter allocation ceiling prevents old 1B-labelled
+experiments or unreviewed server profiles from being instantiated accidentally.
+
+Training and inference have separate fail-safe entry points:
+
+```python
+from model.gen1 import Gen1Config, VoltForgeGen1
+
+model = VoltForgeGen1.for_training(Gen1Config())
+model.save_checkpoint("path/to/new-empty-checkpoint-directory")
+inference_model = VoltForgeGen1.from_checkpoint(
+    "path/to/new-empty-checkpoint-directory"
+)
+```
+
+`for_training()` materializes deterministic random weights from the config seed.
+`from_checkpoint()` validates the manifest, file checksums, architecture,
+configuration fingerprint, parameter formula, tensor names, shapes, dtypes, and
+tied weights before materializing an inference model. Missing weights are never
+initialized.
+
+## Reproducible Windows CPU test environment
+
+Newer PyTorch Windows wheels currently reproduce upstream `c10.dll` WinError
+1114 on the benchmark machine. The verified VFAI-011 environment uses isolated
+CPython 3.12 and the CPU-only PyTorch 2.8.0 wheel:
+
+```powershell
+uv venv .toolchains/gen1 --python 3.12
+uv pip install --python .toolchains/gen1/Scripts/python.exe `
+  --index-url https://download.pytorch.org/whl/cpu `
+  -r requirements-gen1.txt
+uv pip install --python .toolchains/gen1/Scripts/python.exe `
+  -r requirements.txt -r requirements-dev.txt
+.toolchains/gen1/Scripts/python.exe -m pytest tests/test_gen1_model.py -q
+```
+
+`.toolchains/` is ignored and must never be committed as a model artifact.
+
+VFAI-FU-003 last reviewed the latest official Windows CPU candidate on
+2026-08-31. PyTorch 2.13.0 failed all 20 fresh-process imports with the same
+`c10.dll` WinError 1114, while the pinned 2.8.0 runtime passed all 20. The
+minimum security-patched release, 2.10.0, also failed all 20 imports. Because
+2.8.0 is affected by GHSA-63cw-57p8-fm3p, it is restricted to trusted local
+training/tests and `ModelRuntimeService` blocks checkpoint-backed neural serving
+before importing the native model. The pin and serving block must remain
+unchanged until a patched candidate passes every downstream gate. The receipt is
+`evaluation/reports/pytorch-windows-runtime-review-v1.json`; reproduce the
+first gate without modifying the verified environment with:
+
+```powershell
+uv venv .toolchains/vfai-fu-003-torch-2.13.0 `
+  --python .toolchains/gen1/Scripts/python.exe
+uv pip install `
+  --python .toolchains/vfai-fu-003-torch-2.13.0/Scripts/python.exe `
+  --index-url https://download.pytorch.org/whl/cpu `
+  torch==2.13.0
+uv venv .toolchains/vfai-fu-003-torch-2.10.0 `
+  --python .toolchains/gen1/Scripts/python.exe
+uv pip install `
+  --python .toolchains/vfai-fu-003-torch-2.10.0/Scripts/python.exe `
+  --index-url https://download.pytorch.org/whl/cpu `
+  torch==2.10.0
+.toolchains/gen1/Scripts/python.exe tools/evaluate_pytorch_runtime_review.py `
+  evaluate `
+  --baseline-python .toolchains/gen1/Scripts/python.exe `
+  --candidate-python .toolchains/vfai-fu-003-torch-2.13.0/Scripts/python.exe `
+  --minimum-patched-python .toolchains/vfai-fu-003-torch-2.10.0/Scripts/python.exe `
+  --upstream-issue-status open `
+  --generated-on 2026-08-31
+```
+
+## Local inference runtime
+
+VFAI-017 adds the signed local-only runtime, bounded greedy/sampling generation,
+KV-cached streaming, cancellation, deadlines, unload/restart, and process-level
+lifecycle supervision. See [RUNTIME.md](RUNTIME.md) for the operating boundary
+and offline smoke command. The current checkpoint remains experimental and is
+not connected to user-serving chat.
+
+VFAI-018 retains an explicit FP32/manual/no-cache reference and measures KV
+caching, SDPA, dynamic batching, thread counts, memory mapping, and local
+weight-only int8/int4 probes. The signed selected profile is FP32 SDPA plus KV
+caching; manual FP32 plus KV caching is its fallback. Quantized formats and
+dynamic batching are not released. See `gen1_optimization/README.md`.
+
+VFAI-019 treats every future decoder completion as untrusted input. Only the
+strictly gated typed envelope may cross into an API response or structured
+action; all failures use an explicit deterministic fallback. The experimental
+Gen1 checkpoint remains disconnected from serving. See
+[`../GENERATION_QUALITY.md`](../GENERATION_QUALITY.md).
+
+VFAI-020 adds the input-side project context boundary. It uses exact owned
+tokenizer counts and deterministic priority selection over typed, untrusted
+project sources. All current 128-token experimental artifacts are too small for
+the 768-token minimum and remain inactive; a context-capable model requires a
+new governed training revision. See
+[`../../context_compiler/README.md`](../../context_compiler/README.md).

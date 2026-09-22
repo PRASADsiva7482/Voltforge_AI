@@ -91,7 +91,9 @@ class TestDeepFirmwareAnalyzer(unittest.TestCase):
         self.assertGreater(res["issueCount"], 0)
 
     def test_deep_sleep_config(self):
-        res = DeepFirmwareAnalyzer.generate_deep_sleep_config("ESP32", "timer", 60)
+        res = DeepFirmwareAnalyzer.generate_deep_sleep_config(
+            "ESP32_DEVKITC_V4_WROOM32E_N4", "timer", 60
+        )
         self.assertIn("esp_deep_sleep_start", res["generatedCode"])
 
 
@@ -157,6 +159,51 @@ class TestReasoningOrchestratorV2(unittest.TestCase):
     def test_pcb_dispatch(self):
         resp = self.orchestrator.process_chat("What is the PCB trace width for 2A?")
         self.assertIn("Trace Width", resp.reply)
+
+    def test_555_timer_dispatch(self):
+        resp = self.orchestrator.process_chat("Calculate 555 timer frequency with R1=10k, R2=47k, C=10uF")
+        self.assertTrue("NE555" in resp.reply or "555" in resp.reply)
+
+    def test_pwm_dispatch(self):
+        resp = self.orchestrator.process_chat("How do I control DC motor speed with PWM on Arduino Uno?")
+        self.assertTrue("PWM" in resp.reply or "Pulse Width Modulation" in resp.reply)
+
+    def test_transistor_biasing_dispatch(self):
+        resp = self.orchestrator.process_chat("Calculate base resistor for 2N2222 transistor switch with 5V logic")
+        self.assertTrue("Transistor" in resp.reply or "Base" in resp.reply)
+
+    def test_ac_reactance_dispatch(self):
+        resp = self.orchestrator.process_chat("Calculate capacitive reactance for 100nF at 1kHz")
+        self.assertIn("Reactance", resp.reply)
+
+    def test_generic_555_pinout_requires_exact_variant(self):
+        resp = self.orchestrator.process_chat("What is the pinout and maximum voltage for 555 timer?")
+        self.assertIn("exact evidenced manufacturer part", resp.reply)
+        self.assertNotIn("Frequency", resp.reply)
+
+    def test_oled_display_spec_lookup(self):
+        resp = self.orchestrator.process_chat("What are the specs and I2C address for SSD1306 OLED display?")
+        self.assertTrue("SSD1306" in resp.reply or "0x3C" in resp.reply)
+
+    def test_generic_canvas_parts_do_not_invent_verified_manufacturer(self):
+        resp = self.orchestrator.process_chat(
+            "What is on my canvas?",
+            context={
+                "canvasContext": {
+                    "board": "ARDUINO_UNO",
+                    "components": [
+                        {"id": "timer1", "type": "IC_555_TIMER", "name": "555 Timer"},
+                        {"id": "disp1", "type": "OLED_DISPLAY", "name": "OLED"}
+                    ],
+                    "wires": []
+                }
+            }
+        )
+        self.assertIn("Active Canvas", resp.reply)
+        self.assertIn("Exact manufacturer variant not verified", resp.reply)
+        self.assertIn("timer1", resp.reply)
+        self.assertNotIn("Verified Part", resp.reply)
+
 
 
 if __name__ == "__main__":

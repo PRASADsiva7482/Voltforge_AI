@@ -1,0 +1,2 @@
+# Offline corpus build only; no inference/runtime dependency.
+pypdf==6.17.0

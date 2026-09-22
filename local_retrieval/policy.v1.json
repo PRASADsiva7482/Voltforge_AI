@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "policyId": "vfai022-curated-local-retrieval-v1",
+  "contractVersion": "1.0.0",
+  "indexId": "vf-curated-local-index-v1",
+  "algorithm": {
+    "name": "bm25-lexical-v1",
+    "k1": "1.2",
+    "b": "0.75",
+    "decimalPrecision": 28,
+    "tokenizer": "unicode-alphanumeric-casefold-v1",
+    "embeddingsEnabled": false,
+    "embeddingActivationPolicy": "evaluation-and-governance-approval-required"
+  },
+  "source": {
+    "sourceId": "vf-src-curated-electronics-corpus-v1",
+    "sourceRevision": "1.1.0",
+    "corpusId": "voltforge-curated-electronics-corpus",
+    "corpusVersion": "1.1.0",
+    "requiredUse": "runtime-retrieval"
+  },
+  "limits": {
+    "maximumQueryCharacters": 2000,
+    "maximumQueryTokens": 64,
+    "maximumResults": 8,
+    "defaultResults": 5,
+    "maximumFactsPerChunk": 8,
+    "maximumChunkContentBytes": 12000,
+    "maximumChunksPerRecordInResponse": 2,
+    "maximumBoardFilters": 10,
+    "maximumComponentFilters": 20,
+    "maximumRecordTypeFilters": 8,
+    "maximumEvidencePerResult": 12,
+    "maximumMatchedTermsPerResult": 24
+  },
+  "ranking": {
+    "subjectNameWeight": 5,
+    "subjectVariantWeight": 4,
+    "aliasWeight": 4,
+    "recordTypeWeight": 2,
+    "tagWeight": 2,
+    "claimPropertyWeight": 5,
+    "factPointerWeight": 3,
+    "factValueWeight": 2,
+    "conditionWeight": 1,
+    "evidenceTitleWeight": 1,
+    "filterMatchBoost": "1.5",
+    "exactSubjectBoost": "3.0",
+    "stopWords": [
+      "a",
+      "an",
+      "and",
+      "are",
+      "can",
+      "do",
+      "for",
+      "from",
+      "how",
+      "i",
+      "in",
+      "is",
+      "it",
+      "of",
+      "on",
+      "the",
+      "this",
+      "to",
+      "what",
+      "with"
+    ]
+  },
+  "quality": {
+    "heldOutRecallAt5Minimum": "0.95",
+    "heldOutMeanReciprocalRankMinimum": "0.85",
+    "citationEntailmentMinimum": "1.0",
+    "unsupportedCitationRateMaximum": "0.0",
+    "staleIndexResultsAllowed": false
+  },
+  "privacy": {
+    "rawQueryStored": false,
+    "rawProjectContextStored": false,
+    "rawSourceDocumentsStored": false,
+    "normalizedProjectOwnedFactsOnly": true,
+    "contentHashesStored": true
+  },
+  "policySha256": "131502e0064f3d65c4b8d578eac0f535529c9d166fad8b0511951332cd89292f"
+}

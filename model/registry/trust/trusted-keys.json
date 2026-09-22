@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "trustPolicy": "explicit-local-ed25519-keys-only",
+  "keys": [
+    {
+      "keyId": "vf-local-registry-dev-2026-08",
+      "algorithm": "Ed25519",
+      "publicKeyBase64": "C6CgTxf8FSDtL7lvY4SYFdboH9p70uLodgXxjvmDTNo=",
+      "publicKeySha256": "a7e493f3f8b8f5fa91be2dc0d07e7b580e7bd7261122f3bd2665e81a2b7470c9",
+      "purpose": "VoltForge local artifact and registry signing"
+    }
+  ]
+}

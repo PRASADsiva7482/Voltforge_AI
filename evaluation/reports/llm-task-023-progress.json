@@ -1,0 +1,355 @@
+{
+  "assemblyNetworkAccessed": false,
+  "corpusVerification": {
+    "manifestSha256": "5ecc4f9c0795fe50335a90d118394c821a55bca79ea075c9205e54da232d86fd",
+    "recomputed": false,
+    "releasePath": "D:\\Project\\voltforge\\Voltforge_AI\\corpus\\pretraining-candidates\\v1\\8f55313b779ffa8c8beebc19cbb3761a354a0e219fdf794865882d4728dcf852",
+    "scorecard": {
+      "actualTrainingExposures": 0,
+      "allCandidateAccounting": {
+        "domain": {
+          "code": {
+            "families": 1,
+            "records": 14,
+            "uniqueTokens": 718908
+          },
+          "electronics": {
+            "families": 10,
+            "records": 10,
+            "uniqueTokens": 2952
+          },
+          "language": {
+            "families": 1,
+            "records": 7,
+            "uniqueTokens": 86918
+          },
+          "math": {
+            "families": 7,
+            "records": 7,
+            "uniqueTokens": 1866
+          }
+        },
+        "language": {
+          "c": {
+            "families": 1,
+            "records": 14,
+            "uniqueTokens": 718908
+          },
+          "en": {
+            "families": 18,
+            "records": 24,
+            "uniqueTokens": 91736
+          }
+        },
+        "sourceId": {
+          "vf-freertos-kernel-dbf70559": {
+            "families": 1,
+            "records": 14,
+            "uniqueTokens": 718908
+          },
+          "vf-owned-foundation-domain-recipes-v1": {
+            "families": 17,
+            "records": 17,
+            "uniqueTokens": 4818
+          },
+          "vf-python-devguide-9d481ef4": {
+            "families": 1,
+            "records": 7,
+            "uniqueTokens": 86918
+          }
+        },
+        "split": {
+          "quarantine": {
+            "families": 1,
+            "records": 7,
+            "uniqueTokens": 86918
+          },
+          "test": {
+            "families": 5,
+            "records": 5,
+            "uniqueTokens": 1492
+          },
+          "train": {
+            "families": 13,
+            "records": 26,
+            "uniqueTokens": 722234
+          }
+        }
+      },
+      "candidateRecords": 38,
+      "includedAccounting": {
+        "domain": {
+          "code": {
+            "families": 1,
+            "records": 14,
+            "uniqueTokens": 718908
+          },
+          "electronics": {
+            "families": 10,
+            "records": 10,
+            "uniqueTokens": 2952
+          },
+          "math": {
+            "families": 7,
+            "records": 7,
+            "uniqueTokens": 1866
+          }
+        },
+        "language": {
+          "c": {
+            "families": 1,
+            "records": 14,
+            "uniqueTokens": 718908
+          },
+          "en": {
+            "families": 17,
+            "records": 17,
+            "uniqueTokens": 4818
+          }
+        },
+        "sourceId": {
+          "vf-freertos-kernel-dbf70559": {
+            "families": 1,
+            "records": 14,
+            "uniqueTokens": 718908
+          },
+          "vf-owned-foundation-domain-recipes-v1": {
+            "families": 17,
+            "records": 17,
+            "uniqueTokens": 4818
+          }
+        },
+        "split": {
+          "test": {
+            "families": 5,
+            "records": 5,
+            "uniqueTokens": 1492
+          },
+          "train": {
+            "families": 13,
+            "records": 26,
+            "uniqueTokens": 722234
+          }
+        }
+      },
+      "includedRecords": 31,
+      "inheritedQuarantinedRecordsNotReadmitted": 50,
+      "languageScope": "English technical documentation and owned domain examples; C source. No broad general-language corpus claimed.",
+      "readiness": {
+        "blockers": [
+          "source-rights-not-admitted:vf-freertos-kernel-dbf70559",
+          "source-rights-not-admitted:vf-owned-foundation-domain-recipes-v1",
+          "insufficient-independent-train-families:language",
+          "insufficient-independent-validation-families:language",
+          "insufficient-independent-train-families:code",
+          "insufficient-independent-validation-families:code",
+          "insufficient-independent-validation-families:electronics",
+          "insufficient-independent-validation-families:math",
+          "measured-scaling-budget-unavailable",
+          "heldout-mixture-pilot-unavailable",
+          "gen2-tokenizer-count-unavailable"
+        ],
+        "releasedGen2TrainingTokens": 0,
+        "sequenceIssue": "Task 023 completion references a measured scaling budget, but task 031 depends on 023. Candidate preparation does not resolve this acceptance-order loop or authorize later tasks.",
+        "status": "blocked",
+        "trainingAllowed": false
+      },
+      "releasedGen2TrainingTokens": 0,
+      "sourceFileAcquisitionDenials": [
+        {
+          "path": "documentation/style-guide.rst",
+          "reason": "broken-or-hidden-text",
+          "sha256": "fbdca20f5b1e60694ab61b4aafdc33cc339d1bc6a8b88dd929c038aed88fe234",
+          "sourceId": "vf-python-devguide-9d481ef4"
+        }
+      ],
+      "splitCounts": {
+        "quarantine": 7,
+        "test": 5,
+        "train": 26,
+        "validation": 0
+      },
+      "trainingAllowed": false,
+      "trainingUniqueProxyTokens": 722234
+    },
+    "status": "passed"
+  },
+  "explicitPinnedSourceAcquisitionPerformed": true,
+  "gen2CorpusReleased": false,
+  "indexEvaluation": {
+    "bytes": 4120,
+    "path": "Voltforge_AI/evaluation/reports/llm-task-023-index-evaluation.json",
+    "sha256": "05836a3194b7654f710ecbb2e38ca4866af199048715e8671b0e5cea136a60c7"
+  },
+  "modelReleaseApproved": false,
+  "nextTask": "LLM-TASK-023",
+  "planningCorrection": {
+    "inputCorpusRequirement": "A reproducible pilot/input corpus release covers each declared capability, passes its source/quality/split gates, and records a provisional unique-token budget for tokenizer and scaling experiments; measured production-budget acceptance remains mandatory in LLM-TASK-031/032.",
+    "originalTask023Requirement": "A reproducible corpus release covers each declared capability and meets the measured budget chosen in the scaling gate.",
+    "retainedTask032Requirement": "Before approving the production training recipe, verify that the immutable general-language/code/domain corpus covers each declared capability and meets the measured unique-token/exposure budget chosen from LLM-TASK-031 scaling evidence; a pilot/input corpus release does not satisfy this gate."
+  },
+  "preservation": {
+    "historicalContractBindingsUnchanged": 12,
+    "planningFilesSnapshotted": 7,
+    "protectedArtifactDataFilesUnchanged": 131,
+    "task019Through022RecomputedUnchanged": true
+  },
+  "recordedAtUtc": "2026-09-08T15:02:14.797121+00:00",
+  "remainingWork": [
+    "Complete source-use admission for exact new source bytes and retained license/privacy/retention/removal obligations; candidate acquisition is not a training approval.",
+    "Add independent general-language/technical, code, electronics and math families with populated validation coverage; the current surviving language pool is empty and code has one repository family.",
+    "Review lexical containment precision using independent controls before any new versioned admission policy; retain current protected evaluation bytes and all existing exclusions.",
+    "Measure ingestion, tokenization and indexed matching on the intended corpus scale; the 6,000-document disjoint-vocabulary scan fixture excludes feature-construction cost and does not close production scale.",
+    "Publish an admitted pilot/input corpus with a declared provisional token budget; Gen2 recounting belongs to task 024 and measured production budget/mixture acceptance remains in tasks 031/032."
+  ],
+  "schemaVersion": 1,
+  "status": "in-progress-candidate-controls-verified-corpus-release-incomplete",
+  "summary": "Implemented bounded pinned-source acquisition, exact per-file license evidence, immutable mixed corpus candidates, indexed leakage checking, source/domain/language/split token accounting, deterministic 40/30/20/10 mixture quotas and three-pass repetition limits. Acquired 21 selected source files and two license files from exact Python devguide and FreeRTOS commits; one additional file is denied by the inherited text-quality gate. The 38-record candidate combines those source files with 17 previously surviving owned-domain examples; all 50 previous exclusions remain excluded. Seven language documents are quarantined by the unchanged protected/family policy. Surviving partitions contain 26 train records with 722,234 existing-tokenizer proxy tokens, zero validation records and five test records. Indexed matches equal exhaustive matches on 93 fixture documents and all 38 real inputs against 1,005 real guards. A separate 6,000-document fixture benchmark and common-word resource-failure controls pass; no large-corpus or semantic-completeness claim. 330 regression tests passed, along with governance, runbook and preservation checks. Task 023 remains IN_PROGRESS: language/validation coverage, independent source breadth, explicit source-use admission and corpus acceptance are incomplete. No tokenizer fitting, model training or activation occurred.",
+  "taskCompleted": false,
+  "taskId": "LLM-TASK-023",
+  "tests": {
+    "failed": 0,
+    "junit": {
+      "bytes": 48849,
+      "path": "Voltforge_AI/evaluation/reports/llm-task-023-tests.xml",
+      "sha256": "d1847eb7c85cc8e3da622359754a3d48684477b39d7cd1f3d5f5bf40cce87590"
+    },
+    "passed": 330,
+    "skipped": 0
+  },
+  "trainingAllowed": false,
+  "planningCheck": {
+    "status": "passed",
+    "active_tasks": 41,
+    "legacy_tasks": 14,
+    "milestones": 10,
+    "root_causes": 14,
+    "status_counts": {
+      "COMPLETED": 8,
+      "IN_PROGRESS": 1,
+      "TODO": 32
+    },
+    "next_task": "LLM-TASK-023",
+    "scope": "planning consistency only; no model release credit"
+  },
+  "sourceFingerprints": [
+    {
+      "path": "VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.json",
+      "sha256": "a9130c6b1615e62c5233849f189c7bf7147b04ff4f5a438d515bcc5d258f8942",
+      "bytes": 128877
+    },
+    {
+      "path": "VOLTFORGE_LOCAL_LLM_BUILD_BACKLOG.md",
+      "sha256": "023ba0dd0d602567d08718e7afb0b72e121c2cec0b5ddf128811aba9892796d5",
+      "bytes": 87858
+    },
+    {
+      "path": "AI_CHAT_ROOT_CAUSE_BACKLOG.json",
+      "sha256": "7107aa3768717348d2974e7992237e16fb47b7db2a65db0f1e56aa204904bb96",
+      "bytes": 38040
+    },
+    {
+      "path": "AI_CHAT_ROOT_CAUSE_ANALYSIS.md",
+      "sha256": "6b46bb9c05c5a46267ee2f3df987ce99a59652476d490d2b9d4c57319075bc87",
+      "bytes": 28303
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_PRETRAINING_CORPUS_CANDIDATE.v1.md",
+      "sha256": "59776bfc71cc55976f503f9680ad045accb3fba4f4ccf82fd429602f889fa4f0",
+      "bytes": 11513
+    },
+    {
+      "path": "Voltforge_AI/docs/VOLTForge_AI_RUNBOOK.md",
+      "sha256": "6c134251bda8bc99574196b3eafc600ad3bc264c42f40aee7b0054182e78ca83",
+      "bytes": 34965
+    },
+    {
+      "path": "Voltforge_AI/docs/runbook-contract.v1.json",
+      "sha256": "ddfdda2489e1cdd7d19393ce81558622c628a816de53199a2ff51e1b8e7f1797",
+      "bytes": 8075
+    },
+    {
+      "path": "Voltforge_AI/.gitattributes",
+      "sha256": "ccd5e30638d207f03494ed83a5931351d84169bf8fb3919af935c27b0e50ee0a",
+      "bytes": 410
+    },
+    {
+      "path": "Voltforge_AI/tests/test_pretraining_corpus.py",
+      "sha256": "54794071fff110041ddccd5c533b77e0eeb04d106a7e176944808843e978edac",
+      "bytes": 11297
+    },
+    {
+      "path": "Voltforge_AI/tools/build_pretraining_corpus.py",
+      "sha256": "0ace068ed6d22e867eed037e74b0480570ebb396bd7dc5bfe5785b945261bdda",
+      "bytes": 1349
+    },
+    {
+      "path": "Voltforge_AI/tools/acquire_pretraining_sources.py",
+      "sha256": "e86a34633f475dc24499f570e43851cdda286dea721d3bc658a7b900759c5325",
+      "bytes": 850
+    },
+    {
+      "path": "Voltforge_AI/tools/evaluate_pretraining_index.py",
+      "sha256": "e4fffe323a4b76921ddae0d13a02749e5476eb9a6eeab99fc8b514d4e60dcb77",
+      "bytes": 4441
+    },
+    {
+      "path": "Voltforge_AI/tools/record_pretraining_corpus_progress.py",
+      "sha256": "d23f073fc0c7cdbc66d836bd31597eadfda059f7ddf9f95b4bc2ced3d6ffe277",
+      "bytes": 19222
+    }
+  ],
+  "evidence": [
+    {
+      "path": "Voltforge_AI/corpus/pretraining-candidates/v1/8f55313b779ffa8c8beebc19cbb3761a354a0e219fdf794865882d4728dcf852/manifest.json",
+      "sha256": "5ecc4f9c0795fe50335a90d118394c821a55bca79ea075c9205e54da232d86fd",
+      "bytes": 13764
+    },
+    {
+      "path": "Voltforge_AI/docs/LLM_PRETRAINING_CORPUS_CANDIDATE.v1.md",
+      "sha256": "59776bfc71cc55976f503f9680ad045accb3fba4f4ccf82fd429602f889fa4f0",
+      "bytes": 11513
+    },
+    {
+      "path": "backlog_history/llm-task-023-before/manifest.json",
+      "sha256": "e5705ede731875a46838bbcea0097c7378a4b94ce95805c9f26e818bdb7c0ce8",
+      "bytes": 1427
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-023-acquisition.json",
+      "sha256": "f7a2a5f6cf1432862828e7047d25fb84e4f976f0f1a688d2a09500e5f3df614a",
+      "bytes": 351
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-023-acquisition-v2.json",
+      "sha256": "bac99ec703536d9873a4e9ac0fdd91ebf03e3a350597cffb8f7f6e7d16a438d6",
+      "bytes": 351
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-023-corpus-build.json",
+      "sha256": "cbb7433276f6e46e445f134f8594560aac6a98595a07ac790f80d621896d34f8",
+      "bytes": 3250
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-023-index-evaluation.json",
+      "sha256": "05836a3194b7654f710ecbb2e38ca4866af199048715e8671b0e5cea136a60c7",
+      "bytes": 4120
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-023-tests.xml",
+      "sha256": "d1847eb7c85cc8e3da622359754a3d48684477b39d7cd1f3d5f5bf40cce87590",
+      "bytes": 48849
+    },
+    {
+      "path": "Voltforge_AI/evaluation/reports/llm-task-023-checks.json",
+      "sha256": "813a89a365dd1dd66ffb152e1fc84db6c04dbf845555345abe14c3657ea8c36f",
+      "bytes": 7921
+    }
+  ],
+  "sourceImpactEvidence": {
+    "path": "Voltforge_AI/evaluation/reports/llm-task-023-source-impact.json",
+    "sha256": "75daa2587910487b08ed0a4a7816680513407c9648dbfe7fc22325efe7ef5fec",
+    "bytes": 2598
+  },
+  "planningFinalization": "Moved the retained task-032 criterion into its correct Markdown section and refreshed the stale continuation instruction; all planning checks now pass."
+}

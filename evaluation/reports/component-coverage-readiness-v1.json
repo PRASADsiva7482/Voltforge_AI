@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai-fu-011-component-coverage-readiness-v1",
+  "generatedOn": "2026-09-06",
+  "followup": {
+    "id": "VFAI-FU-011",
+    "recordedStatus": "accepted_for_later"
+  },
+  "policy": {
+    "policyId": "vfai-fu-011-component-coverage-v1",
+    "status": "coverage-ready-exact-selection-unassigned"
+  },
+  "coverage": {
+    "reportId": "vfai-fu-011-ui-component-coverage",
+    "reportSha256": "53841de37f4c446d9cf19dd718b814e58d05ebfa764b6ce70309b2f899883e54",
+    "entryCount": 60,
+    "summary": {
+      "verified": 0,
+      "variantRequired": 51,
+      "simulationOnly": 9,
+      "unsupported": 0,
+      "distinctCuratedExactCandidates": 2
+    },
+    "genericLabelsMaySelectCandidate": false
+  },
+  "parity": {
+    "ok": true,
+    "reportId": "vfai-fu-001-ui-hardware-coverage",
+    "entryCount": 49,
+    "summary": {
+      "verified": 8,
+      "variantRequired": 22,
+      "unsupported": 19
+    },
+    "reportSha256": "9d5a1f9e4e9543dfc0b7a8ebac6387a3db1d3305f40e34ea232cb70b1853dae8",
+    "componentReportId": "vfai-fu-011-ui-component-coverage",
+    "componentEntryCount": 60,
+    "componentSummary": {
+      "verified": 0,
+      "variantRequired": 51,
+      "simulationOnly": 9,
+      "unsupported": 0,
+      "distinctCuratedExactCandidates": 2
+    },
+    "componentReportSha256": "53841de37f4c446d9cf19dd718b814e58d05ebfa764b6ce70309b2f899883e54",
+    "boardGeometry": null
+  },
+  "integration": {
+    "checks": {
+      "aiReadOnlyEndpoint": true,
+      "authenticatedBackendProxy": true,
+      "typedUiContract": true,
+      "componentPanelDisplaysCoverage": true,
+      "simulationAndVariantLabelsDistinct": true
+    },
+    "ready": true
+  },
+  "assignedInputs": {
+    "ownerPriorityReceiptPath": "Voltforge_AI/evaluation/reports/component-owner-priority-v1.json",
+    "ownerPriorityReceiptAssigned": true,
+    "exactCandidateSelectionPath": "Voltforge_AI/hardware_coverage/exact-candidate-selections.v1.json",
+    "exactCandidateSelectionAssigned": true,
+    "approvedComponentTypes": [
+      "OLED_DISPLAY",
+      "IC_555_TIMER",
+      "OPAMP_LM358",
+      "RELAY_SINGLE",
+      "LED_STANDARD"
+    ],
+    "approvedComponentTypesValid": true,
+    "immutableCorpusReleaseReady": true,
+    "requiredFollowupBeforeNewCorpusRelease": "VFAI-FU-015"
+  },
+  "gates": {
+    "masterBacklogComplete": true,
+    "uiComponentParityVerified": true,
+    "genericLabelsFailClosed": true,
+    "endToEndCoverageIntegrationReady": true,
+    "ownerPriorityReceiptAssigned": true,
+    "immutableCorpusReleaseReady": true,
+    "exactCandidateSelectionAssigned": true,
+    "approvedComponentTypesValid": true
+  },
+  "decision": "ready-for-exact-component-corpus-release",
+  "completionClaimed": false,
+  "exactComponentsPromotedByEvaluator": 0,
+  "corpusFilesModifiedByEvaluator": false,
+  "genericVariantSelectedByEvaluator": false,
+  "networkAccessed": false,
+  "liveStateMutated": false,
+  "sourceSha256": {
+    "Voltforge_AI/AI_MASTER_BACKLOG.json": "7b0befd8d631a3bbc64300da195484e91d6e87cfdeddf511048aa0007905a99b",
+    "Voltforge_AI/AI_FOLLOWUP_BACKLOG.json": "f723a4b37ff7ad18b77130b9a8c1ad4132ef5af4a8781ee3fd47630fdaa649b3",
+    "Voltforge_AI/hardware_coverage/component-policy.v1.json": "cb3e62f12a0fc96fff86988c15aaf44026fbe8f970a060814f792804d40891a4",
+    "Voltforge_AI/electronics_corpus/catalog.v1.json": "db6c299f7b26ed50c42478a47ef5f163f1cb838db37ac131058f8fcc311d0c9b",
+    "Voltforge_AI/hardware_coverage/component_service.py": "022752c055955f5a222b89b9b2e600b1c8267bd5e13510c6aff9641a10125afe",
+    "Voltforge_AI/tools/verify_hardware_coverage.py": "f3e0053038c1d4cc2c30389841298d7e06a20c35a9a91f5ebc2c266be685ebff",
+    "Voltforge_AI/api/routes.py": "88ce81a421ba6720871fca9ca9fbbdfb898be819e3ef851e61a44a7cb51bd7bf",
+    "Voltforge_UI/src/features/canvas/componentCatalog.ts": "c9ac038567403f71bcc69108ac58c275d1319b7b76b4e0e20e61aba4ef6325d6",
+    "Voltforge_UI/src/types/domain.ts": "786ac0434194c71ebd23d27ab73b0f60c747176a0f62dafc6ba0da26f8fda6eb",
+    "Voltforge_UI/src/api/services.ts": "0ad1a97b03508e49e582a60f123cb68de00d95ff6cd93a69ef1a3397031e8ada",
+    "Voltforge_UI/src/features/editor/ComponentPanel.tsx": "43ccb5ff92abefe11db95286e259c165579b7d4432df56eae85c22b44c4c18cb",
+    "Voltforge_UI/src/features/ai/aiHardwareCoverage.ts": "f796defec4da88d7f09a7950348e97e490e277bdeb8d79ed1441bb267bb3dec6",
+    "Voltforge_BL/src/main/java/in/voltforge/api/ai/controller/AiController.java": "1510ac4f510c8c3c2513da31f681f89e22afca2082ff38a01e28a7fef304eb66",
+    "Voltforge_BL/src/main/java/in/voltforge/api/ai/service/AiService.java": "6a856273c9fc60174c281d211d6b4c73cfa5f1f51e221dfb81b98748c0052b27",
+    "Voltforge_BL/src/main/java/in/voltforge/api/ai/service/impl/AiServiceImpl.java": "664c171a02e924dc7f7ef55ad84772a286e2ef0403840c7e4cb55a0d8a569409",
+    "Voltforge_AI/tools/evaluate_component_coverage_readiness.py": "d23b08b54f7b8697e43b2ea4a353a7a68ca68a174c8f2c1c16807ee36b598620"
+  },
+  "reportSha256": "09909498fe7bbc40f873e87ca880acedc7887fdb1f3ed6918ef0577caca60381"
+}

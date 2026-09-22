@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 from web_search_engine import ComponentSpecExtractor, WebSearchEngine
 
 
@@ -13,10 +14,27 @@ class TestWebSearchEngine(unittest.TestCase):
         self.assertIn("0x68", specs["i2cAddresses"])
 
     def test_web_search_cached_lookup(self):
-        engine = WebSearchEngine()
+        engine = WebSearchEngine(internet_enabled=False)
         info = engine.get_component_info("MPU6050")
         self.assertIn("component", info)
         self.assertEqual(info["component"], "MPU6050")
+        self.assertEqual(info["retrieval"]["mode"], "local")
+
+    def test_unknown_component_stays_offline_without_fabricated_voltage(self):
+        engine = WebSearchEngine(internet_enabled=False)
+        with patch("requests.sessions.Session.request") as request:
+            info = engine.get_component_info("UNKNOWN_PART_XYZ")
+
+        request.assert_not_called()
+        self.assertEqual(info["searchResults"], [])
+        self.assertIsNone(info["specs"]["operatingVoltage"])
+        self.assertEqual(info["retrieval"]["mode"], "offline-no-local-evidence")
+
+    def test_retrieval_health_is_separate_from_generation(self):
+        health = WebSearchEngine(internet_enabled=False).health()
+        self.assertFalse(health["enabled"])
+        self.assertFalse(health["generationDependency"])
+        self.assertEqual(health["policy"], "optional-evidence-only")
 
 
 if __name__ == "__main__":

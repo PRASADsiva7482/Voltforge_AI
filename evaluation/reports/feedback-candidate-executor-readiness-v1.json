@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "reportId": "vfai-fu-009-feedback-candidate-executor-readiness-v1",
+  "generatedOn": "2026-09-01",
+  "followup": {
+    "id": "VFAI-FU-009",
+    "recordedStatus": "accepted_for_later"
+  },
+  "policy": {
+    "policyId": "vfai-fu-009-feedback-candidate-executor-v1",
+    "status": "admission-implemented-training-adapter-blocked"
+  },
+  "contextRevision": {
+    "reportId": "vfai-fu-008-context-revision-readiness-v1",
+    "reportSha256": "526f34c89d3cd3410389c49e1cfed003aa02f14cbb11773e7a526abf1e3f1992",
+    "receiptValid": true,
+    "decision": "await-governed-corpus-stage",
+    "requiredDecision": "context-results-ready-for-independent-release-review",
+    "contextCapableBaseRevisionReady": false,
+    "currentApprovedCorpusStage": null,
+    "currentUniqueTrainingPredictedTokens": 155690
+  },
+  "registry": {
+    "signatureValid": true,
+    "revision": 3,
+    "registrySha256": "3188ec3f52de6904094fff67f9b38ab089ae879b44eefd8f405654ad78289e90",
+    "activeArtifactId": null,
+    "activeContextLength": null,
+    "activeReleaseStatus": null,
+    "activeActivationEligible": null,
+    "activeStableContextCapableBaseReady": false
+  },
+  "implementation": {
+    "executorPath": "feedback_training/executor.py",
+    "executorSha256": "5900ce4e15afadaafff74a2a34e05423b0a845e8e570d583b2585961acffb77a",
+    "feedbackServiceSha256": "bafbeeacd54df2ef1b9353b764741696c91f9f15631352b93965e46b4d14d6dd",
+    "requiredDependencyCount": 11,
+    "requiredReleaseGates": [
+      "held-out-leakage",
+      "model-quality-scorecard",
+      "artifact-integrity",
+      "candidate-release",
+      "stable-canary",
+      "signed-activation"
+    ],
+    "preAllocationAdmissionImplemented": true,
+    "failedValidationMayMutateState": false
+  },
+  "assignedInputs": {
+    "scheduledRunManifestPath": null,
+    "scheduledRunManifestAssigned": false,
+    "feedbackDatabasePath": null,
+    "feedbackDatabaseAssigned": false,
+    "trainingAdapterPath": null,
+    "trainingAdapterAssigned": false,
+    "candidateResultReceiptPath": null,
+    "candidateResultReceiptAssigned": false
+  },
+  "gates": {
+    "masterBacklogComplete": true,
+    "contextReadinessReceiptValid": true,
+    "contextCapableBaseRevisionReady": false,
+    "signedActiveStableBaseReady": false,
+    "preAllocationAdmissionImplemented": true,
+    "scheduledRunManifestAssigned": false,
+    "feedbackDatabaseAssigned": false,
+    "trainingAdapterAssigned": false,
+    "candidateResultReceiptAssigned": false
+  },
+  "decision": "await-context-capable-base-revision",
+  "completionClaimed": false,
+  "feedbackDatabaseOpenedByEvaluator": false,
+  "scheduledTrainingShardLoadedByEvaluator": false,
+  "modelWeightsLoadedByEvaluator": false,
+  "governedCorpusLoadedByEvaluator": false,
+  "trainingAllocationsExecutedByEvaluator": 0,
+  "candidateArtifactsCreatedByEvaluator": 0,
+  "liveStateMutated": false,
+  "networkAccessed": false,
+  "releaseOrActivationApproved": false,
+  "sourceSha256": {
+    "AI_MASTER_BACKLOG.json": "7b0befd8d631a3bbc64300da195484e91d6e87cfdeddf511048aa0007905a99b",
+    "AI_FOLLOWUP_BACKLOG.json": "f723a4b37ff7ad18b77130b9a8c1ad4132ef5af4a8781ee3fd47630fdaa649b3",
+    "feedback_training/policy.v1.json": "fdb4d963d2733a115c317195b08ea93c62a729e27cd5bf74cb77104b51a649a8",
+    "evaluation/reports/context-revision-readiness-v1.json": "d3e207af08d711d17de1d689caf5bd2f2113100506afb7549834022f9584efd2",
+    "model/registry/active_model.json": "9ae71d3d13a5b05c90b45e2ad9ef9150abac4a70715840b2d08e9b9db75c897b",
+    "feedback_governance/policy.v1.json": "2c0dd44d06be352097ee752d14fef7ba2fec4f3cb3f2cb8559caf9b4aafbb2c8",
+    "feedback_governance/service.py": "bafbeeacd54df2ef1b9353b764741696c91f9f15631352b93965e46b4d14d6dd",
+    "feedback_training/executor.py": "5900ce4e15afadaafff74a2a34e05423b0a845e8e570d583b2585961acffb77a",
+    "tools/evaluate_feedback_candidate_executor_readiness.py": "d65a3c726e7d7237da2a4205b262d3a7464da6212c78a88dbdfb2a9373f8cae3"
+  },
+  "reportSha256": "e5cb24b3c30f4afbf94699dcb6b5b31c693296b5861880d1b77c28bf02fbda3e"
+}
