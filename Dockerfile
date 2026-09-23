@@ -33,6 +33,7 @@ COPY memory_store/ ./memory_store/
 COPY internet_retrieval/ ./internet_retrieval/
 COPY local_retrieval/ ./local_retrieval/
 COPY task_schema/ ./task_schema/
+COPY hardware_coverage/ ./hardware_coverage/
 COPY tests/ ./tests/
 COPY circuit_verifier.py .
 COPY web_search_engine.py .
