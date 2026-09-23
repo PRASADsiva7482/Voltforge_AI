@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Tag or Version to Deploy (e.g. v1.0.0)'
+        description: 'Tag or Version to Deploy (e.g. v1.0.0-dev-20260923001 or v1.0.0-qa-20260923001)'
         required: false
         default: 'latest'
 
@@ -33,7 +33,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Calculate Image Metadata & Tag
+      - name: Calculate Image Metadata & Tag Rule
         id: meta
         run: |
           OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
@@ -43,8 +43,18 @@ jobs:
           else
             TAG="${{ github.ref_name }}"
           fi
+
+          # Tag mapping for dev, qa, and latest channels
+          TAGS_LIST="${IMAGE}:${TAG},${IMAGE}:latest"
+          if [[ "${TAG}" == *"-dev-"* ]]; then
+            TAGS_LIST="${TAGS_LIST},${IMAGE}:dev"
+          elif [[ "${TAG}" == *"-qa-"* ]]; then
+            TAGS_LIST="${TAGS_LIST},${IMAGE}:qa"
+          fi
+
           echo "IMAGE=${IMAGE}" >> $GITHUB_ENV
           echo "TAG=${TAG}" >> $GITHUB_ENV
+          echo "TAGS_LIST=${TAGS_LIST}" >> $GITHUB_ENV
           echo "Image target: ${IMAGE}:${TAG}"
 
       - name: Build and Push Docker Image
@@ -52,9 +62,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: |
-            ${{ env.IMAGE }}:${{ env.TAG }}
-            ${{ env.IMAGE }}:latest
+          tags: ${{ env.TAGS_LIST }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
