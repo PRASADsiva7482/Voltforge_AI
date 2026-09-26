@@ -14,7 +14,11 @@ from config import get_settings
 from main import app
 
 
+from model.runtime_service import get_model_runtime_service
+
+
 async def collect_events(request: ChatRequest) -> list[str]:
+    get_model_runtime_service().start()
     return [event async for event in stream_chat_sse(request)]
 
 
@@ -164,7 +168,7 @@ def test_generation_sources_contain_no_hosted_model_client_or_credential() -> No
     source_paths = [
         *(ai_root / "api").glob("*.py"),
         ai_root / "config.py",
-        ai_root / ".env.example",
+        ai_root / "config.json",
         ai_root / "requirements.txt",
     ]
     source = "\n".join(path.read_text(encoding="utf-8") for path in source_paths).lower()

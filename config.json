@@ -1,0 +1,34 @@
+{
+  "environment": "development",
+  "host": "127.0.0.1",
+  "port": 2002,
+  "allowed_origins": [
+    "http://localhost:3000",
+    "http://localhost:5173"
+  ],
+  "max_request_bytes": 2000000,
+  "max_context_characters": 48000,
+  "chat_request_timeout_seconds": 15,
+  "api_token": "",
+  "runtime_directory": "runtime",
+  "internet_retrieval_enabled": false,
+  "internet_retrieval_timeout_seconds": 2,
+  "internet_retrieval_provider": "duckduckgo-instant-answer-v1",
+  "internet_retrieval_max_response_bytes": 262144,
+  "internet_retrieval_cache_ttl_seconds": 900,
+  "store_conversations": false,
+  "bounded_memory_enabled": true,
+  "memory_database_path": "bounded-memory-v1.sqlite3",
+  "local_model_device": "auto",
+  "database": {
+    "enabled": false,
+    "host": "127.0.0.1",
+    "port": 3306,
+    "name": "voltforge_ai",
+    "username": "root",
+    "password": ""
+  },
+  "logging": {
+    "level": "INFO"
+  }
+}

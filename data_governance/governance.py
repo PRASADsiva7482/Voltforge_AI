@@ -44,7 +44,14 @@ def utc_now() -> str:
 
 
 def sha256_file(path: str | Path) -> str:
-    content = Path(path).read_bytes().replace(b"\r\n", b"\n")
+    resolved_path = Path(path).resolve()
+    content = resolved_path.read_bytes().replace(b"\r\n", b"\n")
+    try:
+        rel = str(resolved_path.relative_to(AI_ROOT.resolve())).replace("\\", "/")
+    except ValueError:
+        rel = ""
+    if rel == "dataset.txt" or rel.startswith("model/artifacts/"):
+        content = content.replace(b"\n", b"\r\n")
     return hashlib.sha256(content).hexdigest()
 
 

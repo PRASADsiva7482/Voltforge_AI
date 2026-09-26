@@ -132,7 +132,8 @@ def load_policy() -> dict[str, Any]:
         raise ApiContractError(
             "API_CONTRACT_POLICY_INVALID", "The API contract policy is unavailable."
         ) from error
-    if hashlib.sha256(POLICY_PATH.read_bytes()).hexdigest() != POLICY_SHA256:
+    policy_bytes = POLICY_PATH.read_bytes().replace(b"\r\n", b"\n")
+    if hashlib.sha256(policy_bytes).hexdigest() != POLICY_SHA256:
         raise ApiContractError(
             "API_CONTRACT_POLICY_CHECKSUM_MISMATCH",
             "The API contract policy checksum is invalid.",
