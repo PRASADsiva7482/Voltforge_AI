@@ -39,6 +39,7 @@ COPY circuit_verifier.py .
 COPY web_search_engine.py .
 COPY observability.py .
 COPY config.py .
+COPY config.json* .
 COPY main.py .
 COPY app.py .
 COPY dataset.txt .
