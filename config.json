@@ -9,7 +9,7 @@
   "max_request_bytes": 2000000,
   "max_context_characters": 48000,
   "chat_request_timeout_seconds": 15,
-  "api_token": "",
+  "api_token": "vfa_sec_9f7a8b3c1d2e4f5a6b7c8d9e0f1a2b3c",
   "runtime_directory": "runtime",
   "internet_retrieval_enabled": false,
   "internet_retrieval_timeout_seconds": 2,
