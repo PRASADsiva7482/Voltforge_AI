@@ -1,0 +1,220 @@
+"""
+Generates the Google Colab training notebook for fine-tuning VoltForge AI on Qwen 2.5 Coder.
+"""
+
+import json
+from pathlib import Path
+
+notebook = {
+    "nbformat": 4,
+    "nbformat_minor": 0,
+    "metadata": {
+        "colab": {
+            "provenance": [],
+            "gpuType": "T4"
+        },
+        "kernelspec": {
+            "name": "python3",
+            "display_name": "Python 3"
+        },
+        "language_info": {
+            "name": "python"
+        },
+        "accelerator": "GPU"
+    },
+    "cells": [
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "# ⚡ VoltForge AI - Model Fine-Tuning on Google Colab\n",
+                "\n",
+                "This notebook fine-tunes **Qwen 2.5 Coder (1.5B Instruct)** on the curated VoltForge Electronics Dataset (circuit safety, board pinouts, DRC rules, and MCU C++ firmware synthesis), then exports it directly into a standalone **Q4_K_M GGUF** file for `Voltforge_AI`.\n",
+                "\n",
+                "### Prerequisites:\n",
+                "1. Make sure you are using a **T4 GPU** runtime: `Runtime` ➔ `Change runtime type` ➔ select `T4 GPU`."
+            ]
+        },
+        {
+            "cell_type": "code",
+            "metadata": {},
+            "execution_count": None,
+            "outputs": [],
+            "source": [
+                "# Step 1: Check GPU availability\n",
+                "!nvidia-smi"
+            ]
+        },
+        {
+            "cell_type": "code",
+            "metadata": {},
+            "execution_count": None,
+            "outputs": [],
+            "source": [
+                "# Step 2: Install Unsloth & dependencies (PyTorch SDPA handles attention natively on T4)\n",
+                "%%capture\n",
+                "!pip install --upgrade --no-cache-dir unsloth unsloth_zoo trl peft accelerate bitsandbytes"
+            ]
+        },
+        {
+            "cell_type": "code",
+            "metadata": {},
+            "execution_count": None,
+            "outputs": [],
+            "source": [
+                "# Step 3: Load Qwen 2.5 Coder 1.5B with 4-bit quantization\n",
+                "from unsloth import FastLanguageModel\n",
+                "import torch\n",
+                "\n",
+                "max_seq_length = 2048\n",
+                "dtype = None  # Auto detect (Float16 on T4)\n",
+                "load_in_4bit = True\n",
+                "\n",
+                "model, tokenizer = FastLanguageModel.from_pretrained(\n",
+                "    model_name=\"unsloth/Qwen2.5-Coder-1.5B-Instruct\",\n",
+                "    max_seq_length=max_seq_length,\n",
+                "    dtype=dtype,\n",
+                "    load_in_4bit=load_in_4bit,\n",
+                ")\n",
+                "\n",
+                "# Attach LoRA adapters\n",
+                "model = FastLanguageModel.get_peft_model(\n",
+                "    model,\n",
+                "    r=16,\n",
+                "    target_modules=[\"q_proj\", \"k_proj\", \"v_proj\", \"o_proj\", \"gate_proj\", \"up_proj\", \"down_proj\"],\n",
+                "    lora_alpha=16,\n",
+                "    lora_dropout=0,\n",
+                "    bias=\"none\",\n",
+                "    use_gradient_checkpointing=\"unsloth\",\n",
+                "    random_state=3407,\n",
+                ")\n",
+                "print(\"Model loaded with LoRA adapters ready for fine-tuning!\")"
+            ]
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "### Step 4: Upload your dataset\n",
+                "Upload `voltforge_electronics_dataset.jsonl` from your computer using the cell below:"
+            ]
+        },
+        {
+            "cell_type": "code",
+            "metadata": {},
+            "execution_count": None,
+            "outputs": [],
+            "source": [
+                "# Upload voltforge_electronics_dataset.jsonl\n",
+                "from google.colab import files\n",
+                "import json\n",
+                "from datasets import Dataset\n",
+                "\n",
+                "uploaded = files.upload()\n",
+                "filename = list(uploaded.keys())[0]\n",
+                "print(f\"Uploaded {filename}\")\n",
+                "\n",
+                "# Load records\n",
+                "records = []\n",
+                "with open(filename, 'r', encoding='utf-8') as f:\n",
+                "    for line in f:\n",
+                "        if line.strip():\n",
+                "            records.append(json.loads(line))\n",
+                "\n",
+                "print(f\"Loaded {len(records)} training records.\")\n",
+                "\n",
+                "# Format using Qwen Chat Template\n",
+                "def formatting_prompts_func(examples):\n",
+                "    convos = examples[\"conversations\"]\n",
+                "    texts = [tokenizer.apply_chat_template(convo, tokenize=False, add_generation_prompt=False) for convo in convos]\n",
+                "    return {\"text\": texts}\n",
+                "\n",
+                "raw_dataset = Dataset.from_list(records)\n",
+                "dataset = raw_dataset.map(formatting_prompts_func, batched=True)\n",
+                "print(\"Dataset formatted successfully!\")"
+            ]
+        },
+        {
+            "cell_type": "code",
+            "metadata": {},
+            "execution_count": None,
+            "outputs": [],
+            "source": [
+                "# Step 5: Train the Model\n",
+                "from trl import SFTTrainer\n",
+                "from transformers import TrainingArguments\n",
+                "\n",
+                "trainer = SFTTrainer(\n",
+                "    model=model,\n",
+                "    tokenizer=tokenizer,\n",
+                "    train_dataset=dataset,\n",
+                "    dataset_text_field=\"text\",\n",
+                "    max_seq_length=max_seq_length,\n",
+                "    dataset_num_proc=2,\n",
+                "    packing=False,\n",
+                "    args=TrainingArguments(\n",
+                "        per_device_train_batch_size=2,\n",
+                "        gradient_accumulation_steps=4,\n",
+                "        warmup_steps=10,\n",
+                "        max_steps=200,  # ~10 minutes on T4 GPU\n",
+                "        learning_rate=2e-4,\n",
+                "        fp16=not torch.cuda.is_bf16_supported(),\n",
+                "        bf16=torch.cuda.is_bf16_supported(),\n",
+                "        logging_steps=10,\n",
+                "        optim=\"adamw_8bit\",\n",
+                "        weight_decay=0.01,\n",
+                "        lr_scheduler_type=\"linear\",\n",
+                "        seed=3407,\n",
+                "        output_dir=\"outputs\",\n",
+                "    ),\n",
+                ")\n",
+                "\n",
+                "print(\"Starting training...\")\n",
+                "trainer_stats = trainer.train()\n",
+                "print(\"Training completed successfully!\")"
+            ]
+        },
+        {
+            "cell_type": "code",
+            "metadata": {},
+            "execution_count": None,
+            "outputs": [],
+            "source": [
+                "# Step 6: Export Directly to GGUF\n",
+                "print(\"Exporting fine-tuned model to Q4_K_M GGUF format...\")\n",
+                "model.save_pretrained_gguf(\n",
+                "    \"voltforge_ai_trained\",\n",
+                "    tokenizer,\n",
+                "    quantization_method=\"q4_k_m\"\n",
+                ")\n",
+                "print(\"Export complete!\")"
+            ]
+        },
+        {
+            "cell_type": "code",
+            "metadata": {},
+            "execution_count": None,
+            "outputs": [],
+            "source": [
+                "# Step 7: Download the resulting GGUF file\n",
+                "from google.colab import files\n",
+                "import os\n",
+                "\n",
+                "# Find exported gguf file\n",
+                "gguf_files = [f for f in os.listdir('voltforge_ai_trained') if f.endswith('.gguf')]\n",
+                "if gguf_files:\n",
+                "    target_file = os.path.join('voltforge_ai_trained', gguf_files[0])\n",
+                "    print(f\"Downloading {target_file}...\")\n",
+                "    files.download(target_file)\n",
+                "else:\n",
+                "    print(\"GGUF file not found in voltforge_ai_trained directory\")"
+            ]
+        }
+    ]
+}
+
+out_path = Path(__file__).resolve().parent / "voltforge_colab_training.ipynb"
+with open(out_path, "w", encoding="utf-8") as f:
+    json.dump(notebook, f, indent=2)
+
+print(f"Generated Colab notebook: {out_path}")

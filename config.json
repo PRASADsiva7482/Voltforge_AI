@@ -4,31 +4,21 @@
   "port": 2002,
   "allowed_origins": [
     "http://localhost:3000",
-    "http://localhost:5173"
+    "http://localhost:5173",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:5173"
   ],
   "max_request_bytes": 2000000,
-  "max_context_characters": 48000,
-  "chat_request_timeout_seconds": 15,
-  "api_token": "",
-  "runtime_directory": "runtime",
-  "internet_retrieval_enabled": false,
-  "internet_retrieval_timeout_seconds": 2,
-  "internet_retrieval_provider": "duckduckgo-instant-answer-v1",
-  "internet_retrieval_max_response_bytes": 262144,
-  "internet_retrieval_cache_ttl_seconds": 900,
-  "store_conversations": false,
-  "bounded_memory_enabled": true,
-  "memory_database_path": "bounded-memory-v1.sqlite3",
-  "local_model_device": "auto",
-  "database": {
-    "enabled": false,
-    "host": "127.0.0.1",
-    "port": 3306,
-    "name": "voltforge_ai",
-    "username": "root",
-    "password": ""
-  },
-  "logging": {
-    "level": "INFO"
-  }
+  "api_token": "vfa_sec_9f7a8b3c1d2e4f5a6b7c8d9e0f1a2b3c",
+  "model_path": "model/artifacts/Qwen2.5-Coder-1.5B-Instruct.Q4_K_M.gguf",
+  "model_name": "Qwen2.5-Coder-1.5B-Instruct",
+  "model_provider": "local_gguf",
+  "n_ctx": 4096,
+  "n_threads": 4,
+  "n_gpu_layers": 0,
+  "openai_compatible_base_url": "",
+  "openai_compatible_api_key": "EMPTY",
+  "device": "cpu",
+  "max_tokens": 2048,
+  "temperature": 0.7
 }
