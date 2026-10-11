@@ -32,14 +32,18 @@ async def lifespan(app: FastAPI):
     logger.info("VoltForge AI shutting down.")
 
 
+settings = config.get_settings()
+is_dev = settings.environment.lower() == "development"
+
 app = FastAPI(
     title="VoltForge AI Microservice",
     description="Domain-specialized AI Engine for Electronics EDA, Circuit Safety, and MCU Firmware Synthesis.",
     version="2.1.0",
-    lifespan=lifespan
+    lifespan=lifespan,
+    docs_url="/docs" if is_dev else None,
+    redoc_url="/redoc" if is_dev else None,
+    openapi_url="/openapi.json" if is_dev else None,
 )
-
-settings = config.get_settings()
 
 app.add_middleware(
     CORSMiddleware,
@@ -54,13 +58,15 @@ app.include_router(router)
 
 @app.get("/")
 def root():
-    return {
+    info = {
         "service": "VoltForge AI Microservice",
         "status": "ONLINE",
         "version": "2.1.0",
-        "docsUrl": "/docs",
         "healthUrl": "/voltForge-ai/api/v1/model/health"
     }
+    if is_dev:
+        info["docsUrl"] = "/docs"
+    return info
 
 
 if __name__ == "__main__":

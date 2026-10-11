@@ -34,14 +34,39 @@ class Settings(BaseModel):
 
 def load_settings() -> Settings:
     defaults = Settings()
+    data = defaults.model_dump()
     if CONFIG_FILE.exists():
         try:
             with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                return Settings(**{**defaults.model_dump(), **data})
+                file_data = json.load(f)
+                data.update({k: v for k, v in file_data.items() if v is not None})
         except Exception as e:
             print(f"Warning: Failed to parse config.json ({e}), using default settings.")
-    return defaults
+
+    # Environment variables take precedence over config.json
+    env_overrides = {}
+    if host := os.environ.get("VOLTFORGE_AI_HOST") or os.environ.get("HOST"):
+        env_overrides["host"] = host
+    if port := os.environ.get("VOLTFORGE_AI_PORT") or os.environ.get("PORT"):
+        try:
+            env_overrides["port"] = int(port)
+        except ValueError:
+            pass
+    if token := os.environ.get("VOLTFORGE_AI_API_TOKEN") or os.environ.get("API_TOKEN"):
+        env_overrides["api_token"] = token
+    if env := os.environ.get("VOLTFORGE_AI_ENV") or os.environ.get("ENVIRONMENT"):
+        env_overrides["environment"] = env
+    if origins := os.environ.get("ALLOWED_ORIGINS"):
+        env_overrides["allowed_origins"] = [o.strip() for o in origins.split(",") if o.strip()]
+    if model_provider := os.environ.get("MODEL_PROVIDER"):
+        env_overrides["model_provider"] = model_provider
+    if base_url := os.environ.get("OPENAI_COMPATIBLE_BASE_URL"):
+        env_overrides["openai_compatible_base_url"] = base_url
+    if api_key := os.environ.get("OPENAI_COMPATIBLE_API_KEY"):
+        env_overrides["openai_compatible_api_key"] = api_key
+
+    data.update(env_overrides)
+    return Settings(**data)
 
 settings = load_settings()
 

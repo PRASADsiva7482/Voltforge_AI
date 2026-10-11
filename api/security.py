@@ -2,6 +2,7 @@
 Service token authentication for VoltForge AI microservice.
 """
 
+import hmac
 from fastapi import Header, HTTPException, Request, status
 from config import get_settings
 
@@ -22,8 +23,9 @@ def require_service_token(
         else:
             token = authorization.strip()
             
-    if token != expected:
+    if not token or not hmac.compare_digest(str(token), str(expected)):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Unauthorized: Invalid or missing X-Voltforge-AI-Token header."
         )
+
