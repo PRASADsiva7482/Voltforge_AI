@@ -8,3 +8,8 @@ venv/
 .github
 *.log
 synthetic_data/releases/
+*.gguf
+model/artifacts/*.gguf
+*.bin
+*.pt
+

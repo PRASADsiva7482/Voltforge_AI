@@ -10,7 +10,7 @@
   ],
   "max_request_bytes": 2000000,
   "api_token": "vfa_sec_9f7a8b3c1d2e4f5a6b7c8d9e0f1a2b3c",
-  "model_path": "model/artifacts/Qwen2.5-Coder-1.5B-Instruct.Q4_K_M.gguf",
+  "model_path": "model/artifacts/qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
   "model_name": "Qwen2.5-Coder-1.5B-Instruct",
   "model_provider": "local_gguf",
   "n_ctx": 4096,

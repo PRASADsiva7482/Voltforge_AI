@@ -20,7 +20,7 @@ class Settings(BaseModel):
     max_request_bytes: int = 2_000_000
     
     # Model configuration
-    model_path: str = "model/artifacts/Qwen2.5-Coder-1.5B-Instruct.Q4_K_M.gguf"
+    model_path: str = "model/artifacts/qwen2.5-coder-1.5b-instruct-q4_k_m.gguf"
     model_name: str = "Qwen2.5-Coder-1.5B-Instruct"
     model_provider: str = "local_gguf" # "local_gguf", "local", or "openai_compatible"
     n_ctx: int = 4096

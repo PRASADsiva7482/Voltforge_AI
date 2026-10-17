@@ -46,12 +46,14 @@ def health() -> Dict[str, Any]:
     is_model_loaded = llm.llm is not None
     return {
         "status": "ONLINE",
-        "state": "ready",
-        "ready": True,
-        "code": "MODEL_RUNTIME_READY",
+        "state": "ready" if is_model_loaded else "fallback",
+        "ready": is_model_loaded,
+        "code": "MODEL_RUNTIME_READY" if is_model_loaded else "MODEL_NOT_LOADED",
+        "serviceReady": True,
+        "responseMode": "neural" if is_model_loaded else "deterministic",
         "model": settings.model_name,
         "provider": settings.model_provider,
-        "engine": "llama-cpp-python (in-process)",
+        "engine": "llama-cpp-python (in-process)" if is_model_loaded else "deterministic fallback",
         "neuralLoaded": is_model_loaded,
         "version": "2.1.0"
     }

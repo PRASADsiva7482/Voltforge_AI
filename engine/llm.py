@@ -46,6 +46,18 @@ class LLMEngine:
         if not model_file.is_absolute():
             model_file = Path(__file__).resolve().parent.parent / self.settings.model_path
 
+        if not model_file.exists() or model_file.stat().st_size < 100_000_000:
+            # Fallback: check for valid GGUF files in model/artifacts
+            artifacts_dir = Path(__file__).resolve().parent.parent / "model" / "artifacts"
+            if artifacts_dir.exists():
+                candidates = [
+                    p for p in artifacts_dir.glob("*.gguf") 
+                    if not p.name.endswith(".damaged_experiment") and p.stat().st_size > 500_000_000
+                ]
+                if candidates:
+                    model_file = candidates[0]
+                    logger.info("Resolved active model file to: %s", model_file)
+
         if model_file.exists() and model_file.stat().st_size > 100_000_000:
             try:
                 from llama_cpp import Llama

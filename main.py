@@ -4,6 +4,19 @@ Domain-specialized AI Engine for Electronics EDA, Circuit Safety, and MCU Firmwa
 Runs on 127.0.0.1:2002
 """
 
+import sys
+import subprocess
+from pathlib import Path
+
+# Auto-delegate to local virtual environment if llama_cpp is missing in current Python
+try:
+    import llama_cpp
+except ImportError:
+    venv_python = Path(__file__).resolve().parent / ".venv" / "Scripts" / "python.exe"
+    if venv_python.exists() and sys.executable.lower() != str(venv_python).lower():
+        print(f"[VoltForge AI] Redirecting execution to project virtual environment (.venv)...")
+        sys.exit(subprocess.call([str(venv_python)] + sys.argv))
+
 import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI

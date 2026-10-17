@@ -10,3 +10,6 @@ training_runs/
 .venv/
 *.gguf
 model/artifacts/*.gguf
+model/artifacts/*.damaged*
+model/artifacts/*.bak*
+model/artifacts/*.tmp
