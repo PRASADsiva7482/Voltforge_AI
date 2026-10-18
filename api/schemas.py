@@ -10,11 +10,11 @@ class ChatMessage(BaseModel):
     content: str
 
 class ChatRequest(BaseModel):
-    message: str
+    message: str = Field(min_length=1, max_length=6000)
     sessionId: Optional[str] = None
     projectId: Optional[str] = None
     projectRevision: Optional[str] = None
-    boardType: Optional[str] = "ARDUINO_UNO"
+    boardType: Optional[str] = None
     components: List[Dict[str, Any]] = Field(default_factory=list)
     wires: List[Dict[str, Any]] = Field(default_factory=list)
     code: Optional[str] = ""
@@ -33,7 +33,7 @@ class ChatResponse(BaseModel):
     reply: str
     hasCode: bool = False
     generatedCode: Optional[str] = None
-    confidence: float = 0.98
+    confidence: Optional[float] = None
     citations: List[Dict[str, Any]] = Field(default_factory=list)
     wireSuggestions: List[Dict[str, Any]] = Field(default_factory=list)
     additions: List[Dict[str, Any]] = Field(default_factory=list)
@@ -66,7 +66,7 @@ class AiGenerateResponse(BaseModel):
     additions: List[Dict[str, Any]] = Field(default_factory=list)
     removals: List[Dict[str, Any]] = Field(default_factory=list)
     codeFixes: List[Dict[str, Any]] = Field(default_factory=list)
-    confidence: float = 0.98
+    confidence: Optional[float] = None
 
 class AiValidationResponse(BaseModel):
     isValid: bool = True

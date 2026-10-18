@@ -8,6 +8,7 @@ datasheet_cache.json
 .toolchains/
 training_runs/
 .venv/
+logs/
 *.gguf
 model/artifacts/*.gguf
 model/artifacts/*.damaged*

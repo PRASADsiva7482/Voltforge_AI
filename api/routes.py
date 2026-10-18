@@ -7,7 +7,7 @@ import json
 import uuid
 import logging
 from typing import Any, Dict, List, Optional
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
 
 from api.schemas import (
@@ -132,13 +132,8 @@ def _resolve_workspace_proposals(
                     "wireId": issue.get("componentId", "short-wire"),
                     "reason": "Remove direct power-to-ground short circuit wire"
                 })
-            elif "missing" in msg.lower() or "current-limiting" in msg.lower():
-                additions.append({
-                    "type": "component_addition",
-                    "componentType": "RESISTOR_THROUGH_HOLE",
-                    "value": "220Ω",
-                    "reason": "Add 220Ω current-limiting resistor to protect LED"
-                })
+            # A warning alone does not establish a resistor value, supply
+            # voltage, or topology. Do not fabricate an automatic 220-ohm fix.
 
     return {
         "wireSuggestions": wire_suggestions,
@@ -152,20 +147,22 @@ def _resolve_workspace_proposals(
 
 @router.post("/chat", response_model=ChatResponse)
 def chat(payload: ChatRequest) -> ChatResponse:
-    logger.info("Received chat request: %s", payload.message[:80])
+    logger.info("Received authenticated chat request")
     result = llm_engine.generate(
         message=payload.message,
-        board_type=payload.boardType or "ARDUINO_UNO",
+        board_type=payload.boardType or "unspecified",
         components=payload.components,
         wires=payload.wires,
         code=payload.code or "",
-        history=payload.history
+        history=payload.history,
+        simulation_state=payload.simulationState,
+        context=payload.context or ""
     )
     
     proposals = _resolve_workspace_proposals(
-        user_message=payload.message,
-        reply_text=result["reply"],
-        board_type=payload.boardType or "ARDUINO_UNO",
+        user_message=payload.message if llm_engine.llm is not None else "",
+        reply_text=result["reply"] if result["mode"] != "unavailable" else "",
+        board_type=payload.boardType or "unspecified",
         components=payload.components,
         wires=payload.wires,
         existing_code=payload.code or ""
@@ -179,6 +176,8 @@ def chat(payload: ChatRequest) -> ChatResponse:
         hasCode=proposals["hasCode"],
         generatedCode=proposals["generatedCode"],
         confidence=result["confidence"],
+        mode=result["mode"],
+        model=result["model"],
         wireSuggestions=proposals["wireSuggestions"],
         additions=proposals["additions"],
         removals=proposals["removals"],
@@ -189,7 +188,7 @@ def chat(payload: ChatRequest) -> ChatResponse:
 @router.post("/chat/stream")
 async def chat_stream(payload: ChatRequest):
     """Server-Sent Events streaming chat endpoint."""
-    logger.info("Received streaming chat request: %s", payload.message[:80])
+    logger.info("Received authenticated streaming chat request")
     session_id = payload.sessionId or str(uuid.uuid4())
     request_id = str(uuid.uuid4())
 
@@ -199,34 +198,44 @@ async def chat_stream(payload: ChatRequest):
             "type": "start",
             "sessionId": session_id,
             "requestId": request_id,
-            "mode": "neural",
-            "model": "Qwen-2.5-Coder-1.5B"
+            "mode": "neural" if llm_engine.llm is not None else "unavailable",
+            "model": get_settings().model_name
         }
         yield f"event: start\ndata: {json.dumps(start_payload)}\n\n"
 
+        if llm_engine.llm is None:
+            yield 'event: error\ndata: {"type":"error","code":"AI_MODEL_UNAVAILABLE","message":"The local AI model is unavailable. Retry when it is ready."}\n\n'
+            return
+
         # 2. Token-by-token streaming
         full_text = []
-        async for token in llm_engine.stream_chat(
-            message=payload.message,
-            board_type=payload.boardType or "ARDUINO_UNO",
-            components=payload.components,
-            wires=payload.wires,
-            code=payload.code or "",
-            history=payload.history
-        ):
-            full_text.append(token)
-            delta_payload = {
-                "type": "token",
-                "delta": token
-            }
-            yield f"event: token\ndata: {json.dumps(delta_payload)}\n\n"
+        try:
+            async for token in llm_engine.stream_chat(
+                message=payload.message,
+                board_type=payload.boardType or "unspecified",
+                components=payload.components,
+                wires=payload.wires,
+                code=payload.code or "",
+                history=payload.history,
+                simulation_state=payload.simulationState,
+                context=payload.context or ""
+            ):
+                full_text.append(token)
+                delta_payload = {
+                    "type": "token",
+                    "delta": token
+                }
+                yield f"event: token\ndata: {json.dumps(delta_payload)}\n\n"
+        except Exception:
+            yield 'event: error\ndata: {"type":"error","code":"AI_GENERATION_INTERRUPTED","message":"Local AI generation interrupted"}\n\n'
+            return
 
         # 3. Synthesize proposals based on full interaction
         reply_text = "".join(full_text)
         proposals = _resolve_workspace_proposals(
-            user_message=payload.message,
+            user_message=payload.message if llm_engine.llm is not None else "",
             reply_text=reply_text,
-            board_type=payload.boardType or "ARDUINO_UNO",
+            board_type=payload.boardType or "unspecified",
             components=payload.components,
             wires=payload.wires,
             existing_code=payload.code or ""
@@ -247,7 +256,8 @@ async def chat_stream(payload: ChatRequest):
             "type": "complete",
             "sessionId": session_id,
             "reply": reply_text,
-            "confidence": 0.98,
+            "confidence": None,
+            "mode": start_payload["mode"],
             "wireSuggestions": proposals["wireSuggestions"],
             "codeFixes": proposals["codeFixes"],
             "additions": proposals["additions"],
@@ -270,9 +280,9 @@ def generate_code(payload: GenerateCodeRequest) -> AiGenerateResponse:
         code=payload.code or ""
     )
     return AiGenerateResponse(
-        status="SUCCESS",
-        message="Code generated successfully.",
-        generatedCode=result["generatedCode"] or result["reply"],
+        status="SUCCESS" if result["generatedCode"] else "UNAVAILABLE",
+        message="Generated suggestion; compile and test before use." if result["generatedCode"] else result["reply"],
+        generatedCode=result["generatedCode"],
         confidence=result["confidence"]
     )
 
@@ -303,7 +313,7 @@ def suggest_wiring(payload: GenerateCodeRequest) -> AiGenerateResponse:
         status="SUCCESS",
         message=f"Generated {len(suggestions)} wire routing suggestion(s).",
         wireSuggestions=suggestions,
-        confidence=0.98
+        confidence=None
     )
 
 
@@ -324,11 +334,12 @@ def get_memory(projectId: str = Query(...), sessionId: Optional[str] = Query(Non
         "projectId": projectId,
         "sessionId": sessionId,
         "entries": [],
-        "enabled": True,
-        "status": "ready"
+        "enabled": False,
+        "entryCount": 0,
+        "status": "unavailable"
     }
 
 
 @router.put("/memory/preferences")
 def update_memory_preferences(projectId: str = Query(...)):
-    return {"status": "SUCCESS", "message": "Memory preferences updated"}
+    raise HTTPException(status_code=501, detail="Approved project facts are not supported by this AI service. Conversation history is stored by the application backend.")

@@ -203,15 +203,21 @@ def validate_circuit_state(
     components: List[Dict[str, Any]],
     wires: List[Dict[str, Any]]
 ) -> Dict[str, Any]:
-    """Inspect placed components and wires for electrical correctness and safety."""
+    """Bounded heuristics, not a full netlist solver or electrical safety certification."""
     issues = []
     has_mcu = bool(board_type)
     has_components = len(components) > 0
+
+    def endpoint_pin(wire, side):
+        # The Playground sends fromPin/toPin; saved circuits use *PinId.
+        # Older API clients sent a combined component:pin endpoint.
+        return str(wire.get(side + "Pin") or wire.get(side + "PinId") or
+                   str(wire.get(side, "")).rsplit(":", 1)[-1]).upper()
     
     # 1. Short Circuit Detection (Direct VCC to GND wire)
     for wire in wires:
-        from_pin = str(wire.get("from", "")).upper()
-        to_pin = str(wire.get("to", "")).upper()
+        from_pin = endpoint_pin(wire, "from")
+        to_pin = endpoint_pin(wire, "to")
         if ("VCC" in from_pin or "5V" in from_pin or "3V3" in from_pin) and ("GND" in to_pin):
             issues.append({
                 "severity": "CRITICAL",
@@ -232,13 +238,13 @@ def validate_circuit_state(
     if led_components and not resistors:
         issues.append({
             "severity": "HIGH",
-            "message": "LED placed without current-limiting resistor. An LED connected directly across 5V or GPIO will burn out or damage the microcontroller.",
+            "message": "No current-limiting resistor is present. Check whether the LED requires an external resistor; this check does not determine connectivity or module-internal protection.",
             "componentId": led_components[0].get("id", "led-missing-resistor")
         })
 
     # 3. Floating Microcontroller Ground
     if has_mcu and has_components and len(wires) > 0:
-        has_gnd_wire = any("GND" in str(w.get("from", "")).upper() or "GND" in str(w.get("to", "")).upper() for w in wires)
+        has_gnd_wire = any("GND" in endpoint_pin(w, "from") or "GND" in endpoint_pin(w, "to") for w in wires)
         if not has_gnd_wire:
             issues.append({
                 "severity": "WARNING",
@@ -263,8 +269,8 @@ def validate_circuit_state(
         "isValid": is_valid,
         "safetyScore": score,
         "generalFeedback": (
-            f"Circuit safety analysis completed: {len(issues)} issue(s) identified."
-            if issues else "All electrical rules and safety checks passed successfully."
+            f"Basic heuristic checks found {len(issues)} potential issue(s). Verify connectivity, ratings and operating conditions with the simulator and component documentation."
+            if issues else "No issues found by the limited checks. This is not a complete electrical validation."
         ),
         "issues": issues,
         "suggestedFixes": [i["message"] for i in issues if i.get("severity") in ("CRITICAL", "HIGH")]
