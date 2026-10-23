@@ -52,6 +52,8 @@ def download_lock(path):
 def ensure_model(target=None, *, allow_download=True, force=False, manifest=MANIFEST, opener=urllib.request.urlopen):
     target = Path(target or ROOT / 'model' / 'artifacts' / manifest['filename'])
     target.parent.mkdir(parents=True, exist_ok=True)
+    if not force and valid_model(target, manifest):
+        return target
     with download_lock(target):
         if not force and valid_model(target, manifest):
             return target
