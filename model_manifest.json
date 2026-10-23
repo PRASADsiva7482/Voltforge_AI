@@ -1,0 +1,9 @@
+{
+  "name": "Qwen2.5-Coder-1.5B-Instruct",
+  "repository": "Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF",
+  "revision": "f86cb2c1fa58255f8052cc32aeede1b7482d4361",
+  "filename": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+  "size": 1117320768,
+  "sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+  "license": "apache-2.0"
+}

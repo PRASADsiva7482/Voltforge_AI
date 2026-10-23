@@ -92,111 +92,94 @@ UI_COMPONENTS = [
 ]
 
 def get_hardware_coverage_report() -> Dict[str, Any]:
-    boards = []
-    for board_id, name, family in UI_BOARDS:
-        boards.append({
-            "boardId": board_id,
-            "name": name,
-            "family": family,
-            "status": "verified"
-        })
-    return {
-        "schemaVersion": 1,
-        "totalBoards": len(boards),
-        "boards": boards
-    }
+    # A catalog name is not evidence of validated electrical support.
+    entries = [{"boardType": board_id, "displayName": name, "family": family,
+                "status": "unsupported", "reasonCode": "NO_CURATED_EVIDENCE",
+                "reason": "This runtime has no curated electrical verification record for this board."}
+               for board_id, name, family in UI_BOARDS]
+    return {"schemaVersion": 1, "reportId": "local-runtime-coverage", "reportVersion": "2",
+            "entryCount": len(entries), "entries": entries,
+            "summary": {"verified": 0, "variantRequired": 0, "unsupported": len(entries)},
+            # Retain legacy inventory fields, without claiming verification.
+            "totalBoards": len(entries), "boards": [dict(entry, boardId=entry["boardType"], name=entry["displayName"]) for entry in entries]}
+
 
 def get_component_coverage_report() -> Dict[str, Any]:
-    return {
-        "schemaVersion": 1,
-        "totalComponents": len(UI_COMPONENTS),
-        "components": UI_COMPONENTS
-    }
+    entries = [{"componentType": c["componentType"], "displayName": c["name"],
+                "category": "component", "status": "unsupported",
+                "reasonCode": "NO_CURATED_EVIDENCE", "reason": "Generic catalog metadata is not a verified part specification.",
+                "selectionGroup": None, "selectionRequirements": [],
+                "physicalIdentitySelected": False, "aiElectricalClaimsAllowed": False}
+               for c in UI_COMPONENTS]
+    return {"schemaVersion": 1, "reportId": "local-component-coverage", "reportVersion": "2",
+            "entryCount": len(entries), "entries": entries, "genericLabelsMaySelectCandidate": False,
+            "summary": {"verified": 0, "variantRequired": 0, "simulationOnly": 0,
+                        "unsupported": len(entries), "distinctCuratedExactCandidates": 0},
+            "totalComponents": len(UI_COMPONENTS), "components": UI_COMPONENTS}
+
 
 def resolve_pin_suggestions(
-    component_type: str,
-    board_type: str = "ARDUINO_UNO",
-    component_id: Optional[str] = None,
-    board_id: Optional[str] = None
+    component_type: str, board_type: str = "unspecified",
+    component_id: Optional[str] = None, board_id: Optional[str] = None,
+    component_pins: Optional[List[Dict[str, Any]]] = None,
+    board_pins: Optional[List[Dict[str, Any]]] = None,
 ) -> List[Dict[str, Any]]:
-    """Determine best pin assignments for a component and microcontroller."""
-    ctype = component_type.upper()
-    board = board_type.upper()
-    c_id = component_id or component_type
-    b_id = board_id or "board"
-    
-    # I2C Pins by board
-    i2c_map = {
-        "ARDUINO_UNO": {"sda": "A4", "scl": "A5"},
-        "ARDUINO_NANO": {"sda": "A4", "scl": "A5"},
-        "ARDUINO_MEGA": {"sda": "20", "scl": "21"},
-        "ESP32": {"sda": "GPIO21", "scl": "GPIO22"},
-        "ESP8266": {"sda": "D2", "scl": "D1"},
-        "RASPBERRY_PI_PICO": {"sda": "GP4", "scl": "GP5"}
-    }
-    pins = i2c_map.get(board, {"sda": "A4", "scl": "A5"})
-    
-    def _wire(from_pin: str, to_pin: str, color: str, desc: str, target_id: Optional[str] = None):
-        tgt = target_id or b_id
-        return {
-            "fromComponentId": c_id,
-            "fromPin": from_pin,
-            "toComponentId": tgt,
-            "toPin": to_pin,
-            "color": color,
-            "description": desc,
-            "reason": desc,
-            "from": f"{c_id}:{from_pin}",
-            "to": f"{tgt}:{to_pin}"
-        }
+    """Suggest only explicit I2C signal endpoints supplied by the real canvas.
 
-    if "OLED" in ctype or "LCD" in ctype:
-        return [
-            _wire("VCC", "5V", "#FF0000", "Connect OLED VCC to 5V rail"),
-            _wire("GND", "GND", "#000000", "Connect OLED GND to common ground"),
-            _wire("SDA", pins["sda"], "#00AAFF", f"Connect OLED SDA to I2C Data ({pins['sda']})"),
-            _wire("SCL", pins["scl"], "#FFAA00", f"Connect OLED SCL to I2C Clock ({pins['scl']})"),
-        ]
-    elif "SERVO" in ctype:
-        pwm = "GPIO18" if "ESP32" in board else "D9"
-        return [
-            _wire("VCC", "5V", "#FF0000", "Connect Servo VCC to 5V power"),
-            _wire("GND", "GND", "#000000", "Connect Servo GND to ground"),
-            _wire("SIGNAL", pwm, "#FF8800", f"Connect Servo Signal to PWM pin ({pwm})"),
-        ]
-    elif "RELAY" in ctype:
-        sig = "GPIO23" if "ESP32" in board else "D7"
-        return [
-            _wire("VCC", "5V", "#FF0000", "Connect Relay VCC to 5V"),
-            _wire("GND", "GND", "#000000", "Connect Relay GND to common ground"),
-            _wire("IN", sig, "#00CC00", f"Connect Relay IN to digital output ({sig})"),
-        ]
-    elif "MOTOR" in ctype:
-        return [
-            _wire("positive", "5V", "#FF0000", "Connect motor positive to 5V power supply"),
-            _wire("negative", "GND", "#000000", "Connect motor ground via switched return"),
-        ]
-    elif "LED" in ctype:
-        dpin = "GPIO2" if "ESP32" in board else "D13"
-        return [
-            _wire("anode", "Pin1", "#FF0000", "Connect LED anode to current-limiting resistor", target_id="r1"),
-            _wire("cathode", "GND", "#000000", "Connect LED cathode to common ground"),
-        ]
-    elif "DHT" in ctype or "TEMP" in ctype:
-        dpin = "GPIO4" if "ESP32" in board else "D2"
-        return [
-            _wire("VCC", "5V", "#FF0000", "Connect DHT sensor VCC to 5V"),
-            _wire("GND", "GND", "#000000", "Connect DHT sensor GND to ground"),
-            _wire("DATA", dpin, "#0000FF", f"Connect DHT data line to GPIO ({dpin})"),
-        ]
-    elif "POTENTIOMETER" in ctype:
-        apin = "GPIO34" if "ESP32" in board else "A0"
-        return [
-            _wire("VCC", "5V", "#FF0000", "Connect Potentiometer high rail to 5V"),
-            _wire("GND", "GND", "#000000", "Connect Potentiometer low rail to ground"),
-            _wire("WIPER", apin, "#FF00AA", f"Connect Potentiometer Wiper to ADC pin ({apin})"),
-        ]
-    return []
+    No inferred voltage rails, motor drive, missing resistor, or fallback board.
+    These are reviewed suggestions, not electrical compatibility certification.
+    """
+    if not component_id or not board_id or board_type == "unspecified":
+        return []
+    if not any(kind in component_type.upper() for kind in ("OLED", "I2C")):
+        return []
+
+    def pin_id(pins, signal):
+        matches = [pin.get("id") for pin in (pins or []) if isinstance(pin, dict)
+                   and str(pin.get("name", "")).upper() == signal and pin.get("id")]
+        return matches[0] if len(matches) == 1 else None
+
+    suggestions = []
+    for signal, color in (("SDA", "#00AAFF"), ("SCL", "#FFAA00")):
+        source, target = pin_id(component_pins, signal), pin_id(board_pins, signal)
+        if not source or not target:
+            return []  # No partial or guessed I2C pin mapping.
+        reason = f"Review {signal} signal connection; verify voltage levels, pull-ups and selected board variant before applying. Power wiring is not included."
+        suggestions.append({"fromComponentId": component_id, "fromPin": source,
+                            "toComponentId": board_id, "toPin": target, "color": color,
+                            "from": f"{component_id}:{source}", "to": f"{board_id}:{target}",
+                            "description": reason, "reason": reason})
+    return suggestions
+
+
+def workspace_wire_suggestions(board_type, components, wires):
+    boards = [c for c in components if (c.get("type") or c.get("componentType")) == board_type and c.get("id")]
+    if len(boards) != 1:
+        return []
+    board = boards[0]
+    suggestions = []
+    for component in components:
+        if component.get("id") == board["id"]:
+            continue
+        for proposal in resolve_pin_suggestions(
+            component.get("type") or component.get("componentType") or "", board_type,
+            component.get("id"), board["id"], component.get("pins"), board.get("pins"),
+        ):
+            source = (proposal["fromComponentId"], proposal["fromPin"])
+            target = (proposal["toComponentId"], proposal["toPin"])
+            def endpoint(wire, side):
+                node = wire.get(side + "NodeId") or wire.get(side + "ComponentId") or wire.get(side + "Component")
+                pin = wire.get(side + "PinId") or wire.get(side + "Pin")
+                if not node and isinstance(wire.get(side), str) and ":" in wire[side]:
+                    return tuple(wire[side].rsplit(":", 1))
+                return node, pin
+            # Do not replace or duplicate existing endpoint connections.
+            if any(source in (endpoint(w, "from"), endpoint(w, "to")) for w in wires):
+                continue
+            if any(target in (endpoint(w, "from"), endpoint(w, "to")) for w in wires):
+                continue
+            suggestions.append(proposal)
+    return suggestions
 
 def validate_circuit_state(
     board_type: str,
@@ -205,7 +188,7 @@ def validate_circuit_state(
 ) -> Dict[str, Any]:
     """Bounded heuristics, not a full netlist solver or electrical safety certification."""
     issues = []
-    has_mcu = bool(board_type)
+    has_mcu = bool(board_type and board_type != "unspecified")
     has_components = len(components) > 0
 
     def endpoint_pin(wire, side):
@@ -232,7 +215,7 @@ def validate_circuit_state(
             })
             
     # 2. LED Overcurrent Check (LED connected directly without resistor)
-    led_components = [c for c in components if "LED" in str(c.get("type", "")).upper()]
+    led_components = [c for c in components if str(c.get("type", "")).upper().startswith(("LED_", "LED-")) or str(c.get("type", "")).upper() == "LED"]
     resistors = [c for c in components if "RESISTOR" in str(c.get("type", "")).upper()]
     
     if led_components and not resistors:

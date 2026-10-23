@@ -9,16 +9,13 @@
     "http://127.0.0.1:5173"
   ],
   "max_request_bytes": 2000000,
-  "api_token": "vfa_sec_9f7a8b3c1d2e4f5a6b7c8d9e0f1a2b3c",
   "model_path": "model/artifacts/qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
   "model_name": "Qwen2.5-Coder-1.5B-Instruct",
   "model_provider": "local_gguf",
   "n_ctx": 4096,
   "n_threads": 4,
   "n_gpu_layers": 0,
-  "openai_compatible_base_url": "",
-  "openai_compatible_api_key": "EMPTY",
   "device": "cpu",
-  "max_tokens": 2048,
-  "temperature": 0.7
+  "max_tokens": 768,
+  "temperature": 0.3
 }

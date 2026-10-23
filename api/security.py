@@ -14,7 +14,7 @@ def require_service_token(
     settings = get_settings()
     expected = settings.api_token
     if not expected:
-        return  # No token required if not configured
+        raise HTTPException(status_code=503, detail="Service authentication is not configured.")
         
     token = x_voltforge_ai_token
     if not token and authorization:

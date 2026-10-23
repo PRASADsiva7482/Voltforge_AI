@@ -12,7 +12,7 @@ class HealthStatusTests(unittest.TestCase):
         self.assertTrue(status['serviceReady'])
         self.assertFalse(status['ready'])
         self.assertFalse(status['neuralLoaded'])
-        self.assertEqual(status['responseMode'], 'deterministic')
+        self.assertEqual(status['responseMode'], 'unavailable')
         self.assertEqual(status['code'], 'MODEL_NOT_LOADED')
 
     def test_loaded_model_reports_neural_readiness(self):

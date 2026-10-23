@@ -1,0 +1,117 @@
+{
+  "notice": "Synthetic retrieval fixtures, not electrical specifications or simulator results.",
+  "documents": [
+    "LM358 dual operational amplifier: low-power analog signal amplification.",
+    "LM3580 device identifier: this fixture is a different part from the LM358.",
+    "ATmega328P microcontroller: processor used on the Arduino Uno R3 board.",
+    "ATmega2560 microcontroller: processor used on the Arduino Mega board.",
+    "A flyback diode across a relay coil suppresses the inductive voltage spike when power switches off.",
+    "A series resistor limits current through a light emitting diode and prevents damage.",
+    "A pull-up resistor holds a digital input at a defined high level when a switch is open.",
+    "A decoupling capacitor near an integrated circuit supplies brief current demands and reduces supply noise.",
+    "Mechanical switch contacts bounce. Debouncing filters repeated transitions into one button press.",
+    "A voltage divider uses two resistors to reduce an input voltage for measurement.",
+    "An I2C bus uses SDA for data and SCL for the clock, with pull-up resistors.",
+    "An SPI bus uses clock, separate data lines and a chip select signal.",
+    "UART communication requires matching baud rates on transmitter and receiver.",
+    "PWM changes the duty cycle to control average output power and motor speed.",
+    "A MOSFET gate resistor limits switching current and reduces ringing at the transistor input.",
+    "A motor driver H-bridge reverses current direction to reverse motor rotation.",
+    "LM1117-3.3 regulator fixture: produces a regulated 3.3 volt output.",
+    "LM1117-5.0 regulator fixture: produces a regulated 5 volt output.",
+    "An ADC converts a continuous analog voltage to a digital numeric value.",
+    "A thermistor changes resistance with temperature and can sense heat."
+  ],
+  "queries": [
+    {
+      "text": "LM358 amplifier",
+      "expected": 0,
+      "kind": "exact"
+    },
+    {
+      "text": "ATmega328P processor",
+      "expected": 2,
+      "kind": "exact"
+    },
+    {
+      "text": "ATmega2560 processor",
+      "expected": 3,
+      "kind": "exact"
+    },
+    {
+      "text": "LM1117-3.3 output",
+      "expected": 16,
+      "kind": "exact"
+    },
+    {
+      "text": "LM1117-5.0 output",
+      "expected": 17,
+      "kind": "exact"
+    },
+    {
+      "text": "How can I protect a relay switch from the kick when it turns off?",
+      "expected": 4,
+      "kind": "paraphrase"
+    },
+    {
+      "text": "What stops an LED from burning out?",
+      "expected": 5,
+      "kind": "paraphrase"
+    },
+    {
+      "text": "How do I stop an unconnected input from floating?",
+      "expected": 6,
+      "kind": "paraphrase"
+    },
+    {
+      "text": "How can I smooth short disturbances on chip power?",
+      "expected": 7,
+      "kind": "paraphrase"
+    },
+    {
+      "text": "Why does one push of a button register several clicks?",
+      "expected": 8,
+      "kind": "paraphrase"
+    },
+    {
+      "text": "How can I lower a signal before measuring it?",
+      "expected": 9,
+      "kind": "paraphrase"
+    },
+    {
+      "text": "Which communication bus has SDA and SCL?",
+      "expected": 10,
+      "kind": "paraphrase"
+    },
+    {
+      "text": "Why are characters from my serial port garbled?",
+      "expected": 12,
+      "kind": "paraphrase"
+    },
+    {
+      "text": "How does pulse width change the speed of a motor?",
+      "expected": 13,
+      "kind": "paraphrase"
+    },
+    {
+      "text": "How do I make a DC motor turn backwards?",
+      "expected": 15,
+      "kind": "paraphrase"
+    },
+    {
+      "text": "What turns a measured voltage into a number?",
+      "expected": 18,
+      "kind": "paraphrase"
+    },
+    {
+      "text": "Which component senses how hot something is?",
+      "expected": 19,
+      "kind": "paraphrase"
+    }
+  ],
+  "negative_queries": [
+    "Where can I reserve a hotel room?",
+    "Bake a chocolate cake",
+    "ZX999 unknown processor"
+  ]
+}

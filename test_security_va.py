@@ -8,10 +8,18 @@ Tests:
 
 import os
 import unittest
+from unittest.mock import patch
 from fastapi import HTTPException
 from fastapi.testclient import TestClient
 
 class TestBackendSecurityVA(unittest.TestCase):
+    def setUp(self):
+        import config
+        original = config.settings
+        self.addCleanup(setattr, config, 'settings', original)
+        environment = patch.dict(os.environ)
+        environment.start()
+        self.addCleanup(environment.stop)
 
     def test_01_env_var_overrides_settings(self):
         os.environ["VOLTFORGE_AI_HOST"] = "0.0.0.0"

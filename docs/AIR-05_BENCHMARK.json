@@ -1,0 +1,178 @@
+{
+  "modelId": "6dfca530792f27e36673dc40217e791792c595bfaeda0d5703b53703751bb9a4",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "loadSeconds": 0.29699999999138527,
+  "index20Seconds": 0.23399999999674037,
+  "queryP95Milliseconds": 16.00000000325963,
+  "metrics": {
+    "exact": {
+      "lexicalTop1": 1.0,
+      "semanticTop1": 1.0,
+      "hybridTop1": 1.0,
+      "hybridRecall3": 1.0
+    },
+    "paraphrase": {
+      "lexicalTop1": 0.4166666666666667,
+      "semanticTop1": 0.9166666666666666,
+      "hybridTop1": 0.9166666666666666,
+      "hybridRecall3": 1.0
+    }
+  },
+  "cases": [
+    {
+      "text": "LM358 amplifier",
+      "expected": 0,
+      "kind": "exact",
+      "lexicalTop1": 0,
+      "semanticTop1": 0,
+      "hybridTop1": 0,
+      "hybridRecall3": true
+    },
+    {
+      "text": "ATmega328P processor",
+      "expected": 2,
+      "kind": "exact",
+      "lexicalTop1": 2,
+      "semanticTop1": 2,
+      "hybridTop1": 2,
+      "hybridRecall3": true
+    },
+    {
+      "text": "ATmega2560 processor",
+      "expected": 3,
+      "kind": "exact",
+      "lexicalTop1": 3,
+      "semanticTop1": 3,
+      "hybridTop1": 3,
+      "hybridRecall3": true
+    },
+    {
+      "text": "LM1117-3.3 output",
+      "expected": 16,
+      "kind": "exact",
+      "lexicalTop1": 16,
+      "semanticTop1": 16,
+      "hybridTop1": 16,
+      "hybridRecall3": true
+    },
+    {
+      "text": "LM1117-5.0 output",
+      "expected": 17,
+      "kind": "exact",
+      "lexicalTop1": 17,
+      "semanticTop1": 17,
+      "hybridTop1": 17,
+      "hybridRecall3": true
+    },
+    {
+      "text": "How can I protect a relay switch from the kick when it turns off?",
+      "expected": 4,
+      "kind": "paraphrase",
+      "lexicalTop1": 4,
+      "semanticTop1": 4,
+      "hybridTop1": 4,
+      "hybridRecall3": true
+    },
+    {
+      "text": "What stops an LED from burning out?",
+      "expected": 5,
+      "kind": "paraphrase",
+      "lexicalTop1": 13,
+      "semanticTop1": 5,
+      "hybridTop1": 5,
+      "hybridRecall3": true
+    },
+    {
+      "text": "How do I stop an unconnected input from floating?",
+      "expected": 6,
+      "kind": "paraphrase",
+      "lexicalTop1": 6,
+      "semanticTop1": 6,
+      "hybridTop1": 6,
+      "hybridRecall3": true
+    },
+    {
+      "text": "How can I smooth short disturbances on chip power?",
+      "expected": 7,
+      "kind": "paraphrase",
+      "lexicalTop1": 0,
+      "semanticTop1": 7,
+      "hybridTop1": 7,
+      "hybridRecall3": true
+    },
+    {
+      "text": "Why does one push of a button register several clicks?",
+      "expected": 8,
+      "kind": "paraphrase",
+      "lexicalTop1": 8,
+      "semanticTop1": 8,
+      "hybridTop1": 8,
+      "hybridRecall3": true
+    },
+    {
+      "text": "How can I lower a signal before measuring it?",
+      "expected": 9,
+      "kind": "paraphrase",
+      "lexicalTop1": 0,
+      "semanticTop1": 9,
+      "hybridTop1": 9,
+      "hybridRecall3": true
+    },
+    {
+      "text": "Which communication bus has SDA and SCL?",
+      "expected": 10,
+      "kind": "paraphrase",
+      "lexicalTop1": 10,
+      "semanticTop1": 10,
+      "hybridTop1": 10,
+      "hybridRecall3": true
+    },
+    {
+      "text": "Why are characters from my serial port garbled?",
+      "expected": 12,
+      "kind": "paraphrase",
+      "lexicalTop1": 0,
+      "semanticTop1": 12,
+      "hybridTop1": 12,
+      "hybridRecall3": true
+    },
+    {
+      "text": "How does pulse width change the speed of a motor?",
+      "expected": 13,
+      "kind": "paraphrase",
+      "lexicalTop1": 13,
+      "semanticTop1": 13,
+      "hybridTop1": 13,
+      "hybridRecall3": true
+    },
+    {
+      "text": "How do I make a DC motor turn backwards?",
+      "expected": 15,
+      "kind": "paraphrase",
+      "lexicalTop1": 13,
+      "semanticTop1": 15,
+      "hybridTop1": 15,
+      "hybridRecall3": true
+    },
+    {
+      "text": "What turns a measured voltage into a number?",
+      "expected": 18,
+      "kind": "paraphrase",
+      "lexicalTop1": 4,
+      "semanticTop1": 9,
+      "hybridTop1": 9,
+      "hybridRecall3": true
+    },
+    {
+      "text": "Which component senses how hot something is?",
+      "expected": 19,
+      "kind": "paraphrase",
+      "lexicalTop1": 0,
+      "semanticTop1": 19,
+      "hybridTop1": 19,
+      "hybridRecall3": true
+    }
+  ],
+  "longBatch32Seconds": 5.437999999994645,
+  "peakProcessMemoryMiB": 88.13
+}

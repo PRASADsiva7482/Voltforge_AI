@@ -1,0 +1,22 @@
+{
+  "repository": "second-state/All-MiniLM-L6-v2-Embedding-GGUF",
+  "revision": "544f204f2eaa2d71361ffc74d6df7170285b286a",
+  "upstream": "sentence-transformers/all-MiniLM-L6-v2",
+  "license": "Apache-2.0",
+  "dimensions": 384,
+  "max_tokens": 256,
+  "pooling": "mean_l2",
+  "runtime": "llama-cpp-python-0.2.90",
+  "files": [
+    {
+      "filename": "all-MiniLM-L6-v2-Q8_0.gguf",
+      "size": 25008064,
+      "sha256": "263215c3cadd6e16740741a7624ab4cbb6c8e777688bd5331ecfbf5681c2f8ed"
+    },
+    {
+      "filename": "README.md",
+      "size": 4099,
+      "sha256": "edf2e2d482ccf9956175ecd5dad5315b3ab3aaf89c8ae7a0ec5c91d0747284ca"
+    }
+  ]
+}

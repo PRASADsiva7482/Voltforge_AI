@@ -8,9 +8,15 @@ datasheet_cache.json
 .toolchains/
 training_runs/
 .venv/
+.venv-*/
+.bootstrap/
+.service-token
+*.part
+*.lock
 logs/
 *.gguf
 model/artifacts/*.gguf
 model/artifacts/*.damaged*
 model/artifacts/*.bak*
 model/artifacts/*.tmp
+model/embeddings/

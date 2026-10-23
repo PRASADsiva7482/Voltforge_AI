@@ -1,0 +1,136 @@
+{
+  "version": 1,
+  "updatedAt": "2026-10-22",
+  "scope": [
+    "Voltforge_UI",
+    "Voltforge_BL",
+    "Voltforge_AI"
+  ],
+  "plan": "AI_WEB_RAG_PLAN.md",
+  "runtimeSearchEnabledByThisWork": false,
+  "nextStep": "AIR-06",
+  "completionRule": "Complete only when the acceptance criteria in the plan have evidence; mocked tests do not establish live integration.",
+  "steps": [
+    {
+      "id": "AIR-00",
+      "title": "Audit current execution, context and persistence",
+      "status": "complete",
+      "dependsOn": [],
+      "evidence": [
+        "Source inspected: AI config.py, model_manifest.json, api/routes.py, api/schemas.py, engine/llm.py.",
+        "Source inspected: BL AiChatRequest.java, AiGatewayPolicy.java, AiServiceImpl.java, ConversationStream.java.",
+        "No web search or document retrieval execution found; existing citations fields are not proof of implemented retrieval.",
+        "Source audit only; no new runtime or database verification."
+      ]
+    },
+    {
+      "id": "AIR-01",
+      "title": "Trusted retrieval contract, consent and capabilities",
+      "status": "complete",
+      "dependsOn": [
+        "AIR-00"
+      ],
+      "evidence": [
+        "Implementation and limitations: docs/AIR-01_VERIFICATION.md.",
+        "AI unittest discovery: 47 passed, including authenticated research capabilities, request limits, consent, forged evidence and unsupported-operation rejection.",
+        "BL AiResearchPolicyTest, AiServiceImplTest and ConversationIntegrationTest: 37 passed; final service rerun after attempt-ID binding: 11 passed.",
+        "UI build/type/bundle-budget passed; lint passed with 13 existing warnings; chat browser suite passed 12 groups.",
+        "No database migration needed. Web/document retrieval remains unavailable until later stages; no live provider access claimed.",
+        "Mode selection/preference persistence deferred to AIR-03 alongside working execution; no enabled nonfunctional control is presented."
+      ]
+    },
+    {
+      "id": "AIR-02",
+      "title": "Web search provider and safe public-page retrieval",
+      "status": "in_progress",
+      "dependsOn": [
+        "AIR-01"
+      ],
+      "externalDependencies": [
+        "Configured search provider credential and quota for live verification"
+      ],
+      "evidence": [
+        "2026-10-22: Implemented Brave adapter, public-IP-pinned HTTPS transport, bounded extraction and service-authenticated research endpoint.",
+        "Verification/setup: docs/AIR-02_VERIFICATION.md. AI discovery 64 tests passed; health/security 5 tests passed; compileall and diff checks passed.",
+        "Live public-page fetch passed against official Arduino Uno documentation: 415973 bytes, 2173 excerpt characters.",
+        "Live provider search not verified: web search remains disabled and no recognized provider credential is configured. Do not mark complete until the provider acceptance check passes."
+      ]
+    },
+    {
+      "id": "AIR-03",
+      "title": "Cited streamed responses and persisted source references",
+      "status": "in_progress",
+      "dependsOn": [
+        "AIR-02"
+      ],
+      "evidence": [
+        "2026-10-22: Integrated reviewed public queries, shared prompt token budget, native SSE, attempt-bound persisted sources and compact UI source list.",
+        "Verification: docs/AIR-03_VERIFICATION.md. Managed AI tests: 68 plus 5 health/security passed; BL targeted tests: 38 passed; UI build and lint passed (13 existing warnings).",
+        "UI chat browser suite: 13 groups passed, including query review, consent reset, safe sources and citation reload; AI presentation tests passed.",
+        "Real GGUF smoke probe with synthetic evidence: 675 prompt tokens within 4096 context, 12 native chunks, expected S1 reference. This does not verify live search.",
+        "No migration needed; existing conversation message metadata stores reviewed queries and citations.",
+        "Live provider-to-browser acceptance remains pending. Development search is still disabled; no provider credential was configured by this work."
+      ],
+      "externalDependencies": [
+        "Configured search provider credential/quota and authenticated live cross-service acceptance"
+      ]
+    },
+    {
+      "id": "AIR-04",
+      "title": "Authorized document ingestion and lexical RAG",
+      "status": "complete",
+      "dependsOn": [
+        "AIR-03"
+      ],
+      "externalDependencies": [],
+      "evidence": [
+        "2026-10-22: Applied and reverified additive VF_DOCUMENT_001 on the inspected dev/development shared VPN MySQL database; preserved schema snapshot and existing data.",
+        "Owner/project-scoped PDF/TXT/Markdown uploads, immutable versions, lexical retrieval, explicit selection, private source reader and native SSE implemented across UI/BL/AI.",
+        "AI 72 + 5 tests passed; BL 43 targeted tests passed, then 5 document tests rerun after PDF-process and excerpt changes; UI build/lint and 14 browser groups passed (13 existing lint warnings).",
+        "Packaged PDF worker passed: official 14-page Arduino datasheet. Bounded child JVM and deadline protect application resources.",
+        "Real development DB plus BL-to-AI native GGUF acceptance passed: 16 chunks, 65 native stream chunks, 3 persisted source references, 2 messages, page-4 source read, reopen and duplicate-free retry replay. First token 25676 ms.",
+        "Earlier native idle/overall/generation timeouts documented; added keepalives and bounded 384-token/3-source evidence. Final pass is not a load/performance guarantee; AIR-07 remains required.",
+        "Shared DB audit verified all five current scripts, zero orphans across 13 FKs, schema visible from a fresh connection; no pending migration commit. Synthetic verification data cleaned up.",
+        "Details: docs/AIR-04_VERIFICATION.md and docs/SHARED_DB_VERIFICATION.md. AIR-02/03 live web provider acceptance remains pending independently."
+      ]
+    },
+    {
+      "id": "AIR-05",
+      "title": "Semantic/hybrid retrieval and repeatable artifact setup",
+      "status": "complete",
+      "dependsOn": [
+        "AIR-04"
+      ],
+      "externalDependencies": [],
+      "evidence": [
+        "2026-10-22: Selected pinned Apache-2.0 MiniLM-L6-v2 Q8 GGUF after native hardware/retrieval benchmarking; reuses existing llama-cpp runtime, no new runtime dependencies.",
+        "Synthetic evaluation: exact identifiers 5/5; paraphrase top result improved from lexical 5/12 to hybrid 11/12; expected source in top three 17/17. Three negative query cases passed production Java tests. Small evaluation, not an engineering correctness guarantee.",
+        "Fresh-environment measurements: encoder load 0.297s, 20 short chunks 0.234s, query p95 16ms, 32 long excerpts 5.438s, peak standalone process 88.13 MiB. See AIR-05_BENCHMARK.json.",
+        "Owner/project authorization precedes private encoding; derived vectors are keyed by chunk and model identity, reused across requests, rebuilt after model changes and removed with source deletion. Bounded batch warming preserves completed progress.",
+        "Applied/reapplied VF_EMBEDDING_001 on inspected shared VPN dev MySQL with schema snapshots. All six current SQL scripts verified; 14 foreign keys without orphans; existing data preserved.",
+        "Fresh Python environment bootstrap, repeat bootstrap, clean artifact download, offline native inference, corrupted artifact rejection and identity invalidation passed.",
+        "AI 76 tests + 5 health/security passed. BL 38 existing policy/gateway/conversation tests and final 9 hybrid/document tests passed. Backend package and diff checks passed.",
+        "Live shared DB plus authenticated BL-to-AI native flow passed: 14-page PDF, stored/reused embeddings, 35 native answer chunks, 3 persisted references, 2 messages, page-6 source reopen and duplicate-free replay. First answer token 24685ms.",
+        "Verification and limitations: docs/AIR-05_VERIFICATION.md. UI unchanged; broader quality/load and container/GPU acceptance remain AIR-06/07. AIR-02/03 live web search still needs provider credentials."
+      ]
+    },
+    {
+      "id": "AIR-06",
+      "title": "Bounded research workflow and engineering evaluations",
+      "status": "planned",
+      "dependsOn": [
+        "AIR-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "AIR-07",
+      "title": "Live security, persistence, streaming and performance acceptance",
+      "status": "planned",
+      "dependsOn": [
+        "AIR-06"
+      ],
+      "evidence": []
+    }
+  ]
+}

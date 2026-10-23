@@ -4,19 +4,13 @@ Domain-specialized AI Engine for Electronics EDA, Circuit Safety, and MCU Firmwa
 Runs on 127.0.0.1:2002
 """
 
-import sys
-import subprocess
-from pathlib import Path
+# IDEs commonly launch this file with the global Python. Dispatch before importing
+# native/runtime dependencies; importing main:app must remain side-effect free.
+if __name__ == '__main__':
+    from bootstrap import ensure_launch_runtime
+    ensure_launch_runtime()
 
-# Auto-delegate to local virtual environment if llama_cpp is missing in current Python
-try:
-    import llama_cpp
-except ImportError:
-    venv_python = Path(__file__).resolve().parent / ".venv" / "Scripts" / "python.exe"
-    if venv_python.exists() and sys.executable.lower() != str(venv_python).lower():
-        print(f"[VoltForge AI] Redirecting execution to project virtual environment (.venv)...")
-        sys.exit(subprocess.call([str(venv_python)] + sys.argv))
-
+import asyncio
 import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
@@ -26,6 +20,10 @@ import uvicorn
 import config
 from api.routes import router
 from engine.llm import get_llm_engine
+from engine.runtime import RuntimeBusy, GenerationTimedOut
+from api.limits import RequestSizeLimit
+from api.embeddings import router as embedding_router
+from fastapi.responses import JSONResponse
 
 logging.basicConfig(
     level=logging.INFO,
@@ -39,10 +37,26 @@ async def lifespan(app: FastAPI):
     settings = config.get_settings()
     logger.info("Starting VoltForge AI Microservice on %s:%d...", settings.host, settings.port)
     llm = get_llm_engine()
-    llm.initialize()
-    logger.info("VoltForge AI ready to serve requests.")
-    yield
-    logger.info("VoltForge AI shutting down.")
+    if not settings.api_token:
+        raise RuntimeError("Service authentication is not configured. Run bootstrap.py and configure the backend with the matching service token.")
+    await asyncio.to_thread(llm.initialize)
+    if llm.llm is None:
+        await asyncio.to_thread(llm.close)
+        raise RuntimeError('The AI model failed to load. Run python bootstrap.py --verify; the service will not accept chat requests without a working model.')
+    logger.info("AI service started; model ready=%s", llm.llm is not None)
+    from engine.embeddings import embedding_engine
+    if settings.embeddings_enabled:
+        try:
+            await asyncio.to_thread(embedding_engine.initialize)
+        except Exception as error:
+            logger.error('Reference embeddings unavailable (%s); ordinary chat remains available', type(error).__name__)
+    try:
+        yield
+    finally:
+        await asyncio.to_thread(llm.close)
+        if embedding_engine.session is not None:
+            await asyncio.to_thread(embedding_engine.session.close)
+            embedding_engine.session = None
 
 
 settings = config.get_settings()
@@ -67,6 +81,29 @@ app.add_middleware(
 )
 
 app.include_router(router)
+app.include_router(embedding_router)
+app.add_middleware(RequestSizeLimit, max_bytes=settings.max_request_bytes)
+
+
+@app.exception_handler(RuntimeBusy)
+async def busy_response(request, error):
+    return JSONResponse(status_code=429, content={"code": "AI_BUSY", "message": "AI is busy. Retry shortly."}, headers={"Retry-After": "5"})
+
+
+@app.exception_handler(GenerationTimedOut)
+async def timeout_response(request, error):
+    return JSONResponse(status_code=504, content={"code": "AI_GENERATION_TIMEOUT", "message": "Generation timed out. Try a shorter question."})
+
+
+@app.exception_handler(ValueError)
+async def context_response(request, error):
+    return JSONResponse(status_code=422, content={"code": "AI_CONTEXT_LIMIT", "message": "Input exceeds the local model context. Send a shorter question or less project context."})
+
+
+@app.exception_handler(RuntimeError)
+async def inference_error(request, error):
+    logger.error("Inference failed (%s)", type(error).__name__)
+    return JSONResponse(status_code=503, content={"code": "AI_GENERATION_FAILED", "message": "Local AI generation failed. Your saved conversation is unchanged."})
 
 
 @app.get("/")

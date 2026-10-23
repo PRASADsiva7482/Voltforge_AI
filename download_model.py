@@ -1,170 +1,127 @@
-"""
-VoltForge AI - Model Downloader & Health Verification Script
-Downloads the official clean base model (Qwen 2.5 Coder 1.5B Instruct Q4_K_M GGUF)
-from Hugging Face into model/artifacts/.
-"""
-
-import os
-import sys
+"""Pinned direct GGUF download. Never replace a model until SHA-256 verifies."""
+import argparse
+import hashlib
 import json
+import os
+from pathlib import Path
 import time
 import urllib.request
-from pathlib import Path
+from contextlib import contextmanager
 
-# Model details
-MODEL_FILENAME = "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf"
-HUGGINGFACE_URL = "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF/resolve/main/qwen2.5-coder-1.5b-instruct-q4_k_m.gguf"
-EXPECTED_SIZE = 1117320768  # Exactly ~1.04 GiB (1,117,320,768 bytes)
-
-BASE_DIR = Path(__file__).resolve().parent
-ARTIFACTS_DIR = BASE_DIR / "model" / "artifacts"
-TARGET_FILE = ARTIFACTS_DIR / MODEL_FILENAME
-CONFIG_FILE = BASE_DIR / "config.json"
+ROOT = Path(__file__).resolve().parent
+MANIFEST = json.loads((ROOT / 'model_manifest.json').read_text(encoding='utf-8'))
 
 
-def format_bytes(num_bytes: int) -> str:
-    for unit in ["B", "KB", "MB", "GB"]:
-        if num_bytes < 1024.0:
-            return f"{num_bytes:.2f} {unit}"
-        num_bytes /= 1024.0
-    return f"{num_bytes:.2f} TB"
+def digest(path):
+    with Path(path).open('rb') as stream:
+        return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
-def update_config_model_path():
-    """Ensure config.json points to the fresh base model file."""
-    if not CONFIG_FILE.exists():
-        print(f"[!] Warning: config.json not found at {CONFIG_FILE}")
+def valid_model(path, manifest=MANIFEST):
+    path = Path(path)
+    return path.is_file() and path.stat().st_size == manifest['size'] and digest(path) == manifest['sha256']
+
+
+@contextmanager
+def download_lock(path):
+    # OS lock releases on crash; an existing lock file is harmless after a restart.
+    with open(str(path) + '.lock', 'a+b') as lock:
+        lock.seek(0, os.SEEK_END)
+        if lock.tell() == 0:
+            lock.write(b'0'); lock.flush()
+        lock.seek(0)
+        try:
+            if os.name == 'nt':
+                import msvcrt
+                msvcrt.locking(lock.fileno(), msvcrt.LK_NBLCK, 1)
+            else:
+                import fcntl
+                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError as error:
+            raise RuntimeError('Another model setup is running. Retry after it finishes.') from error
+        try:
+            yield
+        finally:
+            lock.seek(0)
+            if os.name == 'nt':
+                msvcrt.locking(lock.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                fcntl.flock(lock, fcntl.LOCK_UN)
+
+
+def ensure_model(target=None, *, allow_download=True, force=False, manifest=MANIFEST, opener=urllib.request.urlopen):
+    target = Path(target or ROOT / 'model' / 'artifacts' / manifest['filename'])
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with download_lock(target):
+        if not force and valid_model(target, manifest):
+            return target
+        if not allow_download:
+            raise RuntimeError('Configured model is missing or failed SHA-256 verification. Run bootstrap.py.')
+        url = f"https://huggingface.co/{manifest['repository']}/resolve/{manifest['revision']}/{manifest['filename']}"
+        partial = Path(str(target) + '.part')
+        for attempt in range(3):
+            try:
+                offset = partial.stat().st_size if partial.exists() else 0
+                if offset >= manifest['size']:
+                    if valid_model(partial, manifest):
+                        os.replace(partial, target); return target
+                    partial.unlink(); offset = 0
+                request = urllib.request.Request(url, headers={'User-Agent': 'VoltForge-Setup/3', 'Range': f'bytes={offset}-', 'Accept-Encoding': 'identity'})
+                with opener(request, timeout=60) as response:
+                    status = response.getcode()
+                    if status not in (200, 206):
+                        raise RuntimeError('Model download returned an unexpected HTTP status')
+                    if status == 206:
+                        if not response.headers.get('Content-Range', '').startswith(f'bytes {offset}-'):
+                            raise RuntimeError('Invalid download resume range')
+                    else:
+                        offset = 0
+                    received = offset
+                    reported = int(received * 10 / manifest['size'])
+                    with partial.open('ab' if offset else 'wb') as output:
+                        while chunk := response.read(1024 * 1024):
+                            received += len(chunk)
+                            if received > manifest['size']:
+                                raise RuntimeError('Model download exceeded the pinned size')
+                            output.write(chunk)
+                            progress = int(received * 10 / manifest['size'])
+                            if progress > reported:
+                                print(f'Model download: {min(progress * 10, 100)}%', flush=True)
+                                reported = progress
+                        output.flush(); os.fsync(output.fileno())
+                if not valid_model(partial, manifest):
+                    if partial.stat().st_size >= manifest['size']:
+                        partial.unlink()
+                    raise RuntimeError('Model download is incomplete or failed SHA-256 verification')
+                os.replace(partial, target)
+                return target
+            except Exception:
+                if attempt == 2:
+                    raise
+                time.sleep(attempt + 1)
+    raise RuntimeError('Model download failed')
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--force', '--clean', action='store_true')
+    parser.add_argument('--verify-only', action='store_true')
+    args = parser.parse_args()
+    from config import get_settings
+    settings = get_settings()
+    path = settings.resolve_model_path()
+    if path.name != MANIFEST['filename']:
+        if args.force or not settings.model_sha256 or not path.is_file() or digest(path) != settings.model_sha256:
+            raise RuntimeError('Custom model must already exist and match configured SHA-256; automatic downloads use model_manifest.json')
+        print('Configured custom model SHA-256 verified; compatibility still requires an inference check')
         return
+    ensure_model(path, force=args.force, allow_download=not args.verify_only)
+    print('Model verified:', MANIFEST['name'], '(SHA-256 matches pinned release)')
 
+
+if __name__ == '__main__':
     try:
-        with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-            cfg = json.load(f)
-
-        relative_path = f"model/artifacts/{MODEL_FILENAME}"
-        if cfg.get("model_path") != relative_path:
-            cfg["model_path"] = relative_path
-            with open(CONFIG_FILE, "w", encoding="utf-8") as f:
-                json.dump(cfg, f, indent=2)
-            print(f"[OK] Updated config.json model_path -> {relative_path}")
-        else:
-            print(f"[OK] config.json already points to {relative_path}")
-    except Exception as e:
-        print(f"[!] Error updating config.json: {e}")
-
-
-def verify_model_in_ram():
-    """Attempt to load the model with llama-cpp-python to verify integrity."""
-    print("\n--- Verifying Model with llama-cpp-python in RAM ---")
-    try:
-        from llama_cpp import Llama
-        print(f"Loading {TARGET_FILE.name} into context...")
-        t0 = time.time()
-        llm = Llama(
-            model_path=str(TARGET_FILE),
-            n_ctx=512,
-            n_threads=4,
-            verbose=False
-        )
-        load_time = time.time() - t0
-        print(f"[OK] Model verified successfully in RAM in {load_time:.2f}s!")
-        print(f"    Architecture: {llm.metadata.get('general.architecture', 'qwen2')}")
-        print(f"    Name:         {llm.metadata.get('general.name', 'Qwen2.5 Coder 1.5B Instruct')}")
-        
-        # Test quick generation
-        res = llm.create_chat_completion(
-            messages=[{"role": "user", "content": "Ping test"}],
-            max_tokens=10
-        )
-        print("[OK] Neural inference smoke test passed!")
-        return True
-    except ImportError:
-        print("[!] Note: llama-cpp-python is not installed in the current Python environment.")
-        print(f"    To run with neural acceleration, use the virtual environment:")
-        print(f"    .\\.venv\\Scripts\\python.exe main.py")
-        return True
-    except Exception as e:
-        print(f"[FAIL] Model load verification failed: {e}")
-        return False
-
-
-def download_model(force: bool = False):
-    """Download clean base model from Hugging Face with progress indicator."""
-    ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
-
-    if TARGET_FILE.exists() and not force:
-        actual_size = TARGET_FILE.stat().st_size
-        if actual_size == EXPECTED_SIZE:
-            print(f"[OK] Fresh model already exists at: {TARGET_FILE}")
-            print(f"    File size: {format_bytes(actual_size)} (Exact match with Hugging Face release)")
-            update_config_model_path()
-            verify_model_in_ram()
-            return
-
-        print(f"[!] Existing model file size mismatch: {actual_size} bytes (Expected: {EXPECTED_SIZE} bytes).")
-        print("    Re-downloading clean model from scratch...")
-
-    temp_file = TARGET_FILE.with_suffix(".tmp")
-    if temp_file.exists():
-        temp_file.unlink()
-
-    print(f"--- Downloading Clean Base Model: Qwen 2.5 Coder 1.5B Instruct ---")
-    print(f"URL:    {HUGGINGFACE_URL}")
-    print(f"Target: {TARGET_FILE}")
-    print(f"Size:   {format_bytes(EXPECTED_SIZE)} (~1.04 GiB)")
-    print("------------------------------------------------------------------")
-
-    headers = {
-        "User-Agent": "VoltForge-Model-Downloader/2.1.0"
-    }
-    req = urllib.request.Request(HUGGINGFACE_URL, headers=headers)
-
-    start_time = time.time()
-    last_print = start_time
-    downloaded = 0
-
-    try:
-        with urllib.request.urlopen(req) as response, open(temp_file, "wb") as out:
-            total_size = int(response.headers.get("Content-Length", EXPECTED_SIZE))
-            block_size = 1024 * 1024  # 1 MB blocks
-
-            while True:
-                buffer = response.read(block_size)
-                if not buffer:
-                    break
-                out.write(buffer)
-                downloaded += len(buffer)
-
-                now = time.time()
-                if now - last_print >= 0.5 or downloaded == total_size:
-                    percent = (downloaded / total_size) * 100
-                    elapsed = now - start_time
-                    speed = (downloaded / elapsed) if elapsed > 0 else 0
-                    eta = (total_size - downloaded) / speed if speed > 0 else 0
-                    sys.stdout.write(
-                        f"\rDownloading: [{downloaded / (1024*1024):.1f} MB / {total_size / (1024*1024):.1f} MB] "
-                        f"({percent:.1f}%) | Speed: {format_bytes(int(speed))}/s | ETA: {int(eta)}s   "
-                    )
-                    sys.stdout.flush()
-                    last_print = now
-
-        print("\n[OK] Download complete!")
-
-        # Atomic rename
-        if TARGET_FILE.exists():
-            TARGET_FILE.unlink()
-        temp_file.rename(TARGET_FILE)
-
-        print(f"[OK] Model saved cleanly to: {TARGET_FILE}")
-        update_config_model_path()
-        verify_model_in_ram()
-
-    except Exception as e:
-        print(f"\n[FAIL] Download error: {e}")
-        if temp_file.exists():
-            temp_file.unlink()
-        sys.exit(1)
-
-
-if __name__ == "__main__":
-    force_download = "--force" in sys.argv or "--clean" in sys.argv
-    download_model(force=force_download)
+        main()
+    except Exception as error:
+        print('Model setup failed:', type(error).__name__, '(working model/config preserved; check connectivity and disk space)')
+        raise SystemExit(1)
