@@ -9,6 +9,20 @@ from pydantic import ValidationError
 
 
 class ChatIntegrityTest(unittest.IsolatedAsyncioTestCase):
+    async def test_output_limit_preserves_partial_stream_without_completed_event(self):
+        class LimitedModel:
+            def tokenize(self, text, **kwargs): return list(text)
+            def create_completion(self, **kwargs):
+                yield {'choices': [{'text': 'Partial explanation'}]}
+                yield {'choices': [{'text': '', 'finish_reason': 'length'}]}
+        engine = LLMEngine(); engine.llm = LimitedModel()
+        with patch.object(routes, 'llm_engine', engine):
+            response = await routes.chat_stream(ChatRequest(message='Explain the circuit'))
+            events = ''.join([event async for event in response.body_iterator])
+        self.assertIn('Partial explanation', events)
+        self.assertIn('AI_RESPONSE_LIMIT', events)
+        self.assertNotIn('event: complete', events)
+
     async def test_native_tokens_reach_sse_before_generation_completes(self):
         import asyncio
         import threading

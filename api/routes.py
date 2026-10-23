@@ -22,6 +22,7 @@ from api.schemas import (
 from api.security import require_service_token
 from api.research import ResearchRequest, research_capabilities, require_supported_research
 from engine.web_research import ResearchError, web_research
+from engine.research_workflow import collect_evidence, check_references
 from engine.electronics import (
     get_hardware_coverage_report,
     get_component_coverage_report,
@@ -29,7 +30,7 @@ from engine.electronics import (
     validate_circuit_state,
 )
 from engine.llm import get_llm_engine
-from engine.runtime import RuntimeBusy, GenerationTimedOut
+from engine.runtime import RuntimeBusy, GenerationTimedOut, GenerationTruncated
 from config import get_settings
 
 logger = logging.getLogger("voltforge-ai.routes")
@@ -233,34 +234,26 @@ async def chat_stream(payload: ChatRequest):
 
         evidence = [source.model_dump(mode='json') for source in payload.authorizedDocumentEvidence]
         used_sources = []
-        if payload.research.documentIds and not evidence:
-            yield 'event: error\ndata: {"type":"error","code":"DOCUMENT_EVIDENCE_REQUIRED","message":"Authorized document text is unavailable. Reselect the document or upload it again."}\n\n'
-            return
-        if evidence:
-            yield 'event: status\ndata: {"type":"status","stage":"generating","summary":"Writing from selected document excerpts"}\n\n'
         if payload.research.mode != 'off':
             yield 'event: status\ndata: {"type":"status","stage":"searching","summary":"Searching public sources"}\n\n'
-            try:
-                result = await web_research.search(payload.research.model_copy(update={'documentIds': []}))
-            except ResearchError as error:
-                yield f'event: error\ndata: {json.dumps({"type": "error", "code": error.code, "message": error.message})}\n\n'
-                return
-            web_sources = result['sources']
-            if not web_sources:
-                yield 'event: error\ndata: {"type":"error","code":"WEB_NO_RESULTS","message":"No usable sources were found. Refine the public query."}\n\n'
-                return
-            # Keep room for both explicit document and public web selections.
-            evidence = [evidence[0], web_sources[0], *evidence[1:3], *web_sources[1:2]] if evidence else web_sources
-            yield 'event: status\ndata: {"type":"status","stage":"generating","summary":"Writing from retrieved sources"}\n\n'
+        try:
+            evidence = await collect_evidence(payload.research, evidence, web_research)
+        except ResearchError as error:
+            yield f'event: error\ndata: {json.dumps({"type": "error", "code": error.code, "message": error.message})}\n\n'
+            return
+        if evidence:
+            yield 'event: status\ndata: {"type":"status","stage":"generating","summary":"Comparing reference excerpts and writing an answer"}\n\n'
 
         # 2. Token-by-token streaming
         full_text = []
+        answer_metadata = {}
         research_args = {'evidence': evidence, 'used_sources': used_sources} if evidence else {}
         stream = llm_engine.stream_chat(
             message=payload.message, board_type=payload.boardType or "unspecified",
             components=payload.components, wires=payload.wires, code=payload.code or "",
             history=payload.history, simulation_state=payload.simulationState,
             context=payload.context or "", preferences=payload.approvedUserPreferences,
+            answer_metadata=answer_metadata,
             **research_args,
         )
         sources_sent = False
@@ -282,6 +275,9 @@ async def chat_stream(payload: ChatRequest):
         except GenerationTimedOut:
             yield 'event: error\ndata: {"type":"error","code":"AI_GENERATION_TIMEOUT","message":"Generation timed out. Try a shorter question."}\n\n'
             return
+        except GenerationTruncated:
+            yield 'event: error\ndata: {"type":"error","code":"AI_RESPONSE_LIMIT","message":"The response reached its length limit. Ask a narrower question or continue from the saved partial response."}\n\n'
+            return
         except ValueError:
             yield 'event: error\ndata: {"type":"error","code":"AI_CONTEXT_LIMIT","message":"Input exceeds the local model context. Send a shorter question."}\n\n'
             return
@@ -294,8 +290,7 @@ async def chat_stream(payload: ChatRequest):
         # 3. Synthesize proposals based on full interaction
         reply_text = "".join(full_text)
         if evidence:
-            allowed = {s['citationId'] for s in used_sources}
-            reply_text = re.sub(r'\[(S\d+)\]', lambda m: m.group(0) if m[1] in allowed else '[unverified reference]', reply_text)
+            reply_text = check_references(reply_text, used_sources)
         if not reply_text.strip():
             yield 'event: error\ndata: {"type":"error","code":"AI_EMPTY_RESPONSE","message":"The model returned no response. Please retry."}\n\n'
             return
@@ -324,7 +319,7 @@ async def chat_stream(payload: ChatRequest):
             "sessionId": session_id,
             "reply": reply_text,
             "confidence": None,
-            "mode": start_payload["mode"],
+            "mode": answer_metadata.get('mode', start_payload["mode"]),
             "citations": used_sources,
             "attemptId": payload.attemptId,
             "wireSuggestions": proposals["wireSuggestions"],

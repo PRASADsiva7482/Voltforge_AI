@@ -16,6 +16,22 @@ def source():
 
 
 class DocumentRetrievalTest(unittest.IsolatedAsyncioTestCase):
+    async def test_missing_dimension_guidance_is_persistable_without_model_claims(self):
+        class Model:
+            def tokenize(self, text, **kwargs): return list(text)
+            def create_completion(self, **kwargs):
+                raise AssertionError('Missing specification must not be invented by the model')
+        engine = LLMEngine(); engine.llm = Model(); engine.settings = Settings(n_ctx=12000)
+        payload = self.payload().model_copy(update={'message': 'What is the maximum output current of ZX123?'})
+        with patch.object(routes, 'llm_engine', engine):
+            response = await routes.chat_stream(payload)
+            events = ''.join([event async for event in response.body_iterator])
+        self.assertIn('do not specify', events)
+        self.assertIn('event: sources', events)
+        self.assertIn('event: complete', events)
+        self.assertIn('evidence-guidance', events)
+        self.assertNotIn('event: error', events)
+
     def test_reference_budget_limits_prefill_and_only_reports_supplied_sources(self):
         class Model:
             def tokenize(self, text, **kwargs): return list(range((len(text) + 3) // 4))
@@ -25,8 +41,9 @@ class DocumentRetrievalTest(unittest.IsolatedAsyncioTestCase):
         used = []
         fitted = engine._fit_research(engine._build_messages('Explain ZX123 voltage'), evidence, used)
         record = next(m for m in fitted if m['content'].startswith('External reference data'))
-        records = json.loads(record['content'].split('\n', 1)[1])
-        baseline = [m for m in fitted if m is not record]
+        encoded, question = record['content'].split('\n', 1)[1].split('\n\nQuestion: ', 1)
+        records = json.loads(encoded)
+        baseline = [*fitted[:-1], {'role': 'user', 'content': 'Question: ' + question}]
         self.assertEqual(len(used), 3)
         self.assertEqual([s['sourceId'] for s in used], ['chunk-0', 'chunk-1', 'chunk-2'])
         self.assertEqual([s['snippet'] for s in used], [s['excerpt'] for s in records])

@@ -49,6 +49,16 @@ class FakeHTTP:
 
 
 class WebSecurityTest(unittest.IsolatedAsyncioTestCase):
+    async def test_cache_headers_do_not_override_private_directives(self):
+        for extra, ttl in [
+            (b'Cache-Control: public, max-age=30\r\n', 30),
+            (b'Cache-Control: private\r\nCache-Control: public, max-age=30\r\n', 0),
+            (b'Cache-Control: public, max-age=30\r\nSet-Cookie: session=x\r\n', 0),
+        ]:
+            pool = httpcore.AsyncConnectionPool(network_backend=httpcore.AsyncMockBackend([response(extra=extra)]))
+            async with PublicHTTP(settings(), pool) as http:
+                self.assertEqual((await http.get('https://example.com')).cache_seconds, ttl)
+
     def test_url_validation(self):
         for url in ['http://example.com', 'file:///etc/passwd', 'https://user:key@example.com',
                     'https://localhost', 'https://a.local', 'https://127.0.0.1', 'https://10.1.1.1',
@@ -130,6 +140,25 @@ class WebSecurityTest(unittest.IsolatedAsyncioTestCase):
 
 
 class WebResearchTest(unittest.IsolatedAsyncioTestCase):
+    async def test_only_public_pages_are_reused_not_search_queries(self):
+        class CacheableHTTP(FakeHTTP):
+            async def get(self, url, **kwargs):
+                result = await super().get(url, **kwargs)
+                if not url.startswith(BRAVE_URL): result.cache_seconds = 60
+                return result
+        http = CacheableHTTP(settings())
+        service = WebResearch(lambda: settings(), lambda _: http)
+        first = await service.search(request())
+        # Advance admission only; the page cache keeps its own real TTL clock.
+        service.next_search = 0
+        second = await service.search(request())
+        self.assertEqual(len(http.calls), 3)  # two provider searches, one page fetch
+        self.assertEqual(first['sources'], second['sources'])
+        service.next_search = 0
+        service.pages.entries.clear()
+        await service.search(request())
+        self.assertEqual(len(http.calls), 5)
+
     async def test_consent_off_disabled_and_missing_credentials_make_zero_network_calls(self):
         factory = AsyncMock()
         service = WebResearch(lambda: settings(), factory)

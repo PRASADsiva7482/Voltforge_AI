@@ -14,6 +14,10 @@ class GenerationTimedOut(RuntimeError):
     pass
 
 
+class GenerationTruncated(RuntimeError):
+    pass
+
+
 class LocalRuntime:
     def __init__(self, settings):
         self.settings = settings

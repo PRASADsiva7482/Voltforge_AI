@@ -4,7 +4,7 @@ Created: 2026-10-19. Scope: existing UI, BL and AI applications.
 
 ## Current status
 
-**AIR-00, AIR-01, AIR-04 and AIR-05 complete. AIR-02 and AIR-03 are implemented with automated verification; live search acceptance needs a configured credential. Document retrieval now includes benchmarked local hybrid search with model-bound derived vectors. Next: AIR-06 bounded research workflow and engineering evaluations. Public search remains disabled by development configuration; selected document retrieval works independently.**
+**AIR-00, AIR-01, AIR-04 and AIR-05 complete. AIR-06 is in progress: bounded research, public caching and targeted evidence/clarification guards are implemented. The original six regressions pass, but broader condition-specific extraction and calculation quality still fail. A same-size general model was rejected after a source-injection failure. AIR-02/AIR-03 live search acceptance needs a configured credential. Next work remains AIR-06 model-quality acceptance.**
 
 The user authorized a staged implementation with completed steps tracked. The machine-readable status record is [ai-web-rag-backlog.json](ai-web-rag-backlog.json). Update its evidence when completing a step; a mocked test alone does not establish live integration.
 
@@ -16,7 +16,7 @@ The user authorized a staged implementation with completed steps tracked. The ma
 | AIR-03 | Cited answers streamed through BL to UI and restored from history | In progress: [implementation and verification](AIR-03_VERIFICATION.md); live provider acceptance pending |
 | AIR-04 | Authorized document/datasheet ingestion and lexical RAG | Complete: [implementation and live verification](AIR-04_VERIFICATION.md) |
 | AIR-05 | Benchmarked semantic/hybrid retrieval and repeatable bootstrap | Complete: [benchmark and verification](AIR-05_VERIFICATION.md) |
-| AIR-06 | Bounded research orchestration and engineering evaluations | Planned |
+| AIR-06 | Bounded research orchestration and engineering evaluations | In progress: [targeted regressions fixed; broader quality gates open](AIR-06_QUALITY_FOLLOWUP.md) |
 | AIR-07 | Live acceptance, security, performance and deployment verification | Planned |
 
 ## What the initial AIR-00 source audit established
@@ -139,6 +139,8 @@ Live acceptance requires: authenticated search -> real public evidence -> increm
 
 ## Change log
 
+- 2026-10-23: Added the planning-only [platform delivery plan](PLATFORM_DELIVERY_PLAN.md) and [detailed backlog](platform-delivery-backlog.json) for AI delivery/performance, payments and complete mobile/tablet support. These follow canonical RAG acceptance; AIR-06 remains the next implementation item and AIR-02/03/07 retain their existing open gates. This planning addition performs no runtime or database work.
+
 - 2026-10-19: AIR-00 source audit completed; staged plan and status record created. No runtime changes, model downloads, database operations or live search verification performed in this planning stage.
 - 2026-10-19: AIR-01 implemented across UI, BL and AI; verification recorded in `AIR-01_VERIFICATION.md`. Research modes are contract-validated and unavailable adapters fail closed. Active mode selection/preference persistence moves to AIR-03 with working execution, avoiding decorative controls. No development DB changes or live provider verification claimed.
 - 2026-10-22: AIR-02 code and automated checks implemented; real public Arduino-page fetch passed. Live search-provider verification is pending because retrieval is disabled and no provider credential is configured. Details and activation steps are in `AIR-02_VERIFICATION.md`; AIR-02 is not marked complete.
@@ -146,3 +148,4 @@ Live acceptance requires: authenticated search -> real public evidence -> increm
 - 2026-10-22: AIR-04 added owner/project-authorized uploads, immutable versions, lexical retrieval and authenticated source excerpts. VF_DOCUMENT_001 was applied and verified against the inspected development database. Document-only chat does not require Brave. PDF parsing runs in a bounded child JVM; slow native prompt processing now emits transport keepalives. See AIR-04_VERIFICATION.md for final acceptance evidence and limits.
 - 2026-10-22: AIR-04 final live acceptance passed: 14-page Arduino PDF, 65 native chunks, 3 persisted references, reload and retry replay. Compact evidence budget added after native timing failures. All five current database scripts verified on the shared VPN development DB; no pending migration commit. AIR-04 complete; AIR-05 is next. Earlier public-search and release-load gates remain open.
 - 2026-10-22: AIR-05 completed. Benchmarked and pinned MiniLM Q8 with automatic verified setup, no new runtime dependencies, owner-scoped hybrid ranking and model-bound derived vectors. Applied VF_EMBEDDING_001 to the inspected shared development database and verified all six scripts. Fresh environment, offline/corrupt/repeat setup, cache rebuild/deletion, native hybrid conversation persistence and targeted regression tests passed. AIR-06 is next; public-search credentials and wider load/quality gates remain open.
+- 2026-10-23: AIR-06 bounded workflow, public-page excerpt cache and Windows retry scheduling repair implemented. Native 1.5B evaluation passed 5/6 pattern checks but only 4/6 reviewed rubrics; dimensional confusion and conflict qualification remain open. AIR-06 stays in progress. Auto stays unavailable; external queries still require explicit review and consent. No database changes. See AIR-06_VERIFICATION.md.

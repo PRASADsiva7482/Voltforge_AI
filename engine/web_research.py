@@ -11,6 +11,7 @@ import re
 import socket
 import threading
 import time
+from collections import OrderedDict
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from html.parser import HTMLParser
@@ -105,6 +106,56 @@ class PublicNetworkBackend(httpcore.AsyncNetworkBackend):
 class Download:
     body: bytes
     media_type: str
+    cache_seconds: int = 0
+
+
+def public_cache_seconds(headers):
+    """Opt in only to explicitly public, fresh responses without cookies/variants."""
+    control = headers.get('cache-control', '').lower()
+    if ('public' not in [v.strip() for v in control.split(',')]
+            or any(v in control for v in ('private', 'no-store', 'no-cache'))
+            or 'set-cookie' in headers or headers.get('vary')):
+        return 0
+    age = headers.get('age', '0')
+    maximum = re.findall(r'(?:^|,)\s*max-age=(\d+)(?=\s*(?:,|$))', control)
+    if len(maximum) != 1 or len(maximum[0]) > 10 or not age.isdigit() or len(age) > 10:
+        return 0
+    return max(0, min(60, int(maximum[0]) - int(age)))
+
+
+class PublicPageCache:
+    """Small RAM-only cache of public page excerpts, never queries or answers.
+
+    Query-string URLs are excluded even if an origin declares them public. The
+    original retrieval timestamp is retained; expiry never slides on a hit.
+    """
+    def __init__(self, capacity=64, clock=time.monotonic):
+        self.entries = OrderedDict()
+        self.capacity, self.clock = capacity, clock
+        self.lock = threading.Lock()
+
+    def get(self, url):
+        url = public_url(url)
+        with self.lock:
+            cached = self.entries.get(url)
+            if cached is None:
+                return None
+            expires, item = cached
+            if expires <= self.clock():
+                del self.entries[url]
+                return None
+            self.entries.move_to_end(url)
+            return item.model_copy(deep=True)
+
+    def put(self, item, seconds):
+        url = public_url(str(item.url))
+        if seconds <= 0 or urlsplit(url).query or item.kind != 'web_page':
+            return
+        with self.lock:
+            self.entries[url] = (self.clock() + min(60, seconds), item.model_copy(deep=True))
+            self.entries.move_to_end(url)
+            while len(self.entries) > self.capacity:
+                self.entries.popitem(last=False)
 
 
 class PublicHTTP:
@@ -147,7 +198,10 @@ class PublicHTTP:
                     if response.status != 200:
                         raise ResearchError('WEB_UPSTREAM_FAILED' if response.status >= 500 else 'WEB_SOURCE_UNAVAILABLE',
                                             'The public source could not be read.')
-                    metadata = {key.decode('ascii').lower(): value.decode('latin-1') for key, value in response.headers}
+                    metadata = {}
+                    for key, value in response.headers:
+                        name, text = key.decode('ascii').lower(), value.decode('latin-1')
+                        metadata[name] = metadata[name] + ', ' + text if name in metadata else text
                     if metadata.get('content-encoding', 'identity').lower() != 'identity':
                         raise ResearchError('WEB_ENCODING_UNSUPPORTED', 'Compressed responses are not accepted.', 422)
                     limit = self.settings.web_max_response_bytes
@@ -165,7 +219,7 @@ class PublicHTTP:
                         if len(body) + len(chunk) > limit:
                             raise ResearchError('WEB_SOURCE_TOO_LARGE', 'The source exceeds the download limit.', 422)
                         body.extend(chunk)
-                    return Download(bytes(body), media)
+                    return Download(bytes(body), media, 0 if api_key else public_cache_seconds(metadata))
         except TimeoutError:
             raise ResearchError('WEB_TIMEOUT', 'The public source timed out.', 504) from None
         except (httpcore.NetworkError, httpcore.TimeoutException, httpcore.ProtocolError, OSError):
@@ -228,9 +282,10 @@ class BraveSearch:
             except ResearchError as error:
                 if attempt or error.code not in ('WEB_NETWORK_FAILED', 'WEB_UPSTREAM_FAILED'):
                     raise
-                await asyncio.sleep(self.settings.web_min_search_interval_seconds)
                 if self.before_retry:
-                    self.before_retry()
+                    await self.before_retry()
+                else:
+                    await asyncio.sleep(self.settings.web_min_search_interval_seconds)
         try:
             data = json.loads(result.body)
             rows = data.get('web', {}).get('results', [])
@@ -268,21 +323,27 @@ class WebResearch:
         self.lock = threading.Lock()
         self.active = 0
         self.next_search = 0.0
+        self.pages = PublicPageCache()
 
-    def reserve_retry(self, settings):
+    async def reserve_retry(self, settings):
         with self.lock:
             now = time.monotonic()
-            if now < self.next_search:
-                raise ResearchError('WEB_BUSY', 'Research capacity is busy. Retry shortly.', 429)
-            self.next_search = now + settings.web_min_search_interval_seconds
+            scheduled = max(now, self.next_search)
+            self.next_search = scheduled + settings.web_min_search_interval_seconds
+        # Reserve atomically before waiting; coarse Windows timers may wake a
+        # sleep slightly early, so recheck instead of failing a valid retry.
+        while (remaining := scheduled - time.monotonic()) > 0:
+            await asyncio.sleep(remaining)
 
     async def search(self, request: ResearchRequest):
         settings = self.settings_provider()
-        # Documents have their own future ownership-validated retrieval pipeline.
+        # Documents arrive through the separate BL ownership-validated pipeline.
         if request.documentIds:
             raise ResearchError('AI_DOCUMENTS_UNAVAILABLE', 'Document retrieval is not available.')
         if request.mode == 'off':
             return {'status': 'disabled', 'sources': [], 'warnings': []}
+        if request.mode != 'on':
+            raise ResearchError('WEB_AUTO_UNAVAILABLE', 'Choose an explicitly reviewed public search query.', 422)
         if not settings.web_search_enabled:
             raise ResearchError('WEB_DISABLED', 'Web research is disabled by server configuration.')
         if not settings.brave_api_key.get_secret_value().strip():
@@ -300,12 +361,17 @@ class WebResearch:
                     warnings = []
                     for index, item in enumerate(sources[:settings.web_max_pages]):
                         try:
+                            cached = self.pages.get(str(item.url))
+                            if cached is not None:
+                                sources[index] = cached
+                                continue
                             page = await http.get(str(item.url))
                             decoded = page.body.decode('utf-8', errors='replace')
                             text = extract_text(decoded) if page.media_type == 'text/html' else decoded.strip()[:8000]
                             if not text:
                                 raise ResearchError('WEB_SOURCE_EMPTY', 'No readable text was found.', 422)
                             sources[index] = source(str(item.url), item.title, text, 'web_page', page.body)
+                            self.pages.put(sources[index], page.cache_seconds)
                         except ResearchError as error:
                             # Retain the snippet as a snippet; never call a failed fetch a page.
                             warnings.append({'sourceId': item.sourceId, 'code': error.code})

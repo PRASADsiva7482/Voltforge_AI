@@ -1,0 +1,415 @@
+{
+  "version": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "plan": "PLATFORM_DELIVERY_PLAN.md",
+  "scope": ["Voltforge_UI", "Voltforge_BL", "Voltforge_AI"],
+  "deliverable": "Planning only; application implementation and database execution have not started under this backlog.",
+  "nextStep": "AIR-06",
+  "firstPlatformItem": "PLAT-000",
+  "statusValues": ["planned", "in_progress", "blocked", "complete"],
+  "completionRule": "Every dependency and item-specific acceptance criterion needs recorded evidence. Source implementation, mocked tests or a planning document alone do not establish live, provider, native model or physical-device acceptance.",
+  "executionRule": "Complete canonical RAG acceptance first, then AI delivery/performance, payments, responsive coverage and integrated release. Do not start dependent implementation before its gate. Planning is independent of implementation gates.",
+  "sizing": {"S": "One bounded module or contract", "M": "Several related modules", "L": "Cross-app or domain implementation", "XL": "Integration, hardware or provider acceptance; not a duration estimate"},
+  "externalDependencies": [
+    {"id": "AIR-02", "backlog": "ai-web-rag-backlog.json", "statusAtPlanning": "in_progress", "neededEvidence": "Configured live search-provider acceptance; credentials/quota availability, no credential disclosure."},
+    {"id": "AIR-03", "backlog": "ai-web-rag-backlog.json", "statusAtPlanning": "in_progress", "neededEvidence": "Authenticated provider-to-browser incremental answer, citations, persistence and reopen."},
+    {"id": "AIR-06", "backlog": "ai-web-rag-backlog.json", "statusAtPlanning": "in_progress", "neededEvidence": "Reviewed fresh engineering/model quality, resource and adversarial-source acceptance; current holdout failures resolved."},
+    {"id": "AIR-07", "backlog": "ai-web-rag-backlog.json", "statusAtPlanning": "planned", "neededEvidence": "Live consent, security, persistence, streaming, performance and deployment acceptance."}
+  ],
+  "relatedBacklogs": [
+    {"path": "../../Voltforge_UI/docs/optimization-followup-backlog.json", "relationship": "PERF-003 and MOB-008 reuse relevant OPT-FB scope/evidence; do not copy IDs or silently close unresolved runtime verification."}
+  ],
+  "decisions": [
+    {"id": "DEC-01", "status": "open", "question": "Deployment hardware/topology, concurrency and representative workloads?", "neededBy": ["AIF-001"]},
+    {"id": "DEC-02", "status": "open", "question": "Which licensed local model passes measured quality, latency and capacity thresholds?", "neededBy": ["PLAT-000"]},
+    {"id": "DEC-03", "status": "open", "question": "Merchant country/entity, customer markets, currencies, methods and eligible provider?", "neededBy": ["PAY-001"]},
+    {"id": "DEC-04", "status": "open", "question": "Purchase/subscription plans, pricing, quotas, overages, trials, grace, cancellation, refunds and tax handling?", "neededBy": ["PAY-001"]},
+    {"id": "DEC-05", "status": "open", "question": "Individual billing only or a separately designed organization model?", "neededBy": ["PAY-001"]},
+    {"id": "DEC-06", "status": "open", "question": "Supported browsers/devices and required mobile editing/execution capabilities?", "neededBy": ["MOB-001"]},
+    {"id": "DEC-07", "status": "open", "question": "Retention, access and deletion rules for operational traces, billing records, events and usage?", "neededBy": ["AIF-007", "PAY-002"]},
+    {"id": "DEC-08", "status": "open", "question": "Production activation owner, domains/webhooks, merchant operations and support readiness?", "neededBy": ["PAY-012", "REL-002"]}
+  ],
+  "items": [
+    {
+      "id": "PLAT-000", "stage": "0-rag-gate", "title": "Accept the existing RAG baseline before new platform implementation",
+      "status": "planned", "priority": "P0", "size": "XL", "ownerRole": "AI/backend engineer and QA",
+      "dependsOn": ["AIR-06", "AIR-02", "AIR-03", "AIR-07"],
+      "modules": ["AI docs/ai-web-rag-backlog.json", "AI docs/AIR-06_QUALITY_FOLLOWUP.md", "Existing UI/BL/AI research flow"],
+      "work": ["Continue AIR-06 in its canonical backlog; compare licensed model candidates on real hardware and fresh held-out engineering/security cases.", "Close live search/citation acceptance with actual configured provider access; leave unavailable features disabled until verified.", "Review AIR-07 evidence and record an accepted model/configuration/API baseline for the next stages; do not reimplement completed ingestion/retrieval."],
+      "acceptance": ["All four external prerequisites are complete with their specific evidence, not just code or mock results.", "Quality limitations, supported modes, hardware capacity and deployment prerequisites are documented honestly.", "Existing conversations, documents and project workflows pass the canonical acceptance suite."],
+      "verification": ["Review native held-out rubric and performance artifacts alongside canonical status updates.", "Run the canonical live UI-to-BL-to-AI research/reopen/isolation tests and record exact environment/results under AIR-07."],
+      "evidence": []
+    },
+    {
+      "id": "AIF-001", "stage": "1-ai-delivery", "title": "Map current AI flow, responsibilities and deployment capacity",
+      "status": "planned", "priority": "P0", "size": "M", "ownerRole": "Full-stack engineer",
+      "dependsOn": ["PLAT-000"],
+      "modules": ["UI features/ai", "BL ai/conversation, ai/gateway, ai/service", "AI api and engine"],
+      "work": ["Trace send/stop/retry/reload from UI through database, gateway and native runtime; identify existing responsibility boundaries.", "Record topology, proxy behavior, hardware and representative user workloads under DEC-01.", "Write a responsibility/sequence map and a minimal extraction plan; reuse current services rather than creating additional network hops."],
+      "acceptance": ["Every persisted and transient state has one authoritative owner.", "Actual auth/context/admission/persistence/stream boundaries and failure paths are documented with source references.", "Supported load profile and measurement environment are agreed before optimization."],
+      "verification": ["Trace one ordinary chat and one consented project/RAG request through existing tests and a development session.", "Review proposed module changes against working functionality and the no-duplicate-state requirement."],
+      "evidence": []
+    },
+    {
+      "id": "AIF-002", "stage": "1-ai-delivery", "title": "Formalize compatible request, stream and error contracts",
+      "status": "planned", "priority": "P0", "size": "M", "ownerRole": "UI/BL/AI engineers",
+      "dependsOn": ["AIF-001"],
+      "modules": ["UI conversationApi.ts and stream transport", "BL conversation request/stream DTOs", "AI api/schemas.py and routes"],
+      "work": ["Inventory actual event names and fields, operation/message/attempt identities and terminal states before proposing extensions.", "Define typed validation and compatibility fixtures for deltas, sources, keepalives, errors and partial/stopped responses.", "Specify stale-event rejection, final flush, size limits, capability negotiation and timeout/error mapping."],
+      "acceptance": ["UI, BL and AI agree on the same operation and attempt semantics without changing old persisted message meaning.", "Arbitrarily split UTF-8/SSE chunks, multiline data and terminal events are parsed correctly.", "Malformed/unknown events and version mismatch fail safely with no fabricated completion."],
+      "verification": ["Run shared contract fixtures through the existing TS/Java/Python test frameworks.", "Exercise chunk boundary, duplicate terminal, stale attempt, EOF and error-after-partial cases."],
+      "evidence": []
+    },
+    {
+      "id": "AIF-003", "stage": "1-ai-delivery", "title": "Separate chat presentation from request and conversation lifecycle",
+      "status": "planned", "priority": "P0", "size": "L", "ownerRole": "Frontend engineer",
+      "dependsOn": ["AIF-002"],
+      "modules": ["UI AiChatPanel.tsx", "UI useConversationHistory.ts", "UI conversationApi.ts and TanStack query keys"],
+      "work": ["Extract lifecycle/controller responsibilities incrementally only where current coupling warrants it; retain shared full-page and Playground behavior.", "Use existing server cache plus one request-state owner for sending, generating, stopping, failed and completed states.", "Preserve drafts, active IDs, copy/Markdown/source controls and clean chat presentation across panel/history changes.", "Handle logout, user/project/conversation switches and component cleanup without stale token writes or duplicate sends."],
+      "acceptance": ["Presentation components do not perform independent persistence or own conflicting active conversation state.", "Stop/retry/reopen and New Chat preserve IDs/history correctly; general chat has no invented project association.", "UI remains free of duplicate copy buttons, redundant avatars/status metadata and page-inside-popup framing."],
+      "verification": ["Extend chat browser/presentation suites for full-page and embedded chat, navigation during generation and account switching.", "Verify abort/listener cleanup and safe server reconciliation after reload or network loss."],
+      "evidence": []
+    },
+    {
+      "id": "AIF-004", "stage": "1-ai-delivery", "title": "Harden persisted message attempts and idempotent recovery",
+      "status": "planned", "priority": "P0", "size": "L", "ownerRole": "Backend engineer",
+      "dependsOn": ["AIF-002"],
+      "modules": ["BL ConversationStore, ConversationStream and repositories", "BL existing schema conventions", "UI persisted-state reconciliation"],
+      "work": ["Audit current atomicity and uniqueness around user messages, attempts, responses and sources; add only missing safeguards.", "Keep generation outside long-lived DB transactions; persist honest completed/failed/stopped/partial states and activity order.", "Define recovery for process termination, lost final acknowledgement and concurrent clients using existing IDs and schema.", "If schema additions prove necessary, inspect environment and create additive versioned migrations with preserved data and verified deployment order."],
+      "acceptance": ["Duplicate sends/retries cannot duplicate a user message or finalize a response twice.", "Interrupted attempts can be reopened and safely retried without presenting partial text as complete.", "Concurrent changes do not overwrite a newer response or cross-bind citations/attempts."],
+      "verification": ["Run repository/integration tests with duplicate concurrent requests, transaction failure and simulated crash boundaries.", "Verify real development DB save/reopen and retry after lost response; record whether any migration was required/applied."],
+      "evidence": []
+    },
+    {
+      "id": "AIF-005", "stage": "1-ai-delivery", "title": "Consolidate authorized context assembly and capability policy",
+      "status": "planned", "priority": "P0", "size": "M", "ownerRole": "Backend/AI engineer",
+      "dependsOn": ["AIF-002"],
+      "modules": ["BL AiGatewayPolicy and context services", "UI executionContext.ts and research controls", "AI context validation"],
+      "work": ["Document and enforce independent conversation, project, document, memory and public-query consent boundaries using existing services.", "Represent saved versus user-approved live board/circuit/firmware/serial/diagnostic context explicitly and bound size/relevance.", "Revalidate access on private retrieval/cache hits and document deletion or permission changes.", "Return real capability limits; do not infer electrical connectivity or executed simulation from imagery or labels."],
+      "acceptance": ["Sharing off excludes private project/code/output and project-specific memory at the server boundary.", "Sharing on transmits only authorized supported fields with correct project and revision provenance.", "Missing context produces useful clarification; no unauthorized private web query or cross-user cache exposure."],
+      "verification": ["Inspect captured sanitized request shapes in isolation tests for off/on, missing/foreign project, revoked document access and account switch.", "Test live editor context separately from saved-project workspace context and verify disclosure accuracy."],
+      "evidence": []
+    },
+    {
+      "id": "AIF-006", "stage": "1-ai-delivery", "title": "Align admission, timeouts, cancellation and overload behavior",
+      "status": "planned", "priority": "P0", "size": "L", "ownerRole": "Backend/AI engineer",
+      "dependsOn": ["AIF-004", "AIF-005"],
+      "modules": ["BL AiRequestAdmission and gateway", "AI runtime admission/queue", "Deployment proxy configuration"],
+      "work": ["Measure and align queue, retrieval, prefill, generation and outer transport deadlines; use bounded capacity and typed retry guidance.", "Ensure cancel/disconnect/failure releases matching leases, subscriptions and native work where supported.", "Make readiness/tool unavailability truthful and prevent automatic retries from duplicating model work.", "Document process-local scope; add shared coordination only if the agreed multi-instance topology needs it."],
+      "acceptance": ["Repeated sends cannot leave Run/chat-style indefinite preparation states or leaked capacity.", "Overload is bounded and explicit; one user cannot monopolize accepted capacity under the agreed workload.", "A timed-out or cancelled attempt cannot publish late results into another attempt."],
+      "verification": ["Run queue saturation, slow search, long prefill, native failure, proxy disconnect and cancellation tests.", "Measure active leases/workers before and after a repeated failure/stop soak; test aggregate limits if replicas are used."],
+      "evidence": []
+    },
+    {
+      "id": "AIF-007", "stage": "1-ai-delivery", "title": "Add privacy-preserving stage telemetry and operational diagnostics",
+      "status": "planned", "priority": "P1", "size": "M", "ownerRole": "Backend/operations engineer",
+      "dependsOn": ["AIF-002"],
+      "modules": ["BL AiTelemetry", "AI runtime/research timing", "UI performance instrumentation"],
+      "work": ["Reuse existing bounded telemetry and reconcile allowed events with the actual stream contract.", "Measure admission wait, retrieval, prefill, first token, token delivery, persistence and total latency with bounded labels.", "Define opaque correlation, retention/access and redaction under DEC-07; expose actionable operator diagnostics without transcript logging.", "Set alerts from measured baselines for unavailable model/search, queue saturation, persistence failure and error rates."],
+      "acceptance": ["Slow requests can be attributed to a stage without logging private messages, code, keys or user/project metric labels.", "Metrics remain bounded during long-running usage and distinguish real tokens from keepalives/status.", "Diagnostic access is authenticated/authorized and no hidden reasoning is displayed."],
+      "verification": ["Test event allowlists, redaction, cardinality/buffer bounds and stage timing consistency.", "Capture a sanitized end-to-end diagnostic example and verify alert conditions against injected faults."],
+      "evidence": []
+    },
+    {
+      "id": "AIF-008", "stage": "1-ai-delivery", "title": "Harden model/RAG runtime deployment and bounded orchestration",
+      "status": "planned", "priority": "P1", "size": "M", "ownerRole": "AI/operations engineer",
+      "dependsOn": ["AIF-005", "AIF-006", "AIF-007"],
+      "modules": ["AI existing bootstrap/model manifest", "AI runtime, llm and research_workflow", "Deployment readiness"],
+      "work": ["Preserve the accepted RAG/model boundary and existing direct-download runtime; verify pinned artifact integrity and configuration compatibility.", "Keep tool/evidence/token/time budgets centralized and test public freshness versus private retrieval cache rules.", "Document clean-host setup, warmup, offline restart, failed download/corrupt artifact and feature-flag rollback.", "Prevent load races and keep heavyweight initialization off per-request paths; profile before changing lifecycle."],
+      "acceptance": ["One accepted runtime integration supports streaming without duplicated model initialization or additional provider apps.", "Missing/corrupt artifacts fail readiness honestly; verified existing artifacts support documented offline behavior.", "Evidence trust/ownership boundaries and bounded orchestration survive deployment/config changes."],
+      "verification": ["Run isolated clean/repeat/offline/corrupt setup and native inference/cancellation checks with the accepted manifest.", "Run RAG security/quality regressions after lifecycle changes and record peak memory/startup timings."],
+      "evidence": []
+    },
+    {
+      "id": "AIF-009", "stage": "1-ai-delivery", "title": "Define authoritative usage measurement and entitlement integration seam",
+      "status": "planned", "priority": "P1", "size": "M", "ownerRole": "Backend/AI engineer",
+      "dependsOn": ["AIF-004", "AIF-006", "AIF-007"],
+      "modules": ["BL admission/conversation application services", "AI actual runtime usage events", "Future billing policy boundary"],
+      "work": ["Inventory which units are actually measured: requests, runtime tokens where supported, retrieval operations and execution duration.", "Bind measurements to stable operation/attempt identities and define reserved/finalized/released semantics without enabling charges.", "Create a small policy seam for later entitlements; retain current authorized behavior until billing rules are implemented.", "Define failure/partial/cancel/replay measurement behavior and prohibit client-estimated counters as financial authority."],
+      "acceptance": ["The same operation produces one final authoritative measurement or a documented unavailable measurement.", "No payment table, fabricated usage, new price or billing restriction is introduced just to create the seam.", "Future quota enforcement can run before expensive work without bypassing ownership/consent."],
+      "verification": ["Test replay, retry, cancel, failure and missing-runtime-measurement cases.", "Verify normal free/current application flows remain unchanged and usage payloads contain no private content."],
+      "evidence": []
+    },
+    {
+      "id": "AIF-010", "stage": "1-ai-delivery", "title": "Accept the complete UI-to-AI delivery flow",
+      "status": "planned", "priority": "P0", "size": "XL", "ownerRole": "Full-stack QA",
+      "dependsOn": ["AIF-003", "AIF-004", "AIF-005", "AIF-006", "AIF-007", "AIF-008", "AIF-009"],
+      "modules": ["UI/BL/AI existing test suites", "Authenticated development environment"],
+      "work": ["Run normal/general/project/RAG requests through real streaming, durable save and reload.", "Exercise ownership, context opt-out, long Markdown, stop/retry, process/network failure, auth expiry and multiple tabs.", "Record exact supported behavior, compatible contracts and remaining limitations rather than equating build success with flow acceptance."],
+      "acceptance": ["Real native response arrives incrementally and matches the final persisted response after refresh/new session.", "No cross-user context/history access, duplicate retry messages or stale-attempt UI updates.", "Failure and recovery leave understandable states and release resources."],
+      "verification": ["Run AI suites, BL relevant Maven tests and UI build/type/lint/presentation/chat browser tests.", "Capture sanitized live native streaming/persistence evidence plus a failure/recovery matrix."],
+      "evidence": []
+    },
+    {
+      "id": "PERF-001", "stage": "1-performance", "title": "Establish repeatable application and AI performance baselines",
+      "status": "planned", "priority": "P0", "size": "M", "ownerRole": "Performance engineer",
+      "dependsOn": ["AIF-001", "AIF-007"],
+      "modules": ["UI build/bundle scripts and browser traces", "BL/AI telemetry", "Representative circuit/chat fixtures"],
+      "work": ["Measure cold/warm routes, long chats, realistic circuits, large project lists and concurrent AI requests on declared hardware/network profiles.", "Record route bundles, render counts, long tasks, memory, query counts, TTFT and stage percentiles.", "Confirm numeric budgets proposed in the plan against evidence; document workload/sample size and any justified target adjustment."],
+      "acceptance": ["Baseline is reproducible and distinguishes UI paint, network, queue, retrieval and native generation.", "Current bundle budget and relevant OPT-FB gaps are referenced rather than replaced by historical PASS claims.", "Optimization candidates are ranked by measured user impact and risk."],
+      "verification": ["Run current bundle checks and capture CPU/network/browser profiles for specified workloads.", "Repeat measurements enough to report sample counts, p50/p95 and variability without claiming field data from lab tests."],
+      "evidence": []
+    },
+    {
+      "id": "PERF-002", "stage": "1-performance", "title": "Optimize chat rendering and history retrieval without changing semantics",
+      "status": "planned", "priority": "P1", "size": "M", "ownerRole": "Frontend engineer",
+      "dependsOn": ["PERF-001", "AIF-003"],
+      "modules": ["UI chat controller/rendering", "UI history queries and Markdown/code components"],
+      "work": ["Batch answer paints and isolate stable history from active response rendering; guarantee terminal flush.", "Use existing pagination and scoped query caching; avoid loading every conversation's messages.", "Optimize Markdown/code parsing and consider measured windowing only with preserved scroll anchors, text selection and copy.", "Keep sources/context disclosure compact and preserve reduced-motion/keyboard/touch behavior."],
+      "acceptance": ["Large histories stream within agreed paint/memory budgets without dropped text or full-history rerenders per delta.", "Reading older messages is not interrupted; loading previous pages preserves viewport position.", "Copy includes the complete message/code and account switch cannot show cached private content."],
+      "verification": ["Compare traces before/after with identical long-message/history fixtures.", "Run streaming final-flush, copy, pagination, scroll-anchor and accessibility browser regressions."],
+      "evidence": []
+    },
+    {
+      "id": "PERF-003", "stage": "1-performance", "title": "Optimize route loading, shared state subscriptions and engineering rendering",
+      "status": "planned", "priority": "P1", "size": "L", "ownerRole": "Frontend/performance engineer",
+      "dependsOn": ["PERF-001"],
+      "modules": ["UI lazy routes and assets", "UI TanStack/Zustand consumers", "UI existing OPT-FB work and simulation rendering"],
+      "work": ["Identify unintended heavy route imports, repeated requests and broad state subscriptions; fix only measured bottlenecks.", "Tune prefetch/assets/query invalidation using existing architecture and private-cache boundaries.", "Link relevant OPT-FB implementation/runtime evidence for canvas/worker/AVR behavior instead of creating duplicate optimization tasks.", "Bound logs/listeners and verify repeated navigation releases resources without resetting unsaved project state."],
+      "acceptance": ["Unrelated pages do not eagerly load heavy engineering assets without a measured reason.", "Performance improvement retains solver values, supported fidelity, save correctness and component identity.", "Outstanding engineering runtime acceptance remains explicitly tracked until its actual evidence exists."],
+      "verification": ["Run bundle/type/build and relevant route/query/render/worker regression scripts.", "Compare realistic circuit browser traces and repeated-navigation memory to the baseline; link exact OPT-FB evidence."],
+      "evidence": []
+    },
+    {
+      "id": "PERF-004", "stage": "1-performance", "title": "Accept performance and reliability budgets before billing integration",
+      "status": "planned", "priority": "P0", "size": "XL", "ownerRole": "Performance QA",
+      "dependsOn": ["AIF-010", "PERF-002", "PERF-003"],
+      "modules": ["Complete UI/BL/AI pipeline", "Performance evidence and deployment configuration"],
+      "work": ["Repeat declared baselines and stepped concurrency/soak tests on the accepted model/hardware.", "Validate bounded overload, cancellation, persistence and memory behavior under realistic load.", "Record accepted operating limits and alert/rollback thresholds for subsequent stages."],
+      "acceptance": ["Agreed budgets pass or explicitly revised targets have measured justification and approval.", "No quality/security/project-state regression is traded for latency or FPS.", "Stage 1 has complete functional and performance evidence with unresolved work separately identified."],
+      "verification": ["Compare same-profile before/after artifacts and record p50/p95/sample counts/error rates.", "Run full relevant regression and live load recovery checks; retain sanitized traces."],
+      "evidence": []
+    },
+    {
+      "id": "PAY-001", "stage": "2-payments", "title": "Decide billing product, eligible provider and merchant requirements",
+      "status": "planned", "priority": "P0", "size": "M", "ownerRole": "Product/merchant owner with backend engineer",
+      "dependsOn": ["PERF-004"],
+      "modules": ["Billing decision record", "Provider official documentation/account eligibility"],
+      "work": ["Resolve DEC-03/04/05: entity, country, markets, currency, methods, subscriptions or purchases, plan limits and individual/team scope.", "Compare eligible providers for hosted checkout, recurring support if needed, signatures/idempotency, sandbox, settlement, refunds and operating cost using current primary sources.", "Document pricing/quotas, no-default-overage policy, cancellation/grace/refund behavior, invoice/tax review and customer support ownership.", "Select one provider and minimum launch scope; explicitly defer optional credits/coupons/teams rather than promising them."],
+      "acceptance": ["Provider eligibility and product rules are confirmed rather than inferred from timezone or screenshots.", "Each charged unit, plan transition and customer disclosure has an approved policy.", "Sandbox credentials/setup are available through secure environment configuration; no secrets enter documentation."],
+      "verification": ["Review provider capability matrix against the real merchant requirements and official docs.", "Walk through purchase, renewal, failure, cancellation and downgrade examples with the approved policy."],
+      "evidence": []
+    },
+    {
+      "id": "PAY-002", "stage": "2-payments", "title": "Design billing domain, APIs and safe additive schema",
+      "status": "planned", "priority": "P0", "size": "L", "ownerRole": "Backend/database engineer",
+      "dependsOn": ["PAY-001"],
+      "modules": ["BL existing User/JPA/API conventions", "BL docs/schema", "Development database inspection"],
+      "work": ["Inspect actual configured environment/schema before adding billing records; reuse any compatible existing structures.", "Define customer, price versions, checkout, selected product lifecycle, event inbox, entitlement, usage and audit records with unique keys/ownership/environment boundaries.", "Define existing-style API contracts, exact-money representation and DEC-07 retention/deletion policy.", "Create additive migration scripts and deployment/recovery procedure; preserve data and verify development application before reporting success."],
+      "acceptance": ["Schema represents the selected product only, with no card/CVV storage or unnecessary duplicate provider data.", "Uniqueness prevents duplicate customer/provider/event/settlement identities and references preserve integrity.", "Versioned migrations and recovery account for actual MySQL DDL behavior and existing conventions."],
+      "verification": ["Validate constraints, exact amounts, isolation and safe migration/reapplication against intended development schema.", "Record schema before/after and CRUD/rollback-or-forward-recovery verification without private data."],
+      "evidence": []
+    },
+    {
+      "id": "PAY-003", "stage": "2-payments", "title": "Implement authenticated idempotent hosted checkout",
+      "status": "planned", "priority": "P0", "size": "M", "ownerRole": "Backend/frontend engineer",
+      "dependsOn": ["PAY-002"],
+      "modules": ["BL new bounded billing adapter within existing application", "UI billing API and checkout handoff"],
+      "work": ["Create/reuse provider checkout from a server-owned eligible price and authenticated customer.", "Persist operation identity before retryable provider work; reconcile ambiguous timeout using the same operation key.", "Validate return destinations, customer ownership, environment and duplicate active purchases/subscriptions.", "Keep return UI pending until authoritative server verification; prevent UI-supplied amounts/paid flags from granting access."],
+      "acceptance": ["Double click, refresh and request retry cannot create duplicate paid operations.", "Foreign customer IDs and client price/currency manipulation are rejected.", "Cancelled, expired, unavailable and pending checkout paths preserve current application data."],
+      "verification": ["Run selected-provider sandbox checkout plus timeout/duplicate/invalid-price integration cases.", "Test authenticated and unauthorized return/navigation flows with no real money movement."],
+      "evidence": []
+    },
+    {
+      "id": "PAY-004", "stage": "2-payments", "title": "Verify and durably ingest payment webhooks",
+      "status": "planned", "priority": "P0", "size": "L", "ownerRole": "Backend/security engineer",
+      "dependsOn": ["PAY-003"],
+      "modules": ["BL webhook endpoint and event inbox", "Selected-provider signature adapter", "Existing scheduler or bounded DB-backed processing"],
+      "work": ["Verify raw-byte signature and provider-specific replay rules before trusting event content; check merchant/environment and supported types.", "Durably insert unique verified events before success acknowledgement, then process idempotently with bounded retry/backoff.", "Handle duplicate/concurrent/out-of-order deliveries and recover events interrupted by process failure.", "Use narrow webhook authentication configuration without broadly weakening application security; minimize payload retention."],
+      "acceptance": ["Invalid/forged/wrong-environment events cannot mutate billing or entitlements.", "Acknowledged events survive restart and replay cannot duplicate financial/access effects.", "Ordering assumptions match the provider contract or current provider state is fetched for reconciliation."],
+      "verification": ["Use provider sandbox signed events plus signature tampering, duplicate delivery and crash-boundary tests.", "Verify durable inbox retry/dead-letter visibility and bounded retention with no sensitive payload logs."],
+      "evidence": []
+    },
+    {
+      "id": "PAY-005", "stage": "2-payments", "title": "Implement approved billing lifecycle and reconciliation",
+      "status": "planned", "priority": "P0", "size": "L", "ownerRole": "Backend engineer",
+      "dependsOn": ["PAY-004"],
+      "modules": ["BL billing lifecycle services/repositories", "Provider state reconciliation and scheduled jobs"],
+      "work": ["Map provider states to approved purchase/subscription transitions, renewals, past due/grace, recovery and cancellation.", "Implement plan changes/proration/trials only if selected in PAY-001, retaining historical price references.", "Reconcile missed events and ambiguous provider outcomes; prevent stale events from reverting newer state.", "Define refund/dispute/account-deletion impacts without deleting historical financial records or project content incorrectly."],
+      "acceptance": ["Payment, subscription and entitlement-effective states remain distinct and explainable.", "Delayed/out-of-order events converge to authoritative provider state without duplicate purchases or incorrect periods.", "Grace, cancellation and recovery follow approved policy including period boundaries/time zones."],
+      "verification": ["Run transition table tests and provider sandbox lifecycle/time-advance facilities where supported.", "Test missing-event recovery, stale events, date boundaries and restart during reconciliation."],
+      "evidence": []
+    },
+    {
+      "id": "PAY-006", "stage": "2-payments", "title": "Enforce server-owned entitlements without compromising project access",
+      "status": "planned", "priority": "P0", "size": "M", "ownerRole": "Backend engineer",
+      "dependsOn": ["PAY-005", "AIF-009"],
+      "modules": ["BL entitlement policy/projection", "BL AI admission and paid-feature services", "UI capability responses"],
+      "work": ["Derive feature access and periods from verified billing state and approved downgrade policy.", "Check entitlements in each protected server operation, separately from auth/ownership and user roles.", "Version/invalidate entitlement caches on payment/lifecycle changes and recheck concurrent requests safely.", "Preserve read/export of existing content according to policy; return actionable limits instead of deleting data."],
+      "acceptance": ["Client flags, stale JWT plan claims or hidden buttons cannot grant paid features.", "Downgrade/renewal/refund affects only policy-defined access at correct effective times.", "Provider outage behavior is documented and cannot silently grant unlimited expensive usage or erase paid rights."],
+      "verification": ["Test tampered UI claims, cross-user access, cache invalidation and boundary-time entitlement checks.", "Verify existing project/chat reopen and policy-defined read/export after downgrade/payment failure."],
+      "evidence": []
+    },
+    {
+      "id": "PAY-007", "stage": "2-payments", "title": "Implement approved quotas and exactly-once usage settlement",
+      "status": "planned", "priority": "P0", "size": "L", "ownerRole": "Backend/AI engineer",
+      "dependsOn": ["PAY-006", "AIF-009"],
+      "modules": ["BL usage ledger/reservations", "AI measured usage seam", "Admission policy"],
+      "work": ["Reserve approved units atomically before expensive work and finalize/release against stable operation identity.", "Implement reset periods and failure/partial/cancel/retry treatment from PAY-001; recover abandoned reservations.", "Prevent concurrent requests exceeding remaining quota or settling twice across retries/restarts.", "Use actual supported measurements; implement metered charges/credits only when explicitly selected and tariff/refund rules approved."],
+      "acceptance": ["Same operation cannot be billed or debited twice and rejected work cannot consume arbitrary usage.", "Concurrent requests respect server limits; failed/cancelled runs settle according to documented policy.", "Displayed confirmed usage agrees with ledger totals and explicitly identifies pending reservations."],
+      "verification": ["Run concurrent reserve/settle/release, lost acknowledgement, restart and billing-period boundary tests.", "Reconcile usage totals against actual runtime events in a sandbox AI request including retry and cancellation."],
+      "evidence": []
+    },
+    {
+      "id": "PAY-008", "stage": "2-payments", "title": "Build responsive billing, plan and usage experience",
+      "status": "planned", "priority": "P1", "size": "L", "ownerRole": "Frontend/product designer",
+      "dependsOn": ["PAY-006", "PAY-007"],
+      "modules": ["UI existing Settings/navigation", "UI billing API/query integration", "Shared forms/dialogs/theme"],
+      "work": ["Add an intentional Billing destination using existing settings/routing conventions, with plan, confirmed usage and renewal/cancellation state.", "Implement checkout recovery, available plan changes, cancellation and invoice/payment-method links supported by provider policy.", "Show pending/failed/offline/loading/empty states accurately and provide clear totals/disclosures before provider handoff.", "Support keyboard, phone/tablet layout and both themes; retain account/privacy controls and clean navigation."],
+      "acceptance": ["No successful payment/access claim appears before server verification.", "Every visible billing action is implemented, authorized and protected against duplicate submission.", "Amounts, intervals, taxes/fees where applicable and effective dates match authoritative API data."],
+      "verification": ["Run browser flows for checkout success/cancel/pending/failure, plan changes, usage and invoice access.", "Test 320/390/768/1024 widths, keyboard/focus, long labels and both themes with provider sandbox returns."],
+      "evidence": []
+    },
+    {
+      "id": "PAY-009", "stage": "2-payments", "title": "Provide bounded billing operations, refunds and audit recovery",
+      "status": "planned", "priority": "P1", "size": "M", "ownerRole": "Backend/operations engineer",
+      "dependsOn": ["PAY-005", "PAY-006"],
+      "modules": ["BL billing audit/reconciliation operations", "Existing admin access model or provider dashboard runbook"],
+      "work": ["Define least-privilege support and refund/dispute workflows using provider dashboard where sufficient; avoid unnecessary custom admin controls.", "Add safe reconciliation visibility and retry tooling with explicit references, reason and actor audit.", "Implement approved refund/dispute entitlement effects and customer receipt/invoice access without exposing other users' records.", "Document incident handling for stuck events, unexpected charges, provider outage and lost webhook delivery."],
+      "acceptance": ["Financial operations have explicit scope, idempotency and audit history.", "Support cannot retrieve unrelated private conversations/code through billing tools.", "Refund/reconciliation behavior can recover known failure cases without manual destructive SQL."],
+      "verification": ["Exercise sandbox refund/dispute and event-recovery runbooks with authorized/unauthorized actors.", "Review redacted audit entries and owner checks for invoice/receipt/provider-session links."],
+      "evidence": []
+    },
+    {
+      "id": "PAY-010", "stage": "2-payments", "title": "Review payment security, privacy and merchant readiness requirements",
+      "status": "planned", "priority": "P0", "size": "M", "ownerRole": "Security engineer and merchant/compliance owner",
+      "dependsOn": ["PAY-002", "PAY-004"],
+      "modules": ["BL billing API/security configuration", "Secrets/deployment configuration", "Merchant policy documentation"],
+      "work": ["Review auth/ownership, CSRF where applicable, signatures/replay, redirects, rate limits, secret rotation and test/live isolation.", "Confirm no card/CVV data enters VoltForge storage/logs/AI context; minimize webhook/customer data.", "Complete selected-market tax/invoice/refund/cancellation/privacy review with the responsible business advisor; document retention and deletion handling.", "Define alerts for payment failures, event backlog, reconciliation mismatch and entitlement anomalies."],
+      "acceptance": ["Security tests cover financial IDOR, forged success, price manipulation, webhook forgery and secret exposure.", "Merchant obligations are documented for actual markets without claiming universal compliance.", "Test and live credentials/data are isolated and rollback/rotation procedures are defined."],
+      "verification": ["Run targeted security tests and configuration/log scanning with synthetic data.", "Review documented merchant requirements and operational alert simulations before live activation."],
+      "evidence": []
+    },
+    {
+      "id": "PAY-011", "stage": "2-payments", "title": "Accept payment and AI entitlement flows in provider test mode",
+      "status": "planned", "priority": "P0", "size": "XL", "ownerRole": "Full-stack/payment QA",
+      "dependsOn": ["PAY-008", "PAY-009", "PAY-010"],
+      "modules": ["UI/BL billing integration", "Provider sandbox", "AI admission/usage flow"],
+      "work": ["Test full checkout, authoritative pending-to-paid transition, entitlement admission and confirmed usage after a real supported AI request.", "Test selected-method async confirmation/3DS, decline, cancellation, duplicate/out-of-order/missing events and provider timeout.", "Test approved renewal/grace/change/refund/dispute/downgrade paths with unchanged saved projects/history.", "Verify schema/deployment recovery and end-to-end ownership with two users."],
+      "acceptance": ["No duplicate charges/debits/access grants in tested retry/concurrency/failure scenarios.", "Ledger, provider state, entitlement and UI reconcile after process/network interruption.", "All acceptance uses sandbox funds; no production money movement is implied."],
+      "verification": ["Run BL billing/security/conversation suites and UI build/lint/billing/chat browser regressions.", "Record signed sandbox event evidence and UI-to-AI quota/usage reconciliation with redacted identifiers."],
+      "evidence": []
+    },
+    {
+      "id": "PAY-012", "stage": "2-payments", "title": "Prepare payment operations and controlled activation runbook",
+      "status": "planned", "priority": "P0", "size": "M", "ownerRole": "Operations and merchant owner",
+      "dependsOn": ["PAY-011"],
+      "modules": ["Deployment flags/secrets", "Billing support/monitoring runbooks", "Release decision DEC-08"],
+      "work": ["Document live webhook/domain/merchant onboarding prerequisites, alert owners and customer-support/refund procedures.", "Separate disabling new checkout from servicing existing subscriptions/webhooks and paid entitlements.", "Rehearse recovery, reconciliation and key rotation in test mode; specify live activation approval gate.", "Record operational readiness without activating real-money payments during this item."],
+      "acceptance": ["Operations can stop new sales without losing verified payments or previously purchased access.", "Launch prerequisites and owners are explicit; remaining merchant/account blockers are visible.", "Test-mode readiness is complete; live activation remains REL-002 and DEC-08."],
+      "verification": ["Execute a sandbox rollback/recovery/alert drill.", "Review production checklist and business approval requirements without logging credentials or initiating charges."],
+      "evidence": []
+    },
+    {
+      "id": "MOB-001", "stage": "3-responsive", "title": "Audit all routes and define responsive device/capability contract",
+      "status": "planned", "priority": "P0", "size": "M", "ownerRole": "Product designer/frontend QA",
+      "dependsOn": ["PAY-012"],
+      "modules": ["UI App.tsx and AppLayout.tsx", "Existing theme/breakpoints", "All route families listed in the plan"],
+      "work": ["Inventory every route, overlay and editor subview with existing responsive behavior and verified defects.", "Resolve DEC-06 and define phone/tablet/desktop layout patterns and minimum useful panel sizes.", "Prepare route/state/theme/input/device matrix including 320/390/768/820/1024/1280 widths, laptop height, zoom and localization.", "Specify phone editing/execution support honestly; distinguish physical-device acceptance from emulated widths."],
+      "acceptance": ["Every current route and future Billing view has an owner and acceptance scenario.", "Responsive contract extends existing tokens/layout rather than introducing competing breakpoint systems.", "Required real-device/browser capabilities and any explicit limitations are documented."],
+      "verification": ["Capture baseline screenshots/overflow/focus observations using current browser fixtures.", "Review actual route matrix and touch/editor workflows against product requirements."],
+      "evidence": []
+    },
+    {
+      "id": "MOB-002", "stage": "3-responsive", "title": "Consolidate responsive navigation, viewport and overlay primitives",
+      "status": "planned", "priority": "P0", "size": "M", "ownerRole": "Frontend engineer",
+      "dependsOn": ["MOB-001"],
+      "modules": ["UI AppLayout and Sidebar", "Shared drawers/dialogs", "Theme/layout tokens and visualViewport integration"],
+      "work": ["Adapt existing sidebar/mobile navigation with accessible More/drawer behavior where items cannot fit.", "Centralize safe-area, viewport and intentional overflow rules; prevent duplicate keyboard/resize listeners.", "Ensure overlays manage focus, Escape, restoration, scroll locking and browser navigation predictably.", "Preserve logo, active routes, account/logout and skip links with usable touch hit areas."],
+      "acceptance": ["Header/bottom nav/content do not overlap at target widths, zoom or keyboard resize.", "One overlay owns focus and screen-reader interaction at a time.", "Navigation never loses unsaved project/chat state or hides essential destinations."],
+      "verification": ["Run shell/overlay keyboard, touch, resize, back-navigation and theme browser tests.", "Check virtual keyboard and safe areas on representative physical iOS and Android devices."],
+      "evidence": []
+    },
+    {
+      "id": "MOB-003", "stage": "3-responsive", "title": "Adapt standard routes, forms, lists and billing for all widths",
+      "status": "planned", "priority": "P1", "size": "L", "ownerRole": "Frontend engineer/product designer",
+      "dependsOn": ["MOB-002"],
+      "modules": ["UI landing/dashboard/projects/explore/labs", "Profile/settings/admin/public views", "Billing and shared forms/tables"],
+      "work": ["Adapt real metrics/cards, search/filter/sort, responsive tables and action menus without hiding necessary operations.", "Make project creation, board/privacy selection, settings and billing validation keyboard-visible and accessible.", "Cover empty/loading/error/long-content states and conditional admin/public/guest authorization behavior.", "Verify existing Keycloak handoff/theme and payment return/deep-link navigation on small screens."],
+      "acceptance": ["All non-workspace route scenarios in MOB-001 are usable without page-level horizontal overflow.", "Mandatory project name and existing board/privacy/access validation remain intact.", "Actions remain reachable with touch/keyboard in both themes and long localized text."],
+      "verification": ["Run route screenshots plus real form/search/save/checkout-return interactions at target widths.", "Test login/logout/expiry and foreign/private/public project access on responsive layouts."],
+      "evidence": []
+    },
+    {
+      "id": "MOB-004", "stage": "3-responsive", "title": "Finish adaptive AI workspace and embedded chat behavior",
+      "status": "planned", "priority": "P0", "size": "M", "ownerRole": "Frontend engineer",
+      "dependsOn": ["MOB-002", "AIF-010", "PERF-002"],
+      "modules": ["UI AiChatPage/AiChatPanel", "ConversationSidebar and composer", "Research/document/memory dialogs"],
+      "work": ["Use a history drawer on narrow screens with one clear reopen control and no page-inside-popup duplication.", "Keep independently scrolling messages and a safe-area autosizing composer with IME-safe send/stop controls.", "Adapt code/tables/sources/context/memory/document interactions without adding repeated metadata or avatars.", "Preserve active conversation, draft, request and scroll position across layout changes and editor embedding."],
+      "acceptance": ["Keyboard, orientation and history collapse cannot clip composer/buttons or duplicate conversation requests.", "General chat remains independent of project sharing; authorized contextual chat keeps correct association.", "Copy, stop, retry, sources and long Markdown remain accessible on touch without hover dependence."],
+      "verification": ["Extend chat browser matrix with streaming during resize/navigation and long-code/message cases.", "Verify mobile keyboard, focus and scroll behavior on actual iOS/Android devices in both themes."],
+      "evidence": []
+    },
+    {
+      "id": "MOB-005", "stage": "3-responsive", "title": "Adapt engineering workspace panels without resetting project or execution state",
+      "status": "planned", "priority": "P0", "size": "L", "ownerRole": "Frontend/engineering-workspace engineer",
+      "dependsOn": ["MOB-002"],
+      "modules": ["UI Playground layout/toolbars", "Canvas/code/serial/AI panels", "Existing project and simulation stores"],
+      "work": ["Use measured two-pane tablet layouts and phone workspace views for Canvas, Code, Serial and AI.", "Provide library/inspector sheets, compact run/save status and clear panel switching without obscuring essential controls.", "Choose mount/unmount strategy from memory evidence while preserving Monaco view state, canvas viewport, undo, drafts and active execution.", "Keep actual baud/run/log/diagnostic states and unsupported-toolchain messages visible and truthful."],
+      "acceptance": ["Switching tabs, collapsing panels and rotating devices does not reset firmware, wires, undo history or a running session.", "Run/Stop/Save and project failure/unsaved states remain reachable; console never overlays them.", "Reopen restores correct project/board/code before any execution attempt."],
+      "verification": ["Run project-flow, execution-session and Playground browser regressions through layout transitions.", "Save/reload a realistic project after tablet/phone edits and verify board/wires/code integrity and actual serial behavior."],
+      "evidence": []
+    },
+    {
+      "id": "MOB-006", "stage": "3-responsive", "title": "Implement reliable touch canvas editing and accessible alternatives",
+      "status": "planned", "priority": "P0", "size": "L", "ownerRole": "Canvas/frontend engineer",
+      "dependsOn": ["MOB-005"],
+      "modules": ["UI CircuitCanvas/Konva interaction handlers", "Component palette/inspector", "Undo/wiring/selection controls"],
+      "work": ["Audit and repair pointer capture, drag thresholds, pan/pinch versus selection/wiring and scoped touch-action rules.", "Provide touch/keyboard alternatives for hover/right-click/precise-drag actions and meaningful hit targets.", "Preserve snap, pin identities, wire endpoints and undo/redo semantics across touch edits and panel resize.", "Keep page zoom/scroll usable outside the canvas; prevent accidental edits during gesture changes."],
+      "acceptance": ["Insert/select/move/wire/delete/undo/redo/pan/zoom work consistently on supported touch devices.", "Gestures do not move the viewport through bubbled child drags or corrupt saved electrical connections.", "Accessible controls provide alternatives where precise dragging or hover is otherwise required."],
+      "verification": ["Run existing drag/wiring/geometry/canvas contracts and new touch pointer browser tests.", "Perform physical-device edit-save-reopen checks including multitouch interruptions and orientation changes."],
+      "evidence": []
+    },
+    {
+      "id": "MOB-007", "stage": "3-responsive", "title": "Complete accessibility, localization and state coverage across shared controls",
+      "status": "planned", "priority": "P1", "size": "M", "ownerRole": "Accessibility QA/frontend engineer",
+      "dependsOn": ["MOB-003", "MOB-004", "MOB-005", "MOB-006"],
+      "modules": ["All shared controls/overlays", "Dark/light tokens", "i18next routes and workspace content"],
+      "work": ["Audit names, focus/order, contrast, reduced motion, reflow, touch spacing and screen-reader status announcements.", "Check 200% zoom, enlarged text, long translated labels, IME composition and local code/table overflow.", "Cover errors/skeletons/disabled/loading/empty states without decorative inactive controls.", "Avoid per-token screen-reader chatter and preserve accessible copy/source/context actions."],
+      "acceptance": ["Critical flows are keyboard and screen-reader operable with visible focus and useful error association.", "Both themes and localized layouts retain readable text, controls and complete functionality.", "WCAG target checks are documented accurately with any known exceptions/limitations."],
+      "verification": ["Run available automated accessibility checks plus manual keyboard/screen-reader tests.", "Capture representative route/theme/zoom/localization evidence and fix verified blockers."],
+      "evidence": []
+    },
+    {
+      "id": "MOB-008", "stage": "3-responsive", "title": "Validate constrained-device performance and interruption recovery",
+      "status": "planned", "priority": "P0", "size": "XL", "ownerRole": "Performance/mobile QA",
+      "dependsOn": ["MOB-007", "PERF-004"],
+      "modules": ["UI render/runtime budgets", "Existing OPT-FB evidence", "Mobile browser lifecycle/network handling"],
+      "work": ["Profile realistic circuits, long chat/code/logs and repeated navigation/orientation on representative mobile/tablet hardware.", "Measure memory, responsiveness and sustained use; tune rendering without silently altering solver fidelity.", "Define/verify background-foreground run behavior, network reconnect and unsaved-change/conflict recovery.", "Keep offline/PWA/private caching outside scope unless separately approved; record real unsupported hardware capabilities."],
+      "acceptance": ["No unbounded memory/listener growth or stale simulation displayed as current after suspension.", "Connection/layout interruptions preserve project/conversation data using existing revision and persistence rules.", "Measured device limits and remaining OPT-FB runtime work are explicit rather than hidden by desktop-only tests."],
+      "verification": ["Run a documented 20-minute representative-device scenario and capture traces/memory before and after.", "Test background/foreground, offline/online, interrupted save/generation and repeated panel transitions on physical devices."],
+      "evidence": []
+    },
+    {
+      "id": "MOB-009", "stage": "3-responsive", "title": "Accept complete responsive route and workspace matrix",
+      "status": "planned", "priority": "P0", "size": "XL", "ownerRole": "Full-stack/mobile QA",
+      "dependsOn": ["MOB-008"],
+      "modules": ["All routes in PLATFORM_DELIVERY_PLAN.md", "UI browser suites", "Physical device acceptance records"],
+      "work": ["Execute the final route/state/theme/input/viewport matrix, including payment return and auth flows.", "Verify complete project edit-save-reopen-run-serial-AI workflows and conversation persistence on target layouts.", "Distinguish automated emulation, manual accessibility and real-device results; list all accepted limitations."],
+      "acceptance": ["Every route family has passed evidence or an explicitly reviewed unsupported case, not an untested blank.", "No clipped composer, overlapping toolbar, inaccessible action, lost edits/history or unexpected page overflow in supported scenarios.", "Desktop/laptop behavior remains intact after mobile/tablet changes."],
+      "verification": ["Run UI build/type/lint and relevant project/chat/canvas/design-system browser suites across Chromium/Firefox/WebKit where supported.", "Record actual Android/iOS/tablet results with device/browser versions, themes and screenshots/traces."],
+      "evidence": []
+    },
+    {
+      "id": "REL-001", "stage": "4-release", "title": "Verify integrated platform compatibility, migrations and recovery",
+      "status": "planned", "priority": "P0", "size": "XL", "ownerRole": "Full-stack QA/operations",
+      "dependsOn": ["MOB-009"],
+      "modules": ["UI/BL/AI release artifacts", "Schema/model deployment", "End-to-end security/performance suites"],
+      "work": ["Run cross-workstream acceptance: authenticated chat/RAG/usage, payment lifecycle, responsive project editing and ownership.", "Rehearse additive migration and compatible BL/AI/UI rollout with safe feature flags and preserved records.", "Verify fresh-host model setup, offline restart with verified artifacts, readiness and recovery from unavailable dependencies.", "Compile release evidence with exact commands, versions, environments and unresolved limitations; do not reuse stale PASS claims."],
+      "acceptance": ["All three workstreams satisfy their gates and existing project/simulation/chat behavior is preserved.", "Restore/rollback procedure preserves conversations, projects, billing audit and already-purchased entitlements.", "Security, performance, native runtime, provider sandbox and physical-device acceptance are separately evidenced."],
+      "verification": ["Run existing relevant AI/BL/UI test/build/lint suites and live authenticated acceptance against release candidates.", "Perform a staging deployment/recovery drill and compare schema/artifact/config identities to the approved baseline."],
+      "evidence": []
+    },
+    {
+      "id": "REL-002", "stage": "4-release", "title": "Authorize and monitor phased production activation",
+      "status": "planned", "priority": "P0", "size": "M", "ownerRole": "Product/merchant owner and operations",
+      "dependsOn": ["REL-001"],
+      "modules": ["Feature flags and production configuration", "Billing/model/search operations", "Release evidence and support runbooks"],
+      "work": ["Resolve DEC-08 and confirm production credentials, domains, provider eligibility, capacity and support readiness without exposing secrets.", "Prepare the concrete release package and obtain the applicable production/payment activation approval before irreversible actions.", "Enable in limited phases with explicit observation windows, error/latency/reconciliation thresholds and rollback triggers.", "Keep existing subscriptions/webhooks functioning when disabling new checkout or optional AI features; record follow-up work separately."],
+      "acceptance": ["No production deployment or real-money activation occurs merely because this plan exists.", "Monitoring and support can identify and recover stream, persistence, payment and responsive regressions.", "Completion includes observed rollout evidence and accepted limitations, not just successful artifact upload."],
+      "verification": ["Perform authorized production smoke checks without exposing customer content or incidental real charges.", "Record rollout decisions, observed metrics, rollback readiness and named support ownership."],
+      "evidence": []
+    }
+  ]
+}

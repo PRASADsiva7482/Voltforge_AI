@@ -1,12 +1,14 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-22",
+  "updatedAt": "2026-10-23",
   "scope": [
     "Voltforge_UI",
     "Voltforge_BL",
     "Voltforge_AI"
   ],
   "plan": "AI_WEB_RAG_PLAN.md",
+  "followOnPlan": "PLATFORM_DELIVERY_PLAN.md",
+  "followOnBacklog": "platform-delivery-backlog.json",
   "runtimeSearchEnabledByThisWork": false,
   "nextStep": "AIR-06",
   "completionRule": "Complete only when the acceptance criteria in the plan have evidence; mocked tests do not establish live integration.",
@@ -117,11 +119,30 @@
     {
       "id": "AIR-06",
       "title": "Bounded research workflow and engineering evaluations",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "AIR-05"
       ],
-      "evidence": []
+      "evidence": [
+        "2026-10-23: Added server-controlled evidence collection, bounded public-page excerpt caching and native engineering quality evaluations; details in AIR-06_VERIFICATION.md.",
+        "Reuses existing one-query search, page/retry/time/admission limits and exact prompt token budget. Off mode never searches; authorized document and public evidence remain separate before bounded interleaving.",
+        "Public cache is RAM-only, at most 64 excerpts and 60 seconds, requires explicit public freshness; excludes query URLs, cookies, private/no-store/no-cache/variant responses. No query, private evidence or answer caching.",
+        "Fixed Windows timer race in provider retry scheduling; retries reserve capacity atomically and remain under the existing total deadline.",
+        "Native 1.5B evaluation completed on six synthetic cases. Final pattern checks 5/6, reviewed acceptance 4/6: conflicting evidence and current/voltage confusion remain failures. No model quality completion claimed.",
+        "AI discovery 84 passed plus 5 health/security tests; final cache/workflow rerun 25 passed. BL 47 targeted tests passed. UI build/type/bundle budgets and 14 chat browser groups passed; lint passed with 13 existing warnings. Compileall and diff checks passed.",
+        "No database schema or data changes required. UI and BL API contracts preserved; no extra chat metadata or thinking controls introduced.",
+        "Auto research stays explicitly unavailable; a reviewed query and consent remain required. Live public search remains disabled with no configured provider credential.",
+        "2026-10-23 follow-up: narrow packed-evidence unit/conflict checks and no-context clarification now pass all six original reviewed regressions at production temperature/output limits. Three answers are native; three are explicit server guidance. See AIR-06_QUALITY_FOLLOWUP.md.",
+        "Compared a pinned, checksum-verified same-size general-instruction GGUF through the existing runtime. Rejected default promotion after a source-injection failure; current default and bootstrap remain unchanged.",
+        "Expanded seven-case transfer evaluation: production-limit run passed 3/7 pattern checks. Condition/revision selection, missing resistor inputs and calculations remain failures; no broad quality completion claimed.",
+        "Native output-limit cutoff now produces AI_RESPONSE_LIMIT while preserving partial text; backend reload/retry and UI messaging tested. AI 95 tests, BL 48 tests, UI presentation/build/type/bundle/lint and 14 browser groups passed; 13 existing lint warnings.",
+        "No database changes or new provider. Optional candidate download was for evaluation only."
+      ],
+      "remainingWork": [
+        "Compare a suitably licensed larger local model with measured RAM/CPU latency, streaming, firmware/code quality and adversarial-source behavior before any default promotion.",
+        "Resolve condition-specific extraction, calculations and helpful missing-input responses; evaluate fresh held-out cases beyond the development regressions.",
+        "Live consented web research acceptance remains linked to AIR-02/AIR-03 and requires provider configuration."
+      ]
     },
     {
       "id": "AIR-07",
