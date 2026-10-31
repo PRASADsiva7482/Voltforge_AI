@@ -53,6 +53,22 @@ class DownloadTests(unittest.TestCase):
 
 
 class RuntimeTests(unittest.IsolatedAsyncioTestCase):
+    def test_prompt_thread_override_reaches_native_loader_and_default_is_preserved(self):
+        for threads in (None, 4):
+            with self.subTest(threads=threads), patch('engine.llm.ensure_model'), patch('llama_cpp.Llama') as loader:
+                engine = LLMEngine()
+                engine.settings = Settings(n_threads_batch=threads)
+                engine.initialize()
+                self.assertIsNotNone(engine.llm)
+                options = loader.call_args.kwargs
+                self.assertEqual(options['n_threads'], 4)
+                if threads is None:
+                    self.assertNotIn('n_threads_batch', options)
+                else:
+                    self.assertEqual(options['n_threads_batch'], threads)
+                engine.close()
+                loader.return_value.close.assert_called_once()
+
     def test_native_timeout_never_returns_false_success(self):
         engine = LLMEngine()
         class Model:

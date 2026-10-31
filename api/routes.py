@@ -22,7 +22,7 @@ from api.schemas import (
 from api.security import require_service_token
 from api.research import ResearchRequest, research_capabilities, require_supported_research
 from engine.web_research import ResearchError, web_research
-from engine.research_workflow import collect_evidence, check_references
+from engine.research_workflow import collect_evidence, check_references, checked_reference_stream
 from engine.electronics import (
     get_hardware_coverage_report,
     get_component_coverage_report,
@@ -256,6 +256,8 @@ async def chat_stream(payload: ChatRequest):
             answer_metadata=answer_metadata,
             **research_args,
         )
+        if evidence:
+            stream = checked_reference_stream(stream, used_sources)
         sources_sent = False
         try:
             async for token in stream:
@@ -295,7 +297,8 @@ async def chat_stream(payload: ChatRequest):
             yield 'event: error\ndata: {"type":"error","code":"AI_EMPTY_RESPONSE","message":"The model returned no response. Please retry."}\n\n'
             return
         proposals = _resolve_workspace_proposals(
-            user_message=payload.message if llm_engine.llm is not None else "",
+            user_message=payload.message if (llm_engine.llm is not None
+                and answer_metadata.get('capabilityDecision', 'supported') == 'supported') else "",
             reply_text=reply_text,
             board_type=payload.boardType or "unspecified",
             components=payload.components,

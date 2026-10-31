@@ -10,7 +10,7 @@ Selected MiniLM-L6-v2, 384 dimensions, Q8 GGUF, 25,008,064 bytes, Apache-2.0. Co
 
 The initial ONNX candidate was not adopted: runtime 1.31.0 crashed on native import on this Windows host. Alternative runtime downloads also encountered timeouts. A later alternative installed, but the existing GGUF runtime already passed the native benchmark and avoided a second inference dependency. Experimental packages were removed; `pip check` passed. This is an observed host compatibility result, not a claim that ONNX generally fails.
 
-Measured in a fresh Python 3.12 environment on this Windows machine, using [the recorded synthetic evaluation](AIR-05_BENCHMARK.json):
+Measured in a fresh Python 3.12 environment on this Windows machine, using the synthetic evaluation summarized below:
 
 | Measure | Result |
 | --- | --- |
@@ -56,3 +56,5 @@ The encoder uses at most 256 word pieces of each chunk and 2,000 query character
 AI: `embedding_manifest.json`, `embedding_model.py`, `engine/embeddings.py`, `api/embeddings.py`, configuration/startup/bootstrap/Docker packaging, benchmark/setup scripts and tests. BL: `DocumentHybridSearch`, encoder client, embedding entity/repository/store, `DocumentService`, configuration, migration/helper and integration tests. Existing chat provider and generation paths were reused.
 
 Primary references: [upstream model and pooling/token limits](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2), [GGUF conversion publisher](https://huggingface.co/second-state/All-MiniLM-L6-v2-Embedding-GGUF), [publisher embedding integration](https://llamaedge.com/docs/inference-sdk/embedding-app).
+
+Generated benchmark JSON was removed in the 2026-10-24 cleanup; measured outcomes remain above. Future raw results use ignored test-results/retrieval/latest.json.

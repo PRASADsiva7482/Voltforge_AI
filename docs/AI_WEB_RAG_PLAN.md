@@ -1,5 +1,9 @@
 # VoltForge: web research and document retrieval
 
+Development sequencing update (2026-10-26): the user explicitly approved starting platform work against the local/document-only baseline with live search, tunnel-free identity and production release excluded. AIR statuses remain unchanged. See [the current platform sequence](PLATFORM_DELIVERY_PLAN.md) and [completed AIF-001 mapping](AIF-001_FLOW_AND_OWNERSHIP.md). This supersedes prior statements that all platform development must wait; it does not close any RAG release gate.
+
+Latest local closeout (2026-10-26): **V6 4/4**, fresh V7 **7/7 at two seeds**, preserved V5/V2/V3, **161 AI + 5 health/security tests**, and the user-selected **one-active/zero-queue local HTTP capacity profile passed**. See [scope, measurements and remaining gates](AIR-06_07_LOCAL_CLOSEOUT.md). Live search, tunnel-free session restoration and final selected-profile cross-app release acceptance remain open. This supersedes older failure/capacity snapshots below; historical results are retained, not rerun or relabelled.
+
 Created: 2026-10-19. Scope: existing UI, BL and AI applications.
 
 ## Current status
@@ -117,6 +121,8 @@ Acceptance: ambiguous questions ask for missing information; fresh-information q
 
 ### AIR-07: release verification
 
+2026-10-24 execution update: at the user's request, independent AIR-07 checks have started while AIR-06 model-quality and AIR-02/03 provider gates remain open. This sequencing change permits verification work, not release approval or dependent platform implementation. Results are in [AIR-07_VERIFICATION.md](AIR-07_VERIFICATION.md).
+
 Run existing AI tests, BL tests, UI type/build/lint and focused browser tests. Add relevant tests throughout the preceding steps, not only here. Record the exact commands, results, environment and remaining failures without masking existing failures.
 
 Measure cold/warm readiness, search/fetch latency, first stage event, first generated token, generation throughput, full-response latency, peak memory, cancellation time and concurrent-user behavior. Establish numeric budgets from the actual hardware baseline rather than promise unmeasured performance. Use relevance and citation-support evaluations as well as speed measurements.
@@ -138,6 +144,12 @@ Live acceptance requires: authenticated search -> real public evidence -> increm
 - Sentence Transformers retrieval/reranking architecture: https://sbert.net/examples/sentence_transformer/applications/retrieve_rerank/README.html
 
 ## Change log
+
+- 2026-10-24: Implemented and verified narrow missing-specification/current-release handling; fresh and repeated-seed V4 each pass 8/8, original core 6/6. Broader model failures remain explicit. Started AIR-07 independent verification per user instruction: real HTTP streaming/auth/busy/disconnect recovery passed; AI 117 + health/security 5, BL 48 and UI build/lint/presentation/14 browser groups passed. Live provider remains disabled/unconfigured. See [code and quality evidence](AIR-06_MISSING_CONTEXT.md) and [release checks](AIR-07_VERIFICATION.md).
+
+- 2026-10-23: AIR-06 response-policy/CPU experiment completed. The unconditional prompt prototype regressed the 1.5B model and was rejected; baseline was restored and an operator-only candidate switch added. Paired 7B focused runs at 8/4 batch threads each passed only 2/6 patterns and 1/6 strict rubrics with one timeout; four threads were slower in this observation. Native baseline V2 answers match all eight prior answers exactly; original core passes 6/6. AI discovery 108 and health/security 5 passed; compileall/diff checks passed. No default/model/configuration promotion. See [serving-profile evidence](AIR-06_SERVING_PROFILE.md); AIR-06 remains in progress.
+
+- 2026-10-23: AIR-06 larger-model comparison completed using a pinned 7B GGUF in the existing runtime. Candidate: 21/21 pattern checks but 19/21 strict rubrics across fresh/core/older regression sets; 17 native and four server responses. Fresh-case total latency was 344.49s versus 82.42s for the current 1.5B model. Evaluation identity/provenance/checkpoint defects repaired; final AI tests 102 + health/security 5 passed. Default/configuration unchanged and AIR-06 stays in progress pending remaining quality and practical serving-profile acceptance. See [comparison and review](AIR-06_MODEL_COMPARISON.md). No UI/BL application or DB changes.
 
 - 2026-10-23: Added the planning-only [platform delivery plan](PLATFORM_DELIVERY_PLAN.md) and [detailed backlog](platform-delivery-backlog.json) for AI delivery/performance, payments and complete mobile/tablet support. These follow canonical RAG acceptance; AIR-06 remains the next implementation item and AIR-02/03/07 retain their existing open gates. This planning addition performs no runtime or database work.
 

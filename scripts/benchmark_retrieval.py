@@ -52,7 +52,8 @@ if sys.platform=='win32':
     if ctypes.windll.psapi.GetProcessMemoryInfo(ctypes.c_void_p(-1),ctypes.byref(memory),memory.cb):
         report['peakProcessMemoryMiB']=round(memory.PeakWorkingSetSize/1024**2,2)
 # Persist actual vectors for a Java parity test of the production fusion algorithm.
-(ROOT/'docs/AIR-05_BENCHMARK.json').write_text(json.dumps(report,indent=2)+'\n')
+(ROOT/'test-results/retrieval').mkdir(parents=True,exist_ok=True)
+(ROOT/'test-results/retrieval/latest.json').write_text(json.dumps(report,indent=2)+'\n')
 fixture={'documents':data['documents'],'vectors':vectors.round(7).tolist(),
     'queries':[{**c,'vector':np.array(engine.encode([c['text']])[0]).round(7).tolist()} for c in data['queries']],
     'negativeQueries':[{'text':q,'vector':np.array(engine.encode([q])[0]).round(7).tolist()} for q in data.get('negative_queries',[])]}

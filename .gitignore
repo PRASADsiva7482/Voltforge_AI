@@ -14,6 +14,11 @@ training_runs/
 *.part
 *.lock
 logs/
+test-results/
+# Generated run reports belong in ignored test-results, not application docs.
+docs/AIR-05_BENCHMARK.json
+docs/AIR-06_*.json
+docs/AIR-07_*.json
 *.gguf
 model/artifacts/*.gguf
 model/artifacts/*.damaged*

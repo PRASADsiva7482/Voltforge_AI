@@ -24,6 +24,11 @@ class Settings(BaseModel):
     auto_download_model: bool = True
     n_ctx: int = Field(default=4096, ge=2048, le=32768)
     n_threads: int = Field(default=4, ge=1, le=64)
+    # None preserves llama-cpp's existing batch-thread default. Set explicitly
+    # only after measuring prompt processing on the deployment CPU.
+    n_threads_batch: int | None = Field(default=None, ge=1, le=64)
+    # Experimental candidate; never enable automatically during setup/migration.
+    answer_policy: Literal['baseline', 'focused'] = 'baseline'
     n_gpu_layers: int = Field(default=0, ge=-1)
     max_tokens: int = Field(default=768, ge=1, le=8192)
     temperature: float = Field(default=0.3, ge=0, le=2)

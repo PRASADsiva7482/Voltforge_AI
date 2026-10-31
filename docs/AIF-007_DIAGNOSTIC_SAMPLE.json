@@ -1,0 +1,206 @@
+{
+  "scope": "loopback-native-with-test-identity-and-h2",
+  "samples": 5,
+  "browser": {
+    "latencyMs": {
+      "accepted": {
+        "count": 5,
+        "p50Ms": 25.5,
+        "p95Ms": 26.099999994039536,
+        "maxMs": 101.40000000596046
+      },
+      "firstText": {
+        "count": 5,
+        "p50Ms": 132.30000001192093,
+        "p95Ms": 134.89999997615814,
+        "maxMs": 15783.800000011921
+      },
+      "saved": {
+        "count": 5,
+        "p50Ms": 955.1999999880791,
+        "p95Ms": 956.5,
+        "maxMs": 16609.5
+      },
+      "total": {
+        "count": 5,
+        "p50Ms": 955.1999999880791,
+        "p95Ms": 956.5,
+        "maxMs": 16609.59999999404
+      }
+    },
+    "outcomes": {
+      "completed": 5
+    }
+  },
+  "checks": [
+    {
+      "saved": true,
+      "reopened": true
+    },
+    {
+      "saved": true,
+      "reopened": true
+    },
+    {
+      "saved": true,
+      "reopened": true
+    },
+    {
+      "saved": true,
+      "reopened": true
+    },
+    {
+      "saved": true,
+      "reopened": true
+    }
+  ],
+  "backend": {
+    "schemaVersion": "vfai031-spring-telemetry-v1",
+    "requests": {
+      "completedByOutcome": {
+        "success": 5
+      },
+      "peakActive": 1,
+      "active": 0,
+      "startedByOperation": {
+        "chat.stream": 5
+      },
+      "latencyMs": {}
+    },
+    "streams": {
+      "peakActive": 1,
+      "active": 0,
+      "firstTokenLatencyMs": {
+        "maxMs": 15682.957,
+        "count": 5,
+        "sumMs": 16116.811,
+        "p50Ms": 111.486,
+        "p95Ms": 114.876
+      },
+      "events": {
+        "complete": 5,
+        "other": 6,
+        "start": 5,
+        "token": 55
+      },
+      "latencyMs": {
+        "maxMs": 16511.204,
+        "count": 5,
+        "sumMs": 20190.135,
+        "p50Ms": 924.328,
+        "p95Ms": 933.044
+      }
+    },
+    "capacity": {
+      "activeStreams": 0,
+      "admissionRejections": {},
+      "activeRequests": 0
+    },
+    "stages": {
+      "latencyMs": {
+        "admission": {
+          "maxMs": 0.021,
+          "count": 5,
+          "sumMs": 0.065,
+          "p50Ms": 0.012,
+          "p95Ms": 0.013
+        },
+        "document_retrieval": {
+          "maxMs": 0.175,
+          "count": 5,
+          "sumMs": 0.433,
+          "p50Ms": 0.074,
+          "p95Ms": 0.077
+        },
+        "persistence": {
+          "maxMs": 7.413,
+          "count": 6,
+          "sumMs": 34.756,
+          "p50Ms": 5.608,
+          "p95Ms": 6.587
+        },
+        "turn_preparation": {
+          "maxMs": 42.834,
+          "count": 5,
+          "sumMs": 78.274,
+          "p50Ms": 9.905,
+          "p95Ms": 10.638
+        }
+      },
+      "outcomes": {
+        "admission.success": 5,
+        "document_retrieval.success": 5,
+        "persistence.success": 6,
+        "turn_preparation.success": 5
+      }
+    },
+    "streamErrorRate": {
+      "threshold": 0.2,
+      "active": false,
+      "samples": 5,
+      "rate": 0.0,
+      "failures": 0,
+      "windowSeconds": 300,
+      "minimumSamples": 5
+    },
+    "alerts": {
+      "active": [],
+      "windowSeconds": 300,
+      "slowStreamThresholdMs": 60000.0,
+      "state": {
+        "admissionSaturation": false,
+        "modelUnavailable": false,
+        "persistenceFailure": false,
+        "searchUnavailable": false,
+        "slowStream": false,
+        "streamErrorRate": false
+      }
+    },
+    "rawPromptStored": false,
+    "rawProjectContentStored": false,
+    "rawModelOutputStored": false
+  },
+  "profile": {
+    "threads": 4,
+    "releaseAccepted": false,
+    "activeRequests": 1,
+    "outputTokenLimit": 768,
+    "contextTokens": 4096,
+    "queuedRequests": 0,
+    "sampleInterpretation": "one cold then four sequential warm requests; synthetic identity and H2; no live search"
+  },
+  "native": {
+    "latencyMs": {
+      "queue_wait": {
+        "count": 5,
+        "p50Ms": 0.016700010746717453,
+        "p95Ms": 0.0281000102404505,
+        "maxMs": 0.033499993151053786
+      },
+      "native_first_text": {
+        "count": 5,
+        "p50Ms": 78.5187000001315,
+        "p95Ms": 81.6060000215657,
+        "maxMs": 15617.60100000538
+      },
+      "native_completion": {
+        "count": 5,
+        "p50Ms": 889.9617999850307,
+        "p95Ms": 898.6551999987569,
+        "maxMs": 16444.33649998973
+      },
+      "native_prefill": {
+        "count": 5,
+        "p50Ms": 0.0,
+        "p95Ms": 0.0,
+        "maxMs": 15601.519
+      }
+    },
+    "outcomes": {
+      "queue_wait.success": 5,
+      "native_first_text.success": 5,
+      "native_completion.success": 5,
+      "native_prefill.success": 5
+    }
+  }
+}

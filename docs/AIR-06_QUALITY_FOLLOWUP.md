@@ -8,7 +8,7 @@ The original six regression cases now pass reviewed acceptance using the existin
 
 1. **Missing/conflicting specifications were delegated entirely to a small model.** Prompt changes alone did not reliably prevent a voltage being returned as a current, or incompatible specifications being presented without qualification. `engine/evidence_guard.py` now handles narrowly identifiable cases against the *packed* source excerpts. Direct specification questions missing the relevant numeric unit request the relevant datasheet section. Identical explicit specification labels with different normalized values in distinct sources produce a qualified conflict response citing both. Equivalent units, different revisions, different conditions and unrelated labels are not treated as conflicts.
 2. **No-context questions could produce invented circuits.** Short references to a missing circuit or error now ask for the actual diagram/output. This check runs only without history, references or project data. Messages containing literal details, code or numbers continue through inference. This is a conservative clarification rule, not a universal intent classifier.
-3. **Evidence and question occupied consecutive user turns.** They now share one current user turn, with references serialized as untrusted JSON and the original question included afterward. Exact prompt/source budgets and provenance remain intact. This formatting change alone did not fix quality failures; `AIR-06_SINGLE_TURN_EVAL.json` preserves that result.
+3. **Evidence and question occupied consecutive user turns.** They now share one current user turn, with references serialized as untrusted JSON and the original question included afterward. Exact prompt/source budgets and provenance remain intact. This formatting change alone did not fix quality failures; the AIR-06_SINGLE_TURN_EVAL summary records that result.
 4. **A native `finish_reason=length` was incorrectly accepted as completion.** Native generation now raises a distinct output-limit failure after preserving emitted text. SSE reports `AI_RESPONSE_LIMIT`; BL's existing stream persistence keeps the partial answer and reason. UI explains the length limit after reopening. A new BL test verifies reload and duplicate-free retry. No schema change was needed.
 5. **Pattern-based evaluation could pass a dimensionally wrong answer.** The missing-current fixture now explicitly rejects a current stated in volts. Empty, interrupted and failed generations cannot pass. Review remains mandatory; regular expressions do not establish factual correctness.
 
@@ -20,11 +20,11 @@ All inputs are public synthetic fixtures. No live search or simulator was execut
 
 | Artifact | Configuration | Result |
 | --- | --- | --- |
-| `AIR-06_SINGLE_TURN_EVAL.json` | Original coder model, temperature 0, 192 output tokens, before guards | Formatting alone did not fix the conflict case. |
-| `AIR-06_GENERAL_MODEL_EVAL.json` | Same-size general-instruction candidate, temperature 0, 192 tokens, before guards | Better conflict handling, but obeyed a source injection and fabricated a simulator success. **Rejected as default.** |
-| `AIR-06_CODER_HOLDOUT.json` | Original coder, temperature 0, 192 tokens, before guards | 3/7 pattern checks; calculation and diagnostic responses also hit the deliberately short cap. Not a production-limit result. |
-| `AIR-06_PRODUCTION_HOLDOUT.json` | Original coder, temperature 0.3, 768 tokens, specification guard enabled, before short-question clarification | 3/7 pattern checks; no runtime errors. Revision selection, temperature-specific current, missing resistor inputs and calculation quality still failed. |
-| `AIR-06_FINAL_REGRESSION.json` | Original coder, temperature 0.3, 768 tokens, final guards | **6/6 pattern checks and 6/6 reviewed rubrics**. One clarification, two evidence-guidance responses, three native-model answers. This is not six improved native reasoning answers. |
+| `AIR-06_SINGLE_TURN_EVAL` | Original coder model, temperature 0, 192 output tokens, before guards | Formatting alone did not fix the conflict case. |
+| `AIR-06_GENERAL_MODEL_EVAL` | Same-size general-instruction candidate, temperature 0, 192 tokens, before guards | Better conflict handling, but obeyed a source injection and fabricated a simulator success. **Rejected as default.** |
+| `AIR-06_CODER_HOLDOUT` | Original coder, temperature 0, 192 tokens, before guards | 3/7 pattern checks; calculation and diagnostic responses also hit the deliberately short cap. Not a production-limit result. |
+| `AIR-06_PRODUCTION_HOLDOUT` | Original coder, temperature 0.3, 768 tokens, specification guard enabled, before short-question clarification | 3/7 pattern checks; no runtime errors. Revision selection, temperature-specific current, missing resistor inputs and calculation quality still failed. |
+| `AIR-06_FINAL_REGRESSION` | Original coder, temperature 0.3, 768 tokens, final guards | **6/6 pattern checks and 6/6 reviewed rubrics**. One clarification, two evidence-guidance responses, three native-model answers. This is not six improved native reasoning answers. |
 
 The original regression set was used during development. The seven transfer cases were written before testing the candidate and were not weakened to turn failures into passes. They have now been inspected and should be treated as regression cases; a future model promotion still needs fresh held-out evaluation.
 
@@ -72,4 +72,8 @@ Existing Starlette/httpx deprecation and `nul` resource warnings remain. No deve
 
 ## Next work
 
-Continue AIR-06 with a measured larger-model comparison and fresh engineering cases. Condition-specific extraction, calculations, helpful missing-input questions and adversarial sources remain model-quality gates. AIR-02/AIR-03 live internet acceptance still requires the configured search provider; AIR-07 release/load acceptance has not been completed.
+2026-10-24 update: the [narrow missing-context follow-up](AIR-06_MISSING_CONTEXT.md) is implemented. Independent [AIR-07 verification](AIR-07_VERIFICATION.md) is now active per user instruction. Earlier model failures below remain recorded; the canonical backlog holds current acceptance gates.
+
+Update: the larger-model comparison has now been executed. See [AIR-06_MODEL_COMPARISON.md](AIR-06_MODEL_COMPARISON.md) for pinned artifact identity, fresh and regression results, remaining quality gaps, resource measurements and the decision to keep the candidate evaluation-only. The historical results above are preserved; AIR-06 remains in progress.
+
+Continue AIR-06 with the remaining response-quality and deployment-profile work listed in the comparison report, followed by additional fresh engineering cases. The unchanged default's condition-specific extraction, calculation and helpfulness failures remain relevant until a better profile passes acceptance and is selected. AIR-02/AIR-03 live internet acceptance still requires the configured search provider; AIR-07 release/load acceptance has not been completed.

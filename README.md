@@ -87,6 +87,48 @@ Run `.venv\Scripts\python.exe scripts/verify_web_research.py --live-search` for 
 
 ### Existing runtime checks
 
+AIR-06 model and CPU-profile experiments are documented in
+[the serving-profile report](docs/AIR-06_SERVING_PROFILE.md). `n_threads_batch`
+is an optional operator override (1–64); leaving it unset preserves the native
+library default. It is distinct from decoding `n_threads`. The optional
+`answer_policy=focused` is experimental and has not passed deployment acceptance;
+the service retains `baseline`. Neither setting is accepted from chat requests,
+and bootstrap does not change them automatically. Evaluation CLI overrides do
+not update the running application.
+
+Research evaluation cases may include `requestContext` for existing engine inputs:
+`board_type`, `code`, `context`, `history`, `components`, `wires`,
+`simulation_state` and `preferences`. Such fixtures must declare `syntheticOnly: true`;
+use invented data, never exported private conversations. History permits only user
+and assistant messages. Unknown fields, runtime overrides and oversized context
+are rejected before model initialization. Reports record context field names and
+a digest rather than copying the raw context; generated answers may still contain
+input excerpts. Review the rubric as well as regex results. The reusable
+[firmware transfer fixture](tests/fixtures/research_firmware_transfer_v5.json)
+now passes its six reviewed cases using four native answers and two cited
+clarifications. The [fresh follow-up fixture](tests/fixtures/research_firmware_transfer_v6.json)
+now passes three of four cases; the within-source contradiction still fails. See the
+[reviewed results](docs/AIR-06_MODEL_COMPARISON.md#api-and-target-evidence-checks).
+
+Explicit research-backed Arduino LED requests using `millis()` now run a bounded
+timer-evidence assessment before firmware synthesis. The existing local model
+extracts source claims; uncertain/invalid decisions produce cited clarification
+without code or workspace proposals. This is not a verified board-capability
+registry or a general firmware validator. References must name the required API;
+when a board is selected, each excerpt must identify that exact existing catalog
+board ID/name, with longer variant names taking precedence. Unknown/implicit or
+mixed identities request clarification without model inference. These are necessary
+text-evidence checks, not semantic proof: within-source contradictions still fail,
+and unrecognized aliases may require a more explicit reference. Non-research chat
+and other firmware tasks retain their existing flow. Both stages use one model
+admission slot and deadline; the assessment reserves at most 128 of the configured
+generation tokens, with only the remainder available to code synthesis. Malformed
+or shortened evidence cannot silently bypass the check. Internal JSON stays out
+of the chat stream. Evaluator `assessmentTokens` counts retokenized visible JSON,
+not authoritative runtime/billing usage; `assessmentTokenLimit` records the reserved
+cap and `assessmentSeconds` the observed cost. Expect extra prefill latency; no
+deployment performance or broad RAG acceptance is implied.
+
 ```powershell
 .venv\Scripts\python.exe -m unittest discover -s tests -v
 .venv\Scripts\python.exe -m unittest test_health_status test_security_va -v
@@ -97,8 +139,20 @@ Run `.venv\Scripts\python.exe scripts/verify_web_research.py --live-search` for 
 
 `verify_runtime.py` loads the real model and generates a synthetic response. `verify_service.py` launches an isolated temporary service and checks authenticated HTTP, body limits, responsiveness during native generation, busy handling, disconnect cancellation, and subsequent generation. `verify_download.py` downloads a separate temporary copy of the complete model, checks its digest, and cleans up only that copy; it costs about 1.12 GB of network transfer. Tests do not print private chat contents or modify existing conversations.
 
+Use `scripts/verify_service.py --output test-results/research/AIR-07_NATIVE_HTTP.json` to retain an
+atomic result with completed checks and timings. Failed/interrupted runs replace
+stale success without storing private exception details. This isolated AI probe
+does not certify live web search, browser behavior, database persistence or the
+full release. See [AIR-07 verification](docs/AIR-07_VERIFICATION.md) for those
+separate acceptance gates and current cross-app results.
+
 See [the implementation and verification report](docs/AI_RUNTIME_2026-10-19.md) for executed results and limits. CPU timings are measurements from this laptop, not performance guarantees.
 
 ## Container deployment
 
 The Dockerfile copies the active service modules and runs as a non-root user. Supply `VOLTFORGE_AI_API_TOKEN` through your deployment secret mechanism and mount a writable volume at `/app/model` for both chat and embedding artifacts. First startup downloads and verifies the pinned artifacts; persist the volume for offline restarts. Run one Uvicorn process per model allocation. The container build has not been executed here because Docker is not installed; GPU/container behavior is not verified.
+
+
+## Test artifacts
+
+Keep reusable regression tests, fixtures, schemas and pinned model manifests. Put generated reports, screenshots and diagnostic logs under ignored test-results directories (or the backend target directory), never new per-run files under docs. After reviewing a run, record its concise outcome and remaining blockers in the existing verification/backlog, then remove disposable artifacts. Do not retain credentials or private transcripts. Completed testing does not make regression test source disposable.

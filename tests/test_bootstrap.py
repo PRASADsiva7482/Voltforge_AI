@@ -10,6 +10,23 @@ from pydantic import ValidationError
 
 
 class BootstrapTests(unittest.TestCase):
+    def test_answer_policy_requires_explicit_valid_operator_setting(self):
+        from config import load_settings
+        self.assertEqual(Settings().answer_policy, 'baseline')
+        with self.assertRaises(ValidationError):
+            Settings(answer_policy='client-selected')
+        with patch.dict(os.environ, {'VOLTFORGE_AI_ANSWER_POLICY': 'focused'}):
+            self.assertEqual(load_settings().answer_policy, 'focused')
+
+    def test_prompt_thread_setting_is_bounded_and_loads_through_existing_environment_path(self):
+        from config import load_settings
+        for value in (0, -1, 65):
+            with self.subTest(value=value), self.assertRaises(ValidationError):
+                Settings(n_threads_batch=value)
+        self.assertIsNone(Settings().n_threads_batch)
+        with patch.dict(os.environ, {'VOLTFORGE_AI_N_THREADS_BATCH': '4'}):
+            self.assertEqual(load_settings().n_threads_batch, 4)
+
     def test_global_python_launch_bootstraps_managed_environment(self):
         with patch('bootstrap.sys.version_info', (3,14)), patch('bootstrap.subprocess.call', return_value=0) as launch:
             with self.assertRaises(SystemExit) as result: bootstrap.ensure_launch_runtime()

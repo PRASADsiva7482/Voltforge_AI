@@ -1,34 +1,59 @@
 # VoltForge platform delivery plan
 
-Planning baseline: **2026-10-23**. Scope: `Voltforge_UI`, `Voltforge_BL`, `Voltforge_AI`, and their deployment/authentication integration.
+## Authorized development sequence — 2026-10-26
 
-**This is a planning deliverable. No application, database, payment, or deployment changes are authorized by this document alone.** The current request is to prepare the backlog before implementation. Existing authorization for development work does not make a planned task completed.
+User explicitly authorized starting platform development against the verified local/document-only baseline on 2026-10-26. Live search, tunnel-free identity, final real-account cross-app acceptance and production release remain blocked. This overrides only the development dependency on PLAT-000; all other task dependencies and acceptance criteria remain required.
+
+**AIF-001 is complete** within that development scope: [flow and ownership map](AIF-001_FLOW_AND_OWNERSHIP.md), 14 browser test groups and 49 BL tests. **AIF-002 is complete**: [stream contract and verification](AIF-002_STREAM_CONTRACT.md). **AIF-007 is complete**: [telemetry closeout and diagnostic evidence](AIF-007_CLOSEOUT.md). **PERF-001 is next.** PLAT-000 remains blocked as the full RAG release gate; REL-001 explicitly depends on it, and REL-002 remains gated. The JSON `developmentAuthorization` is the only dependency exception. Payment work remains sandbox-only and follows AI/performance; mobile follows payments.
+
+This dated authorization supersedes the original strict RAG-first development sequencing described below. It does not supersede quality, authorization, live acceptance or production-release requirements.
+
+Planning baseline: **2026-10-23**, reconciled and validated **2026-10-26**. Scope: `Voltforge_UI`, `Voltforge_BL`, `Voltforge_AI`, and their deployment/authentication integration.
+
+**The user has now authorized platform development with the exclusions above.** The original planning baseline remains below; development progress and evidence are recorded in the JSON. No production activation is authorized by this document.
 
 The executable work list is [platform-delivery-backlog.json](platform-delivery-backlog.json). It contains dependencies, responsibilities, implementation scope, acceptance criteria, verification, and evidence fields for every item. This document provides architecture, product decisions, cross-cutting contracts, and release gates. Update both when an agreed scope changes; record progress/evidence in the JSON.
+
+The 38 existing IDs are retained: one RAG acceptance gate, 14 AI/performance items, 12 payment items, nine responsive items and two release items. Each item also identifies direct decision prerequisites; decisions already resolved by dependencies are inherited. The JSON workstream index and risk register map outcomes and risks to these same IDs, without creating a second backlog.
 
 ## 1. Delivery order and current status
 
 | Stage | Scope | Entry condition | Exit condition | Current state |
 | --- | --- | --- | --- | --- |
-| 0 | Finish existing web/RAG work | Continue canonical AIR-06 | AIR-06 quality, AIR-02/03 live web acceptance, AIR-07 release acceptance supported by evidence | Open prerequisite |
-| 1 | AI delivery layers and application performance | PLAT-000 RAG gate accepted | AIF-010 and PERF-004 accepted | Planned |
+| 0 | Finish existing web/RAG work | Continue canonical AIR-07 verification and resolve its named AIR-06 / AIR-02/03 prerequisites | AIR-06 quality, AIR-02/03 live web acceptance, AIR-07 release acceptance supported by evidence | Open prerequisite |
+| 1 | AI delivery layers and application performance | PLAT-000 accepted or explicit scoped development authorization | AIF-010 and PERF-004 accepted | In progress |
 | 2 | Payments and server-side entitlements | Stage 1 accepted; merchant/product decisions recorded | PAY-011 test-mode acceptance; PAY-012 operating readiness | Planned |
 | 3 | Full mobile/tablet experience | Stage 2 implementation ready | MOB-009 route/device acceptance | Planned |
 | 4 | Integrated release | All three workstreams accepted | REL-001 evidence and REL-002 authorized release | Planned |
 
 Payment work must be responsive from its first implementation; Stage 3 is the complete application pass, including the engineering workspace. These stages are dependency gates, not a promise of calendar dates. Small implementation items may be split after inspection without changing the acceptance requirements or marking a parent complete prematurely.
 
-**Next implementation work remains AIR-06, not a new platform item.** Follow [the existing RAG plan](AI_WEB_RAG_PLAN.md) and [its authoritative status file](ai-web-rag-backlog.json). This plan does not duplicate AIR tasks or reset their evidence.
+**AIR-07 remains the canonical RAG closeout; PERF-001 is the next authorized platform item.** AIR-07 is already in progress with independent verification, while AIR-06 quality and AIR-02/03 live-provider acceptance remain open. Follow [the existing RAG plan](AI_WEB_RAG_PLAN.md) and [its authoritative status file](ai-web-rag-backlog.json). This plan does not duplicate AIR tasks or reset their evidence. This document defines platform work; dated prerequisite implementation results are tracked separately in the canonical RAG evidence.
+
+Latest local closeout (2026-10-26): **V6 4/4**, fresh V7 **7/7 at two seeds**, preserved V5/V2/V3, **161 AI + 5 health/security tests**, and the user-selected **one-active/zero-queue local HTTP capacity profile passed**. See [scope, measurements and remaining gates](AIR-06_07_LOCAL_CLOSEOUT.md). Live search, tunnel-free session restoration and final selected-profile cross-app release acceptance remain open. This supersedes older failure/capacity snapshots below; historical results are retained, not rerun or relabelled.
 
 ### RAG evidence that must be closed first
 
 - AIR-00/01/04/05 are recorded complete in the existing backlog. Document ingestion, conversation persistence and hybrid retrieval already exist; do not build them again.
-- AIR-06 remains in progress. The follow-up passes the six original regressions using three native responses and three server guidance responses. The expanded seven-case production-limit transfer evaluation passes only 3/7 pattern checks. Condition/revision selection, missing-input handling and calculations require broader quality work. See [AIR-06 quality follow-up](AIR-06_QUALITY_FOLLOWUP.md).
-- Evaluate an appropriately licensed larger local model on actual deployment hardware, fresh held-out engineering cases, malicious sources, firmware tasks, memory and latency. Do not equate more parameters, RAG, or a passing keyword check with trustworthy engineering reasoning.
-- AIR-02/03 still require configured search-provider access and a live authenticated search → evidence → incremental answer → persisted citation → reopen test. A disabled provider or mocked response cannot close this gate.
-- AIR-07 remains planned: isolation, consent, failure/retry/stop, persistence, deployment and measured performance acceptance. Retain unsupported Auto research as unavailable unless the canonical backlog explicitly implements and verifies it.
+- AIR-06 remains in progress. V6 is now 4/4: explicit timing limitations veto firmware and produce cited clarification. Fresh V7 passes 7/7 at two seeds. V5 6/6 and V2 8/8 were reverified; V3 6/6 and prior compile/emulator results remain historical evidence. Necessary text identity is not semantic capability proof. See [current quality evidence](AIR-06_MODEL_COMPARISON.md#api-and-target-evidence-checks).
+- Larger-model and thread-profile experiments have already been performed. The 7B candidate was not promoted; the current 1.5B baseline remains unchanged. Use [the serving-profile decision](AIR-06_SERVING_PROFILE.md) and [model comparison](AIR-06_MODEL_COMPARISON.md) rather than repeating rejected experiments. Further quality work must name a materially different hypothesis, bounded evaluation and stop criterion before spending more benchmark time. Any new model must satisfy license, real-hardware quality, memory and latency gates; more parameters alone are not acceptance.
+- AIR-02/03 still require configured search-provider access and a live authenticated search → evidence → incremental answer → persisted citation → reopen test. The user has confirmed that no Brave key is available. Keep live search unavailable and record this external dependency; do not repeatedly request the same key or silently substitute a different provider. A disabled provider or mocked response cannot close this gate.
+- AIR-07 is in progress. [Existing verification evidence](AIR-07_VERIFICATION.md) includes real-account isolation (36 live checks), streamed process-crash recovery (21), owner project/document consent and reopen, and controlled sign-in availability (25 browser scenarios/10 backend tests). Latest recorded AI regression results are 155 tests plus five health/security tests. These results span separate increments and are not a new end-to-end run. Real tunnel-free identity restoration, live search and final selected-profile cross-app acceptance remain open; the local one-active/zero-queue HTTP profile passed. Retain unsupported Auto research as unavailable unless the canonical backlog explicitly implements and verifies it.
 
 If credentials or hardware prevent acceptance, record the exact external dependency and continue only work independent of that gate. Do not rename an incomplete RAG feature to complete to begin platform implementation. Planning is independent and is being completed now.
+
+### Finite RAG closeout before the three workstreams
+
+| Existing gate | Next concrete deliverable | Evidence needed to close it | External input |
+| --- | --- | --- | --- |
+| AIR-06 quality | Known V6 contradiction resolved; preserve V2/V3/V5/V6/V7 and accept the declared quality scope with final cross-app evidence | Reusable V6, preserved V5/V2/V3 and valid registered targets; source/provenance, stream/cancel checks and declared hardware scope. Separate native and application-guided results | Accepted model/quality scope and target hardware under DEC-01/02 |
+| AIR-02/03 live search | One consented real-provider path through authenticated UI/BL/AI, plus off/no-results/failure paths | Incremental deltas, actual evidence, saved citations, reopen and cross-user denial using configured provider | Provider access; currently unavailable because no key is supplied |
+| AIR-07 identity | Restore a real session without the tunnel interstitial | Reload, expiry/relogin, deep-link return and account isolation with a working intended issuer | Reachable identity deployment |
+| AIR-07 capacity | Local one-active/zero-queue HTTP profile passed; carry into selected BL/UI deployment | Six workloads, bounded overload, health, disconnect recovery and process-tree memory measured; no sustained-soak claim | User selected this PC; DEC-01 resolved |
+
+For each failed experiment: name one hypothesis, preserve the failing case, set a bounded probe and stop criterion, then record the result. Do not repeatedly run unchanged model/thread comparisons. Do not achieve a quality pass by adding exact-answer rules for every test question; legitimate calculators and configuration checks must have an explicit product scope and be scored separately from native reasoning. New unrelated work becomes a linked follow-up rather than silently extending the current item. Close PLAT-000 only from canonical accepted evidence for all four prerequisites; no deadline or planning status overrides this gate.
+
+The known V6 contradiction is now corrected. The next release increment is the final selected-profile authenticated BL/UI verification and the unavailable provider/identity gates. The local HTTP profile passed; do not repeat rejected model experiments. See [the finite closeout record](AIR-06_07_LOCAL_CLOSEOUT.md).
 
 ## 2. Inspected architecture and constraints
 
@@ -67,6 +92,19 @@ This is a source/status audit. No fresh database inspection, runtime acceptance,
 | Existing persistence/runtime adapters | Conversation/document repositories, local inference, embeddings, consented web access | Making UI state authoritative |
 
 These are responsibility boundaries, not seven new network services. Use existing services/hooks/modules when their responsibility already matches. Add a small abstraction only where tests or measured coupling justify it. Do not introduce Redis, Kafka, a vector database, a second API gateway, or multi-agent orchestration without a measured need and a separate decision record.
+
+```mermaid
+flowchart LR
+  UI[Chat UI] --> Controller[Conversation controller and transport]
+  Controller --> Policy[BL identity, consent and admission]
+  Policy --> Conversation[BL conversation application service]
+  Conversation --> DB[(Existing MySQL persistence)]
+  Conversation --> Gateway[Existing BL AI gateway]
+  Gateway --> AI[AI orchestration and authorized retrieval]
+  AI --> Runtime[Existing native model runtime]
+```
+
+Answer deltas travel back through the same gateway to the controller; BL commits terminal message state and the UI reconciles it. Future billing policy joins the BL admission boundary. The AI runtime never decides whether a user has paid. These arrows describe existing applications and proposed internal ownership boundaries, not additional network hops.
 
 ### 3.2 End-to-end message contract
 
@@ -231,7 +269,7 @@ Accessibility acceptance includes focus visibility/order, screen-reader names/st
 
 | ID | Decision | Required before | Default planning position |
 | --- | --- | --- | --- |
-| DEC-01 | Deployment hardware, single/multiple instances, expected concurrency and workload | AIF-001 | Measure existing topology; no distributed infrastructure assumed |
+| DEC-01 | Deployment hardware, single/multiple instances, expected concurrency and workload | AIR-07 / PLAT-000; reused by AIF-001 | Resolved: this PC, one active request and bounded overload; zero-queue HTTP profile verified |
 | DEC-02 | Licensed local model, quality rubric, hardware budget and release thresholds | AIR-06 / PLAT-000 | Current default unchanged until evidence supports promotion |
 | DEC-03 | Merchant country/entity, provider eligibility, markets, currencies/payment methods | PAY-001 | Provider unselected; hosted checkout preferred where suitable |
 | DEC-04 | Purchases/subscriptions, plans/prices, quotas, trials, overages, grace/refund/tax policy | PAY-001 | No price invented; no automatic overage billing |
@@ -268,8 +306,52 @@ Newly discovered work outside a task becomes a linked follow-up with owner/depen
 - This document defines the three workstreams and their integration contracts.
 - [The detailed backlog](platform-delivery-backlog.json) defines independently reviewable tasks and completion evidence.
 - The existing RAG plan/backlog remain authoritative for prerequisite implementation.
-- When implementation is requested, continue **AIR-06** first, close the remaining canonical RAG gates, then execute **PLAT-000 → AIF/PERF → PAY → MOB → REL** in dependency order.
+- When implementation resumes, continue **AIR-07** and resolve its outstanding AIR-06 quality and AIR-02/03 live-provider gates in the canonical backlog. Only after all four pass, execute **PLAT-000 → AIF/PERF → PAY → MOB → REL** in dependency order.
 
 Planning changes only: no schema execution, model change, provider activation, payment operation or application deployment occurred as part of preparing this plan.
 
-Planning validation (2026-10-23): parsed both JSON backlogs; verified 38 unique platform items, required task fields, acyclic/resolvable dependencies, canonical AIR status snapshots, RAG gating for every implementation item, complete dependency coverage for the final release, decision references, and all 18 local Markdown links. Scoped `git diff --check` passed; Git emitted its existing LF-to-CRLF normalization notice. Application builds, runtime tests, database checks and provider/device acceptance were not rerun for this documentation-only change. All 38 implementation items remain planned with empty completion evidence.
+### 8.1 One-item-at-a-time implementation order
+
+The JSON `implementationOrder` is a valid sequential traversal of dependencies. It supports the user's “next item” workflow without reopening completed investigations. Each row below is a delivery checkpoint, not a separate duplicate backlog.
+
+| Checkpoint | Existing items, in order | Reviewable outcome |
+| --- | --- | --- |
+| RAG acceptance | Canonical AIR-07 and its open prerequisites, then PLAT-000 | Accepted model/capability baseline, live owned retrieval/search/persisted citations, stated operating limits |
+| AI contracts and measurement | AIF-001, AIF-002, AIF-007, PERF-001 | Actual flow/ownership map, compatible stream contract, sanitized telemetry and reproducible before-change baseline |
+| AI lifecycle and context | AIF-003, AIF-004, AIF-005, AIF-006 | One chat controller, durable attempts, explicit authorized context, bounded cancellation and overload |
+| AI runtime and speed | AIF-008, AIF-009, PERF-002, PERF-003, AIF-010, PERF-004 | Verified direct model bootstrap, usage seam, measured UI improvements and accepted end-to-end streaming |
+| Billing foundation | PAY-001, PAY-002, PAY-003, PAY-004 | Approved product/provider decisions, additive schema, sandbox checkout and durable verified events |
+| Billing product | PAY-005, PAY-006, PAY-007, PAY-008, PAY-009, PAY-010 | Lifecycle/reconciliation, server entitlements and quotas, Billing UI, support and security controls |
+| Billing acceptance | PAY-011, PAY-012 | Sandbox end-to-end evidence and operations runbook; no real-money activation |
+| Responsive foundation | MOB-001, MOB-002, MOB-003 | Full route matrix, shared shell/overlay rules and usable standard pages |
+| Responsive engineering | MOB-004, MOB-005, MOB-006 | Adaptive AI, state-preserving Canvas/Code/Serial panels and reliable touch editing |
+| Responsive acceptance | MOB-007, MOB-008, MOB-009 | Accessibility, constrained-device recovery/performance and complete route/device results |
+| Release | REL-001, REL-002 | Cross-app compatibility/recovery evidence and separately authorized monitored activation |
+
+### 8.2 Definition of ready and done for each item
+
+Before starting: verify dependencies against their authoritative backlog, resolve decisions needed by the item, inspect current code/schema rather than assuming this snapshot is still exact, and identify a bounded change with a reproducible baseline. Name the expected output from the item's `deliverables` and the exact acceptance tests. Split an oversized task into linked children before implementation; retain parent acceptance and avoid duplicate scope.
+
+On completion: record modified modules, relevant schema/configuration changes, commands and actual outcomes, environment/artifact identity, failure/recovery coverage and remaining limitations in `evidence`. Add migration/feature rollback instructions where applicable. Leave unavailable provider/device/live tests explicitly pending. Update the status only when all required acceptance passes, then select the first dependency-ready item in `implementationOrder`. Planning acceptance does not change any implementation item to complete.
+
+### 8.3 Next implementation handoff
+
+Known V6 contradiction is corrected and V7 transfer passes. Final declared quality/profile acceptance still needs authenticated BL/UI streaming and persistence verification; compiler/emulator evidence is historical. Explicit English limitation checks are not general semantic proof. Live consented search and tunnel-free identity remain external release gates. Do not repeat rejected model experiments or invent additional arbitrary fixture targets. See [local closeout](AIR-06_07_LOCAL_CLOSEOUT.md).
+
+After PLAT-000 passes, start AIF-001 by tracing one actual general-chat send and one consented project/RAG send through the current code. Its deliverables are an ownership/dependency map, current stream/persistence sequence and deployment/workload decision. This is the entry to the requested AI layers, not a new model or chat system.
+
+### 8.4 First reviewable output for each priority
+
+| Priority | First item | First output | Implementation end state |
+| --- | --- | --- | --- |
+| AI layers and speed | AIF-001, then AIF-002/AIF-007/PERF-001 | Source-linked flow and ownership map, compatible event contract, sanitized timings and reproducible baseline | AIF-010/PERF-004: reliable UI-to-AI streaming, restore/retry/stop, authorized context and measured improvements |
+| Payments | PAY-001, then PAY-002 | Eligible provider/product decision, feature/limit policy, logical schema and API contract | PAY-011/PAY-012: sandbox flows, server-owned entitlement/usage and operations readiness |
+| Mobile/tablet | MOB-001, then MOB-002 | Route/state/device matrix and shared layout/overlay contract | MOB-009: complete standard routes and Canvas/Code/Serial/AI workflow on accepted devices |
+
+Minimum launch scope follows the existing product: one AI integration and database, one payment provider with explicitly chosen products, responsive web across all routes, and clean Graphite + Signal Orange UI. Additional network services, general autonomous agents/tools, a second vector store, wallets, teams, native mobile apps and offline private-data caching require separate evidence and scope decisions. They are not necessary merely to add maintainable AI layers.
+
+The next implementation handoff remains the canonical RAG closeout. No merchant prices/provider, device promises or deployment concurrency are guessed in this plan. Record those decisions at the named readiness gates once; do not ask repeatedly after they are resolved.
+
+Planning validation (2026-10-26): **passed** JSON parsing, 38 unique complete task definitions, canonical RAG review snapshots, dependency resolution/cycle checks, sequential execution order, inherited RAG gating, final-release dependency coverage, eight decision definitions, six mapped risks, workstream item coverage, all 25 local Markdown links and coverage of all 17 current router paths (excluding the catch-all redirect). Each item has scope/modules, owner, deliverables, acceptance, verification and direct decision prerequisites. Scoped `git diff --check` passed. Official Web Vitals, W3C target-size and Stripe checkout/webhook references were reviewed during the preceding planning pass; no provider was selected. Historical `statusAtPlanning` values are retained separately from dated `statusAtReview` snapshots; canonical RAG status always wins if it subsequently changes.
+
+After the explicit development authorization, AIF-001 is complete with scoped evidence, PLAT-000 is blocked, and the other 36 items remain planned. The planning checks above do not establish runtime, database or provider/device acceptance. Dated prerequisite implementation results are recorded in the canonical RAG reports. Planning is complete; implementation acceptance is not.

@@ -1,5 +1,7 @@
 # AIR-06 verification — 2026-10-23
 
+Latest local closeout (2026-10-26): **V6 4/4**, fresh V7 **7/7 at two seeds**, preserved V5/V2/V3, **161 AI + 5 health/security tests**, and the user-selected **one-active/zero-queue local HTTP capacity profile passed**. See [scope, measurements and remaining gates](AIR-06_07_LOCAL_CLOSEOUT.md). Live search, tunnel-free session restoration and final selected-profile cross-app release acceptance remain open. This supersedes older failure/capacity snapshots below; historical results are retained, not rerun or relabelled.
+
 **In progress. The bounded workflow is implemented; broader engineering answer-quality acceptance is not met.** The original six cases now pass with narrow server guidance; see the [quality follow-up](AIR-06_QUALITY_FOLLOWUP.md) for current results, remaining model failures and output-limit repair. The sections below preserve the initial verification evidence. The next backlog item remains AIR-06.
 
 ## Changes
@@ -23,7 +25,7 @@ Auto mode remains explicitly unavailable. The workflow requires a separately rev
 
 Command: `.venv\Scripts\python.exe scripts\evaluate_research.py`.
 
-The configured Qwen2.5-Coder-1.5B GGUF ran all six cases with temperature 0 and a 192-token response cap. Production's model, context and evidence limits remain unchanged. The initial output is preserved in `AIR-06_QUALITY_BASELINE.json`; final output is in `AIR-06_QUALITY_EVAL.json`. Several prompt revisions were evaluated against the same set, so this is a development set, not held-out evidence of generalization.
+The configured Qwen2.5-Coder-1.5B GGUF ran all six cases with temperature 0 and a 192-token response cap. Production's model, context and evidence limits remain unchanged. The initial AIR-06_QUALITY_BASELINE and final AIR-06_QUALITY_EVAL outcomes are consolidated in [the recorded evaluation summary](AIR-06_MODEL_COMPARISON.md#recorded-evaluations); raw run files were removed during cleanup. Several prompt revisions were evaluated against the same set, so this is a development set, not held-out evidence of generalization.
 
 | Case | Final rubric review | Evidence |
 | --- | --- | --- |
