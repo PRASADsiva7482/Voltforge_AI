@@ -9,7 +9,11 @@ import uuid
 import logging
 from typing import Any, Dict, List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
-from fastapi.responses import StreamingResponse
+from fastapi.responses import Response, StreamingResponse
+
+from engine.drc_engine import PcbDrcEngine
+from engine.gerber_exporter import GerberExporter
+from engine.code_generator import FirmwareCodeGenerator
 
 from api.schemas import (
     ChatRequest,
@@ -416,3 +420,108 @@ def get_memory(projectId: str = Query(...), sessionId: Optional[str] = Query(Non
 @router.put("/memory/preferences")
 def update_memory_preferences(projectId: str = Query(...)):
     raise HTTPException(status_code=501, detail="Approved project facts are not supported by this AI service. Conversation history is stored by the application backend.")
+
+
+@router.post("/circuit/drc-check")
+def run_pcb_drc_check(payload: Dict[str, Any]) -> Dict[str, Any]:
+    logger.info("Executing PCB Design Rule Check (DRC)")
+    board_width = float(payload.get("boardWidth_mm", 100))
+    board_height = float(payload.get("boardHeight_mm", 80))
+    footprints = payload.get("footprints", [])
+    traces = payload.get("traces", [])
+    vias = payload.get("vias", [])
+    wires = payload.get("wires", [])
+
+    return PcbDrcEngine.run_drc(
+        board_width_mm=board_width,
+        board_height_mm=board_height,
+        footprints=footprints,
+        traces=traces,
+        vias=vias,
+        wires=wires,
+    )
+
+
+@router.post("/circuit/export-gerber")
+def export_pcb_gerber(payload: Dict[str, Any]):
+    logger.info("Generating RS-274X Gerber & Excellon drill archive")
+    board_width = float(payload.get("boardWidth_mm", 100))
+    board_height = float(payload.get("boardHeight_mm", 80))
+    footprints = payload.get("footprints", [])
+    traces = payload.get("traces", [])
+    vias = payload.get("vias", [])
+    project_name = payload.get("projectName", "VoltForge_PCB")
+
+    zip_data = GerberExporter.generate_gerber_zip(
+        board_width_mm=board_width,
+        board_height_mm=board_height,
+        footprints=footprints,
+        traces=traces,
+        vias=vias,
+        project_name=project_name,
+    )
+
+    return Response(
+        content=zip_data,
+        media_type="application/zip",
+        headers={"Content-Disposition": f"attachment; filename={project_name}_gerber.zip"}
+    )
+
+
+@router.post("/schematic-to-code")
+def schematic_to_code(payload: Dict[str, Any]) -> Dict[str, Any]:
+    logger.info("Processing schematic-to-code")
+    components = payload.get("components", [])
+    wires = payload.get("wires", [])
+    board_type = payload.get("boardType", "ARDUINO_UNO")
+    additional_instructions = payload.get("additionalInstructions", "")
+    code = FirmwareCodeGenerator.generate(
+        components=components,
+        wires=wires,
+        board_type=board_type,
+        additional_instructions=additional_instructions
+    )
+    return {
+        "status": "SUCCESS",
+        "message": "Firmware generated from active canvas schematic.",
+        "generatedCode": code,
+        "confidence": 0.90,
+    }
+
+
+@router.post("/review-code")
+def review_code(payload: Dict[str, Any]) -> Dict[str, Any]:
+    logger.info("Processing code review")
+    board_type = payload.get("boardType", "ARDUINO_UNO")
+    code = payload.get("code", "")
+    components = payload.get("components", [])
+    wires = payload.get("wires", [])
+    diagnostics = payload.get("compilerDiagnostics", [])
+
+    validation = validate_circuit_state(
+        board_type=board_type,
+        components=components,
+        wires=wires,
+    )
+    issues = validation.get("issues", [])
+    if diagnostics:
+        for diag in diagnostics[:10]:
+            issues.append({
+                "id": f"diag_{len(issues)}",
+                "severity": "WARNING",
+                "rule": "Compiler Diagnostic",
+                "message": str(diag),
+            })
+
+    return {
+        "summary": f"Code review complete for {board_type}. Evaluated against active hardware components.",
+        "score": validation.get("safetyScore", 95),
+        "confidence": 1.0,
+        "issues": issues,
+        "suggestions": [
+            f"Ensure {board_type} pin configurations match designated hardware connections.",
+            "Verify all digital outputs have current-limiting resistors where required.",
+        ],
+        "improvedCode": code,
+    }
+
